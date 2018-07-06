@@ -91,6 +91,21 @@ local browser      = "google-chrome"
 local guieditor    = "code"
 local scrlocker    = "xlock"
 
+local clientkeybindings = {}
+clientkeybindings["z"] = "Konsole"
+clientkeybindings["a"] = "Google Chrome"
+clientkeybindings["e"] = "Emacs"
+
+for key, app in pairs(clientkeybindings) do
+	awful.key({ "Control", "Shift", }, key, function ()
+	local matcher = function (c)
+		return awful.rules.match(c, {class = app})
+	end
+	awful.client.run_or_raise(app, matcher)
+    	end);
+
+end
+
 awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5" }
 awful.layout.layouts = {
