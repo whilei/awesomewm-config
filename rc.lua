@@ -742,6 +742,15 @@ function border_adjust(c)
     end
 end
 
+-- make rofi possible to raise minimized clients
+client.connect_signal("request::activate",
+	function(c, context, hints)
+	if c.minimized then
+	c.minimized = false
+	end
+	awful.ewmh.activate(c, context, hints)
+end)
+
 client.connect_signal("focus", border_adjust)
 client.connect_signal("property::maximized", border_adjust)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
