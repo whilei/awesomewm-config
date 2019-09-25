@@ -512,22 +512,38 @@ globalkeys = my_table.join(
 		end,
         {description = "show dmenu", group = "launcher"})
     --]]
+
+    -- -- rofi binding
+    -- awful.key({ "Control" }, "Return",
+    --     function ()
+    --         myscreen           = awful.screen.focused()
+    --         commandPrompter    = "rofi --modi window,run,ssh -show window"
+	  --   -- -normal-window
+    --         for _, t in ipairs(mouse.screen.tags) do
+    --             if client.name ~= "rofi" then
+    --                 awful.tag.viewtoggle(t)
+    --             end
+    --         end
+    --         awful.spawn(commandPrompter, false)
+    --         -- awful.spawn(blur) -- Causes mouse to change to loading icon!!
+    --     end, {description = "run rofi", group = "awesome"}),
+
     -- Prompt
     awful.key({ modkey }, "r", function () awful.screen.focused().mypromptbox:run() end,
-              {description = "run prompt", group = "launcher"}),
+              {description = "run prompt", group = "launcher"})
 
-    awful.key({ modkey }, "x",
-              function ()
-                  awful.prompt.run {
-                    prompt       = "Run Lua code: ",
-                    textbox      = awful.screen.focused().mypromptbox.widget,
-                    exe_callback = awful.util.eval,
-                    history_path = awful.util.get_cache_dir() .. "/history_eval"
-                  }
-              end,
-              {description = "lua execute prompt", group = "awesome"})
+    -- awful.key({ modkey }, "x",
+    --           function ()
+    --               awful.prompt.run {
+    --                 prompt       = "Run Lua code: ",
+    --                 textbox      = awful.screen.focused().mypromptbox.widget,
+    --                 exe_callback = awful.util.eval,
+    --                 history_path = awful.util.get_cache_dir() .. "/history_eval"
+    --               }
+    --           end,
+    --           {description = "lua execute prompt", group = "awesome"})
     --]]
-)
+  )
 
 clientkeys = my_table.join(
     awful.key({ altkey, "Shift"   }, "m",      lain.util.magnify_client,
@@ -560,7 +576,13 @@ clientkeys = my_table.join(
             c.maximized = not c.maximized
             c:raise()
         end ,
-        {description = "maximize", group = "client"})
+        {description = "maximize", group = "client"}),
+
+    -- https://stackoverflow.com/questions/17705888/resizing-window-vertically
+    awful.key({ altkey, "Shift"    }, "Right",     function () awful.tag.incmwfact( 0.01)    end),
+    awful.key({ altkey, "Shift"    }, "Left",     function () awful.tag.incmwfact(-0.01)    end),
+    awful.key({ altkey, "Shift"    }, "Down",     function () awful.client.incwfact( 0.01)    end),
+    awful.key({ altkey, "Shift"    }, "Up",     function () awful.client.incwfact(-0.01)    end)
 )
 
 -- Bind all key numbers to tags.
