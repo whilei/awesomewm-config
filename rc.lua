@@ -90,6 +90,7 @@ local gui_editor   = "gvim"
 local browser      = "google-chrome"
 local guieditor    = "code"
 local scrlocker    = "xlock"
+local scrnshotter  = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' -s -e 'mv $f ~/Pictures/screenshots/'"
 
 local clientkeybindings = {}
 clientkeybindings["z"] = "Konsole"
@@ -249,7 +250,7 @@ root.buttons(my_table.join(
 globalkeys = my_table.join(
     -- Take a screenshot
     -- https://github.com/lcpz/dots/blob/master/bin/screenshot
-    awful.key({ altkey }, "p", function() os.execute("screenshot") end,
+    awful.key({ altkey }, "p", function() os.execute(scrnshotter) end,
               {description = "take a screenshot", group = "hotkeys"}),
 
     -- X screen locker
