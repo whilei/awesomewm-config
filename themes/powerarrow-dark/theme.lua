@@ -99,16 +99,6 @@ local clock = awful.widget.watch(
     end
 )
 
--- Calendar
-theme.cal = lain.widget.calendar({
-    attach_to = { clock },
-    notification_preset = {
-        font = "xos4 Terminus 10",
-        fg   = theme.fg_normal,
-        bg   = theme.bg_normal
-    }
-})
-
 -- Mail IMAP check
 local mailicon = wibox.widget.imagebox(theme.widget_mail)
 --[[ commented because it needs to be set before use
