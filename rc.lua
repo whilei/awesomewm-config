@@ -90,7 +90,7 @@ local gui_editor   = "gvim"
 local browser      = "google-chrome"
 local guieditor    = "code"
 local scrlocker    = "xlock"
-local scrnshotter  = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' -s -e 'mv $f ~/Pictures/screenshots/'"
+local scrnshotter  = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' -s -e 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
 
 local clientkeybindings = {}
 clientkeybindings["z"] = "Konsole"
