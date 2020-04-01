@@ -91,6 +91,7 @@ local browser      = "google-chrome"
 local guieditor    = "code"
 local scrlocker    = "xlock"
 local scrnshotter  = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' -s -e 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
+local invert_colors = "xrandr-invert-colors"
 
 local clientkeybindings = {}
 clientkeybindings["z"] = "Konsole"
@@ -252,6 +253,9 @@ globalkeys = my_table.join(
     -- https://github.com/lcpz/dots/blob/master/bin/screenshot
     awful.key({ altkey }, "p", function() os.execute(scrnshotter) end,
               {description = "take a screenshot", group = "hotkeys"}),
+
+    awful.key({ modkey }, "x", function() os.execute(invert_colors) end,
+    		{description = "invert colors on all screens with xrandr", group = "hotkeys"}),
 
     -- X screen locker
     awful.key({ altkey, "Control" }, "l", function () os.execute(scrlocker) end,
