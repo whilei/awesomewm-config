@@ -27,7 +27,7 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/ia"
-theme.wallpaper                                 = theme.dir .. "/wall2.png" -- "wall2.png"
+theme.wallpaper                                 = theme.dir .. "/botello_cruc.jpg" -- "wall2.png"
 theme.font                                      = "xos4 Terminus 9"
 
 
@@ -324,9 +324,9 @@ local neticon = wibox.widget.imagebox(theme.widget_net)
 local net = lain.widget.net({
     settings = function()
         widget:set_markup(markup.font(theme.font,
-                          markup("#FF4943", net_now.sent .. " ↑")
+                          markup("#FF4943",  "↑" .. net_now.sent)
                           ..
-                          markup("#2ECCFA", "↓ " .. net_now.received)
+                          markup("#2ECCFA", "↓" .. net_now.received)
                           .. " kb"
                           ))
     end
@@ -407,15 +407,15 @@ function theme.at_screen_connect(s)
 --                     wibox.container.background(net.widget, theme.bg_focus),
                     net.widget,
 
-                    -- Memory
-                    spr,
-                    memicon,
-                    mem.widget,
-
                     -- CPU
                     spr,
                     cpuicon,
                     cpu.widget,
+
+                    -- Memory
+                    spr,
+                    memicon,
+                    mem.widget,
 
                     -- Temperature
                     spr,
