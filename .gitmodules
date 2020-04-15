@@ -1,3 +1,6 @@
 [submodule "aweseome-wm-widgets"]
 	path = aweseome-wm-widgets
 	url = https://github.com/streetturtle/awesome-wm-widgets.git
+[submodule "revelation"]
+	path = revelation
+	url = https://github.com/guotsuan/awesome-revelation

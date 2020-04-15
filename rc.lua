@@ -19,6 +19,7 @@ local lain          = require("lain")
 --local menubar       = require("menubar")
 local freedesktop   = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+local revelation=require("revelation")
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- }}}
 
@@ -67,26 +68,26 @@ awful.spawn.with_shell(
 -- }}}
 
 -- {{{ Variable definitions
+--
+-- local themes = {
+--     "blackburn",       -- 1
+--     "copland",         -- 2
+--     "dremora",         -- 3
+--     "holo",            -- 4
+--     "multicolor",      -- 5
+--     "powerarrow",      -- 6
+--     "powerarrow-dark", -- 7
+--     "rainbow",         -- 8
+--     "steamburn",       -- 9
+--     "vertex",          -- 10
+-- }
 
-local themes = {
-    "blackburn",       -- 1
-    "copland",         -- 2
-    "dremora",         -- 3
-    "holo",            -- 4
-    "multicolor",      -- 5
-    "powerarrow",      -- 6
-    "powerarrow-dark", -- 7
-    "rainbow",         -- 8
-    "steamburn",       -- 9
-    "vertex",          -- 10
-}
-
-local chosen_theme = themes[7]
+local chosen_theme = "ia"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
 local terminal     = "konsole"
 local editor       = os.getenv("EDITOR") or "vim"
-local gui_editor   = "gvim"
+local gui_editor   = "code"
 local browser      = "google-chrome"
 local guieditor    = "code"
 local scrlocker    = "xlock"
@@ -94,9 +95,9 @@ local scrnshotter  = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' -s -e 'xclip 
 local invert_colors = "xrandr-invert-colors"
 
 local clientkeybindings = {}
-clientkeybindings["z"] = "Konsole"
-clientkeybindings["a"] = "Google Chrome"
-clientkeybindings["e"] = "Emacs"
+-- clientkeybindings["z"] = "Konsole"
+-- clientkeybindings["a"] = "Google Chrome"
+-- clientkeybindings["e"] = "Emacs"
 
 for key, app in pairs(clientkeybindings) do
 	awful.key({ "Control", "Shift", }, key, function ()
@@ -200,6 +201,8 @@ local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.ge
 beautiful.init(theme_path)
 -- }}}
 
+revelation.init()
+
 -- local layoutlist_popup = awful.popup {
 --     widget = awful.widget.layoutlist {
 -- 	    screen      = 1,
@@ -260,6 +263,7 @@ root.buttons(my_table.join(
 
 -- {{{ Key bindings
 globalkeys = my_table.join(
+
     -- Take a screenshot
     -- https://github.com/lcpz/dots/blob/master/bin/screenshot
     awful.key({ altkey }, "p", function() os.execute(scrnshotter) end,
@@ -268,9 +272,9 @@ globalkeys = my_table.join(
     awful.key({ modkey }, "x", function() os.execute(invert_colors) end,
     		{description = "invert colors on all screens with xrandr", group = "hotkeys"}),
 
-    -- X screen locker
-    awful.key({ altkey, "Control" }, "l", function () os.execute(scrlocker) end,
-              {description = "lock screen", group = "hotkeys"}),
+--     -- X screen locker
+--     awful.key({ altkey, "Control" }, "l", function () os.execute(scrlocker) end,
+--               {description = "lock screen", group = "hotkeys"}),
 
     -- Hotkeys
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
@@ -288,6 +292,9 @@ globalkeys = my_table.join(
               {description = "view  previous nonempty", group = "tag"}),
     awful.key({ altkey }, "Right", function () lain.util.tag_view_nonempty(1) end,
               {description = "view  previous nonempty", group = "tag"}),
+
+    -- Revelation client focus
+    awful.key({ modkey,           }, "e",      revelation),
 
     -- Default client focus
     awful.key({ altkey,           }, "j",
