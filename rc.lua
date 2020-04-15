@@ -115,11 +115,11 @@ end
 awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5" }
 awful.layout.layouts = {
---     awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
-    --awful.layout.suit.floating,
+    awful.layout.suit.floating,
     awful.layout.suit.fair,
     --awful.layout.suit.fair.horizontal,
     --awful.layout.suit.spiral,
@@ -133,10 +133,10 @@ awful.layout.layouts = {
     --awful.layout.suit.corner.se,
     --lain.layout.cascade,
     --lain.layout.cascade.tile,
-    --lain.layout.centerwork,
-    --lain.layout.centerwork.horizontal,
-    --lain.layout.termfair,
-    --lain.layout.termfair.center,
+    -- lain.layout.centerwork,
+    -- lain.layout.centerwork.horizontal,
+    -- lain.layout.termfair,
+    -- lain.layout.termfair.center,
 }
 awful.util.taglist_buttons = my_table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),

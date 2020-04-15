@@ -17,7 +17,7 @@ local wibox = require("wibox")
 -- local cpu_widget = require("cpu-widget")
 
 
--- local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
+local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
 
 -- local cpu_widget = require("cpuwiget.cpuwidget")
 
@@ -92,7 +92,7 @@ theme.tasklist_bg_focus                         = "#1A1A1A"
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
 theme.titlebar_fg_focus                         = theme.fg_focus
-theme.menu_height                               = 14
+theme.menu_height                               = 18
 theme.menu_width                                = 140
 theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.png"
 theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
@@ -299,7 +299,7 @@ local net = lain.widget.net({
         widget:set_markup(markup.font(theme.font,
                           markup("#FF4943", net_now.sent .. " ↑")
                           ..
-                          markup("#3C51FF", "↓ " .. net_now.received)
+                          markup("#6378C2", "↓ " .. net_now.received)
                           .. " kb"
                           ))
     end
@@ -341,7 +341,7 @@ function theme.at_screen_connect(s)
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 14, bg = theme.bg_normal, fg = theme.fg_normal })
+    s.mywibox = awful.wibar({ position = "bottom", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -380,7 +380,12 @@ function theme.at_screen_connect(s)
                     spr,
                     cpuicon,
                     cpu.widget,
-                    --cpu_widget(),
+                    cpu_widget({
+                        width = 70,
+                        step_width = 2,
+                        step_spacing = 0,
+                        color = '#434c5e'
+                    }),
 
                     -- Temperature
                     spr,
