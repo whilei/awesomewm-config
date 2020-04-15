@@ -34,6 +34,7 @@ theme.bg_urgent                                 = "#000000"
 theme.fg_normal                                 = "#aaaaaa"
 theme.fg_focus                                  = "#ff8c00"
 theme.fg_urgent                                 = "#af1d18"
+theme.bg_minimize                               = "#bf2e3a"
 theme.fg_minimize                               = "#ffffff"
 theme.border_normal                             = "#1c2022"
 theme.border_focus                              = "#606060"
@@ -41,7 +42,7 @@ theme.border_marked                             = "#3ca4d8"
 
 theme.border_width                              = 0
 
-theme.tasklist_bg_normal                        = "#c8def7"
+theme.tasklist_bg_normal                        = "#FFFFFF"-- "#c8def7"
 theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
 theme.tasklist_fg_normal                        = "#000000"
 theme.tasklist_fg_focus                         = "#FFFFFF"
@@ -85,7 +86,7 @@ theme.widget_mail                               = theme.dir .. "/icons/mail.png"
 theme.widget_mail_on                            = theme.dir .. "/icons/mail_on.png"
 theme.tasklist_plain_task_name                  = false -- true
 theme.tasklist_disable_icon                     = false -- true
-theme.useless_gap                               = 10
+theme.useless_gap                               = 0
 theme.titlebar_close_button_focus               = theme.dir .. "/icons/titlebar/close_focus.png"
 theme.titlebar_close_button_normal              = theme.dir .. "/icons/titlebar/close_normal.png"
 theme.titlebar_ontop_button_focus_active        = theme.dir .. "/icons/titlebar/ontop_focus_active.png"
@@ -315,6 +316,7 @@ function theme.at_screen_connect(s)
 
     -- Add widgets to the wibox
     s.mywibox:setup {
+        stretch = true,
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
@@ -328,8 +330,13 @@ function theme.at_screen_connect(s)
 
             s.mypromptbox,
             spr,
+            s.mytasklist,
         },
-        s.mytasklist, -- Middle widget
+        -- middle
+        {
+            layout = wibox.layout.fixed.horizontal,
+        },
+        
         { -- Right widgets
                     layout = wibox.layout.fixed.horizontal,
                     wibox.widget.systray(),
