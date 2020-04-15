@@ -19,7 +19,7 @@ local wibox = require("wibox")
 
 -- local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
 
--- local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
+-- local cpu_widget = require("cpuwiget.cpuwidget")
 
 
 local os = { getenv = os.getenv }
