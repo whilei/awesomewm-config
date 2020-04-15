@@ -21,8 +21,6 @@ local freedesktop   = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 local revelation=require("revelation")
 
-
-
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- }}}
 
@@ -71,19 +69,6 @@ awful.spawn.with_shell(
 -- }}}
 
 -- {{{ Variable definitions
---
--- local themes = {
---     "blackburn",       -- 1
---     "copland",         -- 2
---     "dremora",         -- 3
---     "holo",            -- 4
---     "multicolor",      -- 5
---     "powerarrow",      -- 6
---     "powerarrow-dark", -- 7
---     "rainbow",         -- 8
---     "steamburn",       -- 9
---     "vertex",          -- 10
--- }
 
 local chosen_theme = "ia"
 local modkey       = "Mod4"
@@ -372,16 +357,11 @@ globalkeys = my_table.join(
         end,
         {description = "toggle wibox", group = "awesome"}),
 
-    -- On the fly useless gaps change
-    -- awful.key({ altkey, "Control" }, "+", function () lain.util.useless_gaps_resize(1) end,
-    --           {description = "increment useless gaps", group = "tag"}),
-    -- awful.key({ altkey, "Control" }, "-", function () lain.util.useless_gaps_resize(-1) end,
-    --           {description = "decrement useless gaps", group = "tag"}),
 
     -- On the fly useless gaps change
-    awful.key({ modkey, "Shift" }, "i", function () lain.util.useless_gaps_resize(1) end,
+    awful.key({ modkey, altkey }, "`", function () lain.util.useless_gaps_resize(5) end,
               {description = "increment useless gaps", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "d", function () lain.util.useless_gaps_resize(-1) end,
+    awful.key({ modkey, altkey }, "-", function () lain.util.useless_gaps_resize(-5) end,
               {description = "decrement useless gaps", group = "tag"}),
 
     -- Dynamic tagging

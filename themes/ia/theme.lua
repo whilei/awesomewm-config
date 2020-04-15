@@ -10,35 +10,21 @@ local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 
-
-
-
--- local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
--- local cpu_widget = require("cpu-widget")
-
-
 local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
-
--- local cpu_widget = require("cpuwiget.cpuwidget")
-
 
 local os = { getenv = os.getenv }
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/ia"
-theme.wallpaper                                 = theme.dir .. "/botello_cruc.jpg" -- "wall2.png"
+theme.wallpaper                                 = theme.dir .. "/botello_cruc.jpg"
 theme.font                                      = "xos4 Terminus 9"
-
-
--------------------------------------------------------------------
--- multicolor/theme.lua
 
 theme.color_green = "#2EFE2E"
 theme.color_yellow ="#FFFF00"
 theme.color_orange = "#FF8000"
 theme.color_red = "#DF0101"
-theme.color_lightblue = "#00FFBF"
+theme.color_lightblue = "#2ECCFA"
 
 theme.menu_bg_normal                            = "#000000"
 theme.menu_bg_focus                             = "#000000"
@@ -49,53 +35,16 @@ theme.fg_normal                                 = "#aaaaaa"
 theme.fg_focus                                  = "#ff8c00"
 theme.fg_urgent                                 = "#af1d18"
 theme.fg_minimize                               = "#ffffff"
-theme.border_width                              = 1
 theme.border_normal                             = "#1c2022"
 theme.border_focus                              = "#606060"
 theme.border_marked                             = "#3ca4d8"
 
--------------------------------------------------------------------
--- rainbow/theme.lua
--- ... bor... ing...
---
--- theme.fg_normal                                 = "#9E9E9E"
--- theme.fg_focus                                  = "#EBEBFF"
--- theme.bg_normal                                 = "#242424"
--- theme.bg_focus                                  = "#242424"
--- theme.fg_urgent                                 = "#000000"
--- theme.bg_urgent                                 = "#FFFFFF"
--- theme.border_width                              = 1
--- theme.border_normal                             = "#242424"
--- theme.border_focus                              = "#EBEBFF"
--- theme.taglist_fg_focus                          = "#EDEFFF"
--- theme.taglist_bg_focus                          = "#242424"
-
-
--------------------------------------------------------------------
-
--- theme.fg_normal                                 = "#BB4850" -- red
--- theme.fg_focus                                  = "#EA4D55"
--- theme.fg_urgent                                 = "#FF6F75"
---
--- theme.bg_normal                                 = "#1A1A1A"
--- theme.bg_focus                                  = "#313131"
--- theme.bg_urgent                                 = "#1A1A1A"
--- theme.bg_normal                                 = "#177713" -- green
--- theme.bg_focus                                  = "#199114"
--- theme.bg_urgent                                 = "#20B91A"
-
--------------------------------------------------------------------
-
-
 theme.border_width                              = 0
 
--- theme.border_normal                             = "#3F3F3F"
--- theme.border_focus                              = "#7F7F7F"
--- theme.border_marked                             = "#CC9393"
-
-theme.tasklist_bg_normal                        = "#5e5e5e"
-theme.tasklist_fg_normal                        = "#000000"
+theme.tasklist_bg_normal                        = "#c8def7"
 theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
+theme.tasklist_fg_normal                        = "#000000"
+theme.tasklist_fg_focus                         = "#FFFFFF"
 
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
@@ -247,23 +196,17 @@ local temp = lain.widget.temp({
     settings = function()
         --  widget:set_markup(markup.font(theme.font, markup(theme.color_lightblue, coretemp_now .. "°C")))
         if coretemp_now == "N/A" then
-            widget:set_markup(markup.font(theme.font,
-                                 " " .. markup(theme.fg_normal, coretemp_now .. "°C")))
+            widget:set_markup(markup.font(theme.font, " " .. markup(theme.fg_normal, coretemp_now .. "°C")))
         elseif tonumber(coretemp_now) > 90.0 then
-            widget:set_markup(markup.font(theme.font,
-                                 " " .. markup(theme.color_red, coretemp_now .. "°C")))
+            widget:set_markup(markup.fontbg(theme.font, theme.color_red, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
         elseif tonumber(coretemp_now) > 80.0 then
-            widget:set_markup(markup.font(theme.font,
-                                 " " .. markup(theme.color_orange, coretemp_now .. "°C")))
+            widget:set_markup(markup.fontbg(theme.font, theme.color_orange, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
         elseif tonumber(coretemp_now) > 70.0 then
-            widget:set_markup(markup.font(theme.font,
-                                 " " .. markup(theme.color_yellow, coretemp_now .. "°C")))
+            widget:set_markup(markup.fontbg(theme.font, theme.color_yellow, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
         elseif tonumber(coretemp_now) > 60.0 then
-            widget:set_markup(markup.font(theme.font,
-                                 " " .. markup(theme.color_green, coretemp_now .. "°C")))
+            widget:set_markup(markup.fontbg(theme.font, theme.color_green, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
         else
-            widget:set_markup(markup.font(theme.font,
-                                 " " .. markup(theme.color_lightblue, coretemp_now .. "°C")))
+            widget:set_markup(markup.fontbg(theme.font, theme.color_lightblue, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
         end
     end
 })
@@ -324,8 +267,8 @@ local neticon = wibox.widget.imagebox(theme.widget_net)
 local net = lain.widget.net({
     settings = function()
         widget:set_markup(markup.font(theme.font,
-                          markup("#FF4943",  "↑" .. net_now.sent)
-                          ..
+                          markup("#FF4943", net_now.sent .. "↑")
+                          .. "  " ..
                           markup("#2ECCFA", "↓" .. net_now.received)
                           .. " kb"
                           ))
@@ -411,15 +354,15 @@ function theme.at_screen_connect(s)
                     spr,
                     cpuicon,
                     cpu.widget,
-
+                    
                     -- Memory
-                    spr,
-                    memicon,
+                    -- spr,
+                    -- memicon,
                     mem.widget,
 
                     -- Temperature
                     spr,
-                    tempicon,
+                    -- tempicon,
                     temp.widget,
 
                     -- Battery
@@ -443,45 +386,6 @@ function theme.at_screen_connect(s)
                     clock,
 
                     spr,
-
-
---             layout = wibox.layout.fixed.horizontal,
---             wibox.widget.systray(),
---             spr,
--- --             arrl_ld,
--- --             wibox.container.background(mpdicon, theme.bg_focus),
--- --             wibox.container.background(theme.mpd.widget, theme.bg_focus),
--- --             arrl_dl,
---             volicon,
---             theme.volume.widget,
--- --             arrl_ld,
--- --             wibox.container.background(mailicon, theme.bg_focus),
---             --wibox.container.background(mail.widget, theme.bg_focus),
--- --             arrl_dl,
---             memicon,
---             mem.widget,
--- --             arrl_ld,
---             wibox.container.background(cpuicon, theme.bg_focus),
---             wibox.container.background(cpu.widget, theme.bg_focus),
--- --             arrl_dl,
---             tempicon,
---             temp.widget,
--- --             arrl_ld,
---             wibox.container.background(fsicon, theme.bg_focus),
---             wibox.container.background(theme.fs.widget, theme.bg_focus),
--- --             arrl_dl,
---             baticon,
---             bat.widget,
--- --             arrl_ld,
---             wibox.container.background(neticon, theme.bg_focus),
---             wibox.container.background(net.widget, theme.bg_focus),
--- --             arrl_dl,
---             clock,
---             spr,
--- --             arrl_ld,
---             wibox.container.background(s.mylayoutbox, theme.bg_focus),
-
-
         },
     }
 end
