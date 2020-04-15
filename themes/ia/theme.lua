@@ -27,12 +27,18 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/ia"
-theme.wallpaper                                 = theme.dir .. "/wall.png"
+theme.wallpaper                                 = theme.dir .. "/wall2.png" -- "wall2.png"
 theme.font                                      = "xos4 Terminus 9"
 
 
 -------------------------------------------------------------------
 -- multicolor/theme.lua
+
+theme.color_green = "#2EFE2E"
+theme.color_yellow ="#FFFF00"
+theme.color_orange = "#FF8000"
+theme.color_red = "#DF0101"
+theme.color_lightblue = "#00FFBF"
 
 theme.menu_bg_normal                            = "#000000"
 theme.menu_bg_focus                             = "#000000"
@@ -87,7 +93,9 @@ theme.border_width                              = 0
 -- theme.border_focus                              = "#7F7F7F"
 -- theme.border_marked                             = "#CC9393"
 
-theme.tasklist_bg_focus                         = "#1A1A1A"
+theme.tasklist_bg_normal                        = "#5e5e5e"
+theme.tasklist_fg_normal                        = "#000000"
+theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
 
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
@@ -126,9 +134,9 @@ theme.widget_vol_no                             = theme.dir .. "/icons/vol_no.pn
 theme.widget_vol_mute                           = theme.dir .. "/icons/vol_mute.png"
 theme.widget_mail                               = theme.dir .. "/icons/mail.png"
 theme.widget_mail_on                            = theme.dir .. "/icons/mail_on.png"
-theme.tasklist_plain_task_name                  = true
-theme.tasklist_disable_icon                     = true
-theme.useless_gap                               = 0
+theme.tasklist_plain_task_name                  = false -- true
+theme.tasklist_disable_icon                     = false -- true
+theme.useless_gap                               = 10
 theme.titlebar_close_button_focus               = theme.dir .. "/icons/titlebar/close_focus.png"
 theme.titlebar_close_button_normal              = theme.dir .. "/icons/titlebar/close_normal.png"
 theme.titlebar_ontop_button_focus_active        = theme.dir .. "/icons/titlebar/ontop_focus_active.png"
@@ -237,7 +245,26 @@ local cpu = lain.widget.cpu({
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 local temp = lain.widget.temp({
     settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. coretemp_now .. "°C "))
+        --  widget:set_markup(markup.font(theme.font, markup(theme.color_lightblue, coretemp_now .. "°C")))
+        if coretemp_now == "N/A" then
+            widget:set_markup(markup.font(theme.font,
+                                 " " .. markup(theme.fg_normal, coretemp_now .. "°C")))
+        elseif tonumber(coretemp_now) > 90.0 then
+            widget:set_markup(markup.font(theme.font,
+                                 " " .. markup(theme.color_red, coretemp_now .. "°C")))
+        elseif tonumber(coretemp_now) > 80.0 then
+            widget:set_markup(markup.font(theme.font,
+                                 " " .. markup(theme.color_orange, coretemp_now .. "°C")))
+        elseif tonumber(coretemp_now) > 70.0 then
+            widget:set_markup(markup.font(theme.font,
+                                 " " .. markup(theme.color_yellow, coretemp_now .. "°C")))
+        elseif tonumber(coretemp_now) > 60.0 then
+            widget:set_markup(markup.font(theme.font,
+                                 " " .. markup(theme.color_green, coretemp_now .. "°C")))
+        else
+            widget:set_markup(markup.font(theme.font,
+                                 " " .. markup(theme.color_lightblue, coretemp_now .. "°C")))
+        end
     end
 })
 
@@ -299,7 +326,7 @@ local net = lain.widget.net({
         widget:set_markup(markup.font(theme.font,
                           markup("#FF4943", net_now.sent .. " ↑")
                           ..
-                          markup("#6378C2", "↓ " .. net_now.received)
+                          markup("#2ECCFA", "↓ " .. net_now.received)
                           .. " kb"
                           ))
     end
@@ -341,7 +368,7 @@ function theme.at_screen_connect(s)
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "bottom", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -350,12 +377,12 @@ function theme.at_screen_connect(s)
             layout = wibox.layout.fixed.horizontal,
             --spr,
 
-            -- Layout
-            spr,
-            s.mylayoutbox,
-            spr,
-
             s.mytaglist,
+                       -- Layout
+                       spr,
+                       s.mylayoutbox,
+                       spr,
+
             s.mypromptbox,
             spr,
         },
@@ -363,6 +390,15 @@ function theme.at_screen_connect(s)
         { -- Right widgets
                     layout = wibox.layout.fixed.horizontal,
                     wibox.widget.systray(),
+
+                    spr,
+
+                    cpu_widget({
+                        width = 70,
+                        step_width = 2,
+                        step_spacing = 0,
+                        color = '#434c5e'
+                    }),
 
                     -- Net up/down
                     neticon,
@@ -380,12 +416,6 @@ function theme.at_screen_connect(s)
                     spr,
                     cpuicon,
                     cpu.widget,
-                    cpu_widget({
-                        width = 70,
-                        step_width = 2,
-                        step_spacing = 0,
-                        color = '#434c5e'
-                    }),
 
                     -- Temperature
                     spr,

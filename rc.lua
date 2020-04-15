@@ -116,9 +116,9 @@ awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5" }
 awful.layout.layouts = {
     awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
+    -- awful.layout.suit.tile.top,
     awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
+    -- awful.layout.suit.tile.left,
     awful.layout.suit.floating,
     awful.layout.suit.fair,
     --awful.layout.suit.fair.horizontal,
@@ -132,7 +132,7 @@ awful.layout.layouts = {
     --awful.layout.suit.corner.sw,
     --awful.layout.suit.corner.se,
     --lain.layout.cascade,
-    --lain.layout.cascade.tile,
+    --lain.layout.cascade.tile,  
     -- lain.layout.centerwork,
     -- lain.layout.centerwork.horizontal,
     -- lain.layout.termfair,
@@ -226,7 +226,7 @@ local myawesomemenu = {
     { "quit", function() awesome.quit() end }
 }
 awful.util.mymainmenu = freedesktop.menu.build({
-    icon_size = beautiful.menu_height or 16,
+    icon_size = beautiful.menu_height or 18,
     before = {
         { "Awesome", myawesomemenu, beautiful.awesome_icon },
         -- other triads can be put here
@@ -373,9 +373,15 @@ globalkeys = my_table.join(
         {description = "toggle wibox", group = "awesome"}),
 
     -- On the fly useless gaps change
-    awful.key({ altkey, "Control" }, "+", function () lain.util.useless_gaps_resize(1) end,
+    -- awful.key({ altkey, "Control" }, "+", function () lain.util.useless_gaps_resize(1) end,
+    --           {description = "increment useless gaps", group = "tag"}),
+    -- awful.key({ altkey, "Control" }, "-", function () lain.util.useless_gaps_resize(-1) end,
+    --           {description = "decrement useless gaps", group = "tag"}),
+
+    -- On the fly useless gaps change
+    awful.key({ modkey, "Shift" }, "i", function () lain.util.useless_gaps_resize(1) end,
               {description = "increment useless gaps", group = "tag"}),
-    awful.key({ altkey, "Control" }, "-", function () lain.util.useless_gaps_resize(-1) end,
+    awful.key({ modkey, "Shift" }, "d", function () lain.util.useless_gaps_resize(-1) end,
               {description = "decrement useless gaps", group = "tag"}),
 
     -- Dynamic tagging
