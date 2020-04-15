@@ -200,9 +200,20 @@ local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.ge
 beautiful.init(theme_path)
 -- }}}
 
--- {{{ Menu
+-- local layoutlist_popup = awful.popup {
+--     widget = awful.widget.layoutlist {
+-- 	    screen      = 1,
+-- 	    base_layout = wibox.layout.flex.vertical
+-- 	},
+-- 	maximum_height = #awful.layout.layouts * 24,
+-- 	minimum_height = #awful.layout.layouts * 24,
+--         placement      = awful.placement.centered,
+-- }
+
+-- {{{ Menwesomeu
 local myawesomemenu = {
     { "hotkeys", function() return false, hotkeys_popup.show_help end },
+    --{ "layouts", function() return false, layoutlist_popup.widget end },
     { "manual", terminal .. " -e man awesome" },
     { "edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
     { "restart", awesome.restart },
