@@ -111,7 +111,7 @@ end
 awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5" }
 awful.layout.layouts = {
-    awful.layout.suit.tile.bottom,
+--     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
@@ -383,10 +383,10 @@ globalkeys = my_table.join(
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
-    awful.key({ modkey, "Control" }, "r", awesome.restart,
-              {description = "reload awesome", group = "awesome"}),
-    awful.key({ modkey, "Shift"   }, "q", awesome.quit,
-              {description = "quit awesome", group = "awesome"}),
+--     awful.key({ modkey, "Control" }, "r", awesome.restart,
+--               {description = "reload awesome", group = "awesome"}),
+--     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
+--               {description = "quit awesome", group = "awesome"}),
 
     awful.key({ altkey, "Shift"   }, "l",     function () awful.tag.incmwfact( 0.05)          end,
               {description = "increase master width factor", group = "layout"}),
@@ -687,9 +687,9 @@ awful.rules.rules = {
     { rule_any = { type = { "dialog", "normal" } },
       properties = { titlebars_enabled = true } },
 
-    -- Set Firefox to always map on the first tag on screen 1.
-    { rule = { class = "Firefox" },
-      properties = { screen = 1, tag = awful.util.tagnames[1] } },
+--     -- Set Firefox to always map on the first tag on screen 1.
+--     { rule = { class = "Firefox" },
+--       properties = { screen = 1, tag = awful.util.tagnames[1] } },
 
     { rule = { class = "Gimp", role = "gimp-image-window" },
           properties = { maximized = true } },
