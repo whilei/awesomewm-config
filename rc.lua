@@ -104,11 +104,14 @@ end
 awful.util.terminal = terminal
 awful.util.tagnames = {"1", "2", "3", "4", "5"}
 awful.layout.layouts = {
-    awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.tile.bottom,
     awful.layout.suit.tile,
-    awful.layout.suit.floating,
+    lain.layout.centerwork,
+
     awful.layout.suit.fair,
-    awful.layout.suit.magnifier,
+    -- awful.layout.suit.magnifier,
+    awful.layout.suit.corner.nw,
+    awful.layout.suit.floating,
 }
 awful.util.taglist_buttons =
     my_table.join(
@@ -983,7 +986,7 @@ awful.rules.rules = {--[[  ]]
             raise = true,
             keys = clientkeys,
             buttons = clientbuttons,
-            screen = awful.screen.preferred,
+            -- screen = awful.screen.preferred,
             placement = awful.placement.no_overlap + awful.placement.no_offscreen,
             size_hints_honor = false
         }

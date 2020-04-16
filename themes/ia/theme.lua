@@ -17,7 +17,23 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/ia"
-theme.wallpaper                                 = theme.dir .. "/walls/botello_cruc.jpg"
+theme.wallTallIndex = 0
+theme.wallWideIndex = 0
+function wallFn(s)
+    -- Default wide.
+    local out = theme.dir .. "/walls/iter/wide/wall" .. theme.wallWideIndex .. ".jpg"
+
+    -- If known tall screens.
+    if s.geometry.width < s.geometry.height then
+        out = theme.dir .. "/walls/iter/tall/wall" .. theme.wallTallIndex .. ".jpg"
+        theme.wallTallIndex = theme.wallTallIndex + 1
+        return out
+    end
+    
+    theme.wallWideIndex = theme.wallWideIndex + 1
+    return out
+end
+theme.wallpaper                                 = wallFn
 theme.font                                      = "xos4 Terminus 9"
 
 theme.color_green = "#2EFE2E"
@@ -214,7 +230,7 @@ theme.volume = lain.widget.alsa({
         if output_now.status == "off" then
             volicon:set_image(theme.widget_vol_mute)
         elseif tonumber(output_now.level) == 0 then
-            volicon:set_image(theme.widget_vol_no)
+            volicon:set_image(btheme.widget_vol_no)
         elseif tonumber(output_now.level) <= 50 then
             volicon:set_image(theme.widget_vol_low)
         else
@@ -315,7 +331,7 @@ function theme.at_screen_connect(s)
                     spr,
 
                     cpu_widget({
-                        width = 70,
+                        width = 100,
                         step_width = 2,
                         step_spacing = 0,
                         color = '#434c5e'
