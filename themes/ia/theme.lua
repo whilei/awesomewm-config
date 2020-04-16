@@ -17,7 +17,7 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/ia"
-theme.wallpaper                                 = theme.dir .. "/botello_cruc.jpg"
+theme.wallpaper                                 = theme.dir .. "/walls/botello_cruc.jpg"
 theme.font                                      = "xos4 Terminus 9"
 
 theme.color_green = "#2EFE2E"
@@ -42,9 +42,9 @@ theme.border_marked                             = "#3ca4d8"
 
 theme.border_width                              = 0
 
-theme.tasklist_bg_normal                        = "#FFFFFF"-- "#c8def7"
+theme.tasklist_bg_normal                        = "#313452"-- "#c8def7"
 theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
-theme.tasklist_fg_normal                        = "#000000"
+theme.tasklist_fg_normal                        = "#FFFFFF"
 theme.tasklist_fg_focus                         = "#FFFFFF"
 
 theme.titlebar_bg_focus                         = theme.bg_focus
@@ -118,63 +118,6 @@ local clock = awful.widget.watch(
     end
 )
 
--- Mail IMAP check
--- local mailicon = wibox.widget.imagebox(theme.widget_mail)
---[[ commented because it needs to be set before use
-mailicon:buttons(my_table.join(awful.button({ }, 1, function () awful.spawn(mail) end)))
-local mail = lain.widget.imap({
-    timeout  = 180,
-    server   = "server",
-    mail     = "mail",
-    password = "keyring get mail",
-    settings = function()
-        if mailcount > 0 then
-            widget:set_text(" " .. mailcount .. " ")
-            mailicon:set_image(theme.widget_mail_on)
-        else
-            widget:set_text("")
-            mailicon:set_image(theme.widget_mail)
-        end
-    end
-})
---]]
-
--- -- MPD
--- local musicplr = awful.util.terminal .. " -title Music -g 130x34-320+16 -e ncmpcpp"
--- local mpdicon = wibox.widget.imagebox(theme.widget_music)
--- mpdicon:buttons(my_table.join(
---     awful.button({ modkey }, 1, function () awful.spawn.with_shell(musicplr) end),
---     awful.button({ }, 1, function ()
---         awful.spawn.with_shell("mpc prev")
---         theme.mpd.update()
---     end),
---     awful.button({ }, 2, function ()
---         awful.spawn.with_shell("mpc toggle")
---         theme.mpd.update()
---     end),
---     awful.button({ }, 3, function ()
---         awful.spawn.with_shell("mpc next")
---         theme.mpd.update()
---     end)))
--- theme.mpd = lain.widget.mpd({
---     settings = function()
---         if mpd_now.state == "play" then
---             artist = " " .. mpd_now.artist .. " "
---             title  = mpd_now.title  .. " "
---             mpdicon:set_image(theme.widget_music_on)
---         elseif mpd_now.state == "pause" then
---             artist = " mpd "
---             title  = "paused "
---         else
---             artist = ""
---             title  = ""
---             mpdicon:set_image(theme.widget_music)
---         end
---
---         widget:set_markup(markup.font(theme.font, markup("#EA6F81", artist) .. title))
---     end
--- })
-
 -- MEM
 local memicon = wibox.widget.imagebox(theme.widget_mem)
 local mem = lain.widget.mem({
@@ -187,7 +130,7 @@ local mem = lain.widget.mem({
 local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
 local cpu = lain.widget.cpu({
     settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. cpu_now.usage .. "% "))
+        widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
     end
 })
 
@@ -195,7 +138,6 @@ local cpu = lain.widget.cpu({
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 local temp = lain.widget.temp({
     settings = function()
-        --  widget:set_markup(markup.font(theme.font, markup(theme.color_lightblue, coretemp_now .. "°C")))
         if coretemp_now == "N/A" then
             widget:set_markup(markup.font(theme.font, " " .. markup(theme.fg_normal, coretemp_now .. "°C")))
         elseif tonumber(coretemp_now) > 90.0 then
@@ -245,21 +187,34 @@ local bat = lain.widget.bat({
     end
 })
 
+-- ALSA microphone
+-- local micicon = wibox.widget.textbox('mic')
+theme.mic = lain.widget.alsa({
+    channel = "Capture",
+    settings = function()
+        if input_now.status == "on" then
+            widget:set_markup(markup.font(theme.font, markup(theme.color_red, " • On Air ")))
+        elseif input_now.status == "off" then
+            widget:set_markup(markup.font(theme.font, markup("#FFFFFF", " _ Off Air")))
+        end
+    end
+})
+
 -- ALSA volume
 local volicon = wibox.widget.imagebox(theme.widget_vol)
 theme.volume = lain.widget.alsa({
     settings = function()
-        if volume_now.status == "off" then
+        if output_now.status == "off" then
             volicon:set_image(theme.widget_vol_mute)
-        elseif tonumber(volume_now.level) == 0 then
+        elseif tonumber(output_now.level) == 0 then
             volicon:set_image(theme.widget_vol_no)
-        elseif tonumber(volume_now.level) <= 50 then
+        elseif tonumber(output_now.level) <= 50 then
             volicon:set_image(theme.widget_vol_low)
         else
             volicon:set_image(theme.widget_vol)
         end
 
-        widget:set_markup(markup.font(theme.font, " " .. volume_now.level .. "% "))
+        widget:set_markup(markup.font(theme.font, " " .. output_now.level .. "% "))
     end
 })
 
@@ -316,7 +271,6 @@ function theme.at_screen_connect(s)
 
     -- Add widgets to the wibox
     s.mywibox:setup {
-        stretch = true,
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
@@ -343,12 +297,6 @@ function theme.at_screen_connect(s)
 
                     spr,
 
-                    cpu_widget({
-                        width = 70,
-                        step_width = 2,
-                        step_spacing = 0,
-                        color = '#434c5e'
-                    }),
 
                     -- Net up/down
                     neticon,
@@ -356,6 +304,15 @@ function theme.at_screen_connect(s)
 --                     wibox.container.background(neticon, theme.bg_focus),
 --                     wibox.container.background(net.widget, theme.bg_focus),
                     net.widget,
+
+                    spr,
+
+                    cpu_widget({
+                        width = 70,
+                        step_width = 2,
+                        step_spacing = 0,
+                        color = '#434c5e'
+                    }),
 
                     -- CPU
                     spr,
@@ -367,11 +324,6 @@ function theme.at_screen_connect(s)
                     -- memicon,
                     mem.widget,
 
-                    -- Temperature
-                    spr,
-                    -- tempicon,
-                    temp.widget,
-
                     -- Battery
                     spr,
                     baticon,
@@ -381,6 +333,10 @@ function theme.at_screen_connect(s)
                     spr,
                     fsicon,
                     theme.fs.widget,
+
+                    -- Microphone
+                    spr,
+                    theme.mic.widget,
 
                     -- Volume
                     spr,
@@ -392,7 +348,10 @@ function theme.at_screen_connect(s)
                     spr,
                     clock,
 
+                    -- Temperature
                     spr,
+                    -- tempicon,
+                    temp.widget,
         },
     }
 end

@@ -10,7 +10,8 @@ local helpers = require("lain.helpers")
 local shell   = require("awful.util").shell
 local wibox   = require("wibox")
 local string  = { match  = string.match,
-                  format = string.format }
+                  format = string.format,
+                  find = string.find }
 
 -- ALSA volume
 -- lain.widget.alsa
@@ -32,16 +33,29 @@ local function factory(args)
         alsa.cmd, alsa.channel, alsa.cmd, alsa.togglechannel) }
     end
 
+    -- always assume your microphone is on
     alsa.last = {}
 
     function alsa.update()
         helpers.async(format_cmd, function(mixer)
-            local l,s = string.match(mixer, "([%d]+)%%.*%[([%l]*)")
-            if alsa.last.level ~= l or alsa.last.status ~= s then
-                volume_now = { level = l, status = s }
-                widget = alsa.widget
-                settings()
-                alsa.last = volume_now
+            if alsa.channel == "Capture" then
+                if string.find(mixer, "Capture.*off") then
+                    input_now = { status = "off" }
+                    widget = alsa.widget
+                    settings()
+                elseif string.find(mixer, "Capture.*on") then
+                    input_now = { status = "on" }
+                    widget = alsa.widget
+                    settings()
+                end
+            else 
+                local l,s = string.match(mixer, "([%d]+)%%.*%[([%l]*)")
+                if alsa.last.level ~= l or alsa.last.status ~= s then
+                    output_now = { level = l, status = s }
+                    widget = alsa.widget
+                    settings()
+                    alsa.last = output_now
+                end
             end
         end)
     end
