@@ -78,6 +78,8 @@ theme.widget_net                                = theme.dir .. "/icons/net.png"
 theme.widget_hdd                                = theme.dir .. "/icons/hdd.png"
 theme.widget_music                              = theme.dir .. "/icons/note.png"
 theme.widget_music_on                           = theme.dir .. "/icons/note_on.png"
+theme.widget_mic_on = theme.dir .. "/icons/mic_google_on.png"
+theme.widget_mic_off = theme.dir .. "/icons/mic_off.png"
 theme.widget_vol                                = theme.dir .. "/icons/vol.png"
 theme.widget_vol_low                            = theme.dir .. "/icons/vol_low.png"
 theme.widget_vol_no                             = theme.dir .. "/icons/vol_no.png"
@@ -188,14 +190,19 @@ local bat = lain.widget.bat({
 })
 
 -- ALSA microphone
--- local micicon = wibox.widget.textbox('mic')
+local micicon = wibox.widget.imagebox()
 theme.mic = lain.widget.alsa({
     channel = "Capture",
     settings = function()
         if input_now.status == "on" then
-            widget:set_markup(markup.font(theme.font, markup(theme.color_red, " • On Air ")))
+            micicon:set_image(theme.widget_mic_on)
+            -- micicon:set_image()
+            widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
+        
         elseif input_now.status == "off" then
-            widget:set_markup(markup.font(theme.font, markup("#FFFFFF", " _ Off Air")))
+            micicon:set_image(theme.widget_mic_off)
+            widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
+            -- widget:set_markup(markup.font(theme.font, " "))
         end
     end
 })
@@ -334,10 +341,6 @@ function theme.at_screen_connect(s)
                     fsicon,
                     theme.fs.widget,
 
-                    -- Microphone
-                    spr,
-                    theme.mic.widget,
-
                     -- Volume
                     spr,
                     volicon,
@@ -347,6 +350,11 @@ function theme.at_screen_connect(s)
                     -- Clock
                     spr,
                     clock,
+
+                    -- Microphone
+                    spr,
+                    theme.mic.widget,
+                    -- micicon,
 
                     -- Temperature
                     spr,
