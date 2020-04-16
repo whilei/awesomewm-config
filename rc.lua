@@ -110,7 +110,7 @@ awful.layout.layouts = {
 
     awful.layout.suit.fair,
     -- awful.layout.suit.magnifier,
-    awful.layout.suit.corner.nw,
+    -- awful.layout.suit.corner.nw,
     awful.layout.suit.floating,
 }
 awful.util.taglist_buttons =

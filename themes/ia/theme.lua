@@ -29,7 +29,7 @@ function wallFn(s)
         theme.wallTallIndex = theme.wallTallIndex + 1
         return out
     end
-    
+
     theme.wallWideIndex = theme.wallWideIndex + 1
     return out
 end
@@ -156,19 +156,20 @@ local cpu = lain.widget.cpu({
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 local temp = lain.widget.temp({
     settings = function()
-        if coretemp_now == "N/A" then
-            widget:set_markup(markup.font(theme.font, " " .. markup(theme.fg_normal, coretemp_now .. "°C")))
-        elseif tonumber(coretemp_now) > 90.0 then
-            widget:set_markup(markup.fontbg(theme.font, theme.color_red, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
+        local color = theme.fg_normal
+        if tonumber(coretemp_now) > 90.0 then
+            color = theme.color_red
         elseif tonumber(coretemp_now) > 80.0 then
-            widget:set_markup(markup.fontbg(theme.font, theme.color_orange, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
+            color = theme.color_orange
         elseif tonumber(coretemp_now) > 70.0 then
-            widget:set_markup(markup.fontbg(theme.font, theme.color_yellow, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
+            color = theme.color_yellow
         elseif tonumber(coretemp_now) > 60.0 then
-            widget:set_markup(markup.fontbg(theme.font, theme.color_green, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
-        else
-            widget:set_markup(markup.fontbg(theme.font, theme.color_lightblue, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
+            color = theme.color_green
+        elseif tonumber(Coretemp) <= 60.0 then
+            color = theme.color_lightblue
         end
+        -- 77 is opacity, 00 is translucent, ff is opaque
+        widget:set_markup(markup.fontbg(theme.font, color .. "77", " " .. markup("#000000", coretemp_now .. "°C") .. " "))
     end
 })
 
@@ -230,7 +231,7 @@ theme.volume = lain.widget.alsa({
         if output_now.status == "off" then
             volicon:set_image(theme.widget_vol_mute)
         elseif tonumber(output_now.level) == 0 then
-            volicon:set_image(btheme.widget_vol_no)
+            volicon:set_image(theme.widget_vol_no)
         elseif tonumber(output_now.level) <= 50 then
             volicon:set_image(theme.widget_vol_low)
         else
@@ -290,23 +291,23 @@ function theme.at_screen_connect(s)
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 18, bg = theme.bg_normal .. "aa", fg = theme.fg_normal, opacity = 0.5 })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            --spr,
-
+            layout = wibox.layout.fixed.horizontal, 
+            
             s.mytaglist,
-                       -- Layout
-                       spr,
-                       s.mylayoutbox,
-                       spr,
+            spr,
+
+            s.mylayoutbox,
+            spr,
 
             s.mypromptbox,
             spr,
+
             s.mytasklist,
         },
         -- middle
@@ -334,12 +335,12 @@ function theme.at_screen_connect(s)
                         width = 100,
                         step_width = 2,
                         step_spacing = 0,
-                        color = '#434c5e'
+                        color = "#4070cf" -- '#434c5e'
                     }),
 
                     -- CPU
                     spr,
-                    cpuicon,
+                    -- cpuicon,
                     cpu.widget,
                     
                     -- Memory
