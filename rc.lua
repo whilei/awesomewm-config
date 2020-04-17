@@ -79,8 +79,7 @@ local gui_editor = "code"
 local browser = "google-chrome"
 local guieditor = "code"
 local scrlocker = "xlock"
-local scrnshotter =
-    "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' -s -e 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
+local scrnshotter = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' -s -e 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
 local invert_colors = "xrandr-invert-colors"
 
 local clientkeybindings = {}
@@ -107,7 +106,6 @@ awful.layout.layouts = {
     -- awful.layout.suit.tile.bottom,
     awful.layout.suit.tile,
     lain.layout.centerwork,
-
     awful.layout.suit.fair,
     -- awful.layout.suit.magnifier,
     -- awful.layout.suit.corner.nw,
@@ -210,15 +208,6 @@ awful.util.tasklist_buttons =
     )
 )
 
-lain.layout.termfair.nmaster = 3
-lain.layout.termfair.ncol = 1
-lain.layout.termfair.center.nmaster = 3
-lain.layout.termfair.center.ncol = 1
-lain.layout.cascade.tile.offset_x = 2
-lain.layout.cascade.tile.offset_y = 32
-lain.layout.cascade.tile.extra_padding = 5
-lain.layout.cascade.tile.nmaster = 5
-lain.layout.cascade.tile.ncol = 2
 
 local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme)
 beautiful.init(theme_path)
@@ -323,9 +312,6 @@ globalkeys =
         end,
         {description = "invert colors on all screens with xrandr", group = "hotkeys"}
     ),
-    --     -- X screen locker
-    --     awful.key({ altkey, "Control" }, "l", function () os.execute(scrlocker) end,
-    --               {description = "lock screen", group = "hotkeys"}),
 
     -- Hotkeys
     awful.key({modkey}, "s", hotkeys_popup.show_help, {description = "show help", group = "awesome"}),
@@ -636,24 +622,6 @@ globalkeys =
         end,
         {description = "dropdown application", group = "launcher"}
     ),
-    
-    -- Widgets popups
-    -- awful.key(
-    --     {altkey},
-    --     "h",
-    --     function()
-    --         if beautiful.fs then
-    --             beautiful.fs.show(7)
-    --         end
-    --     end,
-    --     {description = "show filesystem", group = "widgets"}
-    -- ),
-
-    -- Brightness
-    --    awful.key({ }, "XF86MonBrightnessUp", function () awful.util.spawn("xbacklight -inc 10") end,
-    --              {description = "+10%", group = "hotkeys"}),
-    --    awful.key({ }, "XF86MonBrightnessDown", function () awful.util.spawn("xbacklight -dec 10") end,
-    --              {description = "-10%", group = "hotkeys"}),
 
     -- ALSA volume control
     awful.key(
@@ -707,64 +675,7 @@ globalkeys =
         end,
         {description = "volume 100%", group = "hotkeys"}
     ),
-    -- awful.key(
-    --     {altkey, "Control"},
-    --     "0",
-    --     function()
-    --         os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
-    --         beautiful.volume.update()
-    --     end,
-    --     {description = "volume 0%", group = "hotkeys"}
-    -- ),
 
-    -- Copy primary to clipboard (terminals to gtk)
-    -- awful.key(
-    --     {modkey},
-    --     "c",
-    --     function()
-    --         awful.spawn("xsel | xsel -i -b")
-    --     end,
-    --     {description = "copy terminal to gtk", group = "hotkeys"}
-    -- ),
-    -- Copy clipboard to primary (gtk to terminals)
-    -- awful.key(
-    --     {modkey},
-    --     "v",
-    --     function()
-    --         awful.spawn("xsel -b | xsel")
-    --     end,
-    --     {description = "copy gtk to terminal", group = "hotkeys"}
-    -- ),
-    
-    -- User programs
-    -- awful.key(
-    --     {modkey},
-    --     "q",
-    --     function()
-    --         awful.spawn(browser)
-    --     end,
-    --     {description = "run browser", group = "launcher"}
-    -- ),
-    -- awful.key(
-    --     {modkey},
-    --     "a",
-    --     function()
-    --         awful.spawn(guieditor)
-    --     end,
-    --     {description = "run gui editor", group = "launcher"}
-    -- ),
-    -- Default
-    --[[ Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
-    --]]
-    --[[ dmenu
-    awful.key({ modkey }, "x", function ()
-        awful.spawn(string.format("dmenu_run -i -fn 'Monospace' -nb '%s' -nf '%s' -sb '%s' -sf '%s'",
-        beautiful.bg_normal, beautiful.fg_normal, beautiful.bg_focus, beautiful.fg_focus))
-		end,
-        {description = "show dmenu", group = "launcher"})
-    --]]
     -- rofi binding
     awful.key({ "Control" }, "Return",
         function ()
@@ -833,14 +744,6 @@ clientkeys =
         end,
         {description = "move to screen", group = "client"}
     ),
-    -- awful.key(
-    --     {modkey},
-    --     "t",
-    --     function(c)
-    --         c.ontop = not c.ontop
-    --     end,
-    --     {description = "toggle keep on top", group = "client"}
-    -- ),
     awful.key(
         {modkey},
         "n",
@@ -860,35 +763,6 @@ clientkeys =
         end,
         {description = "maximize", group = "client"}
     )
-    -- https://stackoverflow.com/questions/17705888/resizing-window-vertically
-    -- awful.key(
-    --     {altkey, "Shift"},
-    --     "Right",
-    --     function()
-    --         awful.tag.incmwfact(0.01)
-    --     end
-    -- ),
-    -- awful.key(
-    --     {altkey, "Shift"},
-    --     "Left",
-    --     function()
-    --         awful.tag.incmwfact(-0.01)
-    --     end
-    -- ),
-    -- awful.key(
-    --     {altkey, "Shift"},
-    --     "Down",
-    --     function()
-    --         awful.client.incwfact(0.01)
-    --     end
-    -- ),
-    -- awful.key(
-    --     {altkey, "Shift"},
-    --     "Up",
-    --     function()
-    --         awful.client.incwfact(-0.01)
-    --     end
-    -- )
 )
 
 -- Bind all key numbers to tags.
