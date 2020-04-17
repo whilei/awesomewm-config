@@ -111,7 +111,7 @@ awful.layout.layouts = {
     awful.layout.suit.fair,
     -- awful.layout.suit.magnifier,
     -- awful.layout.suit.corner.nw,
-    awful.layout.suit.floating,
+    -- awful.layout.suit.floating,
 }
 awful.util.taglist_buttons =
     my_table.join(
@@ -329,10 +329,12 @@ globalkeys =
 
     -- Hotkeys
     awful.key({modkey}, "s", hotkeys_popup.show_help, {description = "show help", group = "awesome"}),
+
     -- Tag browsing
     awful.key({modkey}, "Left", awful.tag.viewprev, {description = "view previous", group = "tag"}),
     awful.key({modkey}, "Right", awful.tag.viewnext, {description = "view next", group = "tag"}),
     awful.key({modkey}, "Escape", awful.tag.history.restore, {description = "go back", group = "tag"}),
+   
     -- Non-empty tag browsing
     awful.key(
         {altkey},
@@ -634,17 +636,19 @@ globalkeys =
         end,
         {description = "dropdown application", group = "launcher"}
     ),
+    
     -- Widgets popups
-    awful.key(
-        {altkey},
-        "h",
-        function()
-            if beautiful.fs then
-                beautiful.fs.show(7)
-            end
-        end,
-        {description = "show filesystem", group = "widgets"}
-    ),
+    -- awful.key(
+    --     {altkey},
+    --     "h",
+    --     function()
+    --         if beautiful.fs then
+    --             beautiful.fs.show(7)
+    --         end
+    --     end,
+    --     {description = "show filesystem", group = "widgets"}
+    -- ),
+
     -- Brightness
     --    awful.key({ }, "XF86MonBrightnessUp", function () awful.util.spawn("xbacklight -inc 10") end,
     --              {description = "+10%", group = "hotkeys"}),
@@ -656,11 +660,13 @@ globalkeys =
         {altkey, "Control"},
         "0",
         function()
-            os.execute("if amixer get Capture | grep -q -E 'Capture.*off'; then amixer set Capture cap ; else amixer set Capture nocap; fi")
+            -- os.execute("if amixer get Capture | grep -q -E 'Capture.*off'; then amixer set Capture cap ; else amixer set Capture nocap; fi")
+            os.execute("amixer -q set Capture toggle")
             beautiful.mic.update()
         end,
         {description = "microphone toggle", group = "hotkeys"}
     ),
+
     awful.key(
         {altkey},
         "Up",
@@ -690,61 +696,63 @@ globalkeys =
         end,
         {description = "toggle mute", group = "hotkeys"}
     ),
+
     awful.key(
         {altkey, "Control"},
         "m",
         function()
-            os.execute(string.format("amixer -q set %s 100%%", beautiful.volume.channel))
+            -- os.execute(string.format("amixer -q set %s 100%%", beautiful.volume.channel))
+            os.execute("unmute.sh")
             beautiful.volume.update()
         end,
         {description = "volume 100%", group = "hotkeys"}
     ),
-    awful.key(
-        {altkey, "Control"},
-        "0",
-        function()
-            os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
-            beautiful.volume.update()
-        end,
-        {description = "volume 0%", group = "hotkeys"}
-    ),
+    -- awful.key(
+    --     {altkey, "Control"},
+    --     "0",
+    --     function()
+    --         os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
+    --         beautiful.volume.update()
+    --     end,
+    --     {description = "volume 0%", group = "hotkeys"}
+    -- ),
 
     -- Copy primary to clipboard (terminals to gtk)
-    awful.key(
-        {modkey},
-        "c",
-        function()
-            awful.spawn("xsel | xsel -i -b")
-        end,
-        {description = "copy terminal to gtk", group = "hotkeys"}
-    ),
+    -- awful.key(
+    --     {modkey},
+    --     "c",
+    --     function()
+    --         awful.spawn("xsel | xsel -i -b")
+    --     end,
+    --     {description = "copy terminal to gtk", group = "hotkeys"}
+    -- ),
     -- Copy clipboard to primary (gtk to terminals)
-    awful.key(
-        {modkey},
-        "v",
-        function()
-            awful.spawn("xsel -b | xsel")
-        end,
-        {description = "copy gtk to terminal", group = "hotkeys"}
-    ),
+    -- awful.key(
+    --     {modkey},
+    --     "v",
+    --     function()
+    --         awful.spawn("xsel -b | xsel")
+    --     end,
+    --     {description = "copy gtk to terminal", group = "hotkeys"}
+    -- ),
     
     -- User programs
-    awful.key(
-        {modkey},
-        "q",
-        function()
-            awful.spawn(browser)
-        end,
-        {description = "run browser", group = "launcher"}
-    ),
-    awful.key(
-        {modkey},
-        "a",
-        function()
-            awful.spawn(guieditor)
-        end,
-        {description = "run gui editor", group = "launcher"}
-    ),
+    -- awful.key(
+    --     {modkey},
+    --     "q",
+    --     function()
+    --         awful.spawn(browser)
+    --     end,
+    --     {description = "run browser", group = "launcher"}
+    -- ),
+    -- awful.key(
+    --     {modkey},
+    --     "a",
+    --     function()
+    --         awful.spawn(guieditor)
+    --     end,
+    --     {description = "run gui editor", group = "launcher"}
+    -- ),
     -- Default
     --[[ Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
@@ -757,20 +765,20 @@ globalkeys =
 		end,
         {description = "show dmenu", group = "launcher"})
     --]]
-    -- -- rofi binding
-    -- awful.key({ "Control" }, "Return",
-    --     function ()
-    --         myscreen           = awful.screen.focused()
-    --         commandPrompter    = "rofi --modi window,run,ssh -show window"
-    --   -- -normal-window
-    --         for _, t in ipairs(mouse.screen.tags) do
-    --             if client.name ~= "rofi" then
-    --                 awful.tag.viewtoggle(t)
-    --             end
-    --         end
-    --         awful.spawn(commandPrompter, false)
-    --         -- awful.spawn(blur) -- Causes mouse to change to loading icon!!
-    --     end, {description = "run rofi", group = "awesome"}),
+    -- rofi binding
+    awful.key({ "Control" }, "Return",
+        function ()
+            myscreen           = awful.screen.focused()
+            commandPrompter    = "rofi --modi window,run,ssh -show window"
+      -- -normal-window
+            for _, t in ipairs(mouse.screen.tags) do
+                -- if client.name ~= "rofi" then
+                --     awful.tag.viewtoggle(t)
+                -- end
+            end
+            awful.spawn(commandPrompter, false)
+            -- awful.spawn(blur) -- Causes mouse to change to loading icon!!
+        end, {description = "run rofi", group = "awesome"}),
 
     -- Prompt
     awful.key(
@@ -825,14 +833,14 @@ clientkeys =
         end,
         {description = "move to screen", group = "client"}
     ),
-    awful.key(
-        {modkey},
-        "t",
-        function(c)
-            c.ontop = not c.ontop
-        end,
-        {description = "toggle keep on top", group = "client"}
-    ),
+    -- awful.key(
+    --     {modkey},
+    --     "t",
+    --     function(c)
+    --         c.ontop = not c.ontop
+    --     end,
+    --     {description = "toggle keep on top", group = "client"}
+    -- ),
     awful.key(
         {modkey},
         "n",
@@ -851,36 +859,36 @@ clientkeys =
             c:raise()
         end,
         {description = "maximize", group = "client"}
-    ),
-    -- https://stackoverflow.com/questions/17705888/resizing-window-vertically
-    awful.key(
-        {altkey, "Shift"},
-        "Right",
-        function()
-            awful.tag.incmwfact(0.01)
-        end
-    ),
-    awful.key(
-        {altkey, "Shift"},
-        "Left",
-        function()
-            awful.tag.incmwfact(-0.01)
-        end
-    ),
-    awful.key(
-        {altkey, "Shift"},
-        "Down",
-        function()
-            awful.client.incwfact(0.01)
-        end
-    ),
-    awful.key(
-        {altkey, "Shift"},
-        "Up",
-        function()
-            awful.client.incwfact(-0.01)
-        end
     )
+    -- https://stackoverflow.com/questions/17705888/resizing-window-vertically
+    -- awful.key(
+    --     {altkey, "Shift"},
+    --     "Right",
+    --     function()
+    --         awful.tag.incmwfact(0.01)
+    --     end
+    -- ),
+    -- awful.key(
+    --     {altkey, "Shift"},
+    --     "Left",
+    --     function()
+    --         awful.tag.incmwfact(-0.01)
+    --     end
+    -- ),
+    -- awful.key(
+    --     {altkey, "Shift"},
+    --     "Down",
+    --     function()
+    --         awful.client.incwfact(0.01)
+    --     end
+    -- ),
+    -- awful.key(
+    --     {altkey, "Shift"},
+    --     "Up",
+    --     function()
+    --         awful.client.incwfact(-0.01)
+    --     end
+    -- )
 )
 
 -- Bind all key numbers to tags.
@@ -986,7 +994,7 @@ awful.rules.rules = {--[[  ]]
             raise = true,
             keys = clientkeys,
             buttons = clientbuttons,
-            -- screen = awful.screen.preferred,
+            screen = awful.screen.preferred,
             placement = awful.placement.no_overlap + awful.placement.no_offscreen,
             size_hints_honor = false
         }

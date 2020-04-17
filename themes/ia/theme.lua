@@ -40,7 +40,7 @@ theme.color_green = "#2EFE2E"
 theme.color_yellow ="#FFFF00"
 theme.color_orange = "#FF8000"
 theme.color_red = "#DF0101"
-theme.color_lightblue = "#2ECCFA"
+theme.color_lightblue = "#4070cf"
 
 theme.menu_bg_normal                            = "#000000"
 theme.menu_bg_focus                             = "#000000"
@@ -165,11 +165,11 @@ local temp = lain.widget.temp({
             color = theme.color_yellow
         elseif tonumber(coretemp_now) > 60.0 then
             color = theme.color_green
-        elseif tonumber(Coretemp) <= 60.0 then
+        elseif tonumber(coretemp_now) <= 60.0 then
             color = theme.color_lightblue
         end
         -- 77 is opacity, 00 is translucent, ff is opaque
-        widget:set_markup(markup.fontbg(theme.font, color .. "77", " " .. markup("#000000", coretemp_now .. "°C") .. " "))
+        widget:set_markup(markup.fontbg(theme.font, color, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
     end
 })
 
@@ -281,6 +281,7 @@ function theme.at_screen_connect(s)
     s.mylayoutbox = awful.widget.layoutbox(s)
     s.mylayoutbox:buttons(my_table.join(
                            awful.button({ }, 1, function () awful.layout.inc( 1) end),
+                           awful.button({ }, 2, function () awful.layout.inc(-1) end),
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
@@ -291,7 +292,8 @@ function theme.at_screen_connect(s)
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 18, bg = theme.bg_normal .. "aa", fg = theme.fg_normal, opacity = 0.5 })
+    -- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal, opacity = 0.5 })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -329,18 +331,17 @@ function theme.at_screen_connect(s)
 --                     wibox.container.background(net.widget, theme.bg_focus),
                     net.widget,
 
-                    spr,
-
-                    cpu_widget({
-                        width = 100,
-                        step_width = 2,
-                        step_spacing = 0,
-                        color = "#4070cf" -- '#434c5e'
-                    }),
+                    -- spr,
+                    -- cpu_widget({
+                    --     width = 100,
+                    --     step_width = 2,
+                    --     step_spacing = 0,
+                    --     color = "#4070cf" -- '#434c5e'
+                    -- }),
 
                     -- CPU
                     spr,
-                    -- cpuicon,
+                    cpuicon,
                     cpu.widget,
                     
                     -- Memory
