@@ -54,13 +54,18 @@ theme.fg_focus                                  = "#ff8c00"
 theme.fg_urgent                                 = "#af1d18"
 theme.bg_minimize                               = "#bf2e3a"
 theme.fg_minimize                               = "#ffffff"
-theme.border_normal                             = "#1c2022"
-theme.border_focus                              = "#606060"
-theme.border_marked                             = "#3ca4d8"
 
-theme.border_width                              = 0
+-- theme.border_normal                             = "#1c2022"
+-- theme.border_focus                              = "#606060"
+-- theme.border_marked                             = "#3ca4d8"
 
-theme.tasklist_bg_normal                        = "#313452"-- "#c8def7"
+theme.border_normal                             = "#000000ff"
+theme.border_focus                              = "#0B1DC2"
+theme.border_marked                             = "#f05800"
+
+theme.border_width                              = 4
+
+theme.tasklist_bg_normal                        = "#313452"-- "#c8def7"#f01800
 theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
 theme.tasklist_fg_normal                        = "#FFFFFF"
 theme.tasklist_fg_focus                         = "#FFFFFF"
@@ -131,31 +136,6 @@ theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/
 local markup = lain.util.markup
 local separators = lain.util.separators
 
--- Textclock
-local clockicon = wibox.widget.imagebox(theme.widget_clock)
-local clock = awful.widget.watch(
-    "date +'%a %d %b %R UTC%:::z'", 60,
-    function(widget, stdout)
-        widget:set_markup(" " .. markup.font(theme.font, stdout))
-    end
-)
-
--- MEM
-local memicon = wibox.widget.imagebox(theme.widget_mem)
-local mem = lain.widget.mem({
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
-    end
-})
-
--- CPU
-local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
-local cpu = lain.widget.cpu({
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
-    end
-})
-
 -- --https://wowwiki.fandom.com/wiki/USERAPI_RGBToHex
 -- local function RGBToHex(r, g, b)
 -- 	r = r <= 255 and r >= 0 and r or 0
@@ -203,6 +183,68 @@ local function h2rgb(x)
     return HexToRGBPerc(x)
 end
 
+-- Textclock
+local clockicon = wibox.widget.imagebox(theme.widget_clock)
+local clock = awful.widget.watch(
+    -- "date +'%a %d %b %R UTC%:::z'", 
+    -- "date +'%a %d %b %R UTC%:::z'", 
+    -- "date +'%Y-%m-%dT%H:%MZ%:z'",
+    "date +'%Y-%m-%d T %H:%M Z%:z'",
+    60,
+    function(widget, stdout)
+        -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+
+        local clock_bg = "#191f1a"
+        local colon_fg = "#256c1e"
+        local clock_fg = "#32ab3a"
+        widget:set_markup(
+            markup.fontbg(theme.font, clock_bg, " " .. markup(colon_fg, ":") .. " " .. markup(clock_fg, " " .. stdout .. " "))
+        )
+    end
+)
+
+-- MEM
+local memicon = wibox.widget.imagebox(theme.widget_mem)
+local mem = lain.widget.mem({
+    settings = function()
+        widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
+    end
+})
+
+-- CPU
+local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
+local cpu = lain.widget.cpu({
+    settings = function()
+        -- widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
+        local strf = string.format("%3d%%", cpu_now.usage)
+
+        -- need to get a new fractional value
+        -- 0 - 1 was heat
+        -- meow we want fractional cpu
+
+        -- get base
+        local r, g, b = ColorGradient((cpu_now.usage / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
+        -- local bg_color = RGBPercToHex(r, g, b)
+
+        r, g, b = ColorGradient(0.6 , r,g,b, 1,1,1) -- lighten it
+        local fg_color = RGBPercToHex(r, g, b)
+
+        r, g, b = ColorGradient((cpu_now.usage / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
+        -- local bg_color = RGBPercToHex(r, g, b)
+
+        r, g, b = ColorGradient(0.8,  r, g, b,  0,0,0)
+        local bg_color = RGBPercToHex(r, g, b)
+
+        
+
+        -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
+        -- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
+
+        widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, strf) .. " "))
+
+    end
+})
+
 -- Coretemp
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 local temp = lain.widget.temp({
@@ -225,7 +267,7 @@ local temp = lain.widget.temp({
         local r, g, b = ColorGradient(relativeHeat,   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
         local bg_color = RGBPercToHex(r, g, b)
 
-        r, g, b = ColorGradient(0.5 , r,g,b, 0,0,0)
+        r, g, b = ColorGradient(0.7 , r,g,b, 0,0,0)
         local fg_color = RGBPercToHex(r, g, b)
 
         -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
@@ -289,8 +331,8 @@ theme.mic = lain.widget.alsa({
         local bg = "#d93600" -- theme.color_red
         local fg = "#fbff00"
         if input_now.status == "off" then
-            words = " ✕ Off Air "
-            bg = "#370e5c"
+            words = " • Off Air " --✕ 
+            bg = "#3b383e" -- "#370e5c"
             fg = "#887b94"
         end
         widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))

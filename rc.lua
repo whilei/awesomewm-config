@@ -892,6 +892,9 @@ function border_adjust(c)
         c.border_width = beautiful.border_width
         c.border_color = beautiful.border_focus
     end
+    if c.focused then
+        c.border_width = 30
+    end
 end
 
 -- make rofi possible to raise minimized clients
