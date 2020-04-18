@@ -109,104 +109,44 @@ awful.layout.layouts = {
     awful.layout.suit.fair,
     -- awful.layout.suit.magnifier,
     -- awful.layout.suit.corner.nw,
-    -- awful.layout.suit.floating,
+    awful.layout.suit.floating,
 }
-awful.util.taglist_buttons =
-    my_table.join(
-    awful.button(
-        {},
-        1,
-        function(t)
-            t:view_only()
-        end
-    ),
-    awful.button(
-        {modkey},
-        1,
-        function(t)
-            if client.focus then
-                client.focus:move_to_tag(t)
-            end
-        end
-    ),
-    awful.button({}, 3, awful.tag.viewtoggle),
-    awful.button(
-        {modkey},
-        3,
-        function(t)
-            if client.focus then
-                client.focus:toggle_tag(t)
-            end
-        end
-    ),
-    awful.button(
-        {},
-        4,
-        function(t)
-            awful.tag.viewnext(t.screen)
-        end
-    ),
-    awful.button(
-        {},
-        5,
-        function(t)
-            awful.tag.viewprev(t.screen)
-        end
-    )
-)
-awful.util.tasklist_buttons =
-    my_table.join(
-    awful.button(
-        {},
-        1,
-        function(c)
-            if c == client.focus then
-                c.minimized = true
-            else
-                -- Without this, the following
-                -- :isvisible() makes no sense
-                c.minimized = false
-                if not c:isvisible() and c.first_tag then
-                    c.first_tag:view_only()
-                end
-                -- This will also un-minimize
-                -- the client, if needed
-                client.focus = c
-                c:raise()
-            end
-        end
-    ),
-    awful.button(
-        {},
-        3,
-        function()
-            local instance = nil
 
-            return function()
-                if instance and instance.wibox.visible then
-                    instance:hide()
-                    instance = nil
-                else
-                    instance = awful.menu.clients({theme = {width = 250}})
-                end
-            end
-        end
-    ),
-    awful.button(
-        {},
-        4,
-        function()
-            awful.client.focus.byidx(1)
-        end
-    ),
-    awful.button(
-        {},
-        5,
-        function()
-            awful.client.focus.byidx(-1)
-        end
-    )
-)
+awful.util.taglist_buttons = my_table.join(
+                    awful.button({ }, 1, function(t) t:view_only() end),
+                    awful.button({ modkey }, 1, function(t)
+                                              if client.focus then
+                                                  client.focus:move_to_tag(t)
+                                              end
+                                          end),
+                    awful.button({ }, 3, awful.tag.viewtoggle),
+                    awful.button({ modkey }, 3, function(t)
+                                              if client.focus then
+                                                  client.focus:toggle_tag(t)
+                                              end
+                                          end),
+                    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+                    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+                )
+
+awful.util.tasklist_buttons = my_table.join(
+    awful.button({ }, 1, function (c)
+                                if c == client.focus then
+                                    c.minimized = true
+                                else
+                                    -- Without this, the following
+                                    -- :isvisible() makes no sense
+                                    c.minimized = false
+                                    if not c:isvisible() and c.first_tag then
+                                        c.first_tag:view_only()
+                                    end
+                                    -- This will also un-minimize
+                                    -- the client, if needed
+                                    client.focus = c
+                                    c:raise()
+                                end
+                            end)
+                        )
 
 
 local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme)
@@ -223,7 +163,7 @@ local myawesomemenu = {
             return false, hotkeys_popup.show_help
         end
     },
-    --{ "layouts", function() return false, layoutlist_popup.widget end },
+    -- { "layouts", function() return false, layoutlist_popup.widget end },
     {"manual", terminal .. " -e man awesome"},
     {"edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile)},
     {"restart", awesome.restart},
@@ -267,28 +207,9 @@ screen.connect_signal(
         end
     end
 )
--- Create a wibox for each screen and add it
-awful.screen.connect_for_each_screen(
-    function(s)
-        beautiful.at_screen_connect(s)
-    end
-)
--- }}}
 
--- {{{ Mouse bindings
-root.buttons(
-    my_table.join(
-        awful.button(
-            {},
-            3,
-            function()
-                awful.util.mymainmenu:toggle()
-            end
-        ),
-        awful.button({}, 4, awful.tag.viewnext),
-        awful.button({}, 5, awful.tag.viewprev)
-    )
-)
+-- Create a wibox for each screen and add it
+awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
 -- }}}
 
 -- {{{ Key bindings
@@ -317,25 +238,10 @@ globalkeys =
     awful.key({modkey}, "Right", awful.tag.viewnext, {description = "view next", group = "tag"}),
     awful.key({modkey}, "Escape", awful.tag.history.restore, {description = "go back", group = "tag"}),
    
-    -- Non-empty tag browsing
-    awful.key(
-        {altkey},
-        "Left",
-        function()
-            lain.util.tag_view_nonempty(-1)
-        end,
-        {description = "view  previous nonempty", group = "tag"}
-    ),
-    awful.key(
-        {altkey},
-        "Right",
-        function()
-            lain.util.tag_view_nonempty(1)
-        end,
-        {description = "view  previous nonempty", group = "tag"}
-    ),
+  
     -- Revelation client focus
     awful.key({modkey}, "e", revelation),
+
     -- Default client focus
     awful.key(
         {altkey},
@@ -527,10 +433,17 @@ globalkeys =
     awful.key(
         {modkey},
         "Return",
-        function()
-            awful.spawn(terminal)
-        end,
-        {description = "open a terminal", group = "launcher"}
+        -- rofi binding
+        function ()
+            -- 1   2   3
+            -- 8   0   4
+            -- 7   6   5
+            commandPrompter    = "rofi --modi window,run,ssh -show window -location 2 -theme Indego"
+            awful.spawn.easy_async(commandPrompter, function()
+                    awful.screen.focus(client.focus.screen)
+                end
+            )
+        end, {description = "run Rofi", group = "awesome"}
     ),
     awful.key(
         {altkey, "Shift"},
@@ -671,26 +584,6 @@ globalkeys =
         end,
         {description = "volume 100%", group = "hotkeys"}
     ),
-
-    -- rofi binding
-    awful.key({modkey, "Control" }, "-",
-        function ()
-            -- myscreen           = awful.screen.focused()
-            -- 1   2   3
-            -- 8   0   4
-            -- 7   6   5
-            commandPrompter    = "rofi --modi window,run,ssh -show window -location 2 -theme Indego"
-            -- -normal-window
-            -- for _, t in ipairs(mouse.screen.tags) do
-            --     if client.name ~= "rofi" then
-            --         awful.tag.viewtoggle(t)
-            --     end
-            -- end
-            awful.spawn.easy_async(commandPrompter, function()
-                    awful.screen.focus(client.focus.screen)
-                end
-            )
-        end, {description = "run rofi", group = "awesome"}),
 
     -- Prompt
     awful.key(
@@ -877,14 +770,16 @@ awful.rules.rules = {--[[  ]]
             raise = true,
             keys = clientkeys,
             buttons = clientbuttons,
-            screen = awful.screen.preferred,
-            placement = awful.placement.no_overlap + awful.placement.no_offscreen,
+            screen = awful.screen.preferred, --.focused(),
+            -- placement = awful.placement.no_overlap + awful.placement.no_offscreen,
+            placement = awful.placement.no_offscreen,
             size_hints_honor = false
         }
     },
     -- Titlebars
     {
         rule_any = {type = {"dialog", "normal"}},
+        -- properties = {titlebars_enabled = true}
         properties = {titlebars_enabled = true}
     },
     --     -- Set Firefox to always map on the first tag on screen 1.
@@ -948,7 +843,7 @@ client.connect_signal(
             )
         )
 
-        awful.titlebar(c, {size = 16}):setup {
+        awful.titlebar(c, {size = 14}):setup {
             {
                 -- Left
                 awful.titlebar.widget.iconwidget(c),

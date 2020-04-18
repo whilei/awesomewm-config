@@ -63,11 +63,13 @@ theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
 theme.tasklist_fg_normal                        = "#FFFFFF"
 theme.tasklist_fg_focus                         = "#FFFFFF"
 
-theme.titlebar_bg_focus                         = theme.bg_focus
-theme.titlebar_bg_normal                        = theme.bg_normal
-theme.titlebar_fg_focus                         = theme.fg_focus
+theme.titlebar_bg_focus                         = theme.tasklist_bg_focus -- theme.bg_focus
+theme.titlebar_bg_normal                        = theme.tasklist_bg_normal
+theme.titlebar_fg_focus                         = theme.tasklist_fg_focus -- "#ffffff" -- theme.fg_focus
+
 theme.menu_height                               = 18
 theme.menu_width                                = 140
+
 theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.png"
 theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
 theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
@@ -247,7 +249,7 @@ local neticon = wibox.widget.imagebox(theme.widget_net)
 local net = lain.widget.net({
     settings = function()
         widget:set_markup(markup.font(theme.font,
-                          markup("#FF4943", net_now.sent .. "↑")
+                          markup("#fcc9ff", net_now.sent .. "↑")
                           .. "  " ..
                           markup("#2ECCFA", "↓" .. net_now.received)
                           .. " kb"
@@ -272,10 +274,18 @@ function theme.at_screen_connect(s)
     gears.wallpaper.maximized(wallpaper, s, true)
 
     -- Tags
-    awful.tag(awful.util.tagnames, s, awful.layout.layouts)
+    -- awful.tag(awful.util.tagnames, s, awful.layout.layouts)
+    awful.tag(awful.util.tagnames, s, awful.layout.layouts[3])
  
     -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt()
+    s.mypromptbox = awful.widget.prompt({
+        prompt = "> ",
+        bg = "#000000",
+        fg = "#ffffff",
+        bg_cursor = "#e019c9", --pink
+        fg_cursor = "#e019c9" --pink
+    })
+    
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
@@ -284,6 +294,7 @@ function theme.at_screen_connect(s)
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+    
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
 
@@ -300,15 +311,15 @@ function theme.at_screen_connect(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal, 
             
+            s.mypromptbox,
+            spr,
+
             s.mytaglist,
             spr,
 
             s.mylayoutbox,
             spr,
-
-            s.mypromptbox,
-            spr,
-
+ 
             s.mytasklist,
         },
         -- middle
