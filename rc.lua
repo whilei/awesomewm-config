@@ -296,17 +296,13 @@ globalkeys =
     my_table.join(
     -- Take a screenshot
     -- https://github.com/lcpz/dots/blob/master/bin/screenshot
-    awful.key(
-        {altkey},
-        "p",
+    awful.key({altkey}, "p",
         function()
             os.execute(scrnshotter)
         end,
         {description = "take a screenshot", group = "hotkeys"}
     ),
-    awful.key(
-        {modkey},
-        "x",
+    awful.key({modkey}, "x",
         function()
             os.execute(invert_colors)
         end,
@@ -677,18 +673,23 @@ globalkeys =
     ),
 
     -- rofi binding
-    awful.key({ "Control" }, "Return",
+    awful.key({modkey, "Control" }, "-",
         function ()
-            myscreen           = awful.screen.focused()
-            commandPrompter    = "rofi --modi window,run,ssh -show window"
-      -- -normal-window
-            for _, t in ipairs(mouse.screen.tags) do
-                -- if client.name ~= "rofi" then
-                --     awful.tag.viewtoggle(t)
-                -- end
-            end
-            awful.spawn(commandPrompter, false)
-            -- awful.spawn(blur) -- Causes mouse to change to loading icon!!
+            -- myscreen           = awful.screen.focused()
+            -- 1   2   3
+            -- 8   0   4
+            -- 7   6   5
+            commandPrompter    = "rofi --modi window,run,ssh -show window -location 2 -theme Indego"
+            -- -normal-window
+            -- for _, t in ipairs(mouse.screen.tags) do
+            --     if client.name ~= "rofi" then
+            --         awful.tag.viewtoggle(t)
+            --     end
+            -- end
+            awful.spawn.easy_async(commandPrompter, function()
+                    awful.screen.focus(client.focus.screen)
+                end
+            )
         end, {description = "run rofi", group = "awesome"}),
 
     -- Prompt
@@ -735,6 +736,14 @@ clientkeys =
             c:swap(awful.client.getmaster())
         end,
         {description = "move to master", group = "client"}
+    ),
+    awful.key(
+        {modkey},
+        "i",
+        function(c)
+            c:move_to_screen(c.screen.index-1)
+        end,
+        {description = "move to screen", group = "client"}
     ),
     awful.key(
         {modkey},

@@ -273,7 +273,7 @@ function theme.at_screen_connect(s)
 
     -- Tags
     awful.tag(awful.util.tagnames, s, awful.layout.layouts)
-
+ 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
@@ -281,7 +281,6 @@ function theme.at_screen_connect(s)
     s.mylayoutbox = awful.widget.layoutbox(s)
     s.mylayoutbox:buttons(my_table.join(
                            awful.button({ }, 1, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 2, function () awful.layout.inc(-1) end),
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
