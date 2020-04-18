@@ -5,6 +5,8 @@
 
 --]]
 
+local tonumber = tonumber
+
 local gears = require("gears")
 local lain  = require("lain")
 local awful = require("awful")
@@ -154,24 +156,82 @@ local cpu = lain.widget.cpu({
     end
 })
 
+-- --https://wowwiki.fandom.com/wiki/USERAPI_RGBToHex
+-- local function RGBToHex(r, g, b)
+-- 	r = r <= 255 and r >= 0 and r or 0
+-- 	g = g <= 255 and g >= 0 and g or 0
+--     b = b <= 255 and b >= 0 and b or 0
+-- 	return string.format("%02x%02x%02x", r, g, b)
+-- end
+
+-- https://wowwiki.fandom.com/wiki/USERAPI_RGBPercToHex
+local function RGBPercToHex(r, g, b)
+	r = r <= 1 and r >= 0 and r or 0
+	g = g <= 1 and g >= 0 and g or 0
+    b = b <= 1 and b >= 0 and b or 0
+	return string.format("#%02x%02x%02x", math.floor(r*255), math.floor(g*255), math.floor(b*255))
+end
+
+-- https://wowwiki.fandom.com/wiki/USERAPI_ColorGradient
+local function ColorGradient(perc, ...)
+	if perc >= 1 then
+		local r, g, b = select(select('#', ...) - 2, ...)
+		return r, g, b
+	elseif perc <= 0 then
+		local r, g, b = ...
+		return r, g, b
+	end
+	
+	local num = select('#', ...) / 3
+
+    local segment, relperc = math.modf(perc*(num-1))
+    local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
+    
+    if r1 > 1 then
+        r1, g1, b1, r2, g2, b2 =	r1/255, g1/255, b1/255, r2/255, g2/255, b2/255
+    end
+
+	return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
+end
+
+local function HexToRGBPerc(hex)
+	local rhex, ghex, bhex = string.sub(hex, 1, 2), string.sub(hex, 3, 4), string.sub(hex, 5, 6)
+	return tonumber(rhex, 16)/255, tonumber(ghex, 16)/255, tonumber(bhex, 16)/255
+end
+
+local function h2rgb(x)
+    return HexToRGBPerc(x)
+end
+
 -- Coretemp
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 local temp = lain.widget.temp({
     settings = function()
-        local color = theme.fg_normal
-        if tonumber(coretemp_now) > 90.0 then
-            color = theme.color_red
-        elseif tonumber(coretemp_now) > 80.0 then
-            color = theme.color_orange
-        elseif tonumber(coretemp_now) > 70.0 then
-            color = theme.color_yellow
-        elseif tonumber(coretemp_now) > 60.0 then
-            color = theme.color_green
-        elseif tonumber(coretemp_now) <= 60.0 then
-            color = theme.color_lightblue
-        end
-        -- 77 is opacity, 00 is translucent, ff is opaque
-        widget:set_markup(markup.fontbg(theme.font, color, " " .. markup("#000000", coretemp_now .. "°C") .. " "))
+
+
+        -- want: 0.2 (cool), 0.5 (warm), 0.92 (hot)
+        local min = 33
+        local max = 110
+        local range = max - min
+
+        local d = coretemp_now - min
+        local relativeHeat = d / range
+
+        -- if relativeHeat < 0 then relativeHeat = 0 end
+        -- if relativeHeat > 1 then relativeHeat = 1 end
+
+        -- blue, green, yellow, red
+        -- local blue, green, yellow, red = h2rgb("#3452c9"),   h2rgb("#32ab3a"),  h2rgb("#e8d031"),  h2rgb("#f01800")
+        local r, g, b = ColorGradient(relativeHeat,   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
+        local bg_color = RGBPercToHex(r, g, b)
+
+        r, g, b = ColorGradient(0.5 , r,g,b, 0,0,0)
+        local fg_color = RGBPercToHex(r, g, b)
+
+        -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
+        -- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
+
+        widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, coretemp_now .. "°C") .. " "))
     end
 })
 
@@ -213,16 +273,27 @@ local micicon = wibox.widget.imagebox()
 theme.mic = lain.widget.alsa({
     channel = "Capture",
     settings = function()
-        if input_now.status == "on" then
-            micicon:set_image(theme.widget_mic_on)
-            -- micicon:set_image()
-            widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
+        -- if input_now.status == "on" then
+        --     micicon:set_image(theme.widget_mic_on)
+        --     -- micicon:set_image()
+        --     widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
         
-        elseif input_now.status == "off" then
-            micicon:set_image(theme.widget_mic_off)
-            widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
-            -- widget:set_markup(markup.font(theme.font, " "))
+        -- elseif input_now.status == "off" then
+        --     micicon:set_image(theme.widget_mic_off)
+        --     -- #2a0054
+        --     widget:set_markup(markup.fontbg(theme.font, "#2a0054", markup("#ffffff", " ((( • On Air • ))) ")))
+        --     widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
+        --     -- widget:set_markup(markup.font(theme.font, " "))
+        -- end
+        local words = " • On Air "
+        local bg = "#d93600" -- theme.color_red
+        local fg = "#fbff00"
+        if input_now.status == "off" then
+            words = " ✕ Off Air "
+            bg = "#370e5c"
+            fg = "#887b94"
         end
+        widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
     end
 })
 

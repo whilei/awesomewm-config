@@ -6,7 +6,7 @@
 --]]
 -- {{{ Required libraries
 local awesome, client, mouse, screen, tag = awesome, client, mouse, screen, tag
-local ipairs, string, os, table, tostring, tonumber, type = ipairs, string, os, table, tostring, tonumber, type
+local ipairs, string, os, table, tostring, tonumber, tointeger, type = ipairs, string, os, table, tostring, tonumber, tointeger, type
 
 local gears = require("gears")
 local awful = require("awful")
