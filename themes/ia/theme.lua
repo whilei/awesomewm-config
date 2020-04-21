@@ -65,7 +65,7 @@ theme.border_marked                             = "#f05800"
 
 theme.border_width                              = 4
 
-theme.tasklist_bg_normal                        = "#313452"-- "#c8def7"#f01800
+theme.tasklist_bg_normal                        = "#313452" -- "#c8def7"#f01800
 theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
 theme.tasklist_fg_normal                        = "#FFFFFF"
 theme.tasklist_fg_focus                         = "#FFFFFF"
@@ -189,7 +189,7 @@ local clock = awful.widget.watch(
     -- "date +'%a %d %b %R UTC%:::z'", 
     -- "date +'%a %d %b %R UTC%:::z'", 
     -- "date +'%Y-%m-%dT%H:%MZ%:z'",
-    "date +'%Y-%m-%d T %H:%M Z%:z'",
+    "date +'%Y-%m-%d T %H:%M Z %:::z'",
     60,
     function(widget, stdout)
         -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -198,7 +198,8 @@ local clock = awful.widget.watch(
         local colon_fg = "#256c1e"
         local clock_fg = "#32ab3a"
         widget:set_markup(
-            markup.fontbg(theme.font, clock_bg, " " .. markup(colon_fg, ":") .. " " .. markup(clock_fg, " " .. stdout .. " "))
+            -- theme.font
+            markup.fontbg("Roboto Bold 10", clock_bg, " " .. markup(clock_fg, stdout) .. " ")
         )
     end
 )
@@ -207,7 +208,23 @@ local clock = awful.widget.watch(
 local memicon = wibox.widget.imagebox(theme.widget_mem)
 local mem = lain.widget.mem({
     settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
+
+        -- get base
+        local r, g, b = ColorGradient((mem_now.perc / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
+        -- local bg_color = RGBPercToHex(r, g, b)
+
+        r, g, b = ColorGradient(0.6 , r,g,b, 1,1,1) -- lighten it
+        local fg_color = RGBPercToHex(r, g, b)
+
+        r, g, b = ColorGradient((mem_now.perc / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
+        -- local bg_color = RGBPercToHex(r, g, b)
+
+        r, g, b = ColorGradient(0.8,  r, g, b,  0,0,0)
+        local bg_color = RGBPercToHex(r, g, b)
+
+        local fmt = string.format("%.0f GB", mem_now.used / 1024)
+        widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, fmt) .. " "))
+        -- widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
     end
 })
 
@@ -387,8 +404,8 @@ function theme.at_screen_connect(s)
     gears.wallpaper.maximized(wallpaper, s, true)
 
     -- Tags
-    -- awful.tag(awful.util.tagnames, s, awful.layout.layouts)
-    awful.tag(awful.util.tagnames, s, awful.layout.layouts[3])
+    -- Use the first layout as the default one for all tags.
+    awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
  
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt({

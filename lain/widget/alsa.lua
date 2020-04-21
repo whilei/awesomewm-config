@@ -48,7 +48,7 @@ local function factory(args)
                     widget = alsa.widget
                     settings()
                 end
-            else 
+            else
                 local l,s = string.match(mixer, "([%d]+)%%.*%[([%l]*)")
                 if alsa.last.level ~= l or alsa.last.status ~= s then
                     output_now = { level = l, status = s }
