@@ -189,7 +189,7 @@ local clock = awful.widget.watch(
     -- "date +'%a %d %b %R UTC%:::z'", 
     -- "date +'%a %d %b %R UTC%:::z'", 
     -- "date +'%Y-%m-%dT%H:%MZ%:z'",
-    "date +'%Y-%m-%d T %H:%M Z %:::z'",
+    "date +'%-m-%d %A [%H:%M] %:::z'",
     60,
     function(widget, stdout)
         -- widget:set_markup(" " .. markup.font(theme.font, stdout))
