@@ -11,6 +11,7 @@ local gears = require("gears")
 local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
+local common = require("awful.widget.common")
 
 local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
 
@@ -189,7 +190,8 @@ local clock = awful.widget.watch(
     -- "date +'%a %d %b %R UTC%:::z'", 
     -- "date +'%a %d %b %R UTC%:::z'", 
     -- "date +'%Y-%m-%dT%H:%MZ%:z'",
-    "date +'%-m-%d %A [%H:%M] %:::z'",
+    --"date +'%-m-%d %A %H:%M %:::z'",
+    "date +'%H:%M %A %-m-%d %:::z'",
     60,
     function(widget, stdout)
         -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -401,7 +403,8 @@ function theme.at_screen_connect(s)
     if type(wallpaper) == "function" then
         wallpaper = wallpaper(s)
     end
-    gears.wallpaper.maximized(wallpaper, s, true)
+    --gears.wallpaper.maximized(wallpaper, s, false)
+    gears.wallpaper.fit(wallpaper, s)
 
     -- Tags
     -- Use the first layout as the default one for all tags.
@@ -429,7 +432,15 @@ function theme.at_screen_connect(s)
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
 
     -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
+    local function list_update(w, buttons, label, data, objects)
+        common.list_update(w, buttons, label, data, objects)
+        w:set_max_widget_size(80)
+    end
+    s.mytasklist = awful.widget.tasklist(s,
+        awful.widget.tasklist.filter.currenttags,
+        awful.util.tasklist_buttons,
+        nil,
+        list_update)
 
     -- Create the wibox
     -- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
