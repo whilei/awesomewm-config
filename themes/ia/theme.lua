@@ -380,7 +380,11 @@ theme.volume = lain.widget.alsa({
 local neticon = wibox.widget.imagebox(theme.widget_net)
 local net = lain.widget.net({
     settings = function()
+        local file = io.open("/home/ia/ipinfo.io/locale", "r")
+        local line = file:read()
+        file:close()
         widget:set_markup(markup.font(theme.font,
+                            line .. "  " ..
                           markup("#fcc9ff", net_now.sent .. "↑")
                           .. "  " ..
                           markup("#2ECCFA", "↓" .. net_now.received)

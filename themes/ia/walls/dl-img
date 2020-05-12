@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+image_link="$1"
+[[ -z $image_link ]] && echo "Missing image link. Use link as first argument." && exit 1
+
+artist=''
+title=''
+
+ext="${image_link##*.}"
+
+echo "Image link: ${image_link}"
+echo "Image ext:  .$ext"
+read -p 'Artist: ' artist
+read -p 'Title: ' title
+
+title="$(echo "$title" | sed 's/ /-/g')"
+artist="$(echo "$artist" | sed 's/ /-/g')"
+filename="${artist}_${title}.${ext}"
+
+IFS=$'\n' echo "  Artist: $artist"
+IFS=$'\n' echo "  Title : $title"
+echo "Output file: ${filename}"
+read -p "OK? " answer
+
+while true; do
+	case $answer in
+	[yY]*) wget --no-check-certificate -O "${filename}" "${image_link}" 
+		identify "${filename}"
+		echo "Done"	
+		break;;
+	[nN]*) exit;;
+	*) echo "Please enter Y or N."; break;;
+	esac
+done
+
+
+
