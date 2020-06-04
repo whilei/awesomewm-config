@@ -184,6 +184,16 @@ local function h2rgb(x)
     return HexToRGBPerc(x)
 end
 
+local function BoundedRGBVal(low, high, val)
+  if val > high then
+    return high
+  end
+  if val < low then
+    return low
+  end
+  return val
+end
+
 -- Textclock
 local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock = awful.widget.watch(
@@ -230,6 +240,7 @@ local mem = lain.widget.mem({
     end
 })
 
+
 -- CPU
 local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
 local cpu = lain.widget.cpu({
@@ -237,30 +248,18 @@ local cpu = lain.widget.cpu({
         -- widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
         local strf = string.format("%3d%%", cpu_now.usage)
 
-        -- need to get a new fractional value
-        -- 0 - 1 was heat
-        -- meow we want fractional cpu
-
-        -- get base
-        local r, g, b = ColorGradient((cpu_now.usage / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
-        -- local bg_color = RGBPercToHex(r, g, b)
-
-        r, g, b = ColorGradient(0.6 , r,g,b, 1,1,1) -- lighten it
-        local fg_color = RGBPercToHex(r, g, b)
-
-        r, g, b = ColorGradient((cpu_now.usage / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
-        -- local bg_color = RGBPercToHex(r, g, b)
-
-        r, g, b = ColorGradient(0.8,  r, g, b,  0,0,0)
+        local rr, gg, bb = ColorGradient((cpu_now.usage / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
+        local r, g, b = ColorGradient(0.6, rr, gg, bb, 0, 0, 0)
         local bg_color = RGBPercToHex(r, g, b)
 
-        
-
-        -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
-        -- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
+        r, g, b = ColorGradient(0.6 , rr, gg, bb, 0.8,0.8,0.8) -- lighten it
+        local fg_color = RGBPercToHex(r, g, b)
+        if cpu_now.usage == 100 then
+          fg_color = '#ff0000'
+        end
 
         widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, strf) .. " "))
-
+        -- widget:set_markup(markup.font(theme.font, strf))
     end
 })
 
