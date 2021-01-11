@@ -63,7 +63,17 @@ function quake:display()
     client.floating = true
     client.border_width = self.border
     client.size_hints_honor = false
-    client:geometry(self.geometry[self.screen] or self:compute_size())
+    client:geometry(self:compute_size())
+--    if self.keepclientattrs then
+--        client:connect_signal("property::size", function()
+--            self.geometry[self.screen].width = client:geometry().width
+--            self.geometry[self.screen].height = client:geometry().height
+--        end)
+--        client:connect_signal("property::position", function()
+--            self.geometry[self.screen].x = client:geometry().x
+--            self.geometry[self.screen].y = client:geometry().y
+--        end)
+--    end
 
     -- Set not sticky and on top
     client.sticky = false
@@ -137,6 +147,8 @@ function quake:new(config)
     conf.vert       = conf.vert      or "top"      -- top, bottom or center
     conf.horiz      = conf.horiz     or "left"     -- left, right or center
     conf.geometry   = {}                           -- internal use
+    conf.keepclientattrs = conf.keepclientattrs or false -- persist (don't reset client attributes); this may allow persistent user-resizing
+--    conf.geomscreeninited = {}                           -- internal use
 
     local dropdown = setmetatable(conf, { __index = quake })
 

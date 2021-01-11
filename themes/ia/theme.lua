@@ -5,7 +5,11 @@
 
 --]]
 
+local math     = math
+local string   = string
+local type     = type
 local tonumber = tonumber
+local tostring = tostring
 
 local gears = require("gears")
 local lain  = require("lain")
@@ -14,8 +18,14 @@ local wibox = require("wibox")
 local common = require("awful.widget.common")
 
 local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
+--local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
 
-local os = { getenv = os.getenv }
+local os = {
+    getenv = os.getenv,
+    tmpname = os.tmpname,
+    execute = os.execute,
+    remove = os.remove,
+}
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
@@ -394,6 +404,97 @@ local net = lain.widget.net({
     end
 })
 
+--local weather = weather_widget({
+--    api_key = "25fb73929c3c4030dc1800e70518aedb"
+--})
+
+--- Return wind direction as a string.
+local function to_direction(degrees)
+    -- Ref: https://www.campbellsci.eu/blog/convert-wind-directions
+    if degrees == nil then
+        return "Unknown dir"
+    end
+    local directions = {
+        "N",
+        "NNE",
+        "NE",
+        "ENE",
+        "E",
+        "ESE",
+        "SE",
+        "SSE",
+        "S",
+        "SSW",
+        "SW",
+        "WSW",
+        "W",
+        "WNW",
+        "NW",
+        "NNW",
+        "N",
+    }
+    return directions[math.floor((degrees % 360) / 22.5) + 1]
+end
+
+local function os_getenv(varname)
+    -- get a temporary file name
+    local n = os.tmpname()
+    -- execute a command
+    os.execute (". /home/ia/.dotfiles/private/env.bash && echo ${" .. varname .. "} > " .. n)
+    local file = io.open(n, "r")
+    local line = ""
+    line = file:read()
+    file:close()
+    -- remove temporary file
+    os.remove(n)
+    return line
+end
+
+local weather = lain.widget.weather({
+    APPID = os_getenv("OPENWEATHERMAP_API_KEY"),
+    city_id = tonumber(os_getenv("OPENWEATHERMAP_CITY_ID")),
+    timeout = 60 * 30, -- 15 * 60 = 15 minutes
+--    notification_text_fun = function (wn)
+--        local day = os.date("%a %d", wn["dt"])
+--        local tmin = math.floor(wn["temp"]["min"])
+--        local tmax = math.floor(wn["temp"]["max"])
+--        local desc = wn["weather"][1]["description"]
+--        return string.format("<b>%s</b>: %s, %d - %d ", day, desc, tmin, tmax)
+--    end,
+--    notification_text_fun = function (wn)
+--        local day = os.date("%a %d", wn["dt"]) or "DATE"
+--        local tmin = math.floor(wn["temp"]["min"]) or -42
+--        local tmax = math.floor(wn["temp"]["max"]) or 69
+--        local desc = wn["weather"][1]["description"] or "Outside"
+----        local name = wn["name"] or "NONAME"
+----        return string.format("%s", tostring(wn))
+--        return string.format("<b>%s</b>: %s, High: %d Low: %d ", day, desc, tmax, tmin)
+--    end,
+    settings = function()
+        local str = ""
+
+--        local loc_now = os.time()
+--        local sunrise = tonumber(weather_now["sys"]["sunrise"])
+--        local sunset  = tonumber(weather_now["sys"]["sunset"])
+--        if sunrise <= loc_now and loc_now <= sunset then
+--            -- day time, pre sunset; show sunset time
+--            str = string.format(" %s 🌜", os.date("%H:%M", weather_now["sys"]["sunset"]))
+--        elseif loc_now <= sunrise then
+--            -- pre dawn
+--            str = string.format(" %s 🌣", os.date("%H:%M", weather_now["sys"]["sunrise"]))
+--        elseif sunset <= loc_now then
+--            -- after sunset
+--            str =  string.format(" 🌜 %s", os.date("%H:%M", weather_now["sys"]["sunset"]))
+--        end
+
+        widget:set_markup(
+            markup.font(theme.font,  " " .. math.floor(weather_now["main"]["temp"]) .. "°C" ..
+                    " " .. to_direction(weather_now["wind"]["deg"]) .. math.floor(weather_now["wind"]["speed"]))
+        )
+--    showpopup = "off",
+    end
+})
+
 -- Separators
 local spr     = wibox.widget.textbox(' ')
 local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
@@ -404,7 +505,21 @@ function theme.at_screen_connect(s)
     s.quake = lain.util.quake({
         app = awful.util.terminal,
         followtag = true,
+        vert = "bottom",
+        keepclientattrs = true,
+        settings = function (client)
+            client.opacity = 0.7
+--            client.border_color = gears.color.parse_color("#ff0000ff")
+            client.border_color = gears.color.parse_color("#ff0000ff")
 
+            local geo
+            geo = client:geometry()
+            if geo.width > 2000 then
+                geo.x = geo.x + (geo.width / 4)
+                geo.width = geo.width / 2
+                client:geometry(geo)
+            end
+        end
     })
 
     -- If wallpaper is a function, call it with the screen
@@ -422,7 +537,7 @@ function theme.at_screen_connect(s)
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt({
         prompt = "> ",
-        bg = "#000000",
+        bg = theme.border_focus, -- "#1E2CEE", -- "#000000",
         fg = "#ffffff",
         bg_cursor = "#e019c9", --pink
         fg_cursor = "#e019c9" --pink
@@ -481,10 +596,16 @@ function theme.at_screen_connect(s)
                     layout = wibox.layout.fixed.horizontal,
                     wibox.widget.systray(),
 
-                    spr,
-
+            -- weather insert
+            spr,
+            --                    wibox.widget.imagebox(weather.icon),
+            --                    wibox.widget.textbox('weather: '),
+            weather.icon,
+            weather.widget,
+            --
 
                     -- Net up/down
+                    spr,
                     neticon,
                     -- How to wrap items in a custom background.
 --                     wibox.container.background(neticon, theme.bg_focus),
