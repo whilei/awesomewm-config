@@ -412,7 +412,7 @@ local net = lain.widget.net({
 local function to_direction(degrees)
     -- Ref: https://www.campbellsci.eu/blog/convert-wind-directions
     if degrees == nil then
-        return "Unknown dir"
+        return "?"
     end
     local directions = {
         "N",
@@ -537,7 +537,7 @@ function theme.at_screen_connect(s)
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt({
         prompt = "> ",
-        bg = theme.border_focus, -- "#1E2CEE", -- "#000000",
+        bg = "#ff0000", -- "#1E2CEE", -- "#000000",
         fg = "#ffffff",
         bg_cursor = "#e019c9", --pink
         fg_cursor = "#e019c9" --pink
@@ -558,13 +558,16 @@ function theme.at_screen_connect(s)
     -- Create a tasklist widget
     local function list_update(w, buttons, label, data, objects)
         common.list_update(w, buttons, label, data, objects)
-        w:set_max_widget_size(80)
+        w:set_max_widget_size(120)
     end
-    s.mytasklist = awful.widget.tasklist(s,
-        awful.widget.tasklist.filter.currenttags,
-        awful.util.tasklist_buttons,
-        nil,
-        list_update)
+    -- awful.widget.tasklist()
+    s.mytasklist = awful.widget.tasklist(
+        s, -- screen
+        awful.widget.tasklist.filter.currenttags, -- filter
+        awful.util.tasklist_buttons, -- buttons
+        nil, -- style
+        list_update -- update function
+    )
 
     -- Create the wibox
     -- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'

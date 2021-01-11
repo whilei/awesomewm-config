@@ -438,7 +438,7 @@ globalkeys =
             -- 1   2   3
             -- 8   0   4
             -- 7   6   5
-            commandPrompter    = "rofi --modi window,run,ssh -show window -location 2 -theme Indego"
+            commandPrompter    = "rofi --modi window,run,ssh -show window -location 5 -theme Indego"
             awful.spawn.easy_async(commandPrompter, function()
                     awful.screen.focus(client.focus.screen)
                 end
