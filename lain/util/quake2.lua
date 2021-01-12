@@ -54,7 +54,7 @@ function quake2:display()
             ontop = true,
             above = true,
             skip_taskbar = true,
-            floating p= true,
+            floating = true,
             maximized = false,
 --            maximized_vertical = false,
             marked = true,
