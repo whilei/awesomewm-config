@@ -504,13 +504,16 @@ function theme.at_screen_connect(s)
     -- Quake application
     s.quake = lain.util.quake({
         app = awful.util.terminal,
+        name = "QuakeDD",
         followtag = true,
         vert = "bottom",
         keepclientattrs = true,
+        border = 0,
         settings = function (client)
             -- these don't work. don't know why.
             client.opacity = 0.7
             client.border_color = gears.color.parse_color("#ff0000ff")
+            client.titlebars_enabled = false
 
             local geo
             geo = client:geometry()

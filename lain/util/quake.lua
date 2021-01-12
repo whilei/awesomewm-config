@@ -60,6 +60,7 @@ function quake:display()
     end
 
     -- Set geometry
+    client.titlebars_enabled = self.titlebars_enabled
     client.floating = true
     client.border_width = self.border
     client.size_hints_honor = false
@@ -134,7 +135,8 @@ function quake:new(config)
     conf.name       = conf.name      or "QuakeDD"  -- window name
     conf.argname    = conf.argname   or "-name %s" -- how to specify window name
     conf.extra      = conf.extra     or ""         -- extra arguments
-    conf.border     = conf.border    or 1          -- client border width
+    conf.border     = conf.border    or 0          -- client border width
+    conf.titlebars_enabled = conf.titlebars_enabled or false
     conf.visible    = conf.visible   or false      -- initially not visible
     conf.followtag  = conf.followtag or false      -- spawn on currently focused screen
     conf.overlap    = conf.overlap   or false      -- overlap wibox
