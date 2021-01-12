@@ -508,10 +508,29 @@ function theme.at_screen_connect(s)
         vert = "bottom",
         keepclientattrs = true,
         settings = function (client)
+            -- these don't work. don't know why.
             client.opacity = 0.7
---            client.border_color = gears.color.parse_color("#ff0000ff")
             client.border_color = gears.color.parse_color("#ff0000ff")
 
+            local geo
+            geo = client:geometry()
+            if geo.width > 2000 then
+                geo.x = geo.x + (geo.width / 4)
+                geo.width = geo.width / 2
+                client:geometry(geo)
+            end
+        end
+    })
+
+    s.quakeBrowser = lain.util.quake2({
+        app = "ffox", -- uses: 'snap alias firefox ffox'
+        extra = "",
+        name = "Mozilla Firefox",
+        argname = "",
+--        followtag = true,
+        vert = "top",
+        keepclientattrs = true,
+        settings = function(client)
             local geo
             geo = client:geometry()
             if geo.width > 2000 then
