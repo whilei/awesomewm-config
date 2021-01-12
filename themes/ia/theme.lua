@@ -527,7 +527,7 @@ function theme.at_screen_connect(s)
         extra = "",
         name = "Mozilla Firefox",
         argname = "",
---        followtag = true,
+        followtag = true,
         vert = "top",
         keepclientattrs = true,
         settings = function(client)
@@ -556,7 +556,7 @@ function theme.at_screen_connect(s)
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt({
         prompt = "> ",
-        bg = "#ff0000", -- "#1E2CEE", -- "#000000",
+        bg = "#0000ff", -- "#1E2CEE", -- "#000000",
         fg = "#ffffff",
         bg_cursor = "#e019c9", --pink
         fg_cursor = "#e019c9" --pink
