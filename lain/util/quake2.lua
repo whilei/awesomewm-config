@@ -28,91 +28,38 @@ function quake2:display()
     if self.followtag then self.screen = awful.screen.focused() end
 
     -- First, we locate the client
---    local client = nil
     local i = 0
     for c in awful.client.iterate(function (c)
-        -- c.name may be changed!
---        return c.instance == self.name
         return c.marked
     end)
     do
         i = i + 1
         if i == 1 then
             self.mycl = c
+            self.mycl_instance = c.instance
             awful.client.unmark(self.mycl)
-        else
-            -- Additional matching clients, let's remove the sticky bit
-            -- which may persist between awesome restarts. We don't close
-            -- them as they may be valuable. They will just turn into
-            -- normal clients.
---            c.sticky = false
---            c.ontop = false
---            c.above = false
         end
     end
 
     if not self.mycl and not self.visible then return end
 
-    if not self.mycl then
+    if not self.mycl or self.mycl_instance == "" then
         -- The cl does not exist, we spawn it
         cmd = string.format("%s %s %s", self.app,
               string.format(self.argname, self.name), self.extra)
         awful.spawn(cmd, {
             tag = self.screen.selected_tag,
 --            focus = true,
---            sticky = false,
---            ontop = true,
---            above = true,
---            skip_taskbar = true,
-            floating = true,
+            sticky = false,
+            ontop = true,
+            above = true,
+            skip_taskbar = true,
+            floating p= true,
+            maximized = false,
 --            maximized_vertical = false,
             marked = true,
-            callback = function ()
---                self.mycl = capi.client.focus
-
---                local client = nil
---                local i = 0
---                for c in awful.client.iterate(function (c)
---                    -- c.name may be changed!
---                    return c.instance == self.name
---                end)
---                do
---                    i = i + 1
---                    if i == 1 then
---                        self.mycl = c
---                    else
---                        -- Additional matching clients, let's remove the sticky bit
---                        -- which may persist between awesome restarts. We don't close
---                        -- them as they may be valuable. They will just turn into
---                        -- normal clients.
---                        c.sticky = false
---                        c.ontop = false
---                        c.above = false
---                    end
---                end
-
-            end
+            callback = function () end
         })
---        local i = 0
---        for c in awful.client.iterate(function (c)
---            -- c.name may be changed!
---            return c.instance == self.name
---        end)
---        do
---            i = i + 1
---            if i == 1 then
---                self.mycl = c
---            else
---                -- Additional matching clients, let's remove the sticky bit
---                -- which may persist between awesome restarts. We don't close
---                -- them as they may be valuable. They will just turn into
---                -- normal clients.
---                c.sticky = false
---                c.ontop = false
---                c.above = false
---            end
---        end
-
         return
     end
 
@@ -210,13 +157,16 @@ function quake2:new(config)
     local dropdown = setmetatable(conf, { __index = quake2 })
 
     capi.client.connect_signal("manage", function(c)
-        if c.instance == dropdown.name and c.screen == dropdown.screen then
+        if c.screen == dropdown.screen and c.instance == dropdown.name then
             dropdown:display()
         end
     end)
     capi.client.connect_signal("unmanage", function(c)
-        if c.instance == dropdown.name and c.screen == dropdown.screen then
+--        if c.instance == dropdown.name and c.screen == dropdown.screen then
+        if c.screen == dropdown.screen and c.instance == dropdown.mycl_instance then
             dropdown.visible = false
+            dropdown.mycl = nil
+            dropdown.mycl_instance = ""
         end
      end)
 
