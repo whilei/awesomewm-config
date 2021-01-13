@@ -528,7 +528,7 @@ function theme.at_screen_connect(s)
     s.quakeBrowser = lain.util.quake2({
         app = "ffox", -- uses: 'snap alias firefox ffox'
         extra = "",
-        name = "Mozilla Firefox",
+        name = "MozillaFirefox",
         argname = "",
         followtag = true,
         vert = "top",

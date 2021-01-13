@@ -63,30 +63,22 @@ function quake2:display()
         return
     end
 
-    -- Set geometry
-    self.mycl.floating = true
-    self.mycl.border_width = self.border
-    self.mycl.size_hints_honor = false
-    self.mycl:geometry(self:compute_size())
---    if self.keepclattrs then
---        cl:connect_signal("property::size", function()
---            self.geometry[self.screen].width = cl:geometry().width
---            self.geometry[self.screen].height = cl:geometry().height
---        end)
---        cl:connect_signal("property::position", function()
---            self.geometry[self.screen].x = cl:geometry().x
---            self.geometry[self.screen].y = cl:geometry().y
---        end)
---    end
+    if not self.mycl.keepclientattrs or not self.geometry[self.mycl.screen] then
+        -- Set geometry
+        self.mycl.floating = true
+        self.mycl.border_width = self.border
+        self.mycl.size_hints_honor = false
+        self.mycl:geometry(self:compute_size())
+
+        -- Additional user settings
+        if self.settings then self.settings(self.mycl) end
+    end
 
     -- Set not sticky and on top
+    self.mycl.skip_taskbar = true
     self.mycl.sticky = false
     self.mycl.ontop = true
     self.mycl.above = true
-    self.mycl.skip_taskbar = true
-
-    -- Additional user settings
-    if self.settings then self.settings(self.mycl) end
 
     -- Toggle display
     if self.visible then

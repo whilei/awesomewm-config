@@ -59,31 +59,24 @@ function quake:display()
         return
     end
 
-    -- Set geometry
-    client.titlebars_enabled = self.titlebars_enabled
-    client.floating = true
-    client.border_width = self.border
-    client.size_hints_honor = false
-    client:geometry(self:compute_size())
---    if self.keepclientattrs then
---        client:connect_signal("property::size", function()
---            self.geometry[self.screen].width = client:geometry().width
---            self.geometry[self.screen].height = client:geometry().height
---        end)
---        client:connect_signal("property::position", function()
---            self.geometry[self.screen].x = client:geometry().x
---            self.geometry[self.screen].y = client:geometry().y
---        end)
---    end
+    if not self.keepclientattrs or not self.geometry[client.screen] then
+        -- Set geometry
+        client.titlebars_enabled = self.titlebars_enabled
+        client.floating = true
+        client.border_width = self.border
+        client.size_hints_honor = false
+        client:geometry(self:compute_size())
+
+
+        -- Additional user settings
+        if self.settings then self.settings(client) end
+    end
 
     -- Set not sticky and on top
+    client.skip_taskbar = true
     client.sticky = false
     client.ontop = true
     client.above = true
-    client.skip_taskbar = true
-
-    -- Additional user settings
-    if self.settings then self.settings(client) end
 
     -- Toggle display
     if self.visible then
