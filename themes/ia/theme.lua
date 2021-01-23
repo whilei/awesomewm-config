@@ -503,8 +503,9 @@ local arrl_ld = separators.arrow_left("alpha", theme.bg_focus)
 function theme.at_screen_connect(s)
     -- Quake application
     s.quake = lain.util.quake({
-        app = awful.util.terminal,
-        name = "QuakeDD",
+        app = "konsole",
+        name = "xterm-konsole",
+        extra = "--hide-menubar --hide-tabbar",
         followtag = true,
         vert = "bottom",
         keepclientattrs = true,
@@ -528,7 +529,7 @@ function theme.at_screen_connect(s)
     s.quakeBrowser = lain.util.quake2({
         app = "ffox", -- uses: 'snap alias firefox ffox'
         extra = "",
-        name = "MozillaFirefox",
+        name = "MozillaFirefoxDD",
         argname = "",
         followtag = true,
         vert = "top",
@@ -539,6 +540,9 @@ function theme.at_screen_connect(s)
             if geo.width > 2000 then
                 geo.x = geo.x + (geo.width / 4)
                 geo.width = geo.width / 2
+                client:geometry(geo)
+            else
+                geo.height = geo.height * 2
                 client:geometry(geo)
             end
         end
