@@ -375,10 +375,14 @@ my_table.join(-- Take a screenshot
         "Return",
         -- rofi binding
         function()
+            -- Location values:
             -- 1   2   3
             -- 8   0   4
             -- 7   6   5
-            commandPrompter = "rofi --modi window,run,ssh -show window -location 5 -theme Indego"
+
+            -- -sidebar-mode shows 'tabs' of available modi
+
+            commandPrompter = "rofi --modi window,run -show window -sidebar-mode -location 5 -theme Indego"
             awful.spawn.easy_async(commandPrompter, function()
                 awful.screen.focus(client.focus.screen)
             end)
