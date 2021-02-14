@@ -677,7 +677,31 @@ awful.rules.rules = {
     {
         rule = { class = "Gimp", role = "gimp-image-window" },
         properties = { maximized = true }
+    },
+    -- https://youtrack.jetbrains.com/issue/IDEA-112015#focus=Comments-27-2797933.0-0
+    {
+        -- IntelliJ has dialogs, which shall not get focus, e.g. open type or open resource.
+        -- These are Java Dialogs, which are not X11 Dialog Types.
+        rule_any = {
+            instance = { "sun-awt-X11-XWindowPeer", "sun-awt-X11-XDialogPeer", "keybase" }
+        },
+        properties = {
+            focusable = false,
+            placement = awful.placement.under_mouse+awful.placement.no_offscreen
+        }
+    },
+    {
+        -- IntelliJ has dialogs, which do not get focus, e.g. Settings Dialog or Paste Dialog.
+        rule = {
+            type = "dialog",
+            instance = "sun-awt-X11-XDialogPeer"
+        },
+        properties = {
+            focusable = true,
+            focus = true
+        }
     }
+
 }
 -- }}}
 
@@ -755,6 +779,18 @@ client.connect_signal("request::titlebars",
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter",
     function(c)
+        local focused = client.focus
+        local isJavaInstance = function(instance)
+            -- xprop WM_CLASS
+            -- WM_CLASS(STRING) = "sun-awt-X11-XFramePeer", "jetbrains-studio"
+            return string.match(instance, '^sun-awt-X11-X')
+        end
+        if focused and focused.class == c.class
+            and isJavaInstance(focused.instance)
+            and isJavaInstance(c.instance) then
+            return -- early
+        end
+
         if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier and awful.client.focus.filter(c) then
             client.focus = c
         end
@@ -788,4 +824,9 @@ client.connect_signal("unfocus",
     function(c)
         c.border_color = beautiful.border_normal
     end)
+
 -- }}}
+
+-- https://unix.stackexchange.com/questions/401539/how-to-disallow-any-application-from-stealing-focus-in-awesome-wm
+--awful.ewmh.add_activate_filter(function() return false end, "ewmh")
+--awful.ewmh.add_activate_filter(function() return false end, "rules")
