@@ -783,7 +783,7 @@ client.connect_signal("mouse::enter",
         local isJavaInstance = function(instance)
             -- xprop WM_CLASS
             -- WM_CLASS(STRING) = "sun-awt-X11-XFramePeer", "jetbrains-studio"
-            return string.match(instance, '^sun-awt-X11-X')
+            return instance and instance ~= "" and string.match(instance, '^sun-awt-X11-X')
         end
         if focused and focused.class == c.class
             and isJavaInstance(focused.instance)
