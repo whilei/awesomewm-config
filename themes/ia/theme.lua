@@ -540,6 +540,7 @@ function theme.at_screen_connect(s)
             if geo.width > 2000 then
                 geo.x = geo.x + (geo.width / 4)
                 geo.width = geo.width / 2
+                geo.height = geo.height * 2
                 client:geometry(geo)
             else
                 geo.height = geo.height * 2
