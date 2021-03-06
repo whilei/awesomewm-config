@@ -532,7 +532,24 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
         { description = "close", group = "client" }),
     awful.key({ modkey, "Control" },
         "space",
-        awful.client.floating.toggle,
+        function(c)
+            awful.client.floating.toggle()
+
+            if c.floating then
+                -- place the screen in the middle
+                local geo
+                geo = c:geometry()
+                local sgeo
+                sgeo = c.screen.geometry
+                geo.x = sgeo.x + sgeo.width / 8
+                geo.y = sgeo.y + sgeo.height / 8
+                geo.width = sgeo.width * 3 / 4
+                geo.height = sgeo.height * 3 / 4
+                c:geometry(geo)
+            end
+            client.focus = c
+            c:raise()
+        end,
         { description = "toggle floating", group = "client" }),
     awful.key({ modkey, "Control" },
         "Return",
