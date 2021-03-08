@@ -137,7 +137,7 @@ function quake:new(config)
     conf.settings   = conf.settings
 
     -- If width or height <= 1 this is a proportion of the workspace
-    conf.height     = conf.height    or 0.25       -- height
+    conf.height     = conf.height    or 0.5       -- height
     conf.width      = conf.width     or 1          -- width
     conf.vert       = conf.vert      or "top"      -- top, bottom or center
     conf.horiz      = conf.horiz     or "left"     -- left, right or center
