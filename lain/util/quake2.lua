@@ -53,7 +53,7 @@ function quake2:display()
             sticky = false,
             ontop = true,
             above = true,
-            skip_taskbar = true,
+            skip_taskbar = false,
             floating = true,
             maximized = false,
 --            maximized_vertical = false,
@@ -75,7 +75,7 @@ function quake2:display()
     end
 
     -- Set not sticky and on top
-    self.mycl.skip_taskbar = true
+    self.mycl.skip_taskbar = false
     self.mycl.sticky = false
     self.mycl.ontop = true
     self.mycl.above = true
