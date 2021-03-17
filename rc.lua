@@ -152,24 +152,24 @@ local myawesomemenu = {
         end
     },
     -- { "layouts", function() return false, layoutlist_popup.widget end },
-    { "manual", terminal .. " -e man awesome" },
-    { "edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
-    { "restart", awesome.restart },
-    {
-        "quit",
-        function()
-            awesome.quit()
-        end
-    }
+    -- { "manual", terminal .. " -e man awesome" },
+    -- { "edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
+    { "restart", awesome.restart }
+--    {
+--        "quit",
+--        function()
+--            awesome.quit()
+--        end
+--    }
 }
 awful.util.mymainmenu =
 freedesktop.menu.build({
     icon_size = beautiful.menu_height or 18,
     before = {
-        { "Awesome", myawesomemenu, beautiful.awesome_icon }
         -- other triads can be put here
     },
     after = {
+        { "Awesome", myawesomemenu, beautiful.awesome_icon },
         { "Open terminal", terminal }
         -- other triads can be put here
     }

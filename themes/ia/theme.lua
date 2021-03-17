@@ -598,7 +598,14 @@ function theme.at_screen_connect(s)
 
     -- Create the wibox
     -- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal, opacity = 0.5 })
+    s.mywibox = awful.wibar({
+        position = "top",
+        screen = s,
+        height = 18,
+        bg = theme.bg_normal,
+        fg = theme.fg_normal,
+        opacity = 0.5,
+    })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
