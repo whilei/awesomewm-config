@@ -30,7 +30,7 @@ function quake2:display()
     -- First, we locate the client
     local i = 0
     for c in awful.client.iterate(function (c)
-        return c.marked
+        return c.marked -- or c.instance == self.name or c.instance == self.mycl_instance
     end)
     do
         i = i + 1

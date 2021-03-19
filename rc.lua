@@ -767,16 +767,18 @@ client.connect_signal("request::titlebars",
             {
                 -- Left
                 awful.titlebar.widget.iconwidget(c),
+                wibox.widget.textbox(' '),
+                awful.titlebar.widget.titlewidget(c),
                 buttons = buttons,
                 layout = wibox.layout.fixed.horizontal
             },
             {
-                -- Middle
-                {
-                    -- Title
-                    align = "center",
-                    widget = awful.titlebar.widget.titlewidget(c)
-                },
+--                -- Middle
+--                {
+--                    -- Title
+--                    align = "center",
+--                    widget = awful.titlebar.widget.titlewidget(c)
+--                },
                 buttons = buttons,
                 layout = wibox.layout.flex.horizontal
             },
