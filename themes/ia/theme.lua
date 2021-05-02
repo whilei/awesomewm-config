@@ -30,6 +30,8 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/ia"
+
+-- Wallpaper, wallpaper
 theme.wallTallIndex = 0
 theme.wallWideIndex = 0
 function wallFn(s)
@@ -47,8 +49,8 @@ function wallFn(s)
     return out
 end
 theme.wallpaper                                 = wallFn
-theme.font                                      = "xos4 Terminus 9"
 
+theme.font                                      = "xos4 Terminus 9"
 theme.color_green = "#2EFE2E"
 theme.color_yellow ="#FFFF00"
 theme.color_orange = "#FF8000"
@@ -599,7 +601,7 @@ function theme.at_screen_connect(s)
     -- Create the wibox
     -- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
     s.mywibox = awful.wibar({
-        position = "top",
+        position = "top", -- top, bottom
         screen = s,
         height = 18,
         bg = theme.bg_normal,

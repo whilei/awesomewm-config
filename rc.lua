@@ -221,7 +221,7 @@ my_table.join(-- Take a screenshot
 
 
     -- Revelation client focus
-    awful.key({ modkey }, "e", revelation),
+--    awful.key({ modkey }, "e", revelation),
 
     -- Default client focus
     awful.key({ altkey },
