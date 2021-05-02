@@ -530,6 +530,9 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
             c:kill()
         end,
         { description = "close", group = "client" }),
+
+    -- Place the client window floating in the middle, on top.
+    -- This is a nice focus geometry.
     awful.key({ modkey, "Control" },
         "space",
         function(c)
@@ -541,8 +544,10 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
                 geo = c:geometry()
                 local sgeo
                 sgeo = c.screen.geometry
+
                 geo.x = sgeo.x + sgeo.width / 8
                 geo.y = sgeo.y + sgeo.height / 8
+
                 geo.width = sgeo.width * 3 / 4
                 geo.height = sgeo.height * 3 / 4
                 c:geometry(geo)
@@ -551,6 +556,34 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
             c:raise()
         end,
         { description = "toggle floating", group = "client" }),
+
+    -- Place the client window floating in the middle, on top.
+    -- This is a nice focus geometry.
+    -- *BUT* this version will stretch the floating geometry vertically,
+    -- easier for reading.
+    awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
+            "space",
+            function(c)
+                awful.client.floating.toggle()
+
+                if c.floating then
+                    -- place the screen in the middle
+                    local geo
+                    geo = c:geometry()
+                    local sgeo
+                    sgeo = c.screen.geometry
+
+                    geo.x = sgeo.x + sgeo.width / 4
+                    geo.y = sgeo.y
+
+                    geo.width = sgeo.width * 2 / 4
+                    geo.height = sgeo.height
+                    c:geometry(geo)
+                end
+                client.focus = c
+                c:raise()
+            end,
+            { description = "toggle floating", group = "client" }),
     awful.key({ modkey, "Control" },
         "Return",
         function(c)
