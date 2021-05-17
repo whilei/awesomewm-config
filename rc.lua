@@ -326,19 +326,21 @@ my_table.join(-- Take a screenshot
             end
         end,
         { description = "toggle wibox", group = "awesome" }),
+
     -- On the fly useless gaps change
     awful.key({ modkey, altkey },
         "`",
         function()
-            lain.util.useless_gaps_resize(5)
+            lain.util.useless_gaps_resize(10)
         end,
         { description = "increment useless gaps", group = "tag" }),
     awful.key({ modkey, altkey },
         "-",
         function()
-            lain.util.useless_gaps_resize(-5)
+            lain.util.useless_gaps_resize(-10)
         end,
         { description = "decrement useless gaps", group = "tag" }),
+
     -- Dynamic tagging
     awful.key({ modkey, "Shift" },
         "n",
