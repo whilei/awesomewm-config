@@ -762,11 +762,12 @@ function theme.at_screen_connect(s)
 
     s.mywibox_worldtimes = awful.wibar({
         -- visible = false,
-        position = "top",
+        position = "right",
         --stretch = true,
-        --ontop = true,
+        ontop = true,
         screen = s,
-        height = 18,
+        --height = 18,
+        width = 100,
         y = 18,
         bg = theme.bg_normal,
         fg = theme.fg_normal,
@@ -774,63 +775,64 @@ function theme.at_screen_connect(s)
     })
 
     s.mywibox_worldtimes:setup {
-        layout = wibox.layout.align.horizontal,
+        layout = wibox.layout.align.vertical,
         -- left
         {
-            layout = wibox.layout.fixed.horizontal,
+            layout = wibox.layout.fixed.vertical,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver'))),
+            world_clock_vancouver,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Chicago'))),
+            world_clock_chicago,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'New York'))),
+            world_clock_newyork,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'UTC'))),
+            clock_utc,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'London'))),
+            world_clock_london,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Berlin'))),
+            world_clock_berlin,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid'))),
+            world_clock_madrid,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens'))),
+            world_clock_athens,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Dubai'))),
+            world_clock_dubai,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Shanghai'))),
+            world_clock_shanghai,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Tokyo'))),
+            world_clock_tokyo,
+            --spr,
+
 
         },
         -- middle
         {
-            layout = wibox.layout.fixed.horizontal,
+            layout = wibox.layout.fixed.vertical,
         },
         -- right
         {
-            layout = wibox.layout.fixed.horizontal,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver'))),
-            world_clock_vancouver,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Chicago'))),
-            world_clock_chicago,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'New York'))),
-            world_clock_newyork,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'UTC'))),
-            clock_utc,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'London'))),
-            world_clock_london,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Berlin'))),
-            world_clock_berlin,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid'))),
-            world_clock_madrid,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens'))),
-            world_clock_athens,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Dubai'))),
-            world_clock_dubai,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Shanghai'))),
-            world_clock_shanghai,
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Tokyo'))),
-            world_clock_tokyo,
-            spr,
+            layout = wibox.layout.fixed.vertical,
 
         },
     }
