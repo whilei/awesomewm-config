@@ -326,6 +326,14 @@ my_table.join(-- Take a screenshot
             end
         end,
         { description = "toggle wibox", group = "awesome" }),
+    awful.key({ modkey },
+            "t", -- t for time
+            function()
+                for s in screen do
+                    s.mywibox_worldtimes.visible = not s.mywibox_worldtimes.visible
+                end
+            end,
+            { description = "toggle world times wibox", group = "awesome" }),
 
     -- On the fly useless gaps change
     awful.key({ modkey, altkey },
