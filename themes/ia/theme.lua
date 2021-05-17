@@ -211,6 +211,8 @@ local function BoundedRGBVal(low, high, val)
   return val
 end
 
+local world_clock_fmt = "%H:%M%t%z"
+
 -- Textclock
 local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock = awful.widget.watch(
@@ -231,7 +233,7 @@ local clock = awful.widget.watch(
 )
 
 local world_clock_vancouver = awful.widget.watch(
-        "bash -c 'TZ='America/Vancouver' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='America/Vancouver' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -244,7 +246,7 @@ local world_clock_vancouver = awful.widget.watch(
 )
 
 local world_clock_denver = awful.widget.watch(
-        "bash -c 'TZ='America/Denver' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='America/Denver' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -257,7 +259,7 @@ local world_clock_denver = awful.widget.watch(
 )
 
 local world_clock_chicago = awful.widget.watch(
-        "bash -c 'TZ='America/Chicago' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='America/Chicago' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -270,7 +272,7 @@ local world_clock_chicago = awful.widget.watch(
 )
 
 local world_clock_newyork = awful.widget.watch(
-        "bash -c 'TZ='America/New_York' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='America/New_York' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -296,7 +298,7 @@ local clock_utc = awful.widget.watch(
 )
 
 local world_clock_london = awful.widget.watch(
-        "bash -c 'TZ='Europe/London' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='Europe/London' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -309,7 +311,7 @@ local world_clock_london = awful.widget.watch(
 )
 
 local world_clock_berlin = awful.widget.watch(
-        "bash -c 'TZ='Europe/Berlin' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='Europe/Berlin' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -322,7 +324,7 @@ local world_clock_berlin = awful.widget.watch(
 )
 
 local world_clock_madrid = awful.widget.watch(
-        "bash -c 'TZ='Europe/Madrid' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='Europe/Madrid' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -336,7 +338,7 @@ local world_clock_madrid = awful.widget.watch(
 
 
 local world_clock_athens = awful.widget.watch(
-        "bash -c 'TZ='Europe/Athens' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='Europe/Athens' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -349,7 +351,7 @@ local world_clock_athens = awful.widget.watch(
 )
 
 local world_clock_dubai = awful.widget.watch(
-        "bash -c 'TZ='Asia/Dubai' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='Asia/Dubai' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -362,7 +364,7 @@ local world_clock_dubai = awful.widget.watch(
 )
 
 local world_clock_shanghai = awful.widget.watch(
-        "bash -c 'TZ='Asia/Shanghai' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='Asia/Shanghai' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -375,7 +377,7 @@ local world_clock_shanghai = awful.widget.watch(
 )
 
 local world_clock_tokyo = awful.widget.watch(
-        "bash -c 'TZ='Asia/Tokyo' date +'%H:%M_%:::z''",
+        "bash -c 'TZ='Asia/Tokyo' date +'" .. world_clock_fmt .."''",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
