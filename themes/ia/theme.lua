@@ -773,12 +773,12 @@ function theme.at_screen_connect(s)
     })
 
     s.mywibox_worldtimes = awful.wibar({
-        -- visible = false,
+        visible = false,
         position = "right",
-        stretch = false,
-        ontop = true,
+        --stretch = false,
+        --ontop = true,
         screen = s,
-        height = 500,
+        --height = 500,
         width = 100,
         y = 18,
         bg = theme.bg_normal,
@@ -842,15 +842,15 @@ function theme.at_screen_connect(s)
 
 
         },
-        -- middle
-        {
-            layout = wibox.layout.fixed.vertical,
-        },
-        -- right
-        {
-            layout = wibox.layout.fixed.vertical,
-
-        },
+        ---- middle
+        --{
+        --    layout = wibox.layout.fixed.vertical,
+        --},
+        ---- right
+        --{
+        --    layout = wibox.layout.fixed.vertical,
+        --
+        --},
     }
 
     -- Add widgets to the wibox
