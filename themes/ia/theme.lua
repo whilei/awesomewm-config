@@ -243,6 +243,19 @@ local world_clock_vancouver = awful.widget.watch(
         end
 )
 
+local world_clock_denver = awful.widget.watch(
+        "bash -c 'TZ='America/Denver' date +'%H:%M_%:::z''",
+        60,
+        function(widget, stdout)
+            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+
+            widget:set_markup(
+            -- theme.font
+                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+            )
+        end
+)
+
 local world_clock_chicago = awful.widget.watch(
         "bash -c 'TZ='America/Chicago' date +'%H:%M_%:::z''",
         60,
@@ -255,7 +268,6 @@ local world_clock_chicago = awful.widget.watch(
             )
         end
 )
-
 
 local world_clock_newyork = awful.widget.watch(
         "bash -c 'TZ='America/New_York' date +'%H:%M_%:::z''",
@@ -763,10 +775,10 @@ function theme.at_screen_connect(s)
     s.mywibox_worldtimes = awful.wibar({
         -- visible = false,
         position = "right",
-        --stretch = true,
+        stretch = false,
         ontop = true,
         screen = s,
-        --height = 18,
+        height = 500,
         width = 100,
         y = 18,
         bg = theme.bg_normal,
@@ -782,6 +794,10 @@ function theme.at_screen_connect(s)
 
             wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver'))),
             world_clock_vancouver,
+            --spr,
+
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Denver'))),
+            world_clock_denver,
             --spr,
 
             wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Chicago'))),
