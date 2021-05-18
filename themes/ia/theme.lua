@@ -794,6 +794,8 @@ function theme.at_screen_connect(s)
         {
             layout = wibox.layout.fixed.vertical,
 
+            spr,
+
             wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver'))),
             world_clock_vancouver,
             --spr,

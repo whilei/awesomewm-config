@@ -316,7 +316,7 @@ my_table.join(-- Take a screenshot
         { description = "go back", group = "client" }),
     -- Show/Hide Wibox
     awful.key({ modkey },
-        "b",
+        "d",
         function()
             for s in screen do
                 s.mywibox.visible = not s.mywibox.visible
