@@ -662,6 +662,19 @@ local weather = lain.widget.weather({
     end
 })
 
+local mygithubwidget = lain.widget.mywidget({
+    TOKEN = os_getenv("GITHUB_MEOWSBITS_PERSONAL"),
+    name = "Github Notifications",
+    labelprefix = "meowsbits: ",
+    timeout = 66,
+})
+local mygithubwidget2 = lain.widget.mywidget({
+    TOKEN = os_getenv("GITHUB_WHILEI_PERSONAL"),
+    name = "Github Notifications",
+    labelprefix = "whilei: ",
+    timeout = 66,
+})
+
 -- Separators
 local spr     = wibox.widget.textbox(' ')
 local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
@@ -882,6 +895,15 @@ function theme.at_screen_connect(s)
         { -- Right widgets
                     layout = wibox.layout.fixed.horizontal,
                     wibox.widget.systray(),
+
+                    -- my github widget
+                    spr,
+                    mygithubwidget.icon,
+                    mygithubwidget.widget,
+
+                    spr,
+                    mygithubwidget2.icon,
+                    mygithubwidget2.widget,
 
             -- weather insert
             spr,
