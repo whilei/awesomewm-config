@@ -1,6 +1,7 @@
 local wibox = require("wibox")
 local helpers  = require("lain.helpers")
 local json     = require("lain.util").dkjson
+local markup = require("lain.util").markup
 
 local string   = string
 
@@ -14,6 +15,8 @@ local function factory(args)
     local timeout               = args.timeout or 60 * 15 -- 15 min
 
     local icons_path            = args.icons_path or helpers.icons_dir .. "mywidget/"
+
+    local alert_color = "#f9826c"
 
 
     -- Defaults
@@ -45,7 +48,11 @@ local function factory(args)
             else
                 -- Response was OK (no error).
                 local table_len = #mywidget_response
-                mywidget.widget:set_markup(string.format("%s%d", mylabelprefix, table_len))
+                local str = string.format("%s%d", mylabelprefix, table_len)
+                if table_len > 0 then
+                    str = markup(alert_color, str)
+                end
+                mywidget.widget:set_markup(str)
 
             end
 
@@ -55,7 +62,7 @@ local function factory(args)
         end)
     end
 
-    mywidget.timer = helpers.newtimer("mywidget-abc", timeout, mywidget.update, false, true)
+    mywidget.timer = helpers.newtimer("mywidget-"..myname..mylabelprefix, timeout, mywidget.update)
 
     return mywidget
 end

@@ -607,7 +607,7 @@ local function os_getenv(varname)
     -- get a temporary file name
     local n = os.tmpname()
     -- execute a command
-    os.execute (". /home/ia/.dotfiles/private/env.bash && echo ${" .. varname .. "} > " .. n)
+    os.execute (". /home/ia/.dotfiles/private/env.bash && . /home/ia/.dotfiles/private/github.bash && echo ${" .. varname .. "} > " .. n)
     local file = io.open(n, "r")
     local line = ""
     line = file:read()
@@ -666,13 +666,13 @@ local mygithubwidget = lain.widget.mywidget({
     TOKEN = os_getenv("GITHUB_MEOWSBITS_PERSONAL"),
     name = "Github Notifications",
     labelprefix = "meowsbits: ",
-    timeout = 66,
+    timeout = 60*2,
 })
 local mygithubwidget2 = lain.widget.mywidget({
     TOKEN = os_getenv("GITHUB_WHILEI_PERSONAL"),
     name = "Github Notifications",
     labelprefix = "whilei: ",
-    timeout = 66,
+    timeout = 60*2,
 })
 
 -- Separators
