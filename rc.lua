@@ -690,6 +690,8 @@ for i = 1, 9 do
             descr_toggle_focus))
 end
 
+-- Set up client management buttons FOR THE MOUSE.
+-- (1 is left, 3 is right)
 clientbuttons =
 my_table.join(awful.button({},
     1,

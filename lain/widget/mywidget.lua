@@ -2,6 +2,7 @@ local wibox = require("wibox")
 local helpers  = require("lain.helpers")
 local json     = require("lain.util").dkjson
 local markup = require("lain.util").markup
+local naughty  = require("naughty")
 
 local string   = string
 
