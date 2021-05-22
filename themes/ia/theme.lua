@@ -787,21 +787,25 @@ function theme.at_screen_connect(s)
         opacity = 0.5,
     })
 
-    s.mywibox_slim = awful.wibar({
+    s.mywibox_slim = wibox({
         visible = false,
-        -- position = "top", -- top, bottom
-        position = "bottom",
         screen = s,
-        --y = s.geometry.y + 18,
-        --x = s.geometry.x,
-        
         height = 18, -- 18
         width = 100,
         bg = theme.bg_normal, -- .. "00",
         fg = theme.fg_normal,
         opacity = 0.0,
+        ontop = true,
+        --input_passthrough = true,
+        type = "dock", -- "toolbar", -- ,
         stretch = false,
-        ontop = true
+        --position = "bottom", -- bottom, left, right
+
+        --y = s.geometry.y + 18,
+        --x = s.geometry.x,
+
+        y = s.geometry.y, -- + s.geometry.height - 18,
+        x = s.geometry.x + s.geometry.width / 4 - 50, -- s.geometry.x + s.geometry.width / 2 - 50,
     })
 
     s.mywibox_worldtimes = awful.wibar({
