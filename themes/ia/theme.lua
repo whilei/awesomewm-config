@@ -787,25 +787,26 @@ function theme.at_screen_connect(s)
         opacity = 0.5,
     })
 
+    -- The important part to make this actually float on top of all the stuff is
+    -- that it's a WIBOX and a not a WIBAR.
+    -- It's also NOT an awful.wibox, but just a wibox. These are important things.
     s.mywibox_slim = wibox({
-        visible = false,
+        visible = false, -- Needs to be opposite of the default mywibox wibar to make it work like I want.
         screen = s,
+
+        y = s.geometry.y,
+        x = s.geometry.x + s.geometry.width / 4 - 50,
         height = 18, -- 18
         width = 100,
+
         bg = theme.bg_normal, -- .. "00",
         fg = theme.fg_normal,
+
         opacity = 0.0,
         ontop = true,
-        --input_passthrough = true,
         type = "dock", -- "toolbar", -- ,
-        stretch = false,
-        --position = "bottom", -- bottom, left, right
 
-        --y = s.geometry.y + 18,
-        --x = s.geometry.x,
-
-        y = s.geometry.y, -- + s.geometry.height - 18,
-        x = s.geometry.x + s.geometry.width / 4 - 50, -- s.geometry.x + s.geometry.width / 2 - 50,
+        --input_passthrough = true,
     })
 
     s.mywibox_worldtimes = awful.wibar({
@@ -880,22 +881,10 @@ function theme.at_screen_connect(s)
 
 
         },
-        ---- middle
-        --{
-        --    layout = wibox.layout.fixed.vertical,
-        --},
-        ---- right
-        --{
-        --    layout = wibox.layout.fixed.vertical,
-        --
-        --},
     }
 
     s.mywibox_slim:setup {
         layout = wibox.layout.align.horizontal,
-        --{
-        --    layout = wibox.layout.flex.horizontal,
-        --},
         { -- Center widgets
             layout = wibox.layout.fixed.horizontal,
 
@@ -908,9 +897,6 @@ function theme.at_screen_connect(s)
             s.mylayoutbox,
 
         },
-        --{
-        --    layout = wibox.layout.flex.horizontal,
-        --},
     }
 
     -- Add widgets to the wibox
