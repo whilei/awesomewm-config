@@ -81,9 +81,9 @@ theme.border_normal                             = "#000000ff"
 theme.border_focus                              = "#0B1DC2"
 theme.border_marked                             = "#f05800"
 
-theme.border_width                              = 4
+theme.border_width                              = 0 -- 4
 
-theme.tasklist_bg_normal                        = "#313452" -- "#c8def7"#f01800
+theme.tasklist_bg_normal                        = "#05092a" -- "#313452" -- "#c8def7"#f01800
 theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
 theme.tasklist_fg_normal                        = "#FFFFFF"
 theme.tasklist_fg_focus                         = "#FFFFFF"
@@ -877,9 +877,22 @@ function theme.at_screen_connect(s)
 
             wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Tokyo'))),
             world_clock_tokyo,
-            --spr,
 
-
+            spr,
+            -- my github widget
+            {
+                layout = wibox.layout.fixed.horizontal,
+                --height = 18,
+                --mygithubwidget.icon,
+                spr,
+                mygithubwidget.widget,
+            },
+            {
+                layout = wibox.layout.fixed.horizontal,
+                --mygithubwidget2.icon,
+                spr,
+                mygithubwidget2.widget,
+            },
         },
     }
 
@@ -925,14 +938,6 @@ function theme.at_screen_connect(s)
                     layout = wibox.layout.fixed.horizontal,
                     wibox.widget.systray(),
 
-                    -- my github widget
-                    spr,
-                    mygithubwidget.icon,
-                    mygithubwidget.widget,
-
-                    spr,
-                    mygithubwidget2.icon,
-                    mygithubwidget2.widget,
 
             -- weather insert
             spr,

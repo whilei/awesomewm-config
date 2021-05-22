@@ -89,20 +89,25 @@ local function factory(args)
     weather.icon = wibox.widget.imagebox(weather.icon_path)
 
     local function error_display(resp_json)
-        local err_resp = json.decode(resp_json)
-        if err_resp.message then
-            naughty.notify{
-                title = 'Weather Widget Error',
-                text = err_resp.message,
-                preset = naughty.config.presets.critical,
-            }
-        else
-            naughty.notify{
-                title = 'Weather Widget Error',
-                text = err_resp,
-                preset = naughty.config.presets.critical,
-            }
-        end
+        --local err_resp = json.decode(resp_json)
+        naughty.notify{
+            title = 'Weather Widget Error',
+            text = "Failed to get weather.",
+            preset = naughty.config.presets.low,
+        }
+        --if err_resp.message then
+        --    naughty.notify{
+        --        title = 'Weather Widget Error',
+        --        text = err_resp.message,
+        --        preset = naughty.config.presets.critical,
+        --    }
+        --else
+        --    naughty.notify{
+        --        title = 'Weather Widget Error',
+        --        text = err_resp,
+        --        preset = naughty.config.presets.critical,
+        --    }
+        --end
     end
 
     function weather.show(seconds)

@@ -27,20 +27,25 @@ local function factory(args)
     mywidget.icon = wibox.widget.imagebox(mywidget.icon_path)
 
     local function error_display(resp_json)
-        local err_resp = json.decode(resp_json)
-        if err_resp.message then
-            naughty.notify{
-                title = myname .. ' Error',
-                text = err_resp.message,
-                preset = naughty.config.presets.critical,
-            }
-        else
-            naughty.notify{
-                title = myname .. ' Error',
-                text = err_resp,
-                preset = naughty.config.presets.critical,
-            }
-        end
+        naughty.notify{
+            title = myname .. " Error",
+            text = "Failed to get Github notifications.",
+            preset = naughty.config.presets.low,
+        }
+        --local err_resp = json.decode(resp_json)
+        --if err_resp.message then
+        --    naughty.notify{
+        --        title = myname .. ' Error',
+        --        text = err_resp.message,
+        --        preset = naughty.config.presets.critical,
+        --    }
+        --else
+        --    naughty.notify{
+        --        title = myname .. ' Error',
+        --        text = err_resp,
+        --        preset = naughty.config.presets.critical,
+        --    }
+        --end
 
     end
 
