@@ -787,6 +787,23 @@ function theme.at_screen_connect(s)
         opacity = 0.5,
     })
 
+    s.mywibox_slim = awful.wibar({
+        visible = false,
+        -- position = "top", -- top, bottom
+        position = "bottom",
+        screen = s,
+        --y = s.geometry.y + 18,
+        --x = s.geometry.x,
+        
+        height = 18, -- 18
+        width = 100,
+        bg = theme.bg_normal, -- .. "00",
+        fg = theme.fg_normal,
+        opacity = 0.0,
+        stretch = false,
+        ontop = true
+    })
+
     s.mywibox_worldtimes = awful.wibar({
         visible = false,
         position = "right",
@@ -867,6 +884,28 @@ function theme.at_screen_connect(s)
         --{
         --    layout = wibox.layout.fixed.vertical,
         --
+        --},
+    }
+
+    s.mywibox_slim:setup {
+        layout = wibox.layout.align.horizontal,
+        --{
+        --    layout = wibox.layout.flex.horizontal,
+        --},
+        { -- Center widgets
+            layout = wibox.layout.fixed.horizontal,
+
+            s.mypromptbox,
+            spr,
+
+            s.mytaglist,
+            spr,
+
+            s.mylayoutbox,
+
+        },
+        --{
+        --    layout = wibox.layout.flex.horizontal,
         --},
     }
 

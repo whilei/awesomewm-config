@@ -323,17 +323,31 @@ my_table.join(-- Take a screenshot
                 if s.mybottomwibox then
                     s.mybottomwibox.visible = not s.mybottomwibox.visible
                 end
+                if s.mywibox_slim then
+                    s.mywibox_slim.visible = not s.mywibox_slim.visible
+                end
             end
         end,
         { description = "toggle wibox", group = "awesome" }),
+    -- Show/Hide Global Time Clock wibar
     awful.key({ modkey },
-            "t", -- t for time
+            "g", -- g for Global times (and is on right)
             function()
                 for s in screen do
                     s.mywibox_worldtimes.visible = not s.mywibox_worldtimes.visible
                 end
             end,
             { description = "toggle world times wibox", group = "awesome" }),
+
+    ---- Show/Hide Slimified Wibar
+    --awful.key({ modkey },
+    --            "t", -- t for top
+    --            function()
+    --                for s in screen do
+    --                    s.mywibox_slim.visible = not s.mywibox_slim.visible
+    --                end
+    --            end,
+    --            { description = "toggle slim wibox wibarZ", group = "awesome" }),
 
     -- On the fly useless gaps change
     awful.key({ modkey, altkey },
@@ -528,12 +542,14 @@ my_table.join(-- Take a screenshot
 
 clientkeys =
 my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { description = "magnify client", group = "client" }), awful.key({ modkey },
+
     "f",
     function(c)
         c.fullscreen = not c.fullscreen
         c:raise()
     end,
     { description = "toggle fullscreen", group = "client" }),
+
     awful.key({ modkey, "Shift" },
         "c",
         function(c)
