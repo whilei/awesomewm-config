@@ -28,11 +28,20 @@ local function factory(args)
 
     local function error_display(resp_json)
         local err_resp = json.decode(resp_json)
-        naughty.notify{
-            title = myname .. ' Error',
-            text = err_resp.message,
-            preset = naughty.config.presets.critical,
-        }
+        if err_resp.message then
+            naughty.notify{
+                title = myname .. ' Error',
+                text = err_resp.message,
+                preset = naughty.config.presets.critical,
+            }
+        else
+            naughty.notify{
+                title = myname .. ' Error',
+                text = err_resp,
+                preset = naughty.config.presets.critical,
+            }
+        end
+
     end
 
     function mywidget.update()
