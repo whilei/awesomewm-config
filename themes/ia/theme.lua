@@ -60,7 +60,7 @@ theme.color_lightblue = "#4070cf"
 
 theme.menu_bg_normal                            = "#000000"
 theme.menu_bg_focus                             = "#000000"
-theme.bg_normal                                 = "#000000"
+theme.bg_normal                                 = "#000000" -- is Wibar bg
 theme.bg_focus                                  = "#000000"
 theme.bg_urgent                                 = "#000000"
 theme.fg_normal                                 = "#aaaaaa"
@@ -77,7 +77,7 @@ theme.clock_fg = "#32ab3a"
 -- theme.border_focus                              = "#606060"
 -- theme.border_marked                             = "#3ca4d8"
 
-theme.border_normal                             = "#000000ff"
+theme.border_normal                             = theme.bg_normal .. "ff"
 theme.border_focus                              = "#0B1DC2"
 theme.border_marked                             = "#f05800"
 
@@ -882,14 +882,13 @@ function theme.at_screen_connect(s)
             -- my github widget
             {
                 layout = wibox.layout.fixed.horizontal,
-                --height = 18,
-                --mygithubwidget.icon,
+                mygithubwidget.icon,
                 spr,
                 mygithubwidget.widget,
             },
             {
                 layout = wibox.layout.fixed.horizontal,
-                --mygithubwidget2.icon,
+                mygithubwidget2.icon,
                 spr,
                 mygithubwidget2.widget,
             },

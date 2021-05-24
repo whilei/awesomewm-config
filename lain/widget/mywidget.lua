@@ -25,6 +25,9 @@ local function factory(args)
     mywidget.widget:set_markup(mywidget_textcontent_empty)
     mywidget.icon_path = icons_path .. "na.png"
     mywidget.icon = wibox.widget.imagebox(mywidget.icon_path)
+    mywidget.icon.forced_height = 18
+    mywidget.icon.forced_width = 18
+
 
     local function error_display(resp_json)
         naughty.notify{
