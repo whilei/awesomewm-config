@@ -675,6 +675,16 @@ local mygithubwidget2 = lain.widget.mywidget({
     timeout = 60*2,
 })
 
+--local function set_random_wallpaper()
+--    local wallpaper_path = theme.dir .. "walls"
+--    local wallpaper = wallpaper_path .. "/" .. gears.filesystem.get_random_file_from_dir(wallpaper_path, {"jpg", "png", "bmp"})
+--    gears.wallpaper.maximized(wallpaper, nil, false)
+--end
+--
+--gears.timer {timeout = 6, call_now = true, autostart = true, callback = set_random_wallpaper}
+--
+--screen.connect_signal("request::wallpaper", set_random_wallpaper)
+
 -- Separators
 local spr     = wibox.widget.textbox(' ')
 local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
