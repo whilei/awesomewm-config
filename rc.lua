@@ -318,7 +318,8 @@ my_table.join(-- Take a screenshot
     awful.key({ modkey },
         "d",
         function()
-            for s in screen do
+            --for s in screen do
+            local s = awful.screen.focused()
                 s.mywibox.visible = not s.mywibox.visible
                 if s.mybottomwibox then
                     s.mybottomwibox.visible = not s.mybottomwibox.visible
@@ -326,16 +327,17 @@ my_table.join(-- Take a screenshot
                 if s.mywibox_slim then
                     s.mywibox_slim.visible = not s.mywibox_slim.visible
                 end
-            end
+            --end
         end,
         { description = "toggle wibox", group = "awesome" }),
     -- Show/Hide Global Time Clock wibar
     awful.key({ modkey },
             "g", -- g for Global times (and is on right)
             function()
-                for s in screen do
+                local s =  awful.screen.focused()
+                --for s in screen do
                     s.mywibox_worldtimes.visible = not s.mywibox_worldtimes.visible
-                end
+                --end
             end,
             { description = "toggle world times wibox", group = "awesome" }),
 

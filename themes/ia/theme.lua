@@ -66,7 +66,7 @@ theme.bg_urgent                                 = "#000000"
 theme.fg_normal                                 = "#aaaaaa"
 theme.fg_focus                                  = "#ff8c00"
 theme.fg_urgent                                 = "#af1d18"
-theme.bg_minimize                               = "#bf2e3a"
+theme.bg_minimize                               = "#2a0505"
 theme.fg_minimize                               = "#ffffff"
 
 theme.clock_bg = "#191f1a"
@@ -785,13 +785,14 @@ function theme.at_screen_connect(s)
         bg = theme.bg_normal,
         fg = theme.fg_normal,
         opacity = 0.5,
+        visible = true,
     })
 
     -- The important part to make this actually float on top of all the stuff is
     -- that it's a WIBOX and a not a WIBAR.
     -- It's also NOT an awful.wibox, but just a wibox. These are important things.
     s.mywibox_slim = wibox({
-        visible = false, -- Needs to be opposite of the default mywibox wibar to make it work like I want.
+        visible = not s.mywibox.visible, -- Needs to be opposite of the default mywibox wibar to make it work like I want.
         screen = s,
 
         y = s.geometry.y,
@@ -799,14 +800,15 @@ function theme.at_screen_connect(s)
         height = 18, -- 18
         width = 100,
 
-        bg = theme.bg_normal, -- .. "00",
+        --bg = theme.bg_normal, -- .. "00",
+        bg = "#0D001E", -- theme.bg_normal, -- .. "00",
         fg = theme.fg_normal,
 
         opacity = 0.0,
         ontop = true,
         type = "dock", -- "toolbar", -- ,
 
-        --input_passthrough = true,
+        input_passthrough = true,
     })
 
     s.mywibox_worldtimes = awful.wibar({
