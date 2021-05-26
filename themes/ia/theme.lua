@@ -96,8 +96,10 @@ theme.menu_height                               = 18
 theme.menu_width                                = 140
 
 theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.png"
-theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
-theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
+--theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
+--theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
+theme.taglist_squares_sel                       = nil
+theme.taglist_squares_unsel                     = nil
 theme.layout_tile                               = theme.dir .. "/icons/tile.png"
 theme.layout_tileleft                           = theme.dir .. "/icons/tileleft.png"
 theme.layout_tilebottom                         = theme.dir .. "/icons/tilebottom.png"
@@ -763,6 +765,9 @@ function theme.at_screen_connect(s)
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
+    -- I think this is assigning buttons to keystrokes
+    -- awful.button:new (mod, _button, press, release)
+    -- https://awesomewm.org/doc/api/classes/awful.button.html
     s.mylayoutbox:buttons(my_table.join(
                            awful.button({ }, 1, function () awful.layout.inc( 1) end),
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
@@ -770,7 +775,18 @@ function theme.at_screen_connect(s)
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
     
     -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
+    s.mytaglist = awful.widget.taglist(
+         s,
+         awful.widget.taglist.filter.all,
+         awful.util.taglist_buttons,
+         {
+             -- style
+            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+            fg_occupied = "#666666", -- "#777777",
+            fg_empty = "#222222",
+            --taglist_squares_sel
+         }
+    )
 
     -- Create a tasklist widget
     local function list_update(w, buttons, label, data, objects)
@@ -808,11 +824,10 @@ function theme.at_screen_connect(s)
         y = s.geometry.y,
         x = s.geometry.x + s.geometry.width / 4 - 50,
         height = 18, -- 18
-        width = 100,
+        width = 120,
 
-        --bg = theme.bg_normal, -- .. "00",
-        bg = "#0D001E", -- theme.bg_normal, -- .. "00",
-        fg = theme.fg_normal,
+        --bg = "#0D001E", -- theme.bg_normal, -- .. "00",
+        --fg = theme.fg_normal,
 
         opacity = 0.0,
         ontop = true,
