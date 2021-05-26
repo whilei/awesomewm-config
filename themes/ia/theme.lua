@@ -784,6 +784,12 @@ function theme.at_screen_connect(s)
             --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
             fg_occupied = "#666666", -- "#777777",
             fg_empty = "#222222",
+
+            bg_focus = "#00000000",
+            bg_urgent = "#00000000",
+            bg_occupied = "#00000000",
+            bg_empty = "#00000000",
+            bg_volatile = "#00000000",
             --taglist_squares_sel
          }
     )
@@ -823,13 +829,14 @@ function theme.at_screen_connect(s)
 
         y = s.geometry.y,
         x = s.geometry.x + s.geometry.width / 4 - 50,
-        height = 18, -- 18
+        height = 14, -- 18
         width = 120,
 
         --bg = "#0D001E", -- theme.bg_normal, -- .. "00",
         --fg = theme.fg_normal,
-
-        opacity = 0.0,
+        -- bg = "#00000000", -- theme.bg_normal, -- .. "00",
+        bg = theme.tasklist_bg_normal,
+        
         ontop = true,
         type = "dock", -- "toolbar", -- ,
 
