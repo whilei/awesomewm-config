@@ -36,7 +36,7 @@ theme.dir                                       = os.getenv("HOME") .. "/.config
 -- Wallpaper, wallpaper
 theme.wallTallIndex = 0
 theme.wallWideIndex = 0
-function wallFn(s)
+function wallpaperForScreenByDimension(s)
     -- Default wide.
     local out = theme.dir .. "/walls/iter/wide/wall" .. theme.wallWideIndex .. ".jpg"
 
@@ -50,7 +50,8 @@ function wallFn(s)
     theme.wallWideIndex = theme.wallWideIndex + 1
     return out
 end
-theme.wallpaper                                 = wallFn
+--theme.wallpaper                                 = wallpaperForScreenByDimension
+theme.wallpaper                                 = theme.dir .. "/walls/solidcolor_black.png"
 
 theme.font                                      = "xos4 Terminus 9"
 theme.color_green = "#2EFE2E"
