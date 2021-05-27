@@ -16,6 +16,7 @@ local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 local common = require("awful.widget.common")
+local dpi = require("beautiful").xresources.apply_dpi
 
 local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
@@ -794,11 +795,177 @@ function theme.at_screen_connect(s)
          }
     )
 
+    --s.mytaglist_slim = awful.widget.taglist {
+    --    args = {
+    --        screen = s,
+    --        filter = awful.widget.taglist.filter.all,
+    --        buttons = awful.util.taglist_buttons,
+    --        layout = wibox.layout.fixed.vertical,
+    --        style = {
+    --            -- style
+    --            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+    --            fg_occupied = "#666666", -- "#777777",
+    --            fg_empty = "#222222",
+    --
+    --            bg_focus = "#00000000",
+    --            bg_urgent = "#00000000",
+    --            bg_occupied = "#00000000",
+    --            bg_empty = "#00000000",
+    --            bg_volatile = "#00000000",
+    --            --taglist_squares_sel
+    --        }
+    --    }
+    --}
+    --        s,
+    --        awful.widget.taglist.filter.all,
+    --        awful.util.taglist_buttons,
+    --        {
+    --            -- style
+    --            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+    --            fg_occupied = "#666666", -- "#777777",
+    --            fg_empty = "#222222",
+    --
+    --            bg_focus = "#00000000",
+    --            bg_urgent = "#00000000",
+    --            bg_occupied = "#00000000",
+    --            bg_empty = "#00000000",
+    --            bg_volatile = "#00000000",
+    --            --taglist_squares_sel
+    --        }
+    --)
+    --s.mytaglist_slim.widget = wibox.layout.fixed.vertical()
+
+    --s.mytaglist_slim = awful.widget.taglist({args = {
+    --    screen = s,
+    --    filter = awful.widget.taglist.filter.all,
+    --    buttons = awful.util.taglist_buttons,
+    --    layout = wibox.layout.fixed.vertical(),
+    --    style = {
+    --        -- style
+    --        --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+    --        fg_occupied = "#666666", -- "#777777",
+    --        fg_empty = "#222222",
+    --
+    --        bg_focus = "#00000000",
+    --        bg_urgent = "#00000000",
+    --        bg_occupied = "#00000000",
+    --        bg_empty = "#00000000",
+    --        bg_volatile = "#00000000",
+    --        --taglist_squares_sel
+    --    }
+    --}})
+
     -- Create a tasklist widget
     local function list_update(w, buttons, label, data, objects)
         common.list_update(w, buttons, label, data, objects)
         w:set_max_widget_size(120)
     end
+
+    --function myupdate(w, buttons, label, data, objects)
+    --    w:reset()
+    --    local l = wibox.layout.fixed.horizontal()
+    --    for i, o in ipairs(objects) do
+    --        local cache = data[o]
+    --        if cache then
+    --            ib = cache.ib
+    --        else
+    --            ib = wibox.widget.imagebox()
+    --            ib:buttons(common.create_buttons(buttons, o))
+    --
+    --            data[o] = {
+    --                ib = ib
+    --            }
+    --        end
+    --
+    --        local text, bg, bg_image, icon = label(o, cache.ib)
+    --        ib:set_image(icon)
+    --        l:add(ib)
+    --        --w:add(ib)
+    --    end
+    --    w:add(l)
+    --end
+
+    ----- Common update method.
+    ---- @param w The widget.
+    ---- @tab buttons
+    ---- @func label Function to generate label parameters from an object.
+    ----   The function gets passed an object from `objects`, and
+    ----   has to return `text`, `bg`, `bg_image`, `icon`.
+    ---- @tab data Current data/cache, indexed by objects.
+    ---- @tab objects Objects to be displayed / updated.
+    --function my_commonlist_update(w, buttons, label, data, objects)
+    --    -- update the widgets, creating them if needed
+    --    w:reset()
+    --    for i, o in ipairs(objects) do
+    --        local cache = data[o]
+    --        local ib, tb, bgb, tbm, ibm, l
+    --        --local ib, bgb, tbm, ibm, l
+    --        if cache then
+    --            ib = cache.ib
+    --            tb = cache.tb
+    --            bgb = cache.bgb
+    --            tbm = cache.tbm
+    --            ibm = cache.ibm
+    --        else
+    --            ib = wibox.widget.imagebox()
+    --            tb = wibox.widget.textbox()
+    --            bgb = wibox.container.background()
+    --            tbm = wibox.container.margin(tb, dpi(4), dpi(4))
+    --            ibm = wibox.container.margin(ib, dpi(4))
+    --            l = wibox.layout.fixed.horizontal()
+    --
+    --            -- All of this is added in a fixed widget
+    --            l:fill_space(true)
+    --            l:add(ibm)
+    --            l:add(tbm)
+    --
+    --            -- And all of this gets a background
+    --            bgb:set_widget(l)
+    --
+    --            bgb:buttons(common.create_buttons(buttons, o))
+    --
+    --            data[o] = {
+    --                ib  = ib,
+    --                tb  = tb,
+    --                bgb = bgb,
+    --                tbm = tbm,
+    --                ibm = ibm,
+    --            }
+    --        end
+    --
+    --        local text, bg, bg_image, icon, args = label(o, tb)
+    --        args = args or {}
+    --
+    --        -- The text might be invalid, so use pcall.
+    --        --text = ""
+    --        if text == nil or text == "" then
+    --            tbm:set_margins(0)
+    --        else
+    --            if not tb:set_markup_silently(text) then
+    --                tb:set_markup("<i>&lt;Invalid text&gt;</i>")
+    --            end
+    --        end
+    --        tb:set_markup(" ")
+    --        bgb:set_bg(bg)
+    --        if type(bg_image) == "function" then
+    --            -- TODO: Why does this pass nil as an argument?
+    --            bg_image = bg_image(tb,o,nil,objects,i)
+    --        end
+    --        bgb:set_bgimage(bg_image)
+    --        if icon then
+    --            ib:set_image(icon)
+    --        else
+    --            ibm:set_margins(0)
+    --        end
+    --
+    --        bgb.shape              = args.shape
+    --        bgb.shape_border_width = args.shape_border_width
+    --        bgb.shape_border_color = args.shape_border_color
+    --
+    --        w:add(bgb)
+    --    end
+    --end
+
     -- awful.widget.tasklist()
     s.mytasklist = awful.widget.tasklist(
         s, -- screen
@@ -806,6 +973,8 @@ function theme.at_screen_connect(s)
         awful.util.tasklist_buttons, -- buttons
         nil, -- style
         list_update -- update function
+        --myupdate
+        --my_commonlist_update
     )
 
     -- Create the wibox
@@ -828,15 +997,26 @@ function theme.at_screen_connect(s)
         screen = s,
 
         y = s.geometry.y,
-        x = s.geometry.x + s.geometry.width / 4 - 50,
+        x = s.geometry.x + s.geometry.width / 4 - 60,
+
+        -- Bottom
+        --y = s.geometry.y + s.geometry.height - 14,
+        --x = s.geometry.x + s.geometry.width / 2 - 60,
+
         height = 14, -- 18
         width = 120,
+
+        ---- Rotated:
+        --y = s.geometry.y + s.geometry.height / 2 - 60,
+        --x = s.geometry.x,
+        --height = 120, -- 18
+        --width = 14,
 
         --bg = "#0D001E", -- theme.bg_normal, -- .. "00",
         --fg = theme.fg_normal,
         -- bg = "#00000000", -- theme.bg_normal, -- .. "00",
         bg = theme.tasklist_bg_normal,
-        
+
         ontop = true,
         type = "dock", -- "toolbar", -- ,
 
@@ -931,6 +1111,9 @@ function theme.at_screen_connect(s)
 
     s.mywibox_slim:setup {
         layout = wibox.layout.align.horizontal,
+        ---- Rotated:
+        --layout = wibox.container.rotate,
+        --direction = "west",
         { -- Center widgets
             layout = wibox.layout.fixed.horizontal,
 
@@ -944,6 +1127,22 @@ function theme.at_screen_connect(s)
 
         },
     }
+
+    --s.mywibox_slim:setup {
+    --    layout = wibox.layout.align.vertical,
+    --    { -- Center widgets
+    --        layout = wibox.layout.fixed.vertical,
+    --
+    --        --s.mypromptbox,
+    --        --spr,
+    --
+    --        s.mytaglist_slim,
+    --        spr,
+    --
+    --        s.mylayoutbox,
+    --
+    --    },
+    --}
 
     -- Add widgets to the wibox
     s.mywibox:setup {
