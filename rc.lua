@@ -366,7 +366,6 @@ my_table.join(-- Take a screenshot
             lain.util.useless_gaps_resize(-10)
         end,
         { description = "decrement useless gaps", group = "tag" }),
-
     -- Dynamic tagging
     awful.key({ modkey, "Shift" },
         "n",
@@ -614,12 +613,14 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
                 c:raise()
             end,
             { description = "toggle floating", group = "client" }),
+
     awful.key({ modkey, "Control" },
         "Return",
         function(c)
             c:swap(awful.client.getmaster())
         end,
         { description = "move to master", group = "client" }),
+
     awful.key({ modkey },
         "i",
         function(c)
