@@ -560,12 +560,13 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
         end,
         { description = "close", group = "client" }),
 
-    -- Place the client window floating in the middle, on top.
+    -- Place the client window floating in the middle, centered, on top.
     -- This is a nice focus geometry.
     awful.key({ modkey, "Control" },
         "space",
         function(c)
             awful.client.floating.toggle()
+            awful.client.maximized = false
 
             if c.floating then
                 -- place the screen in the middle
@@ -574,11 +575,16 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
                 local sgeo
                 sgeo = c.screen.geometry
 
-                geo.x = sgeo.x + sgeo.width / 8
-                geo.y = sgeo.y + sgeo.height / 8
+                local margin_divisor = 8
+                if sgeo.width > 3000 then
+                    margin_divisor = margin_divisor * 2
+                end
 
-                geo.width = sgeo.width * 3 / 4
-                geo.height = sgeo.height * 3 / 4
+                geo.x = sgeo.x + sgeo.width / margin_divisor
+                geo.y = sgeo.y + sgeo.height / margin_divisor
+
+                geo.width = sgeo.width - ((sgeo.width / margin_divisor)*2)
+                geo.height = sgeo.height - ((sgeo.height / margin_divisor)*2)
                 c:geometry(geo)
             end
             client.focus = c
@@ -594,6 +600,7 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
             "space",
             function(c)
                 awful.client.floating.toggle()
+                awful.client.maximized = false
 
                 if c.floating then
                     -- place the screen in the middle
@@ -868,7 +875,13 @@ client.connect_signal("mouse::enter",
         local isJavaInstance = function(instance)
             -- xprop WM_CLASS
             -- WM_CLASS(STRING) = "sun-awt-X11-XFramePeer", "jetbrains-studio"
+
+            -- THIS ONE IS THE ORIGINAL GOOD ONE:
             return instance and instance ~= "" and string.match(instance, '^sun-awt-X11-X')
+
+            -- THIS ONE IS EXPERIMENTS:
+            --return instance and instance ~= "" and string.match(instance, '^.*')
+            --return true
         end
         if focused and focused.class == c.class
             and isJavaInstance(focused.instance)

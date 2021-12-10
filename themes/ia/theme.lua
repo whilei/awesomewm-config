@@ -575,6 +575,16 @@ local net = lain.widget.net({
     end
 })
 
+local my_data = awful.widget.watch(
+        "bash -c 'cat " .. theme.dir .. "/data.txt" .. "'",
+        5,
+        function(widget, stdout)
+            -- https://docs.gtk.org/Pango/pango_markup.html
+            widget:set_markup(" " .. markup.font(theme.font, stdout))
+        end
+)
+
+
 --local weather = weather_widget({
 --    api_key = "25fb73929c3c4030dc1800e70518aedb"
 --})
@@ -1054,19 +1064,19 @@ function theme.at_screen_connect(s)
 
             spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver (PT)'))),
             world_clock_vancouver,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Denver'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Denver, (MT)'))),
             world_clock_denver,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Chicago'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Chicago (CT)'))),
             world_clock_chicago,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'New York'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'New York (ET)'))),
             world_clock_newyork,
             --spr,
 
@@ -1074,19 +1084,19 @@ function theme.at_screen_connect(s)
             clock_utc,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'London'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'London (BT,WET)'))),
             world_clock_london,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Berlin'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Berlin (CET)'))),
             world_clock_berlin,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid (CET)'))),
             world_clock_madrid,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens (EET)'))),
             world_clock_athens,
             --spr,
 
@@ -1115,6 +1125,14 @@ function theme.at_screen_connect(s)
                 spr,
                 mygithubwidget2.widget,
             },
+
+            spr,
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spr,
+                my_data,
+            },
+
         },
     }
 
