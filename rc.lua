@@ -153,7 +153,7 @@ local myawesomemenu = {
             return false, hotkeys_popup.show_help
         end
     },
-    -- { "layouts", function() return false, layoutlist_popup.widget end },
+     --{ "layouts", function() return false, layoutlist_popup.widget end },
     -- { "manual", terminal .. " -e man awesome" },
     -- { "edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
     { "restart", awesome.restart }
@@ -859,7 +859,7 @@ client.connect_signal("request::titlebars",
                 -- Right
                 awful.titlebar.widget.floatingbutton(c),
                 awful.titlebar.widget.maximizedbutton(c),
-                awful.titlebar.widget.stickybutton(c),
+                --awful.titlebar.widget.stickybutton(c),
                 awful.titlebar.widget.ontopbutton(c),
                 awful.titlebar.widget.closebutton(c),
                 layout = wibox.layout.fixed.horizontal()

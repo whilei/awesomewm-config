@@ -785,6 +785,45 @@ function theme.at_screen_connect(s)
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+
+    --local p = awful.popup {
+    --    widget = wibox.widget {
+    --        awful.widget.layoutlist {
+    --            source      = awful.layout.layouts,
+    --            screen      = 1,
+    --            base_layout = wibox.widget {
+    --                spacing         = 5,
+    --                forced_num_cols = 3,
+    --                layout          = wibox.layout.grid.vertical,
+    --            },
+    --            widget_template = {
+    --                {
+    --                    {
+    --                        id            = 'icon_role',
+    --                        forced_height = 22,
+    --                        forced_width  = 22,
+    --                        widget        = wibox.widget.imagebox,
+    --                    },
+    --                    margins = 4,
+    --                    widget  = wibox.container.margin,
+    --                },
+    --                id              = 'background_role',
+    --                forced_width    = 24,
+    --                forced_height   = 24,
+    --                shape           = gears.shape.rounded_rect,
+    --                widget          = wibox.container.background,
+    --            },
+    --        },
+    --        margins = 4,
+    --        widget  = wibox.container.margin,
+    --    },
+    --    preferred_anchors = 'middle',
+    --    border_color      = beautiful.border_color,
+    --    border_width      = beautiful.border_width,
+    --    shape             = gears.shape.infobubble,
+    --}
+    --
+    --p:bind_to_widget(s.mylayoutbox)
     
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist(
