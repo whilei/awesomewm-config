@@ -777,6 +777,22 @@ function theme.at_screen_connect(s)
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
+
+    --s.mylayoutlist = awful.widget.layoutlist({
+    --    screen = s,
+    --    style = {
+    --        disable_name = true,
+    --        spacing      = 3,
+    --    },
+    --    source = function() return {
+    --        awful.layout.suit.floating,
+    --        awful.layout.suit.tile,
+    --        awful.layout.suit.tile.left,
+    --        awful.layout.suit.tile.bottom,
+    --        awful.layout.suit.tile.top,
+    --    } end
+    --})
+
     -- I think this is assigning buttons to keystrokes
     -- awful.button:new (mod, _button, press, release)
     -- https://awesomewm.org/doc/api/classes/awful.button.html
@@ -1227,6 +1243,9 @@ function theme.at_screen_connect(s)
 
             s.mylayoutbox,
             spr,
+
+            --s.mylayoutlist,
+            --spr,
  
             s.mytasklist,
         },

@@ -1,4 +1,4 @@
 Rye8:
-0m25s
-Walking
-0.88
+0m30s
+Unknown
+0.62
