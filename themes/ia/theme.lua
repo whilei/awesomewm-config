@@ -86,7 +86,7 @@ theme.border_marked                             = "#f05800"
 theme.border_width                              = 0 -- 4
 
 theme.tasklist_bg_normal                        = "#05092a" -- "#313452" -- "#c8def7"#f01800
-theme.tasklist_bg_focus                         = "#0B1DC2" -- "#1A1A1A"
+theme.tasklist_bg_focus                         = "#0B1DC2" -- "#420f94"--purple -- blue="#0B1DC2" -- "#1A1A1A"
 theme.tasklist_fg_normal                        = "#FFFFFF"
 theme.tasklist_fg_focus                         = "#FFFFFF"
 
@@ -224,7 +224,8 @@ local clock = awful.widget.watch(
     -- "date +'%a %d %b %R UTC%:::z'", 
     -- "date +'%Y-%m-%dT%H:%MZ%:z'",
     --"date +'%-m-%d %A %H:%M %:::z'",
-    "date +'%H:%M %a %-m-%d %:::z'",
+    --"date +'%H:%M %a %Y-%m-%d %:::z'",
+    "date +'%Y-%m-%d Z%:::z %H:%M %a'",
     60,
     function(widget, stdout)
         -- widget:set_markup(" " .. markup.font(theme.font, stdout))
