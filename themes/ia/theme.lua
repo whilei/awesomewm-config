@@ -53,12 +53,16 @@ end
 --theme.wallpaper                                 = wallpaperForScreenByDimension
 theme.wallpaper                                 = theme.dir .. "/walls/solidcolor_black.png"
 
+-- $ awesome-client
+-- $ b = require("beautiful"); local c = "#08158a"; b.titlebar_bg_focus = c; b.tasklist_bg_focus = c;
+
 theme.font                                      = "xos4 Terminus 9"
 theme.color_green = "#2EFE2E"
 theme.color_yellow ="#FFFF00"
 theme.color_orange = "#FF8000"
 theme.color_red = "#DF0101"
 theme.color_lightblue = "#4070cf"
+theme.color_blue = "#0B1DC2"
 
 theme.menu_bg_normal                            = "#000000"
 theme.menu_bg_focus                             = "#000000"
@@ -66,33 +70,33 @@ theme.bg_normal                                 = "#000000" -- is Wibar bg
 theme.bg_focus                                  = "#000000"
 theme.bg_urgent                                 = "#000000"
 theme.fg_normal                                 = "#aaaaaa"
-theme.fg_focus                                  = "#ff8c00"
+theme.fg_focus                                  = "#00fcec"-- "#ff8c00"
 theme.fg_urgent                                 = "#af1d18"
 theme.bg_minimize                               = "#2a0505"
 theme.fg_minimize                               = "#ffffff"
 
 theme.clock_bg = "#191f1a"
 theme.colon_fg = "#256c1e"
-theme.clock_fg = "#32ab3a"
+theme.clock_fg = "#32ab3a" -- #3030c9
 
 -- theme.border_normal                             = "#1c2022"
 -- theme.border_focus                              = "#606060"
 -- theme.border_marked                             = "#3ca4d8"
 
 theme.border_normal                             = theme.bg_normal .. "ff"
-theme.border_focus                              = "#0B1DC2"
+theme.border_focus                              = "#08158a" -- "#0B1DC2"
 theme.border_marked                             = "#f05800"
 
 theme.border_width                              = 0 -- 4
 
 theme.tasklist_bg_normal                        = "#05092a" -- "#313452" -- "#c8def7"#f01800
-theme.tasklist_bg_focus                         = "#0B1DC2" -- "#420f94"--purple -- blue="#0B1DC2" -- "#1A1A1A"
+theme.tasklist_bg_focus                         = "#08158a" -- "#420f94"--purple -- blue="#08158a" -- "#1A1A1A"
 theme.tasklist_fg_normal                        = "#FFFFFF"
 theme.tasklist_fg_focus                         = "#FFFFFF"
 
-theme.titlebar_bg_focus                         = theme.tasklist_bg_focus -- theme.bg_focus
-theme.titlebar_bg_normal                        = theme.tasklist_bg_normal
-theme.titlebar_fg_focus                         = theme.tasklist_fg_focus -- "#ffffff" -- theme.fg_focus
+theme.titlebar_bg_focus                         = "#08158a" -- theme.bg_focus
+theme.titlebar_bg_normal                        = "#05092a"
+theme.titlebar_fg_focus                         = "#FFFFFF" -- "#ffffff" -- theme.fg_focus
 
 theme.menu_height                               = 18
 theme.menu_width                                = 140
@@ -225,7 +229,7 @@ local clock = awful.widget.watch(
     -- "date +'%Y-%m-%dT%H:%MZ%:z'",
     --"date +'%-m-%d %A %H:%M %:::z'",
     --"date +'%H:%M %a %Y-%m-%d %:::z'",
-    "date +'%Y-%m-%d Z%:::z %H:%M %a'",
+    "date +'%Y-%m-%d %A %H:%M%-:::z'",
     60,
     function(widget, stdout)
         -- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -731,10 +735,36 @@ function theme.at_screen_connect(s)
         end
     })
 
+    --s.quakeBrowser = lain.util.quake({
+    --    app = "ffox",
+    --    name = "MozillaFirefoxDD",
+    --    argname = "",
+    --    extra = "",
+    --    followtag = true,
+    --    vert = "top",
+    --    keepclientattrs = true,
+    --    border = 0,
+    --    settings = function (client)
+    --        client.floating = true;
+    --        local geo
+    --        geo = client:geometry()
+    --        if geo.width > 2000 then
+    --            geo.x = geo.x + (geo.width / 4)
+    --            geo.width = geo.width / 2
+    --            geo.height = geo.height * 2
+    --            client:geometry(geo)
+    --        else
+    --            geo.height = geo.height * 2
+    --            client:geometry(geo)
+    --        end
+    --    end
+    --})
+
+    -- THIS WORKS, BUT is finnicky.
     s.quakeBrowser = lain.util.quake2({
         app = "ffox", -- uses: 'snap alias firefox ffox'
-        extra = "",
         name = "MozillaFirefoxDD",
+        extra = "",
         argname = "",
         followtag = true,
         vert = "top",

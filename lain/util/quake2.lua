@@ -50,6 +50,7 @@ function quake2:display()
         awful.spawn(cmd, {
             tag = self.screen.selected_tag,
 --            focus = true,
+
             sticky = false,
             ontop = true,
             above = true,
@@ -58,7 +59,9 @@ function quake2:display()
             maximized = false,
 --            maximized_vertical = false,
             marked = true,
-            callback = function () end
+            callback = function ()
+                self:compute_size()
+            end
         })
         return
     end

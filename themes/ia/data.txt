@@ -1,4 +1,4 @@
 Rye8:
-0m34s
-Stationary
-0.57
+1m34s
+Unknown
+1

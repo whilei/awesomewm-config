@@ -367,18 +367,18 @@ my_table.join(-- Take a screenshot
         end,
         { description = "decrement useless gaps", group = "tag" }),
     -- Dynamic tagging
-    awful.key({ modkey, "Shift" },
-        "n",
-        function()
-            lain.util.add_tag()
-        end,
-        { description = "add new tag", group = "tag" }),
-    awful.key({ modkey, "Shift" },
-        "r",
-        function()
-            lain.util.rename_tag()
-        end,
-        { description = "rename tag", group = "tag" }),
+    --awful.key({ modkey, "Shift" },
+    --    "n",
+    --    function()
+    --        lain.util.add_tag()
+    --    end,
+    --    { description = "add new tag", group = "tag" }),
+    --awful.key({ modkey, "Shift" },
+    --    "r",
+    --    function()
+    --        lain.util.rename_tag()
+    --    end,
+    --    { description = "rename tag", group = "tag" }),
     awful.key({ modkey, "Shift" },
         "Left",
         function()
@@ -391,12 +391,12 @@ my_table.join(-- Take a screenshot
             lain.util.move_tag(1)
         end,
         { description = "move tag to the right", group = "tag" }),
-    awful.key({ modkey, "Shift" },
-        "d",
-        function()
-            lain.util.delete_tag()
-        end,
-        { description = "delete tag", group = "tag" }),
+    --awful.key({ modkey, "Shift" },
+    --    "d",
+    --    function()
+    --        lain.util.delete_tag()
+    --    end,
+    --    { description = "delete tag", group = "tag" }),
     -- Standard program
     awful.key({ modkey },
         "Return",
@@ -414,6 +414,25 @@ my_table.join(-- Take a screenshot
                 awful.screen.focus(client.focus.screen)
             end)
         end, { description = "run Rofi", group = "awesome" }),
+
+    awful.key({ modkey, "Shift", }, "n",
+    -- cool buttons (custom program) binding
+            function(c)
+
+                --commandPrompter = "cool-buttons"
+                --awful.spawn.easy_async(commandPrompter, function()
+                --    awful.screen.focus(client.focus.screen)
+                --    --awful.client.floating = true;
+                --    c.floating = true;
+                --end)
+                awful.spawn("cool-buttons", {
+                    requests_no_titlebar = true,
+                    floating  = true,
+                    tag       = mouse.screen.selected_tag,
+                    placement = awful.placement.top_left,
+                })
+            end, { description = "run cool-buttons", group = "awesome" }),
+
     awful.key({ altkey, "Shift" },
         "l",
         function()
