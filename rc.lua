@@ -98,8 +98,8 @@ awful.util.tagnames = { "●", "●", "●", "●", "●" }
 --awful.util.tagnames = { "▇", "▇", "▇", "▇", "▇" }
 awful.layout.layouts = {
     -- awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile,
     lain.layout.centerwork,
+    awful.layout.suit.tile,
     --awful.layout.suit.fair,
     -- awful.layout.suit.magnifier,
     -- awful.layout.suit.corner.nw,

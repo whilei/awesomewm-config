@@ -72,7 +72,7 @@ theme.bg_urgent                                 = "#000000"
 theme.fg_normal                                 = "#aaaaaa"
 theme.fg_focus                                  = "#00fcec"-- "#ff8c00"
 theme.fg_urgent                                 = "#af1d18"
-theme.bg_minimize                               = "#2a0505"
+theme.bg_minimize                               = "#2e2d2e"
 theme.fg_minimize                               = "#ffffff"
 
 theme.clock_bg = "#191f1a"
@@ -955,7 +955,7 @@ function theme.at_screen_connect(s)
     -- Create a tasklist widget
     local function list_update(w, buttons, label, data, objects)
         common.list_update(w, buttons, label, data, objects)
-        w:set_max_widget_size(120)
+        w:set_max_widget_size(140)
     end
 
     --function myupdate(w, buttons, label, data, objects)
@@ -1073,7 +1073,12 @@ function theme.at_screen_connect(s)
         s, -- screen
         awful.widget.tasklist.filter.currenttags, -- filter
         awful.util.tasklist_buttons, -- buttons
-        nil, -- style
+            nil,
+            --{
+            --    shape_border_width = 1,
+            --    shape_border_color = theme.tasklist_bg_normal,
+            --    shape = gears.shape.rounded_rect,
+            --}, -- style
         list_update -- update function
     )
     -- This works. Just commented because I'm not using icon-only task list for the slim wibar now.
