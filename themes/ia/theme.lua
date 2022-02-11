@@ -240,6 +240,23 @@ local clock = awful.widget.watch(
         )
     end
 )
+local clock_big = awful.widget.watch(
+-- "date +'%a %d %b %R UTC%:::z'",
+-- "date +'%a %d %b %R UTC%:::z'",
+-- "date +'%Y-%m-%dT%H:%MZ%:z'",
+--"date +'%-m-%d %A %H:%M %:::z'",
+--"date +'%H:%M %a %Y-%m-%d %:::z'",
+        "date +'%a %H:%M'",
+        60,
+        function(widget, stdout)
+            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+
+            widget:set_markup(
+            -- theme.font
+                    markup.fontbg("Roboto Bold 96", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+            )
+        end
+)
 
 local world_clock_vancouver = awful.widget.watch(
         "bash -c 'TZ='America/Vancouver' date +'" .. world_clock_fmt .."''",
@@ -1130,8 +1147,46 @@ function theme.at_screen_connect(s)
         ontop = true,
         type = "dock", -- "toolbar", -- ,
 
+        --Valid types are:
+        --
+        --desktop: The root client, it cannot be moved or resized.
+        --dock: A client attached to the side of the screen.
+        --splash: A client, usually without titlebar shown when an application starts.
+        --dialog: A dialog, see transient_for.
+        --menu: A context menu.
+        --toolbar: A floating toolbar.
+        --utility:
+        --dropdown_menu: A context menu attached to a parent position.
+        --popup_menu: A context menu.
+        --notification: A notification popup.
+        --combo: A combobox list menu.
+        --dnd: A drag and drop indicator.
+        --normal: A normal application main window.
+
+
         input_passthrough = true, -- noop, btw
     })
+
+    --s.mywibox_clock = wibox({
+    --    visible = false,
+    --    screen = s,
+    --    y = s.geometry.y + 18,
+    --    x = s.geometry.x,
+    --    height = 128,
+    --    width = s.geometry.width / 4,
+    --    bg = theme.clock_bg,
+    --    ontop = true,
+    --    type = "toolbar",
+    --    input_passthrough = true,
+    --})
+    --
+    --s.mywibox_clock:setup {
+    --    layout = wibox.layout.align.vertical,
+    --    {
+    --        layout = wibox.layout.align.horizontal,
+    --        clock_big,
+    --    }
+    --}
 
     s.mywibox_worldtimes = awful.wibar({
         visible = false,

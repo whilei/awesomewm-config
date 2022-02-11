@@ -316,6 +316,7 @@ my_table.join(-- Take a screenshot
             end
         end,
         { description = "go back", group = "client" }),
+
     -- Show/Hide Wibox
     awful.key({ modkey },
         "d",
@@ -332,6 +333,7 @@ my_table.join(-- Take a screenshot
             --end
         end,
         { description = "toggle wibox", group = "awesome" }),
+
     -- Show/Hide Global Time Clock wibar
     awful.key({ modkey },
             "g", -- g for Global times (and is on right)
@@ -342,6 +344,17 @@ my_table.join(-- Take a screenshot
                 --end
             end,
             { description = "toggle world times wibox", group = "awesome" }),
+
+    ---- Show/Hide Time/Clock box
+    --awful.key({ modkey },
+    --        "t", -- g for Global times (and is on right)
+    --        function()
+    --            local s =  awful.screen.focused()
+    --            --for s in screen do
+    --            s.mywibox_clock.visible = not s.mywibox_clock.visible
+    --            --end
+    --        end,
+    --        { description = "toggle time/clock wibox", group = "awesome" }),
 
     ---- Show/Hide Slimified Wibar
     --awful.key({ modkey },
