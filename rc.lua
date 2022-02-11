@@ -841,6 +841,15 @@ client.connect_signal("manage",
         end
     end)
 
+-- https://www.reddit.com/r/awesomewm/comments/sok8dm/how_to_hide_titlebar/
+--client.connect_signal("request::default_keybindings", function()
+--    awful.keyboard.append_client_keybindings({
+--        -- show/hide titlebar
+--        awful.key({ modkey }, "t", awful.titlebar.toggle,
+--                {description = "Show/Hide Titlebars", group="client"}),
+--    })
+--end)
+
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars",
     function(c)
