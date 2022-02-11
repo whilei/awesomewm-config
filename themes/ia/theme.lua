@@ -19,7 +19,7 @@ local common = require("awful.widget.common")
 local dpi = require("beautiful").xresources.apply_dpi
 
 --local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
---local logout_menu_widget = require("awesome-wm-widgets.logout-menu-widget.logout-menu")
+--local logout_menu = require("awesome-wm-widgets.logout-menu-widget.logout-menu")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
 
@@ -223,7 +223,7 @@ end
 local world_clock_fmt = "%H:%M%t%z"
 
 -- Textclock
-local clockicon = wibox.widget.imagebox(theme.widget_clock)
+--local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock = awful.widget.watch(
     -- "date +'%a %d %b %R UTC%:::z'", 
     -- "date +'%a %d %b %R UTC%:::z'", 
@@ -1408,6 +1408,7 @@ function theme.at_screen_connect(s)
                     --spr,
                     -- default
                     --logout_menu_widget,
+                    --logout_menu.logout_menu_widget,
 
                     -- Clock
                     spr,
