@@ -18,7 +18,8 @@ local wibox = require("wibox")
 local common = require("awful.widget.common")
 local dpi = require("beautiful").xresources.apply_dpi
 
-local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
+--local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
+--local logout_menu_widget = require("awesome-wm-widgets.logout-menu-widget.logout-menu")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
 
@@ -1404,6 +1405,9 @@ function theme.at_screen_connect(s)
                     volicon,
                     theme.volume.widget,
 
+                    --spr,
+                    -- default
+                    --logout_menu_widget,
 
                     -- Clock
                     spr,
