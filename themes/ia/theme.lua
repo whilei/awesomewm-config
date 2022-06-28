@@ -1134,7 +1134,7 @@ function theme.at_screen_connect(s)
         --y = s.geometry.y + s.geometry.height - 14,
         --x = s.geometry.x + s.geometry.width / 2 - 60,
 
-        height = 14, -- 18
+        height = 16, -- 18
         width = 120,
 
         ---- Rotated:
@@ -1239,11 +1239,11 @@ function theme.at_screen_connect(s)
             world_clock_berlin,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid (CET)'))),
-            world_clock_madrid,
+            --wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid (CET)'))),
+            --world_clock_madrid,
             --spr,
 
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens (EET)'))),
+            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens/Kiev (EET)'))),
             world_clock_athens,
             --spr,
 
