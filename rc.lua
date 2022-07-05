@@ -306,7 +306,7 @@ my_table.join(-- Take a screenshot
             awful.screen.focus_relative(-1)
         end,
         { description = "focus the previous screen", group = "screen" }),
-    awful.key({ modkey }, "u", awful.client.urgent.jumpto, { description = "jump to urgent client", group = "client" }),
+    --awful.key({ modkey }, "u", awful.client.urgent.jumpto, { description = "jump to urgent client", group = "client" }),
     awful.key({ modkey },
         "Tab",
         function()
@@ -330,6 +330,9 @@ my_table.join(-- Take a screenshot
                 if s.mywibox_slim then
                     s.mywibox_slim.visible = not s.mywibox_slim.visible
                 end
+
+            --if s.mywibox_clock then
+            --    s.mywibox_clock.visible = not s.mywibox_clock.visible
             --end
         end,
         { description = "toggle wibox", group = "awesome" }),
@@ -652,6 +655,19 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
                 c:raise()
             end,
             { description = "toggle floating", group = "client" }),
+
+    awful.key({modkey}, "u", function()
+        -- https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
+        local c = awful.client.focus.history.list[2]
+        client.focus = c
+        local t = client.focus and client.focus.first_tag or nil
+        if t then
+            t:view_only()
+        end
+        c:raise()
+    end, {
+        description = "focus last client", group = "client"
+    }),
 
     awful.key({ modkey, "Control" },
         "Return",

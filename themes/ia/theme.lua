@@ -241,20 +241,20 @@ local clock = awful.widget.watch(
         )
     end
 )
-local clock_big = awful.widget.watch(
+local clock_time = awful.widget.watch(
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%Y-%m-%dT%H:%MZ%:z'",
 --"date +'%-m-%d %A %H:%M %:::z'",
 --"date +'%H:%M %a %Y-%m-%d %:::z'",
-        "date +'%a %H:%M'",
+        "date +'%H:%M'",
         60,
         function(widget, stdout)
             -- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
             widget:set_markup(
             -- theme.font
-                    markup.fontbg("Roboto Bold 96", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
             )
         end
 )
@@ -1135,7 +1135,7 @@ function theme.at_screen_connect(s)
         --x = s.geometry.x + s.geometry.width / 2 - 60,
 
         height = 16, -- 18
-        width = 120,
+        width = 120 + 50, -- 50 for clock
 
         ---- Rotated:
         --y = s.geometry.y + s.geometry.height / 2 - 60,
@@ -1168,26 +1168,34 @@ function theme.at_screen_connect(s)
         input_passthrough = true, -- noop, btw
     })
 
-    --s.mywibox_clock = wibox({
-    --    visible = false,
-    --    screen = s,
-    --    y = s.geometry.y + 18,
-    --    x = s.geometry.x,
-    --    height = 128,
-    --    width = s.geometry.width / 4,
-    --    bg = theme.clock_bg,
-    --    ontop = true,
-    --    type = "toolbar",
-    --    input_passthrough = true,
-    --})
-    --
-    --s.mywibox_clock:setup {
-    --    layout = wibox.layout.align.vertical,
-    --    {
-    --        layout = wibox.layout.align.horizontal,
-    --        clock_big,
-    --    }
-    --}
+
+    s.mywibox_clock = wibox({
+        visible = false,
+        screen = s,
+        y = s.geometry.y,
+        x = s.geometry.x + s.geometry.width - (s.geometry.width / 16),
+        --height = 24 + 8,
+        height = 18,
+        width = s.geometry.width / 16,
+        bg = theme.clock_bg,
+        ontop = true,
+        type = "toolbar",
+        input_passthrough = true,
+    })
+
+    s.mywibox_clock:setup {
+        layout = wibox.layout.align.horizontal,
+        {
+            layout = wibox.layout.fixed.horizontal, -- left
+        },
+        {
+            layout = wibox.layout.fixed.horizontal, -- center
+        },
+        {
+            layout = wibox.layout.fixed.horizontal, -- right
+            clock,
+        }
+    }
 
     s.mywibox_worldtimes = awful.wibar({
         visible = false,
@@ -1303,6 +1311,10 @@ function theme.at_screen_connect(s)
             --s.mytasklist_slim,
             --spr,
         },
+        {
+            layout = wibox.layout.align.horizontal,
+            clock_time,
+        }
     }
 
     --s.mywibox_slim:setup {
