@@ -1335,7 +1335,7 @@ function theme.at_screen_connect(s)
 
     s.togglegaps = function()
         if s.selected_tag.gap == 0 then
-            s.selected_tag.gap = 100
+            s.selected_tag.gap = s.geometry.height / 20
         else
             s.selected_tag.gap = 0
         end
