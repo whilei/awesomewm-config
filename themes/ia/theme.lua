@@ -18,6 +18,8 @@ local wibox = require("wibox")
 local common = require("awful.widget.common")
 local dpi = require("beautiful").xresources.apply_dpi
 
+local awesomebuttons = require("awesome-buttons.awesome-buttons")
+
 --local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
 --local logout_menu = require("awesome-wm-widgets.logout-menu-widget.logout-menu")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
@@ -415,8 +417,6 @@ local world_clock_tokyo = awful.widget.watch(
             )
         end
 )
-
-
 
 -- MEM
 local memicon = wibox.widget.imagebox(theme.widget_mem)
@@ -1333,6 +1333,14 @@ function theme.at_screen_connect(s)
     --    },
     --}
 
+    s.togglegaps = function()
+        if s.selected_tag.gap == 0 then
+            s.selected_tag.gap = 100
+        else
+            s.selected_tag.gap = 0
+        end
+    end
+
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
@@ -1346,6 +1354,14 @@ function theme.at_screen_connect(s)
             spr,
 
             s.mylayoutbox,
+            spr,
+
+            awesomebuttons.with_icon{
+                icon = 'crop',
+                color = theme.titlebar_bg_focus,
+                shape = 'rounded_rect',
+                onclick=s.togglegaps,
+            },
             spr,
 
             --s.mylayoutlist,
