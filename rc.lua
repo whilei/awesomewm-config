@@ -625,7 +625,7 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
             client.focus = c
             c:raise()
         end,
-        { description = "toggle floating", group = "client" }),
+        { description = "toggle floating centered client", group = "client" }),
 
     -- Place the client window floating in the middle, on top.
     -- This is a nice focus geometry.
@@ -654,7 +654,30 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
                 client.focus = c
                 c:raise()
             end,
-            { description = "toggle floating", group = "client" }),
+            { description = "toggle floating centered client (tall)", group = "client" }),
+
+    -- Isaac
+    -- I want a hotkey to toggle useless gaps, a function that I've developed a fancy
+    -- new button for, but now I want to make a key so I don't have to use the button.
+        awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
+                "k",
+                function(c)
+                    if c.screen.selected_tag.gap == 0 then
+                        c.screen.selected_tag.gap = c.screen.geometry.height / 20
+                    else
+                        c.screen.selected_tag.gap = 0
+                    end
+                end,
+                { description = "toggle useless gaps", group = "client" }),
+
+        -- Isaac
+        -- Now I want a keystroke that toggles whether a client is floating.
+        awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
+                "f",
+                function(c)
+                    awful.client.floating.toggle()
+                end,
+                { description = "toggle floating", group = "client" }),
 
     awful.key({modkey}, "u", function()
         -- https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
