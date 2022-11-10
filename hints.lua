@@ -8,7 +8,9 @@ local wibox     = require("wibox")
 
 --module("hints")
 local hints = {
-  charorder = "jkluiopyhnmfdsatgvcewqzx1234567890",
+  --charorder = "jkluiopyhnmfdsatgvcewqzx1234567890",
+  --charorder = "asetwdf0$*kgzxcvb",
+  charorder = "asetwdfqcxz0$*niohurlyj",
   hintbox = {} -- Table of letter wiboxes with characters as the keys
 }
 
@@ -23,7 +25,11 @@ function hints.init()
   local letterbox = {}
   for i = 1, #hints.charorder do
     local char = hints.charorder:sub(i,i)
-    hints.hintbox[char] = wibox({fg=beautiful.fg_normal, bg=beautiful.bg_focus, border_color=beautiful.border_focus, border_width=beautiful.border_width})
+    hints.hintbox[char] = wibox({
+      fg=beautiful.fg_normal,
+      bg=beautiful.bg_focus,
+      border_color=beautiful.border_focus,
+      border_width=beautiful.border_width})
     hints.hintbox[char].ontop = true
     hints.hintbox[char].width = hintsize
     hints.hintbox[char].height = hintsize
