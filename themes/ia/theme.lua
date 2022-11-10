@@ -840,28 +840,28 @@ function theme.at_screen_connect(s)
     --})
 
     -- THIS WORKS, BUT is finnicky.
-    s.quakeBrowser = lain.util.quake2({
-        app = "ffox", -- uses: 'snap alias firefox ffox'
-        name = "MozillaFirefoxDD",
-        extra = "",
-        argname = "",
-        followtag = true,
-        vert = "top",
-        keepclientattrs = true,
-        settings = function(client)
-            local geo
-            geo = client:geometry()
-            if geo.width > 2000 then
-                geo.x = geo.x + (geo.width / 4)
-                geo.width = geo.width / 2
-                geo.height = geo.height * 2
-                client:geometry(geo)
-            else
-                geo.height = geo.height * 2
-                client:geometry(geo)
-            end
-        end
-    })
+    --s.quakeBrowser = lain.util.quake2({
+    --    app = "ffox", -- uses: 'snap alias firefox ffox'
+    --    name = "MozillaFirefoxDD",
+    --    extra = "",
+    --    argname = "",
+    --    followtag = true,
+    --    vert = "top",
+    --    keepclientattrs = true,
+    --    settings = function(client)
+    --        local geo
+    --        geo = client:geometry()
+    --        if geo.width > 2000 then
+    --            geo.x = geo.x + (geo.width / 4)
+    --            geo.width = geo.width / 2
+    --            geo.height = geo.height * 2
+    --            client:geometry(geo)
+    --        else
+    --            geo.height = geo.height * 2
+    --            client:geometry(geo)
+    --        end
+    --    end
+    --})
 
     -- If wallpaper is a function, call it with the screen
     local wallpaper = theme.wallpaper

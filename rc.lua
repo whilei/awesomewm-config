@@ -146,8 +146,63 @@ local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.ge
 beautiful.init(theme_path)
 revelation.init()
 hints.init()
+
+--local bling = require("bling")
+--local rubato = require("rubato")
+
+--bling.widget.window_switcher.enable {
+--    type = "thumbnail", -- set to anything other than "thumbnail" to disable client previews
+--
+--    -- keybindings (the examples provided are also the default if kept unset)
+--    hide_window_switcher_key = "Escape", -- The key on which to close the popup
+--    minimize_key = "n",                  -- The key on which to minimize the selected client
+--    unminimize_key = "N",                -- The key on which to unminimize all clients
+--    kill_client_key = "q",               -- The key on which to close the selected client
+--    cycle_key = "Tab",                   -- The key on which to cycle through all clients
+--    previous_key = "Left",               -- The key on which to select the previous client
+--    next_key = "Right",                  -- The key on which to select the next client
+--    vim_previous_key = "h",              -- Alternative key on which to select the previous client
+--    vim_next_key = "l",                  -- Alternative key on which to select the next client
+--
+--    cycleClientsByIdx = awful.client.focus.byidx,               -- The function to cycle the clients
+--    filterClients = awful.widget.tasklist.filter.currenttags,   -- The function to filter the viewed clients
+--}
+
 -- }}}
 
+---- These are example rubato tables. You can use one for just y, just x, or both.
+---- The duration and easing is up to you. Please check out the rubato docs to learn more.
+--local anim_y = rubato.timed {
+--    pos = 1090,
+--    rate = 60,
+--    easing = rubato.quadratic,
+--    intro = 0.1,
+--    duration = 0.3,
+--    awestore_compat = true -- This option must be set to true.
+--}
+--
+--local anim_x = rubato.timed {
+--    pos = -970,
+--    rate = 60,
+--    easing = rubato.quadratic,
+--    intro = 0.1,
+--    duration = 0.3,
+--    awestore_compat = true -- This option must be set to true.
+--}
+--
+--local term_scratch = bling.module.scratchpad {
+--    command = "firefox --no-remote --class spad",           -- How to spawn the scratchpad
+--    rule = { instance = "spad" },                     -- The rule that the scratchpad will be searched by
+--    sticky = true,                                    -- Whether the scratchpad should be sticky
+--    autoclose = false,                                 -- Whether it should hide itself when losing focus
+--    floating = true,                                  -- Whether it should be floating (MUST BE TRUE FOR ANIMATIONS)
+--    geometry = {x=360, y=90, height=900, width=1200}, -- The geometry in a floating state
+--    reapply = true,                                   -- Whether all those properties should be reapplied on every new opening of the scratchpad (MUST BE TRUE FOR ANIMATIONS)
+--    dont_focus_before_close  = false,                 -- When set to true, the scratchpad will be closed by the toggle function regardless of whether its focused or not. When set to false, the toggle function will first bring the scratchpad into focus and only close it on a second call
+--    rubato = {x = anim_x, y = anim_y}                 -- Optional. This is how you can pass in the rubato tables for animations. If you don't want animations, you can ignore this option.
+--}
+
+local handy = require("handy")
 
 -- {{{ Menwesomeu
 local myawesomemenu = {
@@ -205,6 +260,22 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 -- {{{ Key bindings
 globalkeys =
 my_table.join(
+
+    awful.key({modkey}, "y", function()
+        -- This is from trying out bling/scratchpad.
+        -- It didn't work because dependencies that my awesome version 4.2 does not satisfy.
+        -- Code checks specifically for 4.3 and conditions the use of "ruled" dep,
+        -- but does not work out of the box, and further dependency issues prevented further use.
+        --term_scratch:toggle()
+
+        -- arguments:
+        -- - program
+        -- - placement (see awful.placement)
+        -- - width
+        -- - height
+        handy("ffox --class handy", awful.placement.top, 0.5, 0.5)
+    end, {description = "Handy: Firefox", group = "launcher"}),
+
     -- hints: client picker, window picker, letter
     awful.key({ modkey }, "i", function () hints.focus() end),
 
@@ -316,15 +387,19 @@ my_table.join(
         end,
         { description = "focus the previous screen", group = "screen" }),
     --awful.key({ modkey }, "u", awful.client.urgent.jumpto, { description = "jump to urgent client", group = "client" }),
-    awful.key({ modkey },
-        "Tab",
-        function()
-            awful.client.focus.history.previous()
-            if client.focus then
-                client.focus:raise()
-            end
-        end,
+
+        awful.key({ modkey }, "Tab",
+            function()
+                awful.client.focus.history.previous()
+                if client.focus then
+                    client.focus:raise()
+                end
+            end,
         { description = "go back", group = "client" }),
+
+        --awful.key({modkey}, "Tab", function()
+        --    awesome.emit_signal("bling::window_switcher::turn_on")
+        --end, {description = "Window Switcher", group = "bling"}),
 
     -- Show/Hide Wibox
     awful.key({ modkey },
@@ -531,12 +606,12 @@ my_table.join(
         end,
         { description = "dropdown application", group = "launcher" }),
 
-    awful.key({ modkey },
-        "y",
-        function()
-            awful.screen.focused().quakeBrowser:toggle()
-        end,
-        { description = "dropdown application", group = "launcher" }),
+    --awful.key({ modkey },
+    --    "y",
+    --    function()
+    --        awful.screen.focused().quakeBrowser:toggle()
+    --    end,
+    --    { description = "dropdown application", group = "launcher" }),
 
     -- ALSA volume control
     awful.key({ altkey, "Control" },
