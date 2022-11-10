@@ -50,8 +50,10 @@ function hints.focus()
     hintindex[char] = thisclient
     local geom = thisclient.geometry(thisclient)
     hints.hintbox[char].visible = true
-    hints.hintbox[char].x = geom.x + geom.width/2 - hintsize/2
-    hints.hintbox[char].y = geom.y + geom.height/2 - hintsize/2
+    --hints.hintbox[char].x = geom.x + geom.width/2 - hintsize/2
+    --hints.hintbox[char].y = geom.y + geom.height/2 - hintsize/2
+    hints.hintbox[char].x = geom.x + hintsize/2
+    hints.hintbox[char].y = geom.y + hintsize/2
     hints.hintbox[char].screen = thisclient.screen
   end
   keygrabber.run( function(mod,key,event)
