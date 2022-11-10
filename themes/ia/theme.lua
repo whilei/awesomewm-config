@@ -783,6 +783,12 @@ local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
 local arrl_ld = separators.arrow_left("alpha", theme.bg_focus)
 
 function theme.at_screen_connect(s)
+
+
+    if s.geometry.width > 3000 then
+        s.padding = {left = 5, right = 0, top = 0, bottom= 0}
+    end
+
     -- Quake application
     s.quake = lain.util.quake({
         app = "konsole",

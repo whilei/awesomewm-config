@@ -95,9 +95,9 @@ for key, app in pairs(clientkeybindings) do
 end
 
 awful.util.terminal = terminal
-awful.util.tagnames = { "1", "2", "3", "4", "5" }
+--awful.util.tagnames = { "1", "2", "3", "4", "5" }
 --awful.util.tagnames = { "●", "●", "●", "●", "●" }
---awful.util.tagnames = { "❶", "❷", "❸", "❹", "❺" }
+awful.util.tagnames = { "❶", "❷", "❸", "❹", "❺" }
 --awful.util.tagnames = { "▇", "▇", "▇", "▇", "▇" }
 awful.layout.layouts = {
     -- awful.layout.suit.tile.bottom,
