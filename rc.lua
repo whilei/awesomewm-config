@@ -676,20 +676,44 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
                 "f",
                 function(c)
                     awful.client.floating.toggle()
+
+                    if not c.floating then
+                        return
+                    end
+
+                    c.maximized = false
+
+                    -- On big screens (ie. the TV I use as a desktop monitor)
+                    -- adjust the window size and position to make for comfortable website reading.
+                    if c.screen.geometry.width > 2000 then
+                        local geo
+                        geo = c:geometry()
+                        local sgeo
+                        sgeo = c.screen.geometry
+
+                        geo.x = sgeo.x + sgeo.width / 3
+                        geo.y = sgeo.y + sgeo.height / 3
+                        geo.width = sgeo.width / 3
+                        geo.height = sgeo.height * 2 / 3
+
+                        c:geometry(geo)
+                    end
                 end,
                 { description = "toggle floating", group = "client" }),
 
+
     awful.key({modkey}, "u", function()
+        -- Instead of jumping between current and latest CLIENT,
+        -- it seems to me now, several months and as many uses of this keybinding later,
+        -- that it may be more useful to jump between SCREENS in this way.
+        -- Also, this feature is already implemented with MOD+Tab.
+        --
         -- https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
-        local c = awful.client.focus.history.list[2]
-        client.focus = c
-        local t = client.focus and client.focus.first_tag or nil
-        if t then
-            t:view_only()
-        end
-        c:raise()
+        -- https://unix.stackexchange.com/a/449265
+
+        awful.screen.focus_relative (1)
     end, {
-        description = "focus last client", group = "client"
+        description = "focus next screen", group = "client"
     }),
 
     awful.key({ modkey, "Control" },
