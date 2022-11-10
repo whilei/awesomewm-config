@@ -104,7 +104,7 @@ awful.layout.layouts = {
     awful.layout.suit.tile,
     lain.layout.centerwork,
     --awful.layout.suit.fair,
-    -- awful.layout.suit.magnifier,
+     awful.layout.suit.magnifier,
     -- awful.layout.suit.corner.nw,
     awful.layout.suit.floating,
 }
@@ -588,14 +588,14 @@ my_table.join(
         { description = "run prompt", group = "launcher" }))
 
 clientkeys =
-my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { description = "magnify client", group = "client" }), awful.key({ modkey },
+my_table.join(
 
-    "f",
-    function(c)
-        c.fullscreen = not c.fullscreen
-        c:raise()
-    end,
-    { description = "toggle fullscreen", group = "client" }),
+    awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { description = "magnify client", group = "client" }),
+    awful.key({ modkey }, "f",
+        function(c)
+            c.fullscreen = not c.fullscreen
+            c:raise()
+        end, { description = "toggle fullscreen", group = "client" }),
 
     awful.key({ modkey, "Shift" },
         "c",
@@ -606,35 +606,35 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
 
     -- Place the client window floating in the middle, centered, on top.
     -- This is a nice focus geometry.
-    awful.key({ modkey, "Control" },
-        "space",
-        function(c)
-            awful.client.floating.toggle()
-            awful.client.maximized = false
-
-            if c.floating then
-                -- place the screen in the middle
-                local geo
-                geo = c:geometry()
-                local sgeo
-                sgeo = c.screen.geometry
-
-                local margin_divisor = 8
-                if sgeo.width > 3000 then
-                    margin_divisor = margin_divisor * 2
-                end
-
-                geo.x = sgeo.x + sgeo.width / margin_divisor
-                geo.y = sgeo.y + sgeo.height / margin_divisor
-
-                geo.width = sgeo.width - ((sgeo.width / margin_divisor)*2)
-                geo.height = sgeo.height - ((sgeo.height / margin_divisor)*2)
-                c:geometry(geo)
-            end
-            client.focus = c
-            c:raise()
-        end,
-        { description = "toggle floating centered client", group = "client" }),
+    --awful.key({ modkey, "Control" },
+    --    "space",
+    --    function(c)
+    --        awful.client.floating.toggle()
+    --        awful.client.maximized = false
+    --
+    --        if c.floating then
+    --            -- place the screen in the middle
+    --            local geo
+    --            geo = c:geometry()
+    --            local sgeo
+    --            sgeo = c.screen.geometry
+    --
+    --            local margin_divisor = 8
+    --            if sgeo.width > 3000 then
+    --                margin_divisor = margin_divisor * 2
+    --            end
+    --
+    --            geo.x = sgeo.x + sgeo.width / margin_divisor
+    --            geo.y = sgeo.y + sgeo.height / margin_divisor
+    --
+    --            geo.width = sgeo.width - ((sgeo.width / margin_divisor)*2)
+    --            geo.height = sgeo.height - ((sgeo.height / margin_divisor)*2)
+    --            c:geometry(geo)
+    --        end
+    --        client.focus = c
+    --        c:raise()
+    --    end,
+    --    { description = "toggle floating centered client", group = "client" }),
 
     -- Place the client window floating in the middle, on top.
     -- This is a nice focus geometry.

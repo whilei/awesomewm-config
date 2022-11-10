@@ -85,7 +85,8 @@ function util.mc(c, width_f, height_f)
     local s      = awful.screen.focused()
     local mg     = s.workarea
     local g      = {}
-    local mwfact = width_f or s.selected_tag.master_width_factor or 0.5
+    --local mwfact = width_f or s.selected_tag.master_width_factor or 0.618
+    local mwfact = width_f or 0.618
     g.width      = sqrt(mwfact) * mg.width
     g.height     = sqrt(height_f or mwfact) * mg.height
     g.x          = mg.x + (mg.width - g.width) / 2

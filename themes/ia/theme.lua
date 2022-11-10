@@ -900,6 +900,10 @@ function theme.at_screen_connect(s)
     -- I think this is assigning buttons to keystrokes
     -- awful.button:new (mod, _button, press, release)
     -- https://awesomewm.org/doc/api/classes/awful.button.html
+    -- Update: Yea, looks like so. The buttons its assigning (1,3,4,5) are MOUSE buttons
+    -- and they work as expected:
+    --   left mouse button (1): move forward
+    --   right mouse button (3): move backward
     s.mylayoutbox:buttons(my_table.join(
                            awful.button({ }, 1, function () awful.layout.inc( 1) end),
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),

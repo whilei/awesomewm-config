@@ -11,7 +11,7 @@ local hints = {
   --charorder = "jkluiopyhnmfdsatgvcewqzx1234567890",
   --charorder = "asetwdf0$*kgzxcvb",
   --charorder = "asetwdfqcxz0$*niohurlyj",
-  charorder = "bawdfsetgqkzxcv0$*niohurlyj",
+  charorder = "tesawdfbcgqkzx*niohurlyj",
   hintbox = {} -- Table of letter wiboxes with characters as the keys
 }
 
