@@ -205,8 +205,11 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 -- {{{ Key bindings
 globalkeys =
 my_table.join(
-        -- hints: client picker, window picker, letter
-        awful.key({ modkey }, "i", function () hints.focus() end),
+    -- hints: client picker, window picker, letter
+    awful.key({ modkey }, "i", function () hints.focus() end),
+
+    awful.key({ modkey }, "e", revelation),
+
 -- Take a screenshot
 -- https://github.com/lcpz/dots/blob/master/bin/screenshot
     awful.key({ altkey }, "p",
@@ -230,7 +233,6 @@ my_table.join(
 
 
     -- Revelation client focus
-    awful.key({ modkey }, "e", revelation),
 
     -- Default client focus
     awful.key({ altkey },
