@@ -20,6 +20,8 @@ local freedesktop = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 local revelation = require("revelation")
 
+local hints = require("hints")
+
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- }}}
 
@@ -142,6 +144,7 @@ end))
 local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme)
 beautiful.init(theme_path)
 revelation.init()
+hints.init()
 -- }}}
 
 
@@ -200,7 +203,10 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 
 -- {{{ Key bindings
 globalkeys =
-my_table.join(-- Take a screenshot
+my_table.join(
+        -- hints: client picker, window picker, letter
+        awful.key({ modkey }, "i", function () hints.focus() end),
+-- Take a screenshot
 -- https://github.com/lcpz/dots/blob/master/bin/screenshot
     awful.key({ altkey }, "p",
         function()
@@ -723,12 +729,12 @@ my_table.join(awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { de
         end,
         { description = "move to master", group = "client" }),
 
-    awful.key({ modkey },
-        "i",
-        function(c)
-            c:move_to_screen(c.screen.index - 1)
-        end,
-        { description = "move to screen", group = "client" }),
+    --awful.key({ modkey },
+    --    "i",
+    --    function(c)
+    --        c:move_to_screen(c.screen.index - 1)
+    --    end,
+    --    { description = "move to screen", group = "client" }),
     awful.key({ modkey },
         "o",
         function(c)
