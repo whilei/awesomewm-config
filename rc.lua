@@ -277,9 +277,12 @@ my_table.join(
     end, {description = "Handy: Firefox", group = "launcher"}),
 
     -- hints: client picker, window picker, letter
-    awful.key({ modkey }, "i", function () hints.focus() end),
+    awful.key({ modkey }, "i", function ()
+        hints.focus()
+        client.focus:raise()
+    end, {description = "Focus client with Hints", group = "hotkeys"}),
 
-    awful.key({ modkey }, "e", revelation),
+    awful.key({ modkey }, "e", revelation, {description = "Revelation (Expose)", group = "hotkeys"}),
 
 -- Take a screenshot
 -- https://github.com/lcpz/dots/blob/master/bin/screenshot
@@ -665,7 +668,11 @@ my_table.join(
 clientkeys =
 my_table.join(
 
-    awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client, { description = "magnify client", group = "client" }),
+    awful.key({ altkey, "Shift" }, "m", function(c)
+        lain.util.magnify_client(c)
+        c:raise()
+    end, { description = "magnify client", group = "client" }),
+
     awful.key({ modkey }, "f",
         function(c)
             c.fullscreen = not c.fullscreen
@@ -1082,6 +1089,15 @@ client.connect_signal("mouse::enter",
         end
     end)
 
+function move_mouse_onto_focused_client(c)
+    if mouse.object_under_pointer() ~= c then
+        local geometry = c:geometry()
+        local x = geometry.x + geometry.width/2
+        local y = geometry.y + geometry.height/2
+        mouse.coords({x = x, y = y}, true)
+    end
+end
+
 -- No border for maximized clients
 function border_adjust(c)
     if c.maximized then -- no borders if only 1 client visible
@@ -1104,7 +1120,10 @@ client.connect_signal("request::activate",
         awful.ewmh.activate(c, context, hints)
     end)
 
-client.connect_signal("focus", border_adjust)
+client.connect_signal("focus", function(c)
+    border_adjust(c)
+    move_mouse_onto_focused_client(c)
+end)
 client.connect_signal("property::maximized", border_adjust)
 client.connect_signal("unfocus",
     function(c)

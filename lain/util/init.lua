@@ -86,7 +86,7 @@ function util.mc(c, width_f, height_f)
     local mg     = s.workarea
     local g      = {}
     --local mwfact = width_f or s.selected_tag.master_width_factor or 0.618
-    local mwfact = width_f or 0.618
+    local mwfact = width_f or 0.7
     g.width      = sqrt(mwfact) * mg.width
     g.height     = sqrt(height_f or mwfact) * mg.height
     g.x          = mg.x + (mg.width - g.width) / 2

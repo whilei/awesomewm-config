@@ -824,7 +824,7 @@ function theme.at_screen_connect(s)
     --    keepclientattrs = true,
     --    border = 0,
     --    settings = function (client)
-    --        client.floating = true;
+    --        client.floating = true;o
     --        local geo
     --        geo = client:geometry()
     --        if geo.width > 2000 then
@@ -1410,8 +1410,12 @@ function theme.at_screen_connect(s)
     --}
 
     s.togglegaps = function()
+        mul = 40
+        if s.geometry.width > 2000 then
+            mul = 30
+        end
         if s.selected_tag.gap == 0 then
-            s.selected_tag.gap = s.geometry.height / 20
+            s.selected_tag.gap = s.geometry.height / mul
         else
             s.selected_tag.gap = 0
         end
