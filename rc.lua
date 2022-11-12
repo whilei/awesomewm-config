@@ -1089,7 +1089,13 @@ client.connect_signal("mouse::enter",
         end
     end)
 
-function move_mouse_onto_focused_client(c)
+local function move_mouse_onto_focused_client(c)
+    -- Prevent mouse snapping to middle of client
+    -- when a tag is selected from the taglist in the menubar wibox.
+    if mouse.current_wibox ~= nil then return end
+
+    -- Our mouse is not up there in the menubar wibox,
+    -- move the mouse to the middle of the focused client.
     if mouse.object_under_pointer() ~= c then
         local geometry = c:geometry()
         local x = geometry.x + geometry.width/2
