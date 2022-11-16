@@ -203,6 +203,7 @@ hints.init()
 --}
 
 local handy = require("handy")
+local handy2 = require("handy2")
 
 -- {{{ Menwesomeu
 local myawesomemenu = {
@@ -261,20 +262,23 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 globalkeys =
 my_table.join(
 
-    awful.key({modkey}, "y", function()
-        -- This is from trying out bling/scratchpad.
-        -- It didn't work because dependencies that my awesome version 4.2 does not satisfy.
-        -- Code checks specifically for 4.3 and conditions the use of "ruled" dep,
-        -- but does not work out of the box, and further dependency issues prevented further use.
-        --term_scratch:toggle()
-
+    awful.key({modkey}, "v", function()
         -- arguments:
         -- - program
         -- - placement (see awful.placement)
         -- - width
         -- - height
-        handy("ffox --class handy", awful.placement.top, 0.5, 0.5)
-    end, {description = "Handy: Firefox", group = "launcher"}),
+        handy("ffox --class handy-top", awful.placement.top, 0.5, 0.5)
+    end, {description = "Handy: Firefox (top)", group = "launcher"}),
+
+    awful.key({modkey}, "a", function()
+        -- arguments:
+        -- - program
+        -- - placement (see awful.placement)
+        -- - width
+        -- - height
+        handy("ffox --class handy-left", awful.placement.left, 0.25, 1)
+    end, {description = "Handy: Firefox (left)", group = "launcher"}),
 
     -- hints: client picker, window picker, letter
     awful.key({ modkey }, "i", function ()
@@ -1090,8 +1094,13 @@ client.connect_signal("mouse::enter",
     end)
 
 local function move_mouse_onto_focused_client(c)
-    -- Prevent mouse snapping to middle of client
-    -- when a tag is selected from the taglist in the menubar wibox.
+    -- The object (window, eg) under the mouse IS the client in question.
+    if mouse.object_under_pointer() == c then return end
+    -- Prevent mouse snapping to client when...
+    -- The mouse is already in the focused client's screen.
+    if mouse.screen == c.screen then return end
+    -- The mouse is up in the wibar, when
+    -- selecting a tag is selected from the taglist in the menubar wibox.
     if mouse.current_wibox ~= nil then return end
 
     -- Our mouse is not up there in the menubar wibox,
@@ -1099,7 +1108,7 @@ local function move_mouse_onto_focused_client(c)
     if mouse.object_under_pointer() ~= c then
         local geometry = c:geometry()
         local x = geometry.x + geometry.width/2
-        local y = geometry.y + geometry.height/2
+        local y = geometry.y + geometry.height/2 - 30
         mouse.coords({x = x, y = y}, true)
     end
 end
