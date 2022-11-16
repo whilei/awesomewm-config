@@ -18,6 +18,9 @@ local wibox = require("wibox")
 local common = require("awful.widget.common")
 local dpi = require("beautiful").xresources.apply_dpi
 
+--local revelation = require("revelation")
+
+
 local awesomebuttons = require("awesome-buttons.awesome-buttons")
 
 --local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
@@ -162,6 +165,52 @@ theme.titlebar_maximized_button_focus_active    = theme.dir .. "/icons/titlebar/
 theme.titlebar_maximized_button_normal_active   = theme.dir .. "/icons/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_inactive  = theme.dir .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/maximized_normal_inactive.png"
+
+require('smart_borders'){
+    hot_corners_color = "#0000ff",
+    hot_corners_width = dpi(5),
+    hot_corners_height = dpi(5),
+    hot_corners = {
+        ["top_right"] = {
+            enter = function()
+                require("naughty").notify({text = "enter"})
+                require("revelation")()
+            end,
+            leave = function()
+                require("naughty").notify({text = "leave"})
+            end
+        },
+        ["top_left"] = {
+            enter = function()
+                require("naughty").notify({text = "enter"})
+            end,
+            leave = function()
+                require("naughty").notify({text = "leave"})
+            end
+        },
+        ["bottom_right"] = {
+            enter = function()
+                require("naughty").notify({text = "enter"})
+            end,
+            leave = function()
+                require("naughty").notify({text = "leave"})
+            end
+        },
+        ["bottom_left"] = {
+            enter = function()
+                require("naughty").notify({text = "enter"})
+            end,
+            leave = function()
+                require("naughty").notify({text = "leave"})
+            end
+        },
+    },
+    --show_button_tooltips = true,
+    --color_normal = theme.border_normal,
+    --color_focus = theme.border_focus,
+    --layout = "fixed",
+    --button_size = dpi(40),
+}
 
 local markup = lain.util.markup
 local separators = lain.util.separators
@@ -1200,7 +1249,7 @@ function theme.at_screen_connect(s)
         --x = s.geometry.x + s.geometry.width / 2 - 60,
 
         height = 16, -- 18
-        width = 120 + 50, -- 50 for clock
+        width = 120 + 50 + 20, -- 50 for clock, 20 for font with ubuntu 20.04
 
         ---- Rotated:
         --y = s.geometry.y + s.geometry.height / 2 - 60,
