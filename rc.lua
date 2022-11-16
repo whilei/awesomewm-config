@@ -1096,12 +1096,17 @@ client.connect_signal("mouse::enter",
 local function move_mouse_onto_focused_client(c)
     -- The object (window, eg) under the mouse IS the client in question.
     if mouse.object_under_pointer() == c then return end
-    -- Prevent mouse snapping to client when...
-    -- The mouse is already in the focused client's screen.
-    if mouse.screen == c.screen then return end
+
+    ---- Prevent mouse snapping to client when...
+    ---- The mouse is already in the focused client's screen.
+    --if mouse.screen == c.screen then return end
+
     -- The mouse is up in the wibar, when
     -- selecting a tag is selected from the taglist in the menubar wibox.
     if mouse.current_wibox ~= nil then return end
+
+    -- The focused client is floating or on-top.
+    if c.floating or c.ontop then return end
 
     -- Our mouse is not up there in the menubar wibox,
     -- move the mouse to the middle of the focused client.
