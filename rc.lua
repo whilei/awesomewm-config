@@ -6,7 +6,7 @@
 --]]
 -- {{{ Required libraries
 local awesome, client, mouse, screen, tag = awesome, client, mouse, screen, tag
-local ipairs, string, os, table, tostring, tonumber, tointeger, type = ipairs, string, os, table, tostring, tonumber, tointeger, type
+local ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type = ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type
 
 local gears = require("gears")
 local awful = require("awful")
@@ -75,7 +75,8 @@ local gui_editor = "code"
 local browser = "ffox"
 local guieditor = "code"
 local scrlocker = "xlock"
-local scrnshotter = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' --select --exec 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
+local scrnshotter_select = "sleep 0.5 && scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' --quality 100 --silent --select --freeze --exec 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
+local scrnshotter_window = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' --quality 100 --silent --focused --exec 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
 local invert_colors = "xrandr-invert-colors"
 
 local clientkeybindings = {}
@@ -224,15 +225,64 @@ local myawesomemenu = {
 --        end
 --    }
 }
+
+local myscreenshotmenu = {
+    {
+        "Selection",
+        function()
+            awful.util.mymainmenu:hide()
+            awful.spawn.easy_async_with_shell(scrnshotter_select, function()
+                naughty.notify({text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff"})
+            end)
+        end
+    },
+    {
+        "Window",
+        function()
+            awful.util.mymainmenu:hide()
+            awful.util.spawn_with_shell(scrnshotter_window)
+            naughty.notify({text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff"})
+        end
+    }
+}
+
+screenshot_menu = awful.menu({
+    items = {
+        {"Screenshot: Selection", function()
+            screenshot_menu:hide()
+            --awful.util.spawn_with_shell(scrnshotter_select)
+            awful.spawn.easy_async_with_shell(scrnshotter_select, function()
+                naughty.notify({text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff"})
+            end)
+        end, nil},
+        {"Screenshot: Window", function()
+            screenshot_menu:hide()
+            awful.util.spawn_with_shell(scrnshotter_window)
+            naughty.notify({text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff"})
+        end, nil},
+    }
+})
+
+local mypowermenu = {
+    { "Log out", function() awful.util.spawn_with_shell("sudo service lightdm restart") end},
+    { "Shutdown", function() os.execute("shutdown -P -h now") end},
+    { "Reboot", function() os.execute("reboot") end},
+}
+
 awful.util.mymainmenu =
 freedesktop.menu.build({
     icon_size = beautiful.menu_height or 18,
     before = {
         -- other triads can be put here
+        { "Screenshot", myscreenshotmenu, nil},
     },
     after = {
         { "Awesome", myawesomemenu, beautiful.awesome_icon },
-        { "Open terminal", terminal }
+        { "Power/User Mgmt", mypowermenu, nil},
+        --{ "Log out", function() awful.util.spawn_with_shell("sudo service lightdm restart") end},
+        --{ "Shutdown", function() os.execute("shutdown -P -h now") end},
+        --{ "Reboot", function() os.execute("reboot") end},
+        --{ "Open terminal", terminal }
         -- other triads can be put here
     }
 })
@@ -257,7 +307,6 @@ screen.connect_signal("property::geometry",
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
 -- }}}
-
 -- {{{ Key bindings
 globalkeys =
 my_table.join(
@@ -283,11 +332,18 @@ my_table.join(
 
 -- Take a screenshot
 -- https://github.com/lcpz/dots/blob/master/bin/screenshot
-    awful.key({ altkey }, "p",
-        function()
-            os.execute(scrnshotter)
-        end,
-        { description = "take a screenshot", group = "hotkeys" }),
+--    awful.key({ modkey }, "p",
+--        function()
+--            os.execute(scrnshotter_select)
+--        end,
+--        { description = "take a screenshot with --select", group = "hotkeys" }),
+
+    --awful.key({ modkey }, "c",
+    --        function()
+    --            screenshot_menu:show({keygrabber= true})
+    --        end,
+    --        { description = "show screenshot menu", group = "hotkeys" }),
+
     awful.key({ modkey }, "x",
         function()
             os.execute(invert_colors)
@@ -295,7 +351,12 @@ my_table.join(
         { description = "invert colors on all screens with xrandr", group = "hotkeys" }),
 
     -- Hotkeys
-    awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
+    --awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
+    awful.key({modkey}, "s", function()
+        awful.spawn.easy_async_with_shell(scrnshotter_select, function()
+            naughty.notify({text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff"})
+        end)
+    end, { description = "take a screenshot of a selection", group = "awesome"}),
 
     -- Tag browsing
     awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),

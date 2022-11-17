@@ -171,39 +171,39 @@ require('smart_borders'){
     hot_corners_width = dpi(5),
     hot_corners_height = dpi(5),
     hot_corners = {
-        ["top_right"] = {
-            enter = function()
-                require("naughty").notify({text = "enter"})
-                require("revelation")()
-            end,
-            leave = function()
-                require("naughty").notify({text = "leave"})
-            end
-        },
-        ["top_left"] = {
-            enter = function()
-                require("naughty").notify({text = "enter"})
-            end,
-            leave = function()
-                require("naughty").notify({text = "leave"})
-            end
-        },
-        ["bottom_right"] = {
-            enter = function()
-                require("naughty").notify({text = "enter"})
-            end,
-            leave = function()
-                require("naughty").notify({text = "leave"})
-            end
-        },
-        ["bottom_left"] = {
-            enter = function()
-                require("naughty").notify({text = "enter"})
-            end,
-            leave = function()
-                require("naughty").notify({text = "leave"})
-            end
-        },
+        --["top_right"] = {
+        --    enter = function()
+        --        require("naughty").notify({text = "enter"})
+        --        require("revelation")()
+        --    end,
+        --    leave = function()
+        --        require("naughty").notify({text = "leave"})
+        --    end
+        --},
+        --["top_left"] = {
+        --    enter = function()
+        --        require("naughty").notify({text = "enter"})
+        --    end,
+        --    leave = function()
+        --        require("naughty").notify({text = "leave"})
+        --    end
+        --},
+        --["bottom_right"] = {
+        --    enter = function()
+        --        require("naughty").notify({text = "enter"})
+        --    end,
+        --    leave = function()
+        --        require("naughty").notify({text = "leave"})
+        --    end
+        --},
+        --["bottom_left"] = {
+        --    enter = function()
+        --        require("naughty").notify({text = "enter"})
+        --    end,
+        --    leave = function()
+        --        require("naughty").notify({text = "leave"})
+        --    end
+        --},
     },
     --show_button_tooltips = true,
     --color_normal = theme.border_normal,
@@ -923,14 +923,22 @@ function theme.at_screen_connect(s)
     -- Tags
     -- Use the first layout as the default one for all tags.
     awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
- 
+
+    --local my_promptbox_textbox = wibox.widget{
+    --    markup = 'This <i>is</i> a <b>textbox</b>!!!',
+    --    align  = 'center',
+    --    valign = 'center',
+    --    widget = wibox.widget.textbox
+    --}
+    --
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt({
         prompt = "> ",
         bg = "#0000ff", -- "#1E2CEE", -- "#000000",
         fg = "#ffffff",
         bg_cursor = "#e019c9", --pink
-        fg_cursor = "#e019c9" --pink
+        fg_cursor = "#e019c9", --pink
+        --textbox = my_promptbox_textbox,
     })
     
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
