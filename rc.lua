@@ -75,7 +75,7 @@ local gui_editor = "code"
 local browser = "ffox"
 local guieditor = "code"
 local scrlocker = "xlock"
-local scrnshotter = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' -s -e 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
+local scrnshotter = "scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' --select --exec 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
 local invert_colors = "xrandr-invert-colors"
 
 local clientkeybindings = {}
@@ -262,30 +262,23 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 globalkeys =
 my_table.join(
 
-    awful.key({modkey}, "v", function()
         -- arguments:
         -- - program
         -- - placement (see awful.placement)
         -- - width
         -- - height
+    awful.key({modkey}, "v", function()
         handy("ffox --class handy-top", awful.placement.top, 0.5, 0.5)
     end, {description = "Handy: Firefox (top)", group = "launcher"}),
 
     awful.key({modkey}, "a", function()
-        -- arguments:
-        -- - program
-        -- - placement (see awful.placement)
-        -- - width
-        -- - height
         handy("ffox --class handy-left", awful.placement.left, 0.25, 1)
     end, {description = "Handy: Firefox (left)", group = "launcher"}),
 
     -- hints: client picker, window picker, letter
-    awful.key({ modkey }, "i", function ()
-        hints.focus()
-        client.focus:raise()
-    end, {description = "Focus client with Hints", group = "hotkeys"}),
+    awful.key({ modkey }, "i", function () hints.focus() ; client.focus:raise() end, {description = "Focus client with Hints", group = "hotkeys"}),
 
+    -- revelation: expose-like application shower picker
     awful.key({ modkey }, "e", revelation, {description = "Revelation (Expose)", group = "hotkeys"}),
 
 -- Take a screenshot
@@ -518,27 +511,29 @@ my_table.join(
 
             commandPrompter = "rofi --modi window,run -show window -sidebar-mode -location 5 -theme Indego"
             awful.spawn.easy_async(commandPrompter, function()
-                awful.screen.focus(client.focus.screen)
+                if client.focus then
+                    awful.screen.focus(client.focus.screen)
+                end
             end)
         end, { description = "run Rofi", group = "awesome" }),
 
-    awful.key({ modkey, "Shift", }, "n",
-    -- cool buttons (custom program) binding
-            function(c)
-
-                --commandPrompter = "cool-buttons"
-                --awful.spawn.easy_async(commandPrompter, function()
-                --    awful.screen.focus(client.focus.screen)
-                --    --awful.client.floating = true;
-                --    c.floating = true;
-                --end)
-                awful.spawn("cool-buttons", {
-                    requests_no_titlebar = true,
-                    floating  = true,
-                    tag       = mouse.screen.selected_tag,
-                    placement = awful.placement.top_left,
-                })
-            end, { description = "run cool-buttons", group = "awesome" }),
+    --awful.key({ modkey, "Shift", }, "n",
+    ---- cool buttons (custom program) binding
+    --        function(c)
+    --
+    --            --commandPrompter = "cool-buttons"
+    --            --awful.spawn.easy_async(commandPrompter, function()
+    --            --    awful.screen.focus(client.focus.screen)
+    --            --    --awful.client.floating = true;
+    --            --    c.floating = true;
+    --            --end)
+    --            awful.spawn("cool-buttons", {
+    --                requests_no_titlebar = true,
+    --                floating  = true,
+    --                tag       = mouse.screen.selected_tag,
+    --                placement = awful.placement.top_left,
+    --            })
+    --        end, { description = "run cool-buttons", group = "awesome" }),
 
     awful.key({ altkey, "Shift" },
         "l",
