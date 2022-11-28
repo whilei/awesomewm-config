@@ -264,6 +264,7 @@ screenshot_menu = awful.menu({
 })
 
 local mypowermenu = {
+    { "Suspend/Sleep", function() awful.util.spawn_with_shell("sudo systemctl suspend") end},
     { "Log out", function() awful.util.spawn_with_shell("sudo service lightdm restart") end},
     { "Shutdown", function() os.execute("shutdown -P -h now") end},
     { "Reboot", function() os.execute("reboot") end},
@@ -275,8 +276,10 @@ freedesktop.menu.build({
     before = {
         -- other triads can be put here
         { "Screenshot", myscreenshotmenu, nil},
+        { " " },
     },
     after = {
+        { " " },
         { "Awesome", myawesomemenu, beautiful.awesome_icon },
         { "Power/User Mgmt", mypowermenu, nil},
         --{ "Log out", function() awful.util.spawn_with_shell("sudo service lightdm restart") end},
@@ -356,7 +359,7 @@ my_table.join(
         awful.spawn.easy_async_with_shell(scrnshotter_select, function()
             naughty.notify({text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff"})
         end)
-    end, { description = "take a screenshot of a selection", group = "awesome"}),
+    end, { description = "take a screenshot of a selection", group = "hotkeys"}),
 
     -- Tag browsing
     awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),

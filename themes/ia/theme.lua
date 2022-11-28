@@ -23,6 +23,9 @@ local dpi = require("beautiful").xresources.apply_dpi
 
 local awesomebuttons = require("awesome-buttons.awesome-buttons")
 
+local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
+
+
 --local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
 --local logout_menu = require("awesome-wm-widgets.logout-menu-widget.logout-menu")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
@@ -274,6 +277,7 @@ end
 
 local world_clock_fmt = "%H:%M%t%z"
 
+-- THIS IS __THE__ CLOCK widget in top right wibox menu thingy
 -- Textclock
 --local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock = awful.widget.watch(
@@ -293,6 +297,21 @@ local clock = awful.widget.watch(
         )
     end
 )
+
+local my_calendar_widget = calendar_widget({
+    theme = 'outrun',
+    --placement = 'bottom_right',
+    --start_sunday = true,
+    --radius = 8,
+    -- with customized next/previous (see table above)
+    previous_month_button = 1,
+    next_month_button = 3,
+})
+
+clock:connect_signal("button::press", function(_, _, _, button)
+    if button == 1 then my_calendar_widget.toggle() end
+end)
+
 local clock_time = awful.widget.watch(
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%a %d %b %R UTC%:::z'",
@@ -1305,6 +1324,7 @@ function theme.at_screen_connect(s)
         input_passthrough = true,
     })
 
+
     s.mywibox_clock:setup {
         layout = wibox.layout.align.horizontal,
         {
@@ -1529,67 +1549,67 @@ function theme.at_screen_connect(s)
             --        }),
             --
 
-                    -- Net up/down
-                    spr,
-                    neticon,
-                    -- How to wrap items in a custom background.
+            -- Net up/down
+            spr,
+            neticon,
+            -- How to wrap items in a custom background.
 --                     wibox.container.background(neticon, theme.bg_focus),
 --                     wibox.container.background(net.widget, theme.bg_focus),
-                    net.widget,
+            net.widget,
 
-                    -- spr,
-                    -- cpu_widget({
-                    --     width = 100,
-                    --     step_width = 2,
-                    --     step_spacing = 0,
-                    --     color = "#4070cf" -- '#434c5e'
-                    -- }),
+            -- spr,
+            -- cpu_widget({
+            --     width = 100,
+            --     step_width = 2,
+            --     step_spacing = 0,
+            --     color = "#4070cf" -- '#434c5e'
+            -- }),
 
-                    -- CPU
-                    spr,
-                    cpuicon,
-                    cpu.widget,
-                    
-                    -- Memory
-                    -- spr,
-                    -- memicon,
-                    mem.widget,
+            -- CPU
+            spr,
+            cpuicon,
+            cpu.widget,
 
-                    -- Battery
-                    spr,
-                    baticon,
-                    bat.widget,
+            -- Memory
+            -- spr,
+            -- memicon,
+            mem.widget,
 
-                    -- Filesytem
-                    spr,
-                    fsicon,
-                    theme.fs.widget,
+            -- Battery
+            spr,
+            baticon,
+            bat.widget,
 
-                    -- Volume
-                    spr,
-                    volicon,
-                    theme.volume.widget,
+            -- Filesytem
+            spr,
+            fsicon,
+            theme.fs.widget,
 
-                    --spr,
-                    -- default
-                    --logout_menu_widget,
-                    --logout_menu.logout_menu_widget,
+            -- Volume
+            spr,
+            volicon,
+            theme.volume.widget,
 
-                    -- Clock
-                    spr,
-                    clock,
-                    --wibox.widget.textbox('/'),
-                    -- clock_utc,
+            --spr,
+            -- default
+            --logout_menu_widget,
+            --logout_menu.logout_menu_widget,
 
-                    -- Microphone
-                     spr,
-                     theme.mic.widget,
-                    -- micicon,
+            -- Clock
+            spr,
+            clock,
+            --wibox.widget.textbox('/'),
+            -- clock_utc,
 
-                    -- Temperature
-                    spr,
-                    -- tempicon,
-                    temp.widget,
+            -- Microphone
+             spr,
+             theme.mic.widget,
+            -- micicon,
+
+            -- Temperature
+            spr,
+            -- tempicon,
+            temp.widget,
         },
     }
 end
