@@ -148,6 +148,7 @@ beautiful.init(theme_path)
 revelation.init()
 hints.init()
 
+
 --local bling = require("bling")
 --local rubato = require("rubato")
 
