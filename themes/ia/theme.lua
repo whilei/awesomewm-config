@@ -1113,7 +1113,8 @@ function theme.at_screen_connect(s)
 
     -- Create a tasklist widget
     local function list_update(w, buttons, label, data, objects)
-        common.list_update(w, buttons, label, data, objects)
+        --common.list_update(w, buttons, label, data, objects)
+        my_commonlist_update(w, buttons, label, data, objects)
         w:set_max_widget_size(140)
     end
 
@@ -1196,7 +1197,7 @@ function theme.at_screen_connect(s)
             -- This is my special additional
             -- to REMOVE TEXT (LEAVING ONLY ICON)
             -- if the task does indeed have an icon.
-            if icon then text = "" end
+            --if icon then text = "" end
 
             -- The text might be invalid, so use pcall.
             if text == nil or text == "" then
@@ -1513,9 +1514,10 @@ function theme.at_screen_connect(s)
             s.mylayoutbox,
             spr,
 
-            awesomebuttons.with_icon{
+            awesomebuttons.with_icon_and_text{
                 icon = 'crop',
-                color = theme.titlebar_bg_focus,
+                text = '??',
+                color = theme.titlebar_fg_focus,
                 shape = 'rounded_rect',
                 onclick=s.togglegaps,
             },
@@ -1523,14 +1525,14 @@ function theme.at_screen_connect(s)
 
             --s.mylayoutlist,
             --spr,
- 
+
             s.mytasklist,
         },
         -- middle
         {
             layout = wibox.layout.fixed.horizontal,
         },
-        
+
         { -- Right widgets
                     layout = wibox.layout.fixed.horizontal,
                     wibox.widget.systray(),

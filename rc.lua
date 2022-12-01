@@ -130,7 +130,7 @@ awful.util.tasklist_buttons = my_table.join(awful.button({}, 1, function(c)
         c.minimized = true
     else
         -- Without this, the following
-        -- :isvisible() makes no sense
+        -- :isvisible() makes no senseF
         c.minimized = false
         if not c:isvisible() and c.first_tag then
             c.first_tag:view_only()
@@ -1153,6 +1153,9 @@ client.connect_signal("mouse::enter",
     end)
 
 local function move_mouse_onto_focused_client(c)
+    if c == nil then return end
+    if mouse.object_under_pointer() == nil then return end
+
     -- The object (window, eg) under the mouse IS the client in question.
     if mouse.object_under_pointer() == c then return end
 
@@ -1167,8 +1170,10 @@ local function move_mouse_onto_focused_client(c)
     -- The focused client is floating or on-top.
     if c.floating or c.ontop then return end
 
-    -- Our mouse is not up there in the menubar wibox,
-    -- move the mouse to the middle of the focused client.
+    -- Only reposition the mouse if the new client is on the other screen.
+    if mouse.object_under_pointer().screen == c.screen then return end
+
+    -- Move the mouse.
     if mouse.object_under_pointer() ~= c then
         local geometry = c:geometry()
         local x = geometry.x + geometry.width/2
