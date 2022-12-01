@@ -148,6 +148,13 @@ beautiful.init(theme_path)
 revelation.init()
 hints.init()
 
+--local modalMenu1 = {
+--    {"p", awful.tag.viewprev, "Previous tag"},
+--    {"n", awful.tag.viewnext, "Next tag"},
+--}
+--
+--local modalbind = require("modalbind")
+--modalbind.init()
 
 --local bling = require("bling")
 --local rubato = require("rubato")
@@ -314,6 +321,8 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 -- {{{ Key bindings
 globalkeys =
 my_table.join(
+
+        --awful.key({modkey}, ";", function() modalbind.grab{keymap=modalMenu1, name="tags", stay_in_mode=true}  end),
 
         -- arguments:
         -- - program
