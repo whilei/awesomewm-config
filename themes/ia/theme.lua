@@ -198,6 +198,13 @@ theme.titlebar_maximized_button_normal_active   = theme.dir_macos .. "/icons/tit
 theme.titlebar_maximized_button_focus_inactive  = theme.dir_macos .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir_macos .. "/icons/titlebar/maximized_normal_inactive.png"
 
+--theme.modalbind_font = "Monospace 12" -- font
+theme.modalbind_font = "dejavu sans mono 12" -- font
+theme.modebox_fg = theme.tasklist_fg_focus         -- foreground
+theme.modebox_bg = theme.tasklist_bg_focus         -- background
+theme.modebox_border = theme.tasklist_bg_focus     -- border color
+theme.modebox_border_width = 10       -- border width
+
 require('smart_borders'){
     hot_corners_color = "#0000ff",
     hot_corners_width = dpi(5),

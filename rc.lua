@@ -150,13 +150,63 @@ beautiful.init(theme_path)
 revelation.init()
 hints.init()
 
---local modalMenu1 = {
---    {"p", awful.tag.viewprev, "Previous tag"},
---    {"n", awful.tag.viewnext, "Next tag"},
---}
+-- Modal operation
 --
---local modalbind = require("modalbind")
---modalbind.init()
+local fullscreen_fn = function(c)
+    c.fullscreen = not c.fullscreen
+    c:raise()
+end
+
+local modalbind = require("modalbind")
+modalbind.init()
+modalbind.set_location("centered")
+modalbind.hide_default_options()
+
+local my_modal_menu
+local my_modal_menu_client
+local my_modal_menu_tag
+local my_modal_menu_layout
+
+local backable = {"<", function() modalbind.grab{keymap=my_modal_menu, name="", stay_in_mode=false}  end, "back"}
+
+my_modal_menu_tag = {
+    {"n", awful.tag.viewnext, "Next"},
+    {"p", awful.tag.viewprev, "Previous"},
+}
+
+my_modal_menu_client = {
+    {"f", function()
+        client.focus.floating = not client.focus.floating
+        client.focus:raise()
+    end, "Float"},
+    {"F", function() fullscreen_fn(client.focus)  end, "Fullscreen"},
+    {"m", function() client.focus.minimized = true end, "Minimize"},
+    {"M", function()
+        client.focus.maximized = not client.focus.maximized
+        client.focus:raise()
+    end, "Maximize"},
+    {"s", function() client.focus.sticky = not client.focus.sticky  end, "Sticky"},
+    backable,
+}
+
+my_modal_menu_layout = {
+    {"t", function() awful.layout.set(awful.layout.suit.tile) end, "Tile"},
+    {"c", function() awful.layout.set(lain.layout.centerwork) end, "Centerwork"},
+    {"m", function() awful.layout.set(awful.layout.suit.magnifier) end, "Magnifier"},
+    {"f", function() awful.layout.set(awful.layout.suit.floating) end, "Floating"},
+    backable,
+}
+
+my_modal_menu = {
+    {"t", function() modalbind.grab{keymap=my_modal_menu_tag, name="Tag",    stay_in_mode=true,  hide_default_options=true} end, "Tag ~" },
+    {"c", function() modalbind.grab{keymap=my_modal_menu_client, name="Client", stay_in_mode=false, hide_default_options=true} end, "Client _" },
+    {"l", function() modalbind.grab{keymap=my_modal_menu_layout, name="Layout", stay_in_mode=false, hide_default_options=true} end, "Layout _" },
+    {"separator", ""},
+    {"r", revelation, "Revelation"},
+    {"j", function () hints.focus() ; client.focus:raise() end, "Jump-to hints"},
+}
+
+--
 
 --local bling = require("bling")
 --local rubato = require("rubato")
@@ -326,7 +376,7 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 globalkeys =
 my_table.join(
 
-        --awful.key({modkey}, ";", function() modalbind.grab{keymap=modalMenu1, name="tags", stay_in_mode=true}  end),
+        awful.key({modkey}, ",", function() modalbind.grab{keymap=my_modal_menu, name="", stay_in_mode=false}  end),
 
         -- arguments:
         -- - program
@@ -669,6 +719,7 @@ my_table.join(
             awful.layout.inc(-1)
         end,
         { description = "select previous", group = "layout" }),
+
     awful.key({ modkey, "Control" },
         "n",
         function()
@@ -680,6 +731,7 @@ my_table.join(
             end
         end,
         { description = "restore minimized", group = "client" }),
+
     -- Dropdown application
     awful.key({ modkey },
         "z",
@@ -752,11 +804,7 @@ my_table.join(
         c:raise()
     end, { description = "magnify client", group = "client" }),
 
-    awful.key({ modkey }, "f",
-        function(c)
-            c.fullscreen = not c.fullscreen
-            c:raise()
-        end, { description = "toggle fullscreen", group = "client" }),
+    awful.key({ modkey }, "f", fullscreen_fn, { description = "toggle fullscreen", group = "client" }),
 
     awful.key({ modkey, "Shift" },
         "c",
