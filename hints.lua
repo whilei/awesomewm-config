@@ -26,16 +26,29 @@ function hints.init()
   local letterbox = {}
   for i = 1, #hints.charorder do
     local char = hints.charorder:sub(i,i)
+
+    --hints.hintbox[char] = wibox({
+    --  fg=beautiful.fg_normal,
+    --  bg=beautiful.bg_focus,
+    --  border_color=beautiful.border_focus,
+    --  border_width=beautiful.border_width})
+
     hints.hintbox[char] = wibox({
-      fg=beautiful.fg_normal,
-      bg=beautiful.bg_focus,
-      border_color=beautiful.border_focus,
-      border_width=beautiful.border_width})
+      --fg=beautiful.fg_normal,
+      --bg=beautiful.bg_focus,
+      --border_color=beautiful.border_focus,
+      --border_width=beautiful.border_width,
+      fg="#ffffff",
+      bg="#38761d", -- dark green, like a road sign
+      border_color="#efefef",
+      border_width="3",
+    })
+
     hints.hintbox[char].ontop = true
     hints.hintbox[char].width = hintsize
     hints.hintbox[char].height = hintsize
     letterbox[char] = wibox.widget.textbox()
-    letterbox[char]:set_markup("<span color=\"" .. beautiful.fg_normal .. "\"" .. ">" .. char.upper(char) .. "</span>")
+    letterbox[char]:set_markup("<span color=\"" .. "#ffffff" .. "\"" .. ">" .. char.upper(char) .. "</span>")
     letterbox[char]:set_font("dejavu sans mono 40")
     letterbox[char]:set_align("center")
     hints.hintbox[char]:set_widget(letterbox[char])

@@ -13,3 +13,6 @@
 [submodule "modalbind"]
 	path = modalbind
 	url = https://github.com/crater2150/awesome-modalbind.git
+[submodule "awesome-macos"]
+	path = awesome-macos
+	url = https://github.com/dj95/awesome-macos.git

@@ -144,6 +144,8 @@ end))
 
 
 local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme)
+--local theme_path = string.format("%s/.config/awesome/awesome-macos/themes/macos-dark/theme.lua", os.getenv("HOME"))
+
 beautiful.init(theme_path)
 revelation.init()
 hints.init()
@@ -316,7 +318,9 @@ screen.connect_signal("property::geometry",
     end)
 
 -- Create a wibox for each screen and add it
+-- HERE COMMENTED
 awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
+
 -- }}}
 -- {{{ Key bindings
 globalkeys =
@@ -337,11 +341,13 @@ my_table.join(
         handy("ffox --class handy-left", awful.placement.left, 0.25, 1)
     end, {description = "Handy: Firefox (left)", group = "launcher"}),
 
+    -- revelation: expose-like application shower picker
+    awful.key({ modkey, "Shift" }, "e", revelation, {description = "Revelation (Expose)", group = "hotkeys"}),
+
     -- hints: client picker, window picker, letter
     awful.key({ modkey }, "i", function () hints.focus() ; client.focus:raise() end, {description = "Focus client with Hints", group = "hotkeys"}),
 
-    -- revelation: expose-like application shower picker
-    awful.key({ modkey }, "e", revelation, {description = "Revelation (Expose)", group = "hotkeys"}),
+
 
 -- Take a screenshot
 -- https://github.com/lcpz/dots/blob/master/bin/screenshot
@@ -1078,18 +1084,18 @@ client.connect_signal("manage",
 --end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
-client.connect_signal("request::titlebars",
-    function(c)
-        -- Custom
-        if beautiful.titlebar_fun then
-            beautiful.titlebar_fun(c)
-            return
-        end
 
-        -- Default
-        -- buttons for the titlebar
-        local buttons =
-        my_table.join(awful.button({},
+local mytitlebars = function(c)
+    -- Custom
+    if beautiful.titlebar_fun then
+        beautiful.titlebar_fun(c)
+        return
+    end
+
+    -- Default
+    -- buttons for the titlebar
+    local buttons =
+    my_table.join(awful.button({},
             1,
             function()
                 client.focus = c
@@ -1097,44 +1103,46 @@ client.connect_signal("request::titlebars",
                 awful.mouse.client.move(c)
             end),
             awful.button({},
-                3,
-                function()
-                    client.focus = c
-                    c:raise()
-                    awful.mouse.client.resize(c)
-                end))
+                    3,
+                    function()
+                        client.focus = c
+                        c:raise()
+                        awful.mouse.client.resize(c)
+                    end))
 
-        awful.titlebar(c, { size = 14 }):setup {
-            {
-                -- Left
-                awful.titlebar.widget.iconwidget(c),
-                wibox.widget.textbox(' '),
-                awful.titlebar.widget.titlewidget(c),
-                buttons = buttons,
-                layout = wibox.layout.fixed.horizontal
-            },
-            {
---                -- Middle
---                {
---                    -- Title
---                    align = "center",
---                    widget = awful.titlebar.widget.titlewidget(c)
---                },
-                buttons = buttons,
-                layout = wibox.layout.flex.horizontal
-            },
-            {
-                -- Right
-                awful.titlebar.widget.floatingbutton(c),
-                awful.titlebar.widget.maximizedbutton(c),
-                --awful.titlebar.widget.stickybutton(c),
-                awful.titlebar.widget.ontopbutton(c),
-                awful.titlebar.widget.closebutton(c),
-                layout = wibox.layout.fixed.horizontal()
-            },
-            layout = wibox.layout.align.horizontal
-        }
-    end)
+    awful.titlebar(c, { size = 16 }):setup {
+        {
+            -- Left
+            awful.titlebar.widget.iconwidget(c),
+            wibox.widget.textbox(' '),
+            awful.titlebar.widget.titlewidget(c),
+            buttons = buttons,
+            layout = wibox.layout.fixed.horizontal
+        },
+        {
+            --                -- Middle
+            --                {
+            --                    -- Title
+            --                    align = "center",
+            --                    widget = awful.titlebar.widget.titlewidget(c)
+            --                },
+            buttons = buttons,
+            layout = wibox.layout.flex.horizontal
+        },
+        {
+            -- Right
+            awful.titlebar.widget.floatingbutton(c),
+            --awful.titlebar.widget.stickybutton(c),
+            awful.titlebar.widget.ontopbutton(c),
+            awful.titlebar.widget.maximizedbutton(c),
+            awful.titlebar.widget.closebutton(c),
+            layout = wibox.layout.fixed.horizontal()
+        },
+        layout = wibox.layout.align.horizontal
+    }
+end
+
+client.connect_signal("request::titlebars", mytitlebars)
 
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter",
