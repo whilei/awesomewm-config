@@ -756,16 +756,6 @@ local net                     = lain.widget.net({
 													end
 												})
 
-local my_data                 = awful.widget.watch(
-		"bash -c 'cat " .. theme.dir .. "/data.txt" .. "'",
-		5,
-		function(widget, stdout)
-			-- https://docs.gtk.org/Pango/pango_markup.html
-			widget:set_markup(" " .. markup.font(theme.font, stdout))
-		end
-)
-
-
 --local weather = weather_widget({
 --    api_key = "25fb73929c3c4030dc1800e70518aedb"
 --})
@@ -1474,14 +1464,6 @@ function theme.at_screen_connect(s)
 				spr,
 				mygithubwidget2.widget,
 			},
-
-			spr,
-			{
-				layout = wibox.layout.fixed.horizontal,
-				spr,
-				my_data,
-			},
-
 		},
 	}
 
