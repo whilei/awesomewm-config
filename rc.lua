@@ -167,21 +167,21 @@ modalbind.init()
 modalbind.set_location("centered")
 modalbind.hide_default_options()
 
-local my_modal_menu
-local my_modal_menu_client
-local my_modal_menu_tag
-local my_modal_menu_layout
+local imodal_main
+local imodal_client
+local imodal_tag
+local imodal_layouts
 
-local backable         = { "<", function()
-	modalbind.grab { keymap = my_modal_menu, name = "", stay_in_mode = false }
+local backable = { "<", function()
+	modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
 end, "back" }
 
-my_modal_menu_tag      = {
+imodal_tag  = {
 	{ "n", awful.tag.viewnext, "Next" },
 	{ "p", awful.tag.viewprev, "Previous" },
 }
 
-my_modal_menu_client   = {
+imodal_client = {
 	{ "f", function()
 		client.focus.floating = not client.focus.floating
 		client.focus:raise()
@@ -202,7 +202,7 @@ my_modal_menu_client   = {
 	backable,
 }
 
-my_modal_menu_layout   = {
+imodal_layouts = {
 	{ "t", function()
 		awful.layout.set(awful.layout.suit.tile)
 	end, "Tile" },
@@ -218,15 +218,15 @@ my_modal_menu_layout   = {
 	backable,
 }
 
-my_modal_menu          = {
+imodal_main    = {
 	{ "t", function()
-		modalbind.grab { keymap = my_modal_menu_tag, name = "Tag", stay_in_mode = true, hide_default_options = true }
+		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = true, hide_default_options = true }
 	end, "Tag ~" },
 	{ "c", function()
-		modalbind.grab { keymap = my_modal_menu_client, name = "Client", stay_in_mode = false, hide_default_options = true }
+		modalbind.grab { keymap = imodal_client, name = "Client", stay_in_mode = false, hide_default_options = true }
 	end, "Client _" },
 	{ "l", function()
-		modalbind.grab { keymap = my_modal_menu_layout, name = "Layout", stay_in_mode = false, hide_default_options = true }
+		modalbind.grab { keymap = imodal_layouts, name = "Layouts", stay_in_mode = false, hide_default_options = true }
 	end, "Layout _" },
 	{ "separator", "" },
 	{ "r", revelation, "Revelation" },
@@ -415,7 +415,7 @@ end)
 globalkeys = my_table.join(
 
 		awful.key({ modkey }, ",", function()
-			modalbind.grab { keymap = my_modal_menu, name = "", stay_in_mode = false }
+			modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
 		end),
 
 -- arguments:
