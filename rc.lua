@@ -155,6 +155,19 @@ beautiful.init(theme_path)
 revelation.init()
 hints.init()
 
+local screenshot_selection_fn = function()
+	awful.util.mymainmenu:hide()
+	awful.spawn.easy_async_with_shell(scrnshotter_select, function()
+		naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+	end)
+end
+
+local screenshot_window_fn = function()
+	awful.util.mymainmenu:hide()
+	awful.util.spawn_with_shell(scrnshotter_window)
+	naughty.notify({ text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+end
+
 -- Modal operation
 --
 local fullscreen_fn = function(c)
@@ -168,22 +181,42 @@ modalbind.set_location("centered")
 modalbind.hide_default_options()
 
 local imodal_main
+local imodal_awesomewm
 local imodal_client
-local imodal_tag
 local imodal_layouts
+local imodal_power
+local imodal_screenshot
+local imodal_tag
 
-local backable = { "<", function()
+local backable         = { "<", function()
 	modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
 end, "back" }
 
 local imodal_separator = { "separator", "" }
 
-imodal_tag  = {
+imodal_awesomewm = {
+	{ "h", hotkeys_popup.show_help, "Help"},
+	{ "m", function()
+		awful.util.mymainmenu:show()
+	end, "Menu"},
+	{ "r", awesome.restart, "Restart" },
+	imodal_separator,
+	backable,
+}
+
+imodal_screenshot = {
+	{ "s", screenshot_selection_fn, "Selection"},
+	{ "w", screenshot_window_fn, "Window"},
+	imodal_separator,
+	backable,
+}
+
+imodal_tag             = {
 	{ "n", awful.tag.viewnext, "Next" },
 	{ "p", awful.tag.viewprev, "Previous" },
 }
 
-imodal_client = {
+imodal_client          = {
 	{ "f", function()
 		client.focus.floating = not client.focus.floating
 		client.focus:raise()
@@ -205,39 +238,82 @@ imodal_client = {
 	backable,
 }
 
-imodal_layouts = {
-	{ "t", function()
-		awful.layout.set(awful.layout.suit.tile)
-	end, "Tile" },
+imodal_layouts         = {
 	{ "c", function()
 		awful.layout.set(lain.layout.centerwork)
 	end, "Centerwork" },
-	{ "m", function()
-		awful.layout.set(awful.layout.suit.magnifier)
-	end, "Magnifier" },
 	{ "f", function()
 		awful.layout.set(awful.layout.suit.floating)
 	end, "Floating" },
+	{ "m", function()
+		awful.layout.set(awful.layout.suit.magnifier)
+	end, "Magnifier" },
+	{ "t", function()
+		awful.layout.set(awful.layout.suit.tile)
+	end, "Tile" },
 	imodal_separator,
 	backable,
 }
 
-imodal_main    = {
-	{ "t", function()
-		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = true, hide_default_options = true }
-	end, "Tag ~" },
+imodal_power           = {
+	{ "l", function()
+		awful.util.spawn_with_shell("sudo service lightdm restart")
+	end, "Log out" },
+	{ "s", function()
+		awful.util.spawn_with_shell("sudo systemctl suspend")
+	end, "Suspend" },
+	{ "S", function()
+		awful.util.spawn_with_shell("shutdown -P -h now")
+	end, "Shutdown" },
+	{ "R", function()
+		os.execute("reboot")
+	end, "Reboot" },
+	imodal_separator,
+	backable,
+}
+
+imodal_main            = {
+	{ "a", function()
+		modalbind.grab { keymap = imodal_awesomewm, name = "AwesomeWM", stay_in_mode = false, hide_default_options = true }
+	end, "➔ AwesomeWM"},
+
 	{ "c", function()
 		modalbind.grab { keymap = imodal_client, name = "Client", stay_in_mode = false, hide_default_options = true }
-	end, "Client _" },
-	{ "l", function()
-		modalbind.grab { keymap = imodal_layouts, name = "Layouts", stay_in_mode = false, hide_default_options = true }
-	end, "Layout _" },
-	imodal_separator,
-	{ "r", revelation, "Revelation" },
+	end, "➔ Client" },
+
 	{ "j", function()
 		hints.focus();
 		client.focus:raise()
-	end, "Jump-to hints" },
+	end, "  Jump-to hints" },
+
+	{ "l", function()
+		modalbind.grab { keymap = imodal_layouts, name = "Layouts", stay_in_mode = false, hide_default_options = true }
+	end, "➔ Layout" },
+
+	{ "p", function()
+		modalbind.grab { keymap = imodal_power, name = "Power/Awesome", stay_in_mode = false, hide_default_options = true }
+	end, "➔ Power" },
+
+	{ "r", revelation, "  Revelation" },
+
+	{ "s", function()
+		modalbind.grab { keymap = imodal_screenshot, name = "Screenshot", stay_in_mode = false, hide_default_options = true }
+	end, "➔ Screenshot"},
+
+	{ "t", function()
+		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = true, hide_default_options = true }
+	end, "➔ Tag" },
+
+	{ "u", function()
+		local scr = awful.screen.focused()
+		if scr.selected_tag.gap > 0 then
+			-- turn gaps off by setting to 0
+			scr.selected_tag.gap = 0
+		else
+			scr.selected_tag.gap = scr.geometry.height / 20
+		end
+		awful.layout.arrange(scr)
+	end, "  Useless gaps toggle"},
 }
 
 --
@@ -323,39 +399,30 @@ local myawesomemenu    = {
 local myscreenshotmenu = {
 	{
 		"Selection",
-		function()
-			awful.util.mymainmenu:hide()
-			awful.spawn.easy_async_with_shell(scrnshotter_select, function()
-				naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
-			end)
-		end
+		screenshot_selection_fn,
 	},
 	{
 		"Window",
-		function()
-			awful.util.mymainmenu:hide()
-			awful.util.spawn_with_shell(scrnshotter_window)
-			naughty.notify({ text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
-		end
+		screenshot_window_fn,
 	}
 }
 
-screenshot_menu        = awful.menu({
-										items = {
-											{ "Screenshot: Selection", function()
-												screenshot_menu:hide()
-												--awful.util.spawn_with_shell(scrnshotter_select)
-												awful.spawn.easy_async_with_shell(scrnshotter_select, function()
-													naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
-												end)
-											end, nil },
-											{ "Screenshot: Window", function()
-												screenshot_menu:hide()
-												awful.util.spawn_with_shell(scrnshotter_window)
-												naughty.notify({ text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
-											end, nil },
-										}
-									})
+--screenshot_menu        = awful.menu({
+--										items = {
+--											{ "Screenshot: Selection", function()
+--												screenshot_menu:hide()
+--												--awful.util.spawn_with_shell(scrnshotter_select)
+--												awful.spawn.easy_async_with_shell(scrnshotter_select, function()
+--													naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+--												end)
+--											end, nil },
+--											{ "Screenshot: Window", function()
+--												screenshot_menu:hide()
+--												awful.util.spawn_with_shell(scrnshotter_window)
+--												naughty.notify({ text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+--											end, nil },
+--										}
+--									})
 
 local mypowermenu      = {
 	{ "Suspend/Sleep", function()

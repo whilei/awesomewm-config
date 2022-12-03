@@ -1538,7 +1538,7 @@ function theme.at_screen_connect(s)
 
 			awesomebuttons.with_icon_and_text {
 				icon    = 'crop',
-				text    = '??',
+				text    = s.selected_tag.gap,
 				color   = theme.titlebar_fg_focus,
 				shape   = 'rounded_rect',
 				onclick = s.togglegaps,
