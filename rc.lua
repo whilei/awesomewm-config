@@ -176,6 +176,8 @@ local backable = { "<", function()
 	modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
 end, "back" }
 
+local imodal_separator = { "separator", "" }
+
 imodal_tag  = {
 	{ "n", awful.tag.viewnext, "Next" },
 	{ "p", awful.tag.viewprev, "Previous" },
@@ -199,6 +201,7 @@ imodal_client = {
 	{ "s", function()
 		client.focus.sticky = not client.focus.sticky
 	end, "Sticky" },
+	imodal_separator,
 	backable,
 }
 
@@ -215,6 +218,7 @@ imodal_layouts = {
 	{ "f", function()
 		awful.layout.set(awful.layout.suit.floating)
 	end, "Floating" },
+	imodal_separator,
 	backable,
 }
 
@@ -228,7 +232,7 @@ imodal_main    = {
 	{ "l", function()
 		modalbind.grab { keymap = imodal_layouts, name = "Layouts", stay_in_mode = false, hide_default_options = true }
 	end, "Layout _" },
-	{ "separator", "" },
+	imodal_separator,
 	{ "r", revelation, "Revelation" },
 	{ "j", function()
 		hints.focus();
