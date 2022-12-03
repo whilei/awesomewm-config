@@ -5,23 +5,23 @@
 
 --]]
 
-local math     = math
-local string   = string
-local type     = type
-local tonumber = tonumber
-local tostring = tostring
+local math            = math
+local string          = string
+local type            = type
+local tonumber        = tonumber
+local tostring        = tostring
 
-local gears = require("gears")
-local lain  = require("lain")
-local awful = require("awful")
-local wibox = require("wibox")
-local common = require("awful.widget.common")
-local dpi = require("beautiful").xresources.apply_dpi
+local gears           = require("gears")
+local lain            = require("lain")
+local awful           = require("awful")
+local wibox           = require("wibox")
+local common          = require("awful.widget.common")
+local dpi             = require("beautiful").xresources.apply_dpi
 
 --local revelation = require("revelation")
 
 
-local awesomebuttons = require("awesome-buttons.awesome-buttons")
+local awesomebuttons  = require("awesome-buttons.awesome-buttons")
 
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 
@@ -31,34 +31,34 @@ local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
 --local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
 
-local os = {
-    getenv = os.getenv,
-    tmpname = os.tmpname,
-    execute = os.execute,
-    remove = os.remove,
+local os              = {
+	getenv  = os.getenv,
+	tmpname = os.tmpname,
+	execute = os.execute,
+	remove  = os.remove,
 }
-local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
+local my_table        = awful.util.table or gears.table -- 4.{0,1} compatibility
 
-local theme                                     = {}
-theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/ia"
-theme.dir_macos                                  = os.getenv("HOME") .. "/.config/awesome/awesome-macos/themes/macos-dark"
+local theme           = {}
+theme.dir             = os.getenv("HOME") .. "/.config/awesome/themes/ia"
+theme.dir_macos       = os.getenv("HOME") .. "/.config/awesome/awesome-macos/themes/macos-dark"
 
 -- Wallpaper, wallpaper
-theme.wallTallIndex = 0
-theme.wallWideIndex = 0
+theme.wallTallIndex   = 0
+theme.wallWideIndex   = 0
 function wallpaperForScreenByDimension(s)
-    -- Default wide.
-    local out = theme.dir .. "/walls/iter/wide/wall" .. theme.wallWideIndex .. ".jpg"
+	-- Default wide.
+	local out = theme.dir .. "/walls/iter/wide/wall" .. theme.wallWideIndex .. ".jpg"
 
-    -- If known tall screens.
-    if s.geometry.width < s.geometry.height then
-        out = theme.dir .. "/walls/iter/tall/wall" .. theme.wallTallIndex .. ".jpg"
-        theme.wallTallIndex = theme.wallTallIndex + 1
-        return out
-    end
+	-- If known tall screens.
+	if s.geometry.width < s.geometry.height then
+		out                 = theme.dir .. "/walls/iter/tall/wall" .. theme.wallTallIndex .. ".jpg"
+		theme.wallTallIndex = theme.wallTallIndex + 1
+		return out
+	end
 
-    theme.wallWideIndex = theme.wallWideIndex + 1
-    return out
+	theme.wallWideIndex = theme.wallWideIndex + 1
+	return out
 end
 --theme.wallpaper                                 = wallpaperForScreenByDimension
 theme.wallpaper                                 = theme.dir .. "/walls/solidcolor_black.png"
@@ -67,12 +67,12 @@ theme.wallpaper                                 = theme.dir .. "/walls/solidcolo
 -- $ b = require("beautiful"); local c = "#08158a"; b.titlebar_bg_focus = c; b.tasklist_bg_focus = c;
 
 theme.font                                      = "xos4 Terminus 9"
-theme.color_green = "#2EFE2E"
-theme.color_yellow ="#FFFF00"
-theme.color_orange = "#FF8000"
-theme.color_red = "#DF0101"
-theme.color_lightblue = "#4070cf"
-theme.color_blue = "#0B1DC2"
+theme.color_green                               = "#2EFE2E"
+theme.color_yellow                              = "#FFFF00"
+theme.color_orange                              = "#FF8000"
+theme.color_red                                 = "#DF0101"
+theme.color_lightblue                           = "#4070cf"
+theme.color_blue                                = "#0B1DC2"
 
 theme.menu_bg_normal                            = "#000000"
 theme.menu_bg_focus                             = "#000000"
@@ -85,10 +85,10 @@ theme.fg_urgent                                 = "#af1d18"
 theme.bg_minimize                               = "#2e2d2e"
 theme.fg_minimize                               = "#ffffff"
 
-theme.clock_bg = "#191f1a"
-theme.colon_fg = "#256c1e"
-theme.clock_fg = "#32ab3a" -- #3030c9
-theme.clock_mylocal = "#A51C48"
+theme.clock_bg                                  = "#191f1a"
+theme.colon_fg                                  = "#256c1e"
+theme.clock_fg                                  = "#32ab3a" -- #3030c9
+theme.clock_mylocal                             = "#A51C48"
 
 -- theme.border_normal                             = "#1c2022"
 -- theme.border_focus                              = "#606060"
@@ -140,8 +140,8 @@ theme.widget_net                                = theme.dir .. "/icons/net.png"
 theme.widget_hdd                                = theme.dir .. "/icons/hdd.png"
 theme.widget_music                              = theme.dir .. "/icons/note.png"
 theme.widget_music_on                           = theme.dir .. "/icons/note_on.png"
-theme.widget_mic_on = theme.dir .. "/icons/mic_google_on.png"
-theme.widget_mic_off = theme.dir .. "/icons/mic_off.png"
+theme.widget_mic_on                             = theme.dir .. "/icons/mic_google_on.png"
+theme.widget_mic_off                            = theme.dir .. "/icons/mic_off.png"
 theme.widget_vol                                = theme.dir .. "/icons/vol.png"
 theme.widget_vol_low                            = theme.dir .. "/icons/vol_low.png"
 theme.widget_vol_no                             = theme.dir .. "/icons/vol_no.png"
@@ -199,59 +199,59 @@ theme.titlebar_maximized_button_focus_inactive  = theme.dir_macos .. "/icons/tit
 theme.titlebar_maximized_button_normal_inactive = theme.dir_macos .. "/icons/titlebar/maximized_normal_inactive.png"
 
 --theme.modalbind_font = "Monospace 12" -- font
-theme.modalbind_font = "dejavu sans mono 12" -- font
-theme.modebox_fg = theme.tasklist_fg_focus         -- foreground
-theme.modebox_bg = theme.tasklist_bg_focus         -- background
-theme.modebox_border = theme.tasklist_bg_focus     -- border color
-theme.modebox_border_width = 10       -- border width
+theme.modalbind_font                            = "dejavu sans mono 12" -- font
+theme.modebox_fg                                = theme.tasklist_fg_focus         -- foreground
+theme.modebox_bg                                = theme.tasklist_bg_focus         -- background
+theme.modebox_border                            = theme.tasklist_bg_focus     -- border color
+theme.modebox_border_width                      = 10       -- border width
 
-require('smart_borders'){
-    hot_corners_color = "#0000ff",
-    hot_corners_width = dpi(5),
-    hot_corners_height = dpi(5),
-    hot_corners = {
-        --["top_right"] = {
-        --    enter = function()
-        --        require("naughty").notify({text = "enter"})
-        --        require("revelation")()
-        --    end,
-        --    leave = function()
-        --        require("naughty").notify({text = "leave"})
-        --    end
-        --},
-        --["top_left"] = {
-        --    enter = function()
-        --        require("naughty").notify({text = "enter"})
-        --    end,
-        --    leave = function()
-        --        require("naughty").notify({text = "leave"})
-        --    end
-        --},
-        --["bottom_right"] = {
-        --    enter = function()
-        --        require("naughty").notify({text = "enter"})
-        --    end,
-        --    leave = function()
-        --        require("naughty").notify({text = "leave"})
-        --    end
-        --},
-        --["bottom_left"] = {
-        --    enter = function()
-        --        require("naughty").notify({text = "enter"})
-        --    end,
-        --    leave = function()
-        --        require("naughty").notify({text = "leave"})
-        --    end
-        --},
-    },
-    --show_button_tooltips = true,
-    --color_normal = theme.border_normal,
-    --color_focus = theme.border_focus,
-    --layout = "fixed",
-    --button_size = dpi(40),
+require('smart_borders') {
+	hot_corners_color  = "#0000ff",
+	hot_corners_width  = dpi(5),
+	hot_corners_height = dpi(5),
+	hot_corners        = {
+		--["top_right"] = {
+		--    enter = function()
+		--        require("naughty").notify({text = "enter"})
+		--        require("revelation")()
+		--    end,
+		--    leave = function()
+		--        require("naughty").notify({text = "leave"})
+		--    end
+		--},
+		--["top_left"] = {
+		--    enter = function()
+		--        require("naughty").notify({text = "enter"})
+		--    end,
+		--    leave = function()
+		--        require("naughty").notify({text = "leave"})
+		--    end
+		--},
+		--["bottom_right"] = {
+		--    enter = function()
+		--        require("naughty").notify({text = "enter"})
+		--    end,
+		--    leave = function()
+		--        require("naughty").notify({text = "leave"})
+		--    end
+		--},
+		--["bottom_left"] = {
+		--    enter = function()
+		--        require("naughty").notify({text = "enter"})
+		--    end,
+		--    leave = function()
+		--        require("naughty").notify({text = "leave"})
+		--    end
+		--},
+	},
+	--show_button_tooltips = true,
+	--color_normal = theme.border_normal,
+	--color_focus = theme.border_focus,
+	--layout = "fixed",
+	--button_size = dpi(40),
 }
 
-local markup = lain.util.markup
+local markup     = lain.util.markup
 local separators = lain.util.separators
 
 -- --https://wowwiki.fandom.com/wiki/USERAPI_RGBToHex
@@ -266,8 +266,8 @@ local separators = lain.util.separators
 local function RGBPercToHex(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
 	g = g <= 1 and g >= 0 and g or 0
-    b = b <= 1 and b >= 0 and b or 0
-	return string.format("#%02x%02x%02x", math.floor(r*255), math.floor(g*255), math.floor(b*255))
+	b = b <= 1 and b >= 0 and b or 0
+	return string.format("#%02x%02x%02x", math.floor(r * 255), math.floor(g * 255), math.floor(b * 255))
 end
 
 -- https://wowwiki.fandom.com/wiki/USERAPI_ColorGradient
@@ -279,491 +279,490 @@ local function ColorGradient(perc, ...)
 		local r, g, b = ...
 		return r, g, b
 	end
-	
-	local num = select('#', ...) / 3
 
-    local segment, relperc = math.modf(perc*(num-1))
-    local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
-    
-    if r1 > 1 then
-        r1, g1, b1, r2, g2, b2 =	r1/255, g1/255, b1/255, r2/255, g2/255, b2/255
-    end
+	local num                    = select('#', ...) / 3
 
-	return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
+	local segment, relperc       = math.modf(perc * (num - 1))
+	local r1, g1, b1, r2, g2, b2 = select((segment * 3) + 1, ...)
+
+	if r1 > 1 then
+		r1, g1, b1, r2, g2, b2 = r1 / 255, g1 / 255, b1 / 255, r2 / 255, g2 / 255, b2 / 255
+	end
+
+	return r1 + (r2 - r1) * relperc, g1 + (g2 - g1) * relperc, b1 + (b2 - b1) * relperc
 end
 
 local function HexToRGBPerc(hex)
 	local rhex, ghex, bhex = string.sub(hex, 1, 2), string.sub(hex, 3, 4), string.sub(hex, 5, 6)
-	return tonumber(rhex, 16)/255, tonumber(ghex, 16)/255, tonumber(bhex, 16)/255
+	return tonumber(rhex, 16) / 255, tonumber(ghex, 16) / 255, tonumber(bhex, 16) / 255
 end
 
 local function h2rgb(x)
-    return HexToRGBPerc(x)
+	return HexToRGBPerc(x)
 end
 
 local function BoundedRGBVal(low, high, val)
-  if val > high then
-    return high
-  end
-  if val < low then
-    return low
-  end
-  return val
+	if val > high then
+		return high
+	end
+	if val < low then
+		return low
+	end
+	return val
 end
 
-local world_clock_fmt = "%H:%M%t%z"
+local world_clock_fmt    = "%H:%M%t%z"
 
 -- THIS IS __THE__ CLOCK widget in top right wibox menu thingy
 -- Textclock
 --local clockicon = wibox.widget.imagebox(theme.widget_clock)
-local clock = awful.widget.watch(
-    -- "date +'%a %d %b %R UTC%:::z'", 
-    -- "date +'%a %d %b %R UTC%:::z'", 
-    -- "date +'%Y-%m-%dT%H:%MZ%:z'",
-    --"date +'%-m-%d %A %H:%M %:::z'",
-    --"date +'%H:%M %a %Y-%m-%d %:::z'",
-    "date +'%Y-%m-%d %A %H:%M%-:::z'",
-    60,
-    function(widget, stdout)
-        -- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-        widget:set_markup(
-            -- theme.font
-            markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-        )
-    end
-)
-
-local my_calendar_widget = calendar_widget({
-    theme = 'outrun',
-    --placement = 'bottom_right',
-    --start_sunday = true,
-    --radius = 8,
-    -- with customized next/previous (see table above)
-    previous_month_button = 1,
-    next_month_button = 3,
-})
-
-clock:connect_signal("button::press", function(_, _, _, button)
-    if button == 1 then my_calendar_widget.toggle() end
-end)
-
-local clock_time = awful.widget.watch(
+local clock              = awful.widget.watch(
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%Y-%m-%dT%H:%MZ%:z'",
 --"date +'%-m-%d %A %H:%M %:::z'",
 --"date +'%H:%M %a %Y-%m-%d %:::z'",
-        "date +'%H:%M'",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+		"date +'%Y-%m-%d %A %H:%M%-:::z'",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_vancouver = awful.widget.watch(
-        "bash -c 'TZ='America/Vancouver' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local my_calendar_widget = calendar_widget({
+											   theme                 = 'outrun',
+											   --placement = 'bottom_right',
+											   --start_sunday = true,
+											   --radius = 8,
+											   -- with customized next/previous (see table above)
+											   previous_month_button = 1,
+											   next_month_button     = 3,
+										   })
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_fg, " " .. markup(theme.clock_bg, stdout) .. " ")
-            )
-        end
+clock:connect_signal("button::press", function(_, _, _, button)
+	if button == 1 then
+		my_calendar_widget.toggle()
+	end
+end)
+
+local clock_time              = awful.widget.watch(
+-- "date +'%a %d %b %R UTC%:::z'",
+-- "date +'%a %d %b %R UTC%:::z'",
+-- "date +'%Y-%m-%dT%H:%MZ%:z'",
+--"date +'%-m-%d %A %H:%M %:::z'",
+--"date +'%H:%M %a %Y-%m-%d %:::z'",
+		"date +'%H:%M'",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
+
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_denver = awful.widget.watch(
-        "bash -c 'TZ='America/Denver' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_vancouver   = awful.widget.watch(
+		"bash -c 'TZ='America/Vancouver' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_fg, " " .. markup(theme.clock_bg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_chicago = awful.widget.watch(
-        "bash -c 'TZ='America/Chicago' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_denver      = awful.widget.watch(
+		"bash -c 'TZ='America/Denver' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_newyork = awful.widget.watch(
-        "bash -c 'TZ='America/New_York' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_chicago     = awful.widget.watch(
+		"bash -c 'TZ='America/Chicago' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local clock_utc = awful.widget.watch(
-        "date -u +'%H:%M'",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_newyork     = awful.widget.watch(
+		"bash -c 'TZ='America/New_York' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_london = awful.widget.watch(
-        "bash -c 'TZ='Europe/London' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local clock_utc               = awful.widget.watch(
+		"date -u +'%H:%M'",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_berlin = awful.widget.watch(
-        "bash -c 'TZ='Europe/Berlin' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_london      = awful.widget.watch(
+		"bash -c 'TZ='Europe/London' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_madrid = awful.widget.watch(
-        "bash -c 'TZ='Europe/Madrid' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_berlin      = awful.widget.watch(
+		"bash -c 'TZ='Europe/Berlin' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
+local world_clock_madrid      = awful.widget.watch(
+		"bash -c 'TZ='Europe/Madrid' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-local world_clock_athens = awful.widget.watch(
-        "bash -c 'TZ='Europe/Athens' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_dubai = awful.widget.watch(
-        "bash -c 'TZ='Asia/Dubai' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_athens      = awful.widget.watch(
+		"bash -c 'TZ='Europe/Athens' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_shanghai = awful.widget.watch(
-        "bash -c 'TZ='Asia/Shanghai' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_dubai       = awful.widget.watch(
+		"bash -c 'TZ='Asia/Dubai' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_tokyo = awful.widget.watch(
-        "bash -c 'TZ='Asia/Tokyo' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_shanghai    = awful.widget.watch(
+		"bash -c 'TZ='Asia/Shanghai' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
+)
+
+local world_clock_tokyo       = awful.widget.watch(
+		"bash -c 'TZ='Asia/Tokyo' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
+
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
 local world_clock_buenosaires = awful.widget.watch(
-        "bash -c 'TZ='America/Argentina/Buenos_Aires' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+		"bash -c 'TZ='America/Argentina/Buenos_Aires' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
+local world_clock_madrid      = awful.widget.watch(
+		"bash -c 'TZ='Europe/Madrid' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-local world_clock_madrid = awful.widget.watch(
-        "bash -c 'TZ='Europe/Madrid' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
+local world_clock_anchorage   = awful.widget.watch(
+		"bash -c 'TZ='America/Anchorage' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-local world_clock_anchorage = awful.widget.watch(
-        "bash -c 'TZ='America/Anchorage' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
-local world_clock_moscow = awful.widget.watch(
-        "bash -c 'TZ='Europe/Moscow' date +'" .. world_clock_fmt .."''",
-        60,
-        function(widget, stdout)
-            -- widget:set_markup(" " .. markup.font(theme.font, stdout))
+local world_clock_moscow      = awful.widget.watch(
+		"bash -c 'TZ='Europe/Moscow' date +'" .. world_clock_fmt .. "''",
+		60,
+		function(widget, stdout)
+			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
-            widget:set_markup(
-            -- theme.font
-                    markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-            )
-        end
+			widget:set_markup(
+			-- theme.font
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+			)
+		end
 )
 
 -- MEM
-local memicon = wibox.widget.imagebox(theme.widget_mem)
-local mem = lain.widget.mem({
-    settings = function()
+local memicon                 = wibox.widget.imagebox(theme.widget_mem)
+local mem                     = lain.widget.mem({
+													settings = function()
 
-        -- get base
-        local r, g, b = ColorGradient((mem_now.perc / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
-        -- local bg_color = RGBPercToHex(r, g, b)
+														-- get base
+														local r, g, b  = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+														-- local bg_color = RGBPercToHex(r, g, b)
 
-        r, g, b = ColorGradient(0.6 , r,g,b, 1,1,1) -- lighten it
-        local fg_color = RGBPercToHex(r, g, b)
+														r, g, b        = ColorGradient(0.6, r, g, b, 1, 1, 1) -- lighten it
+														local fg_color = RGBPercToHex(r, g, b)
 
-        r, g, b = ColorGradient((mem_now.perc / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
-        -- local bg_color = RGBPercToHex(r, g, b)
+														r, g, b        = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+														-- local bg_color = RGBPercToHex(r, g, b)
 
-        r, g, b = ColorGradient(0.8,  r, g, b,  0,0,0)
-        local bg_color = RGBPercToHex(r, g, b)
+														r, g, b        = ColorGradient(0.8, r, g, b, 0, 0, 0)
+														local bg_color = RGBPercToHex(r, g, b)
 
-        local fmt = string.format("%.0f GB", mem_now.used / 1024)
-        widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, fmt) .. " "))
-        -- widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
-    end
-})
+														local fmt      = string.format("%.0f GB", mem_now.used / 1024)
+														widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, fmt) .. " "))
+														-- widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
+													end
+												})
 
 
 -- CPU
-local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
-local cpu = lain.widget.cpu({
-    settings = function()
-        -- widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
-        local strf = string.format("%3d%%", cpu_now.usage)
+local cpuicon                 = wibox.widget.imagebox(theme.widget_cpu)
+local cpu                     = lain.widget.cpu({
+													settings = function()
+														-- widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
+														local strf       = string.format("%3d%%", cpu_now.usage)
 
-        local rr, gg, bb = ColorGradient((cpu_now.usage / 100),   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
-        local r, g, b = ColorGradient(0.6, rr, gg, bb, 0, 0, 0)
-        local bg_color = RGBPercToHex(r, g, b)
+														local rr, gg, bb = ColorGradient((cpu_now.usage / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+														local r, g, b    = ColorGradient(0.6, rr, gg, bb, 0, 0, 0)
+														local bg_color   = RGBPercToHex(r, g, b)
 
-        r, g, b = ColorGradient(0.6 , rr, gg, bb, 0.8,0.8,0.8) -- lighten it
-        local fg_color = RGBPercToHex(r, g, b)
-        if cpu_now.usage == 100 then
-          fg_color = '#ff0000'
-        end
+														r, g, b          = ColorGradient(0.6, rr, gg, bb, 0.8, 0.8, 0.8) -- lighten it
+														local fg_color   = RGBPercToHex(r, g, b)
+														if cpu_now.usage == 100 then
+															fg_color = '#ff0000'
+														end
 
-        widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, strf) .. " "))
-        -- widget:set_markup(markup.font(theme.font, strf))
-    end
-})
+														widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, strf) .. " "))
+														-- widget:set_markup(markup.font(theme.font, strf))
+													end
+												})
 
 -- Coretemp
-local tempicon = wibox.widget.imagebox(theme.widget_temp)
-local temp = lain.widget.temp({
-    settings = function()
+local tempicon                = wibox.widget.imagebox(theme.widget_temp)
+local temp                    = lain.widget.temp({
+													 settings = function()
 
 
-        -- want: 0.2 (cool), 0.5 (warm), 0.92 (hot)
-        local min = 33
-        local max = 110
-        local range = max - min
+														 -- want: 0.2 (cool), 0.5 (warm), 0.92 (hot)
+														 local min          = 33
+														 local max          = 110
+														 local range        = max - min
 
-        local d = coretemp_now - min
-        local relativeHeat = d / range
+														 local d            = coretemp_now - min
+														 local relativeHeat = d / range
 
-        -- if relativeHeat < 0 then relativeHeat = 0 end
-        -- if relativeHeat > 1 then relativeHeat = 1 end
+														 -- if relativeHeat < 0 then relativeHeat = 0 end
+														 -- if relativeHeat > 1 then relativeHeat = 1 end
 
-        -- blue, green, yellow, red
-        -- local blue, green, yellow, red = h2rgb("#3452c9"),   h2rgb("#32ab3a"),  h2rgb("#e8d031"),  h2rgb("#f01800")
-        local r, g, b = ColorGradient(relativeHeat,   52, 82, 201 , 50, 171, 58, 207, 180, 29, 240, 24, 0)
-        local bg_color = RGBPercToHex(r, g, b)
+														 -- blue, green, yellow, red
+														 -- local blue, green, yellow, red = h2rgb("#3452c9"),   h2rgb("#32ab3a"),  h2rgb("#e8d031"),  h2rgb("#f01800")
+														 local r, g, b      = ColorGradient(relativeHeat, 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+														 local bg_color     = RGBPercToHex(r, g, b)
 
-        r, g, b = ColorGradient(0.7 , r,g,b, 0,0,0)
-        local fg_color = RGBPercToHex(r, g, b)
+														 r, g, b            = ColorGradient(0.7, r, g, b, 0, 0, 0)
+														 local fg_color     = RGBPercToHex(r, g, b)
 
-        -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
-        -- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
+														 -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
+														 -- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
 
-        widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, coretemp_now .. "°C") .. " "))
-    end
-})
+														 widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, coretemp_now .. "°C") .. " "))
+													 end
+												 })
 
 -- / fs
-local fsicon = wibox.widget.imagebox(theme.widget_hdd)
-theme.fs = lain.widget.fs({
-    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
-    end
-})
+local fsicon                  = wibox.widget.imagebox(theme.widget_hdd)
+theme.fs                      = lain.widget.fs({
+												   notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
+												   settings            = function()
+													   widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
+												   end
+											   })
 
 -- Battery
-local baticon = wibox.widget.imagebox(theme.widget_battery)
-local bat = lain.widget.bat({
-    settings = function()
-        if bat_now.status ~= "N/A" then
-            if bat_now.ac_status == 1 then
-                widget:set_markup(markup.font(theme.font, " AC "))
-                baticon:set_image(theme.widget_ac)
-                return
-            elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
-                baticon:set_image(theme.widget_battery_empty)
-            elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
-                baticon:set_image(theme.widget_battery_low)
-            else
-                baticon:set_image(theme.widget_battery)
-            end
-            widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
-        else
-            widget:set_markup(markup.font(theme.font, " AC "))
-            baticon:set_image(theme.widget_ac)
-        end
-    end
-})
+local baticon                 = wibox.widget.imagebox(theme.widget_battery)
+local bat                     = lain.widget.bat({
+													settings = function()
+														if bat_now.status ~= "N/A" then
+															if bat_now.ac_status == 1 then
+																widget:set_markup(markup.font(theme.font, " AC "))
+																baticon:set_image(theme.widget_ac)
+																return
+															elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
+																baticon:set_image(theme.widget_battery_empty)
+															elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
+																baticon:set_image(theme.widget_battery_low)
+															else
+																baticon:set_image(theme.widget_battery)
+															end
+															widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
+														else
+															widget:set_markup(markup.font(theme.font, " AC "))
+															baticon:set_image(theme.widget_ac)
+														end
+													end
+												})
 
 -- ALSA microphone
-local micicon = wibox.widget.imagebox()
-theme.mic = lain.widget.alsa({
-    channel = "Capture",
-    settings = function()
-        -- if input_now.status == "on" then
-        --     micicon:set_image(theme.widget_mic_on)
-        --     -- micicon:set_image()
-        --     widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
-        
-        -- elseif input_now.status == "off" then
-        --     micicon:set_image(theme.widget_mic_off)
-        --     -- #2a0054
-        --     widget:set_markup(markup.fontbg(theme.font, "#2a0054", markup("#ffffff", " ((( • On Air • ))) ")))
-        --     widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
-        --     -- widget:set_markup(markup.font(theme.font, " "))
-        -- end
-        --local words = " • On Air "
-        local words = " • "
-        local bg = "#d93600" -- theme.color_red
-        local fg = "#fbff00"
-        if input_now.status == "off" then
-            --words = " • Off Air " --✕
-            words = " x " --✕
-            bg = "#3b383e" -- "#370e5c"
-            fg = "#887b94"
-        end
-        widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
-    end
-})
+local micicon                 = wibox.widget.imagebox()
+theme.mic                     = lain.widget.alsa({
+													 channel  = "Capture",
+													 settings = function()
+														 -- if input_now.status == "on" then
+														 --     micicon:set_image(theme.widget_mic_on)
+														 --     -- micicon:set_image()
+														 --     widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
+
+														 -- elseif input_now.status == "off" then
+														 --     micicon:set_image(theme.widget_mic_off)
+														 --     -- #2a0054
+														 --     widget:set_markup(markup.fontbg(theme.font, "#2a0054", markup("#ffffff", " ((( • On Air • ))) ")))
+														 --     widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
+														 --     -- widget:set_markup(markup.font(theme.font, " "))
+														 -- end
+														 --local words = " • On Air "
+														 local words = " • "
+														 local bg    = "#d93600" -- theme.color_red
+														 local fg    = "#fbff00"
+														 if input_now.status == "off" then
+															 --words = " • Off Air " --✕
+															 words = " x " --✕
+															 bg    = "#3b383e" -- "#370e5c"
+															 fg    = "#887b94"
+														 end
+														 widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
+													 end
+												 })
 
 -- ALSA volume
-local volicon = wibox.widget.imagebox(theme.widget_vol)
-theme.volume = lain.widget.alsa({
-    settings = function()
-        if output_now.status == "off" then
-            volicon:set_image(theme.widget_vol_mute)
-        elseif tonumber(output_now.level) == 0 then
-            volicon:set_image(theme.widget_vol_no)
-        elseif tonumber(output_now.level) <= 50 then
-            volicon:set_image(theme.widget_vol_low)
-        else
-            volicon:set_image(theme.widget_vol)
-        end
+local volicon                 = wibox.widget.imagebox(theme.widget_vol)
+theme.volume                  = lain.widget.alsa({
+													 settings = function()
+														 if output_now.status == "off" then
+															 volicon:set_image(theme.widget_vol_mute)
+														 elseif tonumber(output_now.level) == 0 then
+															 volicon:set_image(theme.widget_vol_no)
+														 elseif tonumber(output_now.level) <= 50 then
+															 volicon:set_image(theme.widget_vol_low)
+														 else
+															 volicon:set_image(theme.widget_vol)
+														 end
 
-        widget:set_markup(markup.font(theme.font, " " .. output_now.level .. "% "))
-    end
-})
+														 widget:set_markup(markup.font(theme.font, " " .. output_now.level .. "% "))
+													 end
+												 })
 
 -- Net
-local neticon = wibox.widget.imagebox(theme.widget_net)
-local net = lain.widget.net({
-    settings = function()
-        -- https://www.lua.org/pil/8.3.html
-        local line = "unknown"
-        local file = io.open("/home/ia/ipinfo.io/locale", "r")
-        line = file:read()
-        file:close()
-        widget:set_markup(markup.font(theme.font,
-                            line .. "  " ..
-                          markup("#fcc9ff", net_now.sent .. "↑")
-                          .. "  " ..
-                          markup("#2ECCFA", "↓" .. net_now.received)
-                          .. " kb"
-                          ))
-    end
-})
+local neticon                 = wibox.widget.imagebox(theme.widget_net)
+local net                     = lain.widget.net({
+													settings = function()
+														-- https://www.lua.org/pil/8.3.html
+														local line = "unknown"
+														local file = io.open("/home/ia/ipinfo.io/locale", "r")
+														line       = file:read()
+														file:close()
+														widget:set_markup(markup.font(theme.font,
+																					  line .. "  " ..
+																							  markup("#fcc9ff", net_now.sent .. "↑")
+																							  .. "  " ..
+																							  markup("#2ECCFA", "↓" .. net_now.received)
+																							  .. " kb"
+														))
+													end
+												})
 
-local my_data = awful.widget.watch(
-        "bash -c 'cat " .. theme.dir .. "/data.txt" .. "'",
-        5,
-        function(widget, stdout)
-            -- https://docs.gtk.org/Pango/pango_markup.html
-            widget:set_markup(" " .. markup.font(theme.font, stdout))
-        end
+local my_data                 = awful.widget.watch(
+		"bash -c 'cat " .. theme.dir .. "/data.txt" .. "'",
+		5,
+		function(widget, stdout)
+			-- https://docs.gtk.org/Pango/pango_markup.html
+			widget:set_markup(" " .. markup.font(theme.font, stdout))
+		end
 )
 
 
@@ -773,103 +772,103 @@ local my_data = awful.widget.watch(
 
 --- Return wind direction as a string.
 local function to_direction(degrees)
-    -- Ref: https://www.campbellsci.eu/blog/convert-wind-directions
-    if degrees == nil then
-        return "?"
-    end
-    local directions = {
-        "N",
-        "NNE",
-        "NE",
-        "ENE",
-        "E",
-        "ESE",
-        "SE",
-        "SSE",
-        "S",
-        "SSW",
-        "SW",
-        "WSW",
-        "W",
-        "WNW",
-        "NW",
-        "NNW",
-        "N",
-    }
-    return directions[math.floor((degrees % 360) / 22.5) + 1]
+	-- Ref: https://www.campbellsci.eu/blog/convert-wind-directions
+	if degrees == nil then
+		return "?"
+	end
+	local directions = {
+		"N",
+		"NNE",
+		"NE",
+		"ENE",
+		"E",
+		"ESE",
+		"SE",
+		"SSE",
+		"S",
+		"SSW",
+		"SW",
+		"WSW",
+		"W",
+		"WNW",
+		"NW",
+		"NNW",
+		"N",
+	}
+	return directions[math.floor((degrees % 360) / 22.5) + 1]
 end
 
 local function os_getenv(varname)
-    -- get a temporary file name
-    local n = os.tmpname()
-    -- execute a command
-    os.execute (". /home/ia/.dotfiles/private/env.bash && . /home/ia/.dotfiles/private/github.bash && echo ${" .. varname .. "} > " .. n)
-    local file = io.open(n, "r")
-    local line = ""
-    line = file:read()
-    file:close()
-    -- remove temporary file
-    os.remove(n)
-    return line
+	-- get a temporary file name
+	local n = os.tmpname()
+	-- execute a command
+	os.execute(". /home/ia/.dotfiles/private/env.bash && . /home/ia/.dotfiles/private/github.bash && echo ${" .. varname .. "} > " .. n)
+	local file = io.open(n, "r")
+	local line = ""
+	line       = file:read()
+	file:close()
+	-- remove temporary file
+	os.remove(n)
+	return line
 end
 
-local weather = lain.widget.weather({
-    APPID = os_getenv("OPENWEATHERMAP_API_KEY"),
-    city_id = tonumber(os_getenv("OPENWEATHERMAP_CITY_ID")),
-    timeout = 60 * 30, -- 15 * 60 = 15 minutes
---    notification_text_fun = function (wn)
---        local day = os.date("%a %d", wn["dt"])
---        local tmin = math.floor(wn["temp"]["min"])
---        local tmax = math.floor(wn["temp"]["max"])
---        local desc = wn["weather"][1]["description"]
---        return string.format("<b>%s</b>: %s, %d - %d ", day, desc, tmin, tmax)
---    end,
---    notification_text_fun = function (wn)
---        local day = os.date("%a %d", wn["dt"]) or "DATE"
---        local tmin = math.floor(wn["temp"]["min"]) or -42
---        local tmax = math.floor(wn["temp"]["max"]) or 69
---        local desc = wn["weather"][1]["description"] or "Outside"
-----        local name = wn["name"] or "NONAME"
-----        return string.format("%s", tostring(wn))
---        return string.format("<b>%s</b>: %s, High: %d Low: %d ", day, desc, tmax, tmin)
---    end,
-    settings = function()
-        local str = ""
+local weather         = lain.widget.weather({
+												APPID    = os_getenv("OPENWEATHERMAP_API_KEY"),
+												city_id  = tonumber(os_getenv("OPENWEATHERMAP_CITY_ID")),
+												timeout  = 60 * 30, -- 15 * 60 = 15 minutes
+												--    notification_text_fun = function (wn)
+												--        local day = os.date("%a %d", wn["dt"])
+												--        local tmin = math.floor(wn["temp"]["min"])
+												--        local tmax = math.floor(wn["temp"]["max"])
+												--        local desc = wn["weather"][1]["description"]
+												--        return string.format("<b>%s</b>: %s, %d - %d ", day, desc, tmin, tmax)
+												--    end,
+												--    notification_text_fun = function (wn)
+												--        local day = os.date("%a %d", wn["dt"]) or "DATE"
+												--        local tmin = math.floor(wn["temp"]["min"]) or -42
+												--        local tmax = math.floor(wn["temp"]["max"]) or 69
+												--        local desc = wn["weather"][1]["description"] or "Outside"
+												----        local name = wn["name"] or "NONAME"
+												----        return string.format("%s", tostring(wn))
+												--        return string.format("<b>%s</b>: %s, High: %d Low: %d ", day, desc, tmax, tmin)
+												--    end,
+												settings = function()
+													local str = ""
 
---        local loc_now = os.time()
---        local sunrise = tonumber(weather_now["sys"]["sunrise"])
---        local sunset  = tonumber(weather_now["sys"]["sunset"])
---        if sunrise <= loc_now and loc_now <= sunset then
---            -- day time, pre sunset; show sunset time
---            str = string.format(" %s 🌜", os.date("%H:%M", weather_now["sys"]["sunset"]))
---        elseif loc_now <= sunrise then
---            -- pre dawn
---            str = string.format(" %s 🌣", os.date("%H:%M", weather_now["sys"]["sunrise"]))
---        elseif sunset <= loc_now then
---            -- after sunset
---            str =  string.format(" 🌜 %s", os.date("%H:%M", weather_now["sys"]["sunset"]))
---        end
+													--        local loc_now = os.time()
+													--        local sunrise = tonumber(weather_now["sys"]["sunrise"])
+													--        local sunset  = tonumber(weather_now["sys"]["sunset"])
+													--        if sunrise <= loc_now and loc_now <= sunset then
+													--            -- day time, pre sunset; show sunset time
+													--            str = string.format(" %s 🌜", os.date("%H:%M", weather_now["sys"]["sunset"]))
+													--        elseif loc_now <= sunrise then
+													--            -- pre dawn
+													--            str = string.format(" %s 🌣", os.date("%H:%M", weather_now["sys"]["sunrise"]))
+													--        elseif sunset <= loc_now then
+													--            -- after sunset
+													--            str =  string.format(" 🌜 %s", os.date("%H:%M", weather_now["sys"]["sunset"]))
+													--        end
 
-        widget:set_markup(
-            markup.font(theme.font,  " " .. math.floor(weather_now["main"]["temp"]) .. "°C" ..
-                    " " .. to_direction(weather_now["wind"]["deg"]) .. math.floor(weather_now["wind"]["speed"]))
-        )
---    showpopup = "off",
-    end
-})
+													widget:set_markup(
+															markup.font(theme.font, " " .. math.floor(weather_now["main"]["temp"]) .. "°C" ..
+																	" " .. to_direction(weather_now["wind"]["deg"]) .. math.floor(weather_now["wind"]["speed"]))
+													)
+													--    showpopup = "off",
+												end
+											})
 
-local mygithubwidget = lain.widget.mywidget({
-    TOKEN = os_getenv("GITHUB_MEOWSBITS_PERSONAL"),
-    name = "Github Notifications",
-    labelprefix = "meowsbits: ",
-    timeout = 60*2,
-})
+local mygithubwidget  = lain.widget.mywidget({
+												 TOKEN       = os_getenv("GITHUB_MEOWSBITS_PERSONAL"),
+												 name        = "Github Notifications",
+												 labelprefix = "meowsbits: ",
+												 timeout     = 60 * 2,
+											 })
 local mygithubwidget2 = lain.widget.mywidget({
-    TOKEN = os_getenv("GITHUB_WHILEI_PERSONAL"),
-    name = "Github Notifications",
-    labelprefix = "whilei: ",
-    timeout = 60*2,
-})
+												 TOKEN       = os_getenv("GITHUB_WHILEI_PERSONAL"),
+												 name        = "Github Notifications",
+												 labelprefix = "whilei: ",
+												 timeout     = 60 * 2,
+											 })
 
 --local function set_random_wallpaper()
 --    local wallpaper_path = theme.dir .. "walls"
@@ -882,774 +881,779 @@ local mygithubwidget2 = lain.widget.mywidget({
 --screen.connect_signal("request::wallpaper", set_random_wallpaper)
 
 -- Separators
-local spr     = wibox.widget.textbox(' ')
-local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
-local arrl_ld = separators.arrow_left("alpha", theme.bg_focus)
+local spr             = wibox.widget.textbox(' ')
+local arrl_dl         = separators.arrow_left(theme.bg_focus, "alpha")
+local arrl_ld         = separators.arrow_left("alpha", theme.bg_focus)
 
 function theme.at_screen_connect(s)
 
 
-    if s.geometry.width > 3000 then
-        s.padding = {left = 5, right = 0, top = 0, bottom= 0}
-    end
-
-    -- Quake application
-    s.quake = lain.util.quake({
-        app = "konsole",
-        name = "xterm-konsole",
-        extra = "--hide-menubar --hide-tabbar",
-        followtag = true,
-        vert = "bottom",
-        keepclientattrs = true,
-        border = 0,
-        settings = function (client)
-            -- these don't work. don't know why.
-            client.opacity = 0.7
-            client.border_color = gears.color.parse_color("#ff0000ff")
-            client.titlebars_enabled = false
-
-            local geo
-            geo = client:geometry()
-            if geo.width > 2000 then
-                geo.x = geo.x + (geo.width / 4)
-                geo.width = geo.width / 2
-                client:geometry(geo)
-            end
-        end
-    })
-
-    --s.quakeBrowser = lain.util.quake({
-    --    app = "ffox",
-    --    name = "MozillaFirefoxDD",
-    --    argname = "",
-    --    extra = "",
-    --    followtag = true,
-    --    vert = "top",
-    --    keepclientattrs = true,
-    --    border = 0,
-    --    settings = function (client)
-    --        client.floating = true;o
-    --        local geo
-    --        geo = client:geometry()
-    --        if geo.width > 2000 then
-    --            geo.x = geo.x + (geo.width / 4)
-    --            geo.width = geo.width / 2
-    --            geo.height = geo.height * 2
-    --            client:geometry(geo)
-    --        else
-    --            geo.height = geo.height * 2
-    --            client:geometry(geo)
-    --        end
-    --    end
-    --})
-
-    -- THIS WORKS, BUT is finnicky.
-    --s.quakeBrowser = lain.util.quake2({
-    --    app = "ffox", -- uses: 'snap alias firefox ffox'
-    --    name = "MozillaFirefoxDD",
-    --    extra = "",
-    --    argname = "",
-    --    followtag = true,
-    --    vert = "top",
-    --    keepclientattrs = true,
-    --    settings = function(client)
-    --        local geo
-    --        geo = client:geometry()
-    --        if geo.width > 2000 then
-    --            geo.x = geo.x + (geo.width / 4)
-    --            geo.width = geo.width / 2
-    --            geo.height = geo.height * 2
-    --            client:geometry(geo)
-    --        else
-    --            geo.height = geo.height * 2
-    --            client:geometry(geo)
-    --        end
-    --    end
-    --})
-
-    -- If wallpaper is a function, call it with the screen
-    local wallpaper = theme.wallpaper
-    if type(wallpaper) == "function" then
-        wallpaper = wallpaper(s)
-    end
-    --gears.wallpaper.maximized(wallpaper, s, false)
-    gears.wallpaper.fit(wallpaper, s)
-
-    -- Tags
-    -- Use the first layout as the default one for all tags.
-    awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
-
-    --local my_promptbox_textbox = wibox.widget{
-    --    markup = 'This <i>is</i> a <b>textbox</b>!!!',
-    --    align  = 'center',
-    --    valign = 'center',
-    --    widget = wibox.widget.textbox
-    --}
-    --
-    -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt({
-        prompt = "> ",
-        bg = "#0000ff", -- "#1E2CEE", -- "#000000",
-        fg = "#ffffff",
-        bg_cursor = "#e019c9", --pink
-        fg_cursor = "#e019c9", --pink
-        --textbox = my_promptbox_textbox,
-    })
-    
-    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
-    -- We need one layoutbox per screen.
-    s.mylayoutbox = awful.widget.layoutbox(s)
-
-    --s.mylayoutlist = awful.widget.layoutlist({
-    --    screen = s,
-    --    style = {
-    --        disable_name = true,
-    --        spacing      = 3,
-    --    },
-    --    source = function() return {
-    --        awful.layout.suit.floating,
-    --        awful.layout.suit.tile,
-    --        awful.layout.suit.tile.left,
-    --        awful.layout.suit.tile.bottom,
-    --        awful.layout.suit.tile.top,
-    --    } end
-    --})
-
-    -- I think this is assigning buttons to keystrokes
-    -- awful.button:new (mod, _button, press, release)
-    -- https://awesomewm.org/doc/api/classes/awful.button.html
-    -- Update: Yea, looks like so. The buttons its assigning (1,3,4,5) are MOUSE buttons
-    -- and they work as expected:
-    --   left mouse button (1): move forward
-    --   right mouse button (3): move backward
-    s.mylayoutbox:buttons(my_table.join(
-                           awful.button({ }, 1, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 3, function () awful.layout.inc(-1) end),
-                           awful.button({ }, 4, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 5, function () awful.layout.inc(-1) end)))
-
-    --local p = awful.popup {
-    --    widget = wibox.widget {
-    --        awful.widget.layoutlist {
-    --            source      = awful.layout.layouts,
-    --            screen      = 1,
-    --            base_layout = wibox.widget {
-    --                spacing         = 5,
-    --                forced_num_cols = 3,
-    --                layout          = wibox.layout.grid.vertical,
-    --            },
-    --            widget_template = {
-    --                {
-    --                    {
-    --                        id            = 'icon_role',
-    --                        forced_height = 22,
-    --                        forced_width  = 22,
-    --                        widget        = wibox.widget.imagebox,
-    --                    },
-    --                    margins = 4,
-    --                    widget  = wibox.container.margin,
-    --                },
-    --                id              = 'background_role',
-    --                forced_width    = 24,
-    --                forced_height   = 24,
-    --                shape           = gears.shape.rounded_rect,
-    --                widget          = wibox.container.background,
-    --            },
-    --        },
-    --        margins = 4,
-    --        widget  = wibox.container.margin,
-    --    },
-    --    preferred_anchors = 'middle',
-    --    border_color      = beautiful.border_color,
-    --    border_width      = beautiful.border_width,
-    --    shape             = gears.shape.infobubble,
-    --}
-    --
-    --p:bind_to_widget(s.mylayoutbox)
-    
-    -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(
-         s,
-         awful.widget.taglist.filter.all,
-         awful.util.taglist_buttons,
-         {
-             -- style
-            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
-            fg_occupied = "#666666", -- "#777777",
-            fg_empty = "#222222",
-
-            bg_focus = "#00000000",
-            bg_urgent = "#00000000",
-            bg_occupied = "#00000000",
-            bg_empty = "#00000000",
-            bg_volatile = "#00000000",
-            --taglist_squares_sel
-         }
-    )
-
-    --s.mytaglist_slim = awful.widget.taglist {
-    --    args = {
-    --        screen = s,
-    --        filter = awful.widget.taglist.filter.all,
-    --        buttons = awful.util.taglist_buttons,
-    --        layout = wibox.layout.fixed.vertical,
-    --        style = {
-    --            -- style
-    --            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
-    --            fg_occupied = "#666666", -- "#777777",
-    --            fg_empty = "#222222",
-    --
-    --            bg_focus = "#00000000",
-    --            bg_urgent = "#00000000",
-    --            bg_occupied = "#00000000",
-    --            bg_empty = "#00000000",
-    --            bg_volatile = "#00000000",
-    --            --taglist_squares_sel
-    --        }
-    --    }
-    --}
-    --        s,
-    --        awful.widget.taglist.filter.all,
-    --        awful.util.taglist_buttons,
-    --        {
-    --            -- style
-    --            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
-    --            fg_occupied = "#666666", -- "#777777",
-    --            fg_empty = "#222222",
-    --
-    --            bg_focus = "#00000000",
-    --            bg_urgent = "#00000000",
-    --            bg_occupied = "#00000000",
-    --            bg_empty = "#00000000",
-    --            bg_volatile = "#00000000",
-    --            --taglist_squares_sel
-    --        }
-    --)
-    --s.mytaglist_slim.widget = wibox.layout.fixed.vertical()
-
-    --s.mytaglist_slim = awful.widget.taglist({args = {
-    --    screen = s,
-    --    filter = awful.widget.taglist.filter.all,
-    --    buttons = awful.util.taglist_buttons,
-    --    layout = wibox.layout.fixed.vertical(),
-    --    style = {
-    --        -- style
-    --        --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
-    --        fg_occupied = "#666666", -- "#777777",
-    --        fg_empty = "#222222",
-    --
-    --        bg_focus = "#00000000",
-    --        bg_urgent = "#00000000",
-    --        bg_occupied = "#00000000",
-    --        bg_empty = "#00000000",
-    --        bg_volatile = "#00000000",
-    --        --taglist_squares_sel
-    --    }
-    --}})
-
-    -- Create a tasklist widget
-    local function list_update(w, buttons, label, data, objects)
-        --common.list_update(w, buttons, label, data, objects)
-        my_commonlist_update(w, buttons, label, data, objects)
-        w:set_max_widget_size(140)
-    end
-
-    --function myupdate(w, buttons, label, data, objects)
-    --    w:reset()
-    --    local l = wibox.layout.fixed.horizontal()
-    --    for i, o in ipairs(objects) do
-    --        local cache = data[o]
-    --        if cache then
-    --            ib = cache.ib
-    --        else
-    --            ib = wibox.widget.imagebox()
-    --            ib:buttons(common.create_buttons(buttons, o))
-    --
-    --            data[o] = {
-    --                ib = ib
-    --            }
-    --        end
-    --
-    --        local text, bg, bg_image, icon = label(o, cache.ib)
-    --        ib:set_image(icon)
-    --        l:add(ib)
-    --        --w:add(ib)
-    --    end
-    --    w:add(l)
-    --end
-
-    --- Common update method.
-    -- @param w The widget.
-    -- @tab buttons
-    -- @func label Function to generate label parameters from an object.
-    --   The function gets passed an object from `objects`, and
-    --   has to return `text`, `bg`, `bg_image`, `icon`.
-    -- @tab data Current data/cache, indexed by objects.
-    -- @tab objects Objects to be displayed / updated.
-    function my_commonlist_update(w, buttons, label, data, objects)
-        -- update the widgets, creating them if needed
-        w:reset()
-        for i, o in ipairs(objects) do
-            local cache = data[o]
-            local ib, tb, bgb, tbm, ibm, l
-            --local ib, bgb, tbm, ibm, l
-            if cache then
-                ib = cache.ib
-                tb = cache.tb
-                bgb = cache.bgb
-                tbm = cache.tbm
-                ibm = cache.ibm
-            else
-                ib = wibox.widget.imagebox()
-                tb = wibox.widget.textbox()
-                bgb = wibox.container.background()
-                tbm = wibox.container.margin(tb, dpi(4), dpi(4))
-                ibm = wibox.container.margin(ib, dpi(4))
-                l = wibox.layout.fixed.horizontal()
-
-                -- All of this is added in a fixed widget
-                l:fill_space(true)
-                l:add(ibm)
-                l:add(tbm)
-
-                -- And all of this gets a background
-                bgb:set_widget(l)
-
-                bgb:buttons(common.create_buttons(buttons, o))
-
-                data[o] = {
-                    ib  = ib,
-                    tb  = tb,
-                    bgb = bgb,
-                    tbm = tbm,
-                    ibm = ibm,
-                }
-            end
-
-            local text, bg, bg_image, icon, args = label(o, tb)
-            args = args or {}
-
-            -- IA
-            -- This is my special additional
-            -- to REMOVE TEXT (LEAVING ONLY ICON)
-            -- if the task does indeed have an icon.
-            --if icon then text = "" end
-
-            -- The text might be invalid, so use pcall.
-            if text == nil or text == "" then
-                tbm:set_margins(0)
-            else
-                if not tb:set_markup_silently(text) then
-                    tb:set_markup("<i>&lt;Invalid text&gt;</i>")
-                end
-            end
-            --tb:set_markup(" ")
-            bgb:set_bg(bg)
-            if type(bg_image) == "function" then
-                -- TODO: Why does this pass nil as an argument?
-                bg_image = bg_image(tb,o,nil,objects,i)
-            end
-            bgb:set_bgimage(bg_image)
-            if icon then
-                ib:set_image(icon)
-            else
-                ibm:set_margins(0)
-            end
-
-            bgb.shape              = args.shape
-            bgb.shape_border_width = args.shape_border_width
-            bgb.shape_border_color = args.shape_border_color
-
-            w:add(bgb)
-        end
-    end
-
-    -- awful.widget.tasklist()
-    s.mytasklist = awful.widget.tasklist(
-        s, -- screen
-        awful.widget.tasklist.filter.currenttags, -- filter
-        awful.util.tasklist_buttons, -- buttons
-            nil,
-            --{
-            --    shape_border_width = 1,
-            --    shape_border_color = theme.tasklist_bg_normal,
-            --    shape = gears.shape.rounded_rect,
-            --}, -- style
-        list_update -- update function
-    )
-    -- This works. Just commented because I'm not using icon-only task list for the slim wibar now.
-    --s.mytasklist_slim = awful.widget.tasklist(
-    --    s, -- screen
-    --    awful.widget.tasklist.filter.currenttags, -- filter
-    --    awful.util.tasklist_buttons, -- buttons
-    --    nil, -- style
-    --    my_commonlist_update
-    --)
-
-    -- Create the wibox
-    -- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
-    s.mywibox = awful.wibar({
-        position = "top", -- top, bottom
-        screen = s,
-        height = 18,
-        bg = theme.bg_normal,
-        fg = theme.fg_normal,
-        opacity = 0.5,
-        visible = true,
-    })
-
-    -- The important part to make this actually float on top of all the stuff is
-    -- that it's a WIBOX and a not a WIBAR.
-    -- It's also NOT an awful.wibox, but just a wibox. These are important things.
-    s.mywibox_slim = wibox({
-        visible = not s.mywibox.visible, -- Needs to be opposite of the default mywibox wibar to make it work like I want.
-        screen = s,
-
-        y = s.geometry.y,
-        x = s.geometry.x + s.geometry.width / 4 - 60,
-
-        -- Bottom
-        --y = s.geometry.y + s.geometry.height - 14,
-        --x = s.geometry.x + s.geometry.width / 2 - 60,
-
-        height = 16, -- 18
-        width = 120 + 50 + 20, -- 50 for clock, 20 for font with ubuntu 20.04
-
-        ---- Rotated:
-        --y = s.geometry.y + s.geometry.height / 2 - 60,
-        --x = s.geometry.x,
-        --height = 120, -- 18
-        --width = 14,
-
-        bg = theme.tasklist_bg_normal,
-
-        ontop = true,
-        type = "dock", -- "toolbar", -- ,
-
-        --Valid types are:
-        --
-        --desktop: The root client, it cannot be moved or resized.
-        --dock: A client attached to the side of the screen.
-        --splash: A client, usually without titlebar shown when an application starts.
-        --dialog: A dialog, see transient_for.
-        --menu: A context menu.
-        --toolbar: A floating toolbar.
-        --utility:
-        --dropdown_menu: A context menu attached to a parent position.
-        --popup_menu: A context menu.
-        --notification: A notification popup.
-        --combo: A combobox list menu.
-        --dnd: A drag and drop indicator.
-        --normal: A normal application main window.
-
-
-        input_passthrough = true, -- noop, btw
-    })
-
-
-    s.mywibox_clock = wibox({
-        visible = false,
-        screen = s,
-        y = s.geometry.y,
-        x = s.geometry.x + s.geometry.width - (s.geometry.width / 16),
-        --height = 24 + 8,
-        height = 18,
-        width = s.geometry.width / 16,
-        bg = theme.clock_bg,
-        ontop = true,
-        type = "toolbar",
-        input_passthrough = true,
-    })
-
-
-    s.mywibox_clock:setup {
-        layout = wibox.layout.align.horizontal,
-        {
-            layout = wibox.layout.fixed.horizontal, -- left
-        },
-        {
-            layout = wibox.layout.fixed.horizontal, -- center
-        },
-        {
-            layout = wibox.layout.fixed.horizontal, -- right
-            clock,
-        }
-    }
-
-    s.mywibox_worldtimes = awful.wibar({
-        visible = false,
-        position = "right",
-        --stretch = false,
-        --ontop = true,
-        screen = s,
-        --height = 500,
-        width = 100,
-        y = 18,
-        bg = theme.bg_normal,
-        fg = theme.fg_normal,
-        opacity = 0.5,
-    })
-
-    s.mywibox_worldtimes:setup {
-        layout = wibox.layout.align.vertical,
-        -- left
-        {
-            layout = wibox.layout.fixed.vertical,
-
-            spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Anchorage (AKDT/AKST)'))),
-            world_clock_anchorage,
-
-            --wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver (PT)'))),
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_fg, " " .. markup(theme.clock_bg, 'Vancouver,Seattle (PT)'))),
-            world_clock_vancouver,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Denver, (MT)'))),
-            world_clock_denver,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Chicago (CT)'))),
-            world_clock_chicago,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'New York, Toronto (ET)'))),
-            world_clock_newyork,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Buenos Aires'))),
-            world_clock_buenosaires,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'UTC'))),
-            clock_utc,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'London (BT,WET)'))),
-            world_clock_london,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Berlin (CET/CEST)'))),
-            world_clock_berlin,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid (CET/CEST)'))),
-            world_clock_madrid,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens,Kiev (EET)'))),
-            world_clock_athens,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Moscow (MSK)'))),
-            world_clock_moscow,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Dubai'))),
-            world_clock_dubai,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Shanghai'))),
-            world_clock_shanghai,
-            --spr,
-
-            wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Tokyo'))),
-            world_clock_tokyo,
-
-
-
-            spr,
-            -- my github widget
-            {
-                layout = wibox.layout.fixed.horizontal,
-                mygithubwidget.icon,
-                spr,
-                mygithubwidget.widget,
-            },
-            {
-                layout = wibox.layout.fixed.horizontal,
-                mygithubwidget2.icon,
-                spr,
-                mygithubwidget2.widget,
-            },
-
-            spr,
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spr,
-                my_data,
-            },
-
-        },
-    }
-
-    s.mywibox_slim:setup {
-        layout = wibox.layout.align.horizontal,
-        ---- Rotated:
-        --layout = wibox.container.rotate,
-        --direction = "west",
-        { -- Center widgets
-            layout = wibox.layout.fixed.horizontal,
-
-            s.mypromptbox,
-            spr,
-
-            s.mytaglist,
-            spr,
-
-            s.mylayoutbox,
-            spr,
-
-            --s.mytasklist_slim,
-            --spr,
-        },
-        {
-            layout = wibox.layout.align.horizontal,
-            clock_time,
-        }
-    }
-
-    --s.mywibox_slim:setup {
-    --    layout = wibox.layout.align.vertical,
-    --    { -- Center widgets
-    --        layout = wibox.layout.fixed.vertical,
-    --
-    --        --s.mypromptbox,
-    --        --spr,
-    --
-    --        s.mytaglist_slim,
-    --        spr,
-    --
-    --        s.mylayoutbox,
-    --
-    --    },
-    --}
-
-    s.togglegaps = function()
-        mul = 40
-        if s.geometry.width > 2000 then
-            mul = 30
-        end
-        if s.selected_tag.gap == 0 then
-            s.selected_tag.gap = s.geometry.height / mul
-        else
-            s.selected_tag.gap = 0
-        end
-    end
-
-    -- Add widgets to the wibox
-    s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal, 
-            
-            s.mypromptbox,
-            spr,
-
-            s.mytaglist,
-            spr,
-
-            s.mylayoutbox,
-            spr,
-
-            awesomebuttons.with_icon_and_text{
-                icon = 'crop',
-                text = '??',
-                color = theme.titlebar_fg_focus,
-                shape = 'rounded_rect',
-                onclick=s.togglegaps,
-            },
-            spr,
-
-            --s.mylayoutlist,
-            --spr,
-
-            s.mytasklist,
-        },
-        -- middle
-        {
-            layout = wibox.layout.fixed.horizontal,
-        },
-
-        { -- Right widgets
-                    layout = wibox.layout.fixed.horizontal,
-                    wibox.widget.systray(),
-
-
-            -- weather insert
-            spr,
-            --                    wibox.widget.imagebox(weather.icon),
-            --                    wibox.widget.textbox('weather: '),
-                    --
-            weather.icon,
-            weather.widget,
-            --        weather_widget({
-            --            api_key=os_getenv("OPENWEATHERMAP_API_KEY"),
-            --            coordinates = {46.786671, -92.100487},
-            --        }),
-            --
-
-            -- Net up/down
-            spr,
-            neticon,
-            -- How to wrap items in a custom background.
---                     wibox.container.background(neticon, theme.bg_focus),
---                     wibox.container.background(net.widget, theme.bg_focus),
-            net.widget,
-
-            -- spr,
-            -- cpu_widget({
-            --     width = 100,
-            --     step_width = 2,
-            --     step_spacing = 0,
-            --     color = "#4070cf" -- '#434c5e'
-            -- }),
-
-            -- CPU
-            spr,
-            cpuicon,
-            cpu.widget,
-
-            -- Memory
-            -- spr,
-            -- memicon,
-            mem.widget,
-
-            -- Battery
-            spr,
-            baticon,
-            bat.widget,
-
-            -- Filesytem
-            spr,
-            fsicon,
-            theme.fs.widget,
-
-            -- Volume
-            spr,
-            volicon,
-            theme.volume.widget,
-
-            --spr,
-            -- default
-            --logout_menu_widget,
-            --logout_menu.logout_menu_widget,
-
-            -- Clock
-            spr,
-            clock,
-            --wibox.widget.textbox('/'),
-            -- clock_utc,
-
-            -- Microphone
-             spr,
-             theme.mic.widget,
-            -- micicon,
-
-            -- Temperature
-            spr,
-            -- tempicon,
-            temp.widget,
-        },
-    }
+	if s.geometry.width > 3000 then
+		s.padding = { left = 5, right = 0, top = 0, bottom = 0 }
+	end
+
+	-- Quake application
+	s.quake         = lain.util.quake({
+										  app             = "konsole",
+										  name            = "xterm-konsole",
+										  extra           = "--hide-menubar --hide-tabbar",
+										  followtag       = true,
+										  vert            = "bottom",
+										  keepclientattrs = true,
+										  border          = 0,
+										  settings        = function(client)
+											  -- these don't work. don't know why.
+											  client.opacity           = 0.7
+											  client.border_color      = gears.color.parse_color("#ff0000ff")
+											  client.titlebars_enabled = false
+
+											  local geo
+											  geo                      = client:geometry()
+											  if geo.width > 2000 then
+												  geo.x     = geo.x + (geo.width / 4)
+												  geo.width = geo.width / 2
+												  client:geometry(geo)
+											  end
+										  end
+									  })
+
+	--s.quakeBrowser = lain.util.quake({
+	--    app = "ffox",
+	--    name = "MozillaFirefoxDD",
+	--    argname = "",
+	--    extra = "",
+	--    followtag = true,
+	--    vert = "top",
+	--    keepclientattrs = true,
+	--    border = 0,
+	--    settings = function (client)
+	--        client.floating = true;o
+	--        local geo
+	--        geo = client:geometry()
+	--        if geo.width > 2000 then
+	--            geo.x = geo.x + (geo.width / 4)
+	--            geo.width = geo.width / 2
+	--            geo.height = geo.height * 2
+	--            client:geometry(geo)
+	--        else
+	--            geo.height = geo.height * 2
+	--            client:geometry(geo)
+	--        end
+	--    end
+	--})
+
+	-- THIS WORKS, BUT is finnicky.
+	--s.quakeBrowser = lain.util.quake2({
+	--    app = "ffox", -- uses: 'snap alias firefox ffox'
+	--    name = "MozillaFirefoxDD",
+	--    extra = "",
+	--    argname = "",
+	--    followtag = true,
+	--    vert = "top",
+	--    keepclientattrs = true,
+	--    settings = function(client)
+	--        local geo
+	--        geo = client:geometry()
+	--        if geo.width > 2000 then
+	--            geo.x = geo.x + (geo.width / 4)
+	--            geo.width = geo.width / 2
+	--            geo.height = geo.height * 2
+	--            client:geometry(geo)
+	--        else
+	--            geo.height = geo.height * 2
+	--            client:geometry(geo)
+	--        end
+	--    end
+	--})
+
+	-- If wallpaper is a function, call it with the screen
+	local wallpaper = theme.wallpaper
+	if type(wallpaper) == "function" then
+		wallpaper = wallpaper(s)
+	end
+	--gears.wallpaper.maximized(wallpaper, s, false)
+	gears.wallpaper.fit(wallpaper, s)
+
+	-- Tags
+	-- Use the first layout as the default one for all tags.
+	awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
+
+	--local my_promptbox_textbox = wibox.widget{
+	--    markup = 'This <i>is</i> a <b>textbox</b>!!!',
+	--    align  = 'center',
+	--    valign = 'center',
+	--    widget = wibox.widget.textbox
+	--}
+	--
+	-- Create a promptbox for each screen
+	s.mypromptbox = awful.widget.prompt({
+											prompt    = "> ",
+											bg        = "#0000ff", -- "#1E2CEE", -- "#000000",
+											fg        = "#ffffff",
+											bg_cursor = "#e019c9", --pink
+											fg_cursor = "#e019c9", --pink
+											--textbox = my_promptbox_textbox,
+										})
+
+	-- Create an imagebox widget which will contains an icon indicating which layout we're using.
+	-- We need one layoutbox per screen.
+	s.mylayoutbox = awful.widget.layoutbox(s)
+
+	--s.mylayoutlist = awful.widget.layoutlist({
+	--    screen = s,
+	--    style = {
+	--        disable_name = true,
+	--        spacing      = 3,
+	--    },
+	--    source = function() return {
+	--        awful.layout.suit.floating,
+	--        awful.layout.suit.tile,
+	--        awful.layout.suit.tile.left,
+	--        awful.layout.suit.tile.bottom,
+	--        awful.layout.suit.tile.top,
+	--    } end
+	--})
+
+	-- I think this is assigning buttons to keystrokes
+	-- awful.button:new (mod, _button, press, release)
+	-- https://awesomewm.org/doc/api/classes/awful.button.html
+	-- Update: Yea, looks like so. The buttons its assigning (1,3,4,5) are MOUSE buttons
+	-- and they work as expected:
+	--   left mouse button (1): move forward
+	--   right mouse button (3): move backward
+	s.mylayoutbox:buttons(my_table.join(
+			awful.button({ }, 1, function()
+				awful.layout.inc(1)
+			end),
+			awful.button({ }, 3, function()
+				awful.layout.inc(-1)
+			end),
+			awful.button({ }, 4, function()
+				awful.layout.inc(1)
+			end),
+			awful.button({ }, 5, function()
+				awful.layout.inc(-1)
+			end)))
+
+	--local p = awful.popup {
+	--    widget = wibox.widget {
+	--        awful.widget.layoutlist {
+	--            source      = awful.layout.layouts,
+	--            screen      = 1,
+	--            base_layout = wibox.widget {
+	--                spacing         = 5,
+	--                forced_num_cols = 3,
+	--                layout          = wibox.layout.grid.vertical,
+	--            },
+	--            widget_template = {
+	--                {
+	--                    {
+	--                        id            = 'icon_role',
+	--                        forced_height = 22,
+	--                        forced_width  = 22,
+	--                        widget        = wibox.widget.imagebox,
+	--                    },
+	--                    margins = 4,
+	--                    widget  = wibox.container.margin,
+	--                },
+	--                id              = 'background_role',
+	--                forced_width    = 24,
+	--                forced_height   = 24,
+	--                shape           = gears.shape.rounded_rect,
+	--                widget          = wibox.container.background,
+	--            },
+	--        },
+	--        margins = 4,
+	--        widget  = wibox.container.margin,
+	--    },
+	--    preferred_anchors = 'middle',
+	--    border_color      = beautiful.border_color,
+	--    border_width      = beautiful.border_width,
+	--    shape             = gears.shape.infobubble,
+	--}
+	--
+	--p:bind_to_widget(s.mylayoutbox)
+
+	-- Create a taglist widget
+	s.mytaglist = awful.widget.taglist(
+			s,
+			awful.widget.taglist.filter.all,
+			awful.util.taglist_buttons,
+			{
+				-- style
+				--fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+				fg_occupied = "#666666", -- "#777777",
+				fg_empty    = "#222222",
+
+				bg_focus    = "#00000000",
+				bg_urgent   = "#00000000",
+				bg_occupied = "#00000000",
+				bg_empty    = "#00000000",
+				bg_volatile = "#00000000",
+				--taglist_squares_sel
+			}
+	)
+
+	--s.mytaglist_slim = awful.widget.taglist {
+	--    args = {
+	--        screen = s,
+	--        filter = awful.widget.taglist.filter.all,
+	--        buttons = awful.util.taglist_buttons,
+	--        layout = wibox.layout.fixed.vertical,
+	--        style = {
+	--            -- style
+	--            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+	--            fg_occupied = "#666666", -- "#777777",
+	--            fg_empty = "#222222",
+	--
+	--            bg_focus = "#00000000",
+	--            bg_urgent = "#00000000",
+	--            bg_occupied = "#00000000",
+	--            bg_empty = "#00000000",
+	--            bg_volatile = "#00000000",
+	--            --taglist_squares_sel
+	--        }
+	--    }
+	--}
+	--        s,
+	--        awful.widget.taglist.filter.all,
+	--        awful.util.taglist_buttons,
+	--        {
+	--            -- style
+	--            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+	--            fg_occupied = "#666666", -- "#777777",
+	--            fg_empty = "#222222",
+	--
+	--            bg_focus = "#00000000",
+	--            bg_urgent = "#00000000",
+	--            bg_occupied = "#00000000",
+	--            bg_empty = "#00000000",
+	--            bg_volatile = "#00000000",
+	--            --taglist_squares_sel
+	--        }
+	--)
+	--s.mytaglist_slim.widget = wibox.layout.fixed.vertical()
+
+	--s.mytaglist_slim = awful.widget.taglist({args = {
+	--    screen = s,
+	--    filter = awful.widget.taglist.filter.all,
+	--    buttons = awful.util.taglist_buttons,
+	--    layout = wibox.layout.fixed.vertical(),
+	--    style = {
+	--        -- style
+	--        --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+	--        fg_occupied = "#666666", -- "#777777",
+	--        fg_empty = "#222222",
+	--
+	--        bg_focus = "#00000000",
+	--        bg_urgent = "#00000000",
+	--        bg_occupied = "#00000000",
+	--        bg_empty = "#00000000",
+	--        bg_volatile = "#00000000",
+	--        --taglist_squares_sel
+	--    }
+	--}})
+
+	-- Create a tasklist widget
+	local function list_update(w, buttons, label, data, objects)
+		--common.list_update(w, buttons, label, data, objects)
+		my_commonlist_update(w, buttons, label, data, objects)
+		w:set_max_widget_size(140)
+	end
+
+	--function myupdate(w, buttons, label, data, objects)
+	--    w:reset()
+	--    local l = wibox.layout.fixed.horizontal()
+	--    for i, o in ipairs(objects) do
+	--        local cache = data[o]
+	--        if cache then
+	--            ib = cache.ib
+	--        else
+	--            ib = wibox.widget.imagebox()
+	--            ib:buttons(common.create_buttons(buttons, o))
+	--
+	--            data[o] = {
+	--                ib = ib
+	--            }
+	--        end
+	--
+	--        local text, bg, bg_image, icon = label(o, cache.ib)
+	--        ib:set_image(icon)
+	--        l:add(ib)
+	--        --w:add(ib)
+	--    end
+	--    w:add(l)
+	--end
+
+	--- Common update method.
+	-- @param w The widget.
+	-- @tab buttons
+	-- @func label Function to generate label parameters from an object.
+	--   The function gets passed an object from `objects`, and
+	--   has to return `text`, `bg`, `bg_image`, `icon`.
+	-- @tab data Current data/cache, indexed by objects.
+	-- @tab objects Objects to be displayed / updated.
+	function my_commonlist_update(w, buttons, label, data, objects)
+		-- update the widgets, creating them if needed
+		w:reset()
+		for i, o in ipairs(objects) do
+			local cache = data[o]
+			local ib, tb, bgb, tbm, ibm, l
+			--local ib, bgb, tbm, ibm, l
+			if cache then
+				ib  = cache.ib
+				tb  = cache.tb
+				bgb = cache.bgb
+				tbm = cache.tbm
+				ibm = cache.ibm
+			else
+				ib  = wibox.widget.imagebox()
+				tb  = wibox.widget.textbox()
+				bgb = wibox.container.background()
+				tbm = wibox.container.margin(tb, dpi(4), dpi(4))
+				ibm = wibox.container.margin(ib, dpi(4))
+				l   = wibox.layout.fixed.horizontal()
+
+				-- All of this is added in a fixed widget
+				l:fill_space(true)
+				l:add(ibm)
+				l:add(tbm)
+
+				-- And all of this gets a background
+				bgb:set_widget(l)
+
+				bgb:buttons(common.create_buttons(buttons, o))
+
+				data[o] = {
+					ib  = ib,
+					tb  = tb,
+					bgb = bgb,
+					tbm = tbm,
+					ibm = ibm,
+				}
+			end
+
+			local text, bg, bg_image, icon, args = label(o, tb)
+			args                                 = args or {}
+
+			-- IA
+			-- This is my special additional
+			-- to REMOVE TEXT (LEAVING ONLY ICON)
+			-- if the task does indeed have an icon.
+			--if icon then text = "" end
+
+			-- The text might be invalid, so use pcall.
+			if text == nil or text == "" then
+				tbm:set_margins(0)
+			else
+				if not tb:set_markup_silently(text) then
+					tb:set_markup("<i>&lt;Invalid text&gt;</i>")
+				end
+			end
+			--tb:set_markup(" ")
+			bgb:set_bg(bg)
+			if type(bg_image) == "function" then
+				-- TODO: Why does this pass nil as an argument?
+				bg_image = bg_image(tb, o, nil, objects, i)
+			end
+			bgb:set_bgimage(bg_image)
+			if icon then
+				ib:set_image(icon)
+			else
+				ibm:set_margins(0)
+			end
+
+			bgb.shape              = args.shape
+			bgb.shape_border_width = args.shape_border_width
+			bgb.shape_border_color = args.shape_border_color
+
+			w:add(bgb)
+		end
+	end
+
+	-- awful.widget.tasklist()
+	s.mytasklist    = awful.widget.tasklist(
+			s, -- screen
+			awful.widget.tasklist.filter.currenttags, -- filter
+			awful.util.tasklist_buttons, -- buttons
+			nil,
+	--{
+	--    shape_border_width = 1,
+	--    shape_border_color = theme.tasklist_bg_normal,
+	--    shape = gears.shape.rounded_rect,
+	--}, -- style
+			list_update -- update function
+	)
+	-- This works. Just commented because I'm not using icon-only task list for the slim wibar now.
+	--s.mytasklist_slim = awful.widget.tasklist(
+	--    s, -- screen
+	--    awful.widget.tasklist.filter.currenttags, -- filter
+	--    awful.util.tasklist_buttons, -- buttons
+	--    nil, -- style
+	--    my_commonlist_update
+	--)
+
+	-- Create the wibox
+	-- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
+	s.mywibox       = awful.wibar({
+									  position = "top", -- top, bottom
+									  screen   = s,
+									  height   = 18,
+									  bg       = theme.bg_normal,
+									  fg       = theme.fg_normal,
+									  opacity  = 0.5,
+									  visible  = true,
+								  })
+
+	-- The important part to make this actually float on top of all the stuff is
+	-- that it's a WIBOX and a not a WIBAR.
+	-- It's also NOT an awful.wibox, but just a wibox. These are important things.
+	s.mywibox_slim  = wibox({
+								visible           = not s.mywibox.visible, -- Needs to be opposite of the default mywibox wibar to make it work like I want.
+								screen            = s,
+
+								y                 = s.geometry.y,
+								x                 = s.geometry.x + s.geometry.width / 4 - 60,
+
+								-- Bottom
+								--y = s.geometry.y + s.geometry.height - 14,
+								--x = s.geometry.x + s.geometry.width / 2 - 60,
+
+								height            = 16, -- 18
+								width             = 120 + 50 + 20, -- 50 for clock, 20 for font with ubuntu 20.04
+
+								---- Rotated:
+								--y = s.geometry.y + s.geometry.height / 2 - 60,
+								--x = s.geometry.x,
+								--height = 120, -- 18
+								--width = 14,
+
+								bg                = theme.tasklist_bg_normal,
+
+								ontop             = true,
+								type              = "dock", -- "toolbar", -- ,
+
+								--Valid types are:
+								--
+								--desktop: The root client, it cannot be moved or resized.
+								--dock: A client attached to the side of the screen.
+								--splash: A client, usually without titlebar shown when an application starts.
+								--dialog: A dialog, see transient_for.
+								--menu: A context menu.
+								--toolbar: A floating toolbar.
+								--utility:
+								--dropdown_menu: A context menu attached to a parent position.
+								--popup_menu: A context menu.
+								--notification: A notification popup.
+								--combo: A combobox list menu.
+								--dnd: A drag and drop indicator.
+								--normal: A normal application main window.
+
+
+								input_passthrough = true, -- noop, btw
+							})
+
+	s.mywibox_clock = wibox({
+								visible           = false,
+								screen            = s,
+								y                 = s.geometry.y,
+								x                 = s.geometry.x + s.geometry.width - (s.geometry.width / 16),
+								--height = 24 + 8,
+								height            = 18,
+								width             = s.geometry.width / 16,
+								bg                = theme.clock_bg,
+								ontop             = true,
+								type              = "toolbar",
+								input_passthrough = true,
+							})
+
+	s.mywibox_clock:setup {
+		layout = wibox.layout.align.horizontal,
+		{
+			layout = wibox.layout.fixed.horizontal, -- left
+		},
+		{
+			layout = wibox.layout.fixed.horizontal, -- center
+		},
+		{
+			layout = wibox.layout.fixed.horizontal, -- right
+			clock,
+		}
+	}
+
+	s.mywibox_worldtimes = awful.wibar({
+										   visible  = false,
+										   position = "right",
+										   --stretch = false,
+										   --ontop = true,
+										   screen   = s,
+										   --height = 500,
+										   width    = 100,
+										   y        = 18,
+										   bg       = theme.bg_normal,
+										   fg       = theme.fg_normal,
+										   opacity  = 0.5,
+									   })
+
+	s.mywibox_worldtimes:setup {
+		layout = wibox.layout.align.vertical,
+		-- left
+		{
+			layout = wibox.layout.fixed.vertical,
+
+			spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Anchorage (AKDT/AKST)'))),
+			world_clock_anchorage,
+
+			--wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver (PT)'))),
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_fg, " " .. markup(theme.clock_bg, 'Vancouver,Seattle (PT)'))),
+			world_clock_vancouver,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Denver, (MT)'))),
+			world_clock_denver,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Chicago (CT)'))),
+			world_clock_chicago,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'New York, Toronto (ET)'))),
+			world_clock_newyork,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Buenos Aires'))),
+			world_clock_buenosaires,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'UTC'))),
+			clock_utc,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'London (BT,WET)'))),
+			world_clock_london,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Berlin (CET/CEST)'))),
+			world_clock_berlin,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid (CET/CEST)'))),
+			world_clock_madrid,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens,Kiev (EET)'))),
+			world_clock_athens,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Moscow (MSK)'))),
+			world_clock_moscow,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Dubai'))),
+			world_clock_dubai,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Shanghai'))),
+			world_clock_shanghai,
+			--spr,
+
+			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Tokyo'))),
+			world_clock_tokyo,
+
+
+			spr,
+			-- my github widget
+			{
+				layout = wibox.layout.fixed.horizontal,
+				mygithubwidget.icon,
+				spr,
+				mygithubwidget.widget,
+			},
+			{
+				layout = wibox.layout.fixed.horizontal,
+				mygithubwidget2.icon,
+				spr,
+				mygithubwidget2.widget,
+			},
+
+			spr,
+			{
+				layout = wibox.layout.fixed.horizontal,
+				spr,
+				my_data,
+			},
+
+		},
+	}
+
+	s.mywibox_slim:setup {
+		layout = wibox.layout.align.horizontal,
+		---- Rotated:
+		--layout = wibox.container.rotate,
+		--direction = "west",
+		{ -- Center widgets
+			layout = wibox.layout.fixed.horizontal,
+
+			s.mypromptbox,
+			spr,
+
+			s.mytaglist,
+			spr,
+
+			s.mylayoutbox,
+			spr,
+
+			--s.mytasklist_slim,
+			--spr,
+		},
+		{
+			layout = wibox.layout.align.horizontal,
+			clock_time,
+		}
+	}
+
+	--s.mywibox_slim:setup {
+	--    layout = wibox.layout.align.vertical,
+	--    { -- Center widgets
+	--        layout = wibox.layout.fixed.vertical,
+	--
+	--        --s.mypromptbox,
+	--        --spr,
+	--
+	--        s.mytaglist_slim,
+	--        spr,
+	--
+	--        s.mylayoutbox,
+	--
+	--    },
+	--}
+
+	s.togglegaps = function()
+		mul = 40
+		if s.geometry.width > 2000 then
+			mul = 30
+		end
+		if s.selected_tag.gap == 0 then
+			s.selected_tag.gap = s.geometry.height / mul
+		else
+			s.selected_tag.gap = 0
+		end
+	end
+
+	-- Add widgets to the wibox
+	s.mywibox:setup {
+		layout = wibox.layout.align.horizontal,
+		{ -- Left widgets
+			layout = wibox.layout.fixed.horizontal,
+
+			s.mypromptbox,
+			spr,
+
+			s.mytaglist,
+			spr,
+
+			s.mylayoutbox,
+			spr,
+
+			awesomebuttons.with_icon_and_text {
+				icon    = 'crop',
+				text    = '??',
+				color   = theme.titlebar_fg_focus,
+				shape   = 'rounded_rect',
+				onclick = s.togglegaps,
+			},
+			spr,
+
+			--s.mylayoutlist,
+			--spr,
+
+			s.mytasklist,
+		},
+		-- middle
+		{
+			layout = wibox.layout.fixed.horizontal,
+		},
+
+		{ -- Right widgets
+			layout = wibox.layout.fixed.horizontal,
+			wibox.widget.systray(),
+
+
+			-- weather insert
+			spr,
+			--                    wibox.widget.imagebox(weather.icon),
+			--                    wibox.widget.textbox('weather: '),
+			--
+			weather.icon,
+			weather.widget,
+			--        weather_widget({
+			--            api_key=os_getenv("OPENWEATHERMAP_API_KEY"),
+			--            coordinates = {46.786671, -92.100487},
+			--        }),
+			--
+
+			-- Net up/down
+			spr,
+			neticon,
+			-- How to wrap items in a custom background.
+			--                     wibox.container.background(neticon, theme.bg_focus),
+			--                     wibox.container.background(net.widget, theme.bg_focus),
+			net.widget,
+
+			-- spr,
+			-- cpu_widget({
+			--     width = 100,
+			--     step_width = 2,
+			--     step_spacing = 0,
+			--     color = "#4070cf" -- '#434c5e'
+			-- }),
+
+			-- CPU
+			spr,
+			cpuicon,
+			cpu.widget,
+
+			-- Memory
+			-- spr,
+			-- memicon,
+			mem.widget,
+
+			-- Battery
+			spr,
+			baticon,
+			bat.widget,
+
+			-- Filesytem
+			spr,
+			fsicon,
+			theme.fs.widget,
+
+			-- Volume
+			spr,
+			volicon,
+			theme.volume.widget,
+
+			--spr,
+			-- default
+			--logout_menu_widget,
+			--logout_menu.logout_menu_widget,
+
+			-- Clock
+			spr,
+			clock,
+			--wibox.widget.textbox('/'),
+			-- clock_utc,
+
+			-- Microphone
+			spr,
+			theme.mic.widget,
+			-- micicon,
+
+			-- Temperature
+			spr,
+			-- tempicon,
+			temp.widget,
+		},
+	}
 end
 
 return theme
