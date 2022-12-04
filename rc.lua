@@ -195,25 +195,13 @@ end, "back" }
 local imodal_separator = { "separator", "" }
 
 imodal_awesomewm = {
-	{ "h", hotkeys_popup.show_help, "Help"},
+	{ "h", hotkeys_popup.show_help, "Hotkeys"},
 	{ "m", function()
 		awful.util.mymainmenu:show()
 	end, "Menu"},
 	{ "r", awesome.restart, "Restart" },
 	imodal_separator,
 	backable,
-}
-
-imodal_screenshot = {
-	{ "s", screenshot_selection_fn, "Selection"},
-	{ "w", screenshot_window_fn, "Window"},
-	imodal_separator,
-	backable,
-}
-
-imodal_tag             = {
-	{ "n", awful.tag.viewnext, "Next" },
-	{ "p", awful.tag.viewprev, "Previous" },
 }
 
 imodal_client          = {
@@ -224,13 +212,24 @@ imodal_client          = {
 	{ "F", function()
 		fullscreen_fn(client.focus)
 	end, "Fullscreen" },
-	{ "m", function()
+	{ "n", function()
 		client.focus.minimized = true
-	end, "Minimize" },
+	end, "miNimize" },
+	{ "m", function()
+		lain.util.magnify_client(client.focus)
+	end, "Magnify"},
 	{ "M", function()
 		client.focus.maximized = not client.focus.maximized
 		client.focus:raise()
 	end, "Maximize" },
+	{ "r", function()
+		local c = awful.client.restore()
+		-- Focus restored client
+		if c then
+			client.focus = c
+			c:raise()
+		end
+	end, "Restore (un-minimize) a client"},
 	{ "s", function()
 		client.focus.sticky = not client.focus.sticky
 	end, "Sticky" },
@@ -272,6 +271,87 @@ imodal_power           = {
 	backable,
 }
 
+imodal_screenshot = {
+	{ "s", screenshot_selection_fn, "Selection"},
+	{ "w", screenshot_window_fn, "Window"},
+	imodal_separator,
+	backable,
+}
+
+imodal_tag             = {
+	{ "1", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[1]
+		if tag then
+			tag:view_only()
+		end
+	end, "[1] - View Tag"},
+	{ "2", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[2]
+		if tag then
+			tag:view_only()
+		end
+	end, "[2] - View Tag"},
+	{ "3", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[3]
+		if tag then
+			tag:view_only()
+		end
+	end, "[3] - View Tag"},
+	{ "4", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[4]
+		if tag then
+			tag:view_only()
+		end
+	end, "[4] - View Tag"},
+	{ "5", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[5]
+		if tag then
+			tag:view_only()
+		end
+	end, "[5] - View Tag"},
+	{ "a", function ()
+		awful.tag.add("NewTag", {
+			screen = awful.screen.focused(),
+			layout = awful.layout.suit.floating }):view_only()
+	end, "Add tag"},
+	{ "d", function()
+		local t = awful.screen.focused().selected_tag
+		if not t then return end
+		t:delete()
+	end, "Delete tag"},
+	{ "n", awful.tag.viewnext, "Next tag" },
+	{ "N", function()
+		local c = client.focus
+		if not c then return end
+
+		local t = awful.tag.add(c.class,{screen= c.screen })
+		c:tags({t})
+		t:view_only()
+	end, "(move focused client to) New tag"},
+	{ "p", awful.tag.viewprev, "Previous tag" },
+	{ "r", function()
+		awful.prompt.run {
+			prompt       = "New tag name: ",
+			textbox      = awful.screen.focused().mypromptbox.widget,
+			exe_callback = function(new_name)
+				if not new_name or #new_name == 0 then return end
+
+				local t = awful.screen.focused().selected_tag
+				if t then
+					t.name = new_name
+				end
+			end
+		}
+	end, "Rename tag"},
+	imodal_separator,
+	backable,
+}
+
 imodal_main            = {
 	{ "a", function()
 		modalbind.grab { keymap = imodal_awesomewm, name = "AwesomeWM", stay_in_mode = false, hide_default_options = true }
@@ -301,7 +381,7 @@ imodal_main            = {
 	end, "➔ Screenshot"},
 
 	{ "t", function()
-		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = true, hide_default_options = true }
+		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Tag" },
 
 	{ "u", function()

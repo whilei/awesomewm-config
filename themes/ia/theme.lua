@@ -188,8 +188,9 @@ theme.titlebar_sticky_button_normal_active      = theme.dir_macos .. "/icons/tit
 theme.titlebar_sticky_button_focus_inactive     = theme.dir_macos .. "/icons/titlebar/sticky_focus_inactive.png"
 theme.titlebar_sticky_button_normal_inactive    = theme.dir_macos .. "/icons/titlebar/sticky_normal_inactive.png"
 
-theme.titlebar_floating_button_focus_active     = theme.dir_macos .. "/icons/titlebar/floating_focus_active.png"
-theme.titlebar_floating_button_normal_active    = theme.dir_macos .. "/icons/titlebar/floating_normal_active.png"
+theme.titlebar_floating_button_focus_active     = theme.dir .. "/icons/titlebar/floating_focus_active_blackburn.png"
+--theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/titlebar/floating_normal_active.png"
+theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/titlebar/floating_focus_active_blackburn.png"
 theme.titlebar_floating_button_focus_inactive   = theme.dir_macos .. "/icons/titlebar/floating_focus_inactive.png"
 theme.titlebar_floating_button_normal_inactive  = theme.dir_macos .. "/icons/titlebar/floating_normal_inactive.png"
 
@@ -1536,14 +1537,14 @@ function theme.at_screen_connect(s)
 			s.mylayoutbox,
 			spr,
 
-			awesomebuttons.with_icon_and_text {
-				icon    = 'crop',
-				text    = s.selected_tag.gap,
-				color   = theme.titlebar_fg_focus,
-				shape   = 'rounded_rect',
-				onclick = s.togglegaps,
-			},
-			spr,
+			--awesomebuttons.with_icon_and_text {
+			--	icon    = 'crop',
+			--	text    = s.selected_tag.gap,
+			--	color   = theme.titlebar_fg_focus,
+			--	shape   = 'rounded_rect',
+			--	onclick = s.togglegaps,
+			--},
+			--spr,
 
 			--s.mylayoutlist,
 			--spr,
