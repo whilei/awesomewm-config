@@ -205,34 +205,75 @@ imodal_awesomewm = {
 }
 
 imodal_client          = {
-	{ "f", function()
-		client.focus.floating = not client.focus.floating
-		client.focus:raise()
-	end, "Float" },
-	{ "F", function()
-		fullscreen_fn(client.focus)
-	end, "Fullscreen" },
-	{ "n", function()
+	{ "_", function()
 		client.focus.minimized = true
-	end, "miNimize" },
-	{ "m", function()
-		lain.util.magnify_client(client.focus)
-	end, "Magnify"},
-	{ "M", function()
-		client.focus.maximized = not client.focus.maximized
-		client.focus:raise()
-	end, "Maximize" },
-	{ "r", function()
+	end, "Minimize client" },
+
+	{ "-", function()
 		local c = awful.client.restore()
 		-- Focus restored client
 		if c then
 			client.focus = c
 			c:raise()
 		end
-	end, "Restore (un-minimize) a client"},
+	end, "Un-Minimize a (random) client"},
+
+	{ "f", function()
+		client.focus.floating = not client.focus.floating
+		client.focus:raise()
+	end, "Float" },
+
+	{ "F", function()
+		fullscreen_fn(client.focus)
+	end, "Fullscreen" },
+
+	{ "m", function()
+		lain.util.magnify_client(client.focus)
+	end, "Magnify"},
+
+	--{ "p", function()
+	--	local c = client.focus;
+	--	if client.focus.fullscreen then
+	--		local geo
+	--		geo = c:geometry()
+	--		local geo_scr
+	--		geo_scr = c.screen.geometry
+	--
+	--		geo.width = geo_scr.width / 4
+	--		geo.height = geo_scr.height / 3
+	--
+	--		c:geometry(geo)
+	--		local f = awful.placement.right + awful.placement.bottom;
+	--		f(c)
+	--		c.ontop = true
+	--		c.sticky = true
+	--		c.fullscreen = true
+	--		--c:raise()
+	--	end
+	--	--if client.focus.fullscreen then
+	--	--	fullscreen_fn(client.focus)
+	--	--else
+	--	--	client.focus.disconnect_signal("request::geometry", awful.ewmh.geometry)
+	--	--	fullscreen_fn(client.focus)
+	--	--	client.focus.ontop = true
+	--	--	client.focus.sticky = true
+	--	--	client.connect_signal("request::geometry", awful.ewmh.geometry)
+	--	--end
+	--end, "Picture-in-picture (use on Fullscreen client)"},
+
 	{ "s", function()
 		client.focus.sticky = not client.focus.sticky
 	end, "Sticky" },
+
+	{ "t", function()
+		client.focus.ontop = not client.focus.ontop
+	end, "on Top"},
+
+	{ "z", function()
+		client.focus.maximized = not client.focus.maximized
+		client.focus:raise()
+	end, "maximiZe" },
+
 	imodal_separator,
 	backable,
 }
@@ -1369,7 +1410,7 @@ local mytitlebars = function(c)
 		{
 			-- Right
 			awful.titlebar.widget.floatingbutton(c),
-			--awful.titlebar.widget.stickybutton(c),
+			awful.titlebar.widget.stickybutton(c),
 			awful.titlebar.widget.ontopbutton(c),
 			awful.titlebar.widget.maximizedbutton(c),
 			awful.titlebar.widget.closebutton(c),
@@ -1487,3 +1528,31 @@ client.connect_signal("unfocus",
 -- https://unix.stackexchange.com/questions/401539/how-to-disallow-any-application-from-stealing-focus-in-awesome-wm
 --awful.ewmh.add_activate_filter(function() return false end, "ewmh")
 --awful.ewmh.add_activate_filter(function() return false end, "rules")
+
+---- https://stackoverflow.com/questions/44571965/awesome-wm-applications-fullscreen-mode-without-taking-whole-screen
+--client.disconnect_signal("request::geometry", awful.ewmh.geometry)
+--client.connect_signal("request::geometry", function(c, context, ...)
+--	if context ~= "fullscreen" then
+--		awful.ewmh.geometry(c, context, ...)
+--	else
+--		--c.sticky = true
+--		--c.ontop = true
+--		--local geo
+--		--geo = c:geometry()
+--		--local geo_scr
+--		--geo_scr = c.screen.geometry
+--		--
+--		--geo.width = geo_scr.width / 4
+--		--geo.height = geo_scr.height / 3
+--		--
+--		--c:geometry(geo)
+--		--local f = awful.placement.right + awful.placement.bottom;
+--		--f(c)
+--	end
+--end)
+--
+--client.connect_signal("property::fullscreen", function(c)
+--	c.ontop = true
+--	c.sticky = true
+--	c:raise()
+--end)
