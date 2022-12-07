@@ -1455,12 +1455,12 @@ local mytitlebars = function(c)
 		},
 		{
 			-- Right
-			awful.titlebar.widget.floatingbutton(c),
-			wibox.widget.textbox(' '),
+			--wibox.widget.textbox(' '),
+			--wibox.widget.textbox(' '),
+			--wibox.widget.textbox(' '),
 			awful.titlebar.widget.stickybutton(c),
-			wibox.widget.textbox(' '),
 			awful.titlebar.widget.ontopbutton(c),
-			wibox.widget.textbox(' '),
+			awful.titlebar.widget.floatingbutton(c),
 			awful.titlebar.widget.maximizedbutton(c),
 			awful.titlebar.widget.closebutton(c),
 			layout = wibox.layout.fixed.horizontal()
