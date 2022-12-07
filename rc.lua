@@ -22,6 +22,9 @@ local revelation    = require("revelation")
 
 local hints         = require("hints")
 
+local ia_layout_bigscreen = require("bigscreen-layout")
+local ia_layout_vcolumns = require("columns-layout")
+
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- }}}
 
@@ -108,6 +111,7 @@ awful.layout.layouts        = {
 	awful.layout.suit.magnifier,
 	-- awful.layout.suit.corner.nw,
 	awful.layout.suit.floating,
+	--ia_layout_bigscreen,
 }
 
 awful.util.taglist_buttons  = my_table.join(awful.button({}, 1, function(t)
@@ -183,6 +187,7 @@ modalbind.hide_default_options()
 local imodal_main
 local imodal_awesomewm
 local imodal_client
+local imodal_client_placement
 local imodal_layouts
 local imodal_power
 local imodal_screenshot
@@ -205,7 +210,15 @@ imodal_awesomewm = {
 }
 
 imodal_client          = {
+
+	{ "p", function()
+		modalbind.grab { keymap = imodal_client_placement, name = "Client Placement", stay_in_mode = true, hide_default_options = true }
+	end, "➔ Position client"},
+
+	imodal_separator,
+
 	{ "_", function()
+		if not client.focus then return end
 		client.focus.minimized = true
 	end, "Minimize client" },
 
@@ -218,16 +231,24 @@ imodal_client          = {
 		end
 	end, "Un-Minimize a (random) client"},
 
+	{ "c", function()
+		if not client.focus then return end
+		client.focus:kill()
+	end, "Close"},
+
 	{ "f", function()
+		if not client.focus then return end
 		client.focus.floating = not client.focus.floating
 		client.focus:raise()
 	end, "Float" },
 
 	{ "F", function()
+		if not client.focus then return end
 		fullscreen_fn(client.focus)
 	end, "Fullscreen" },
 
 	{ "m", function()
+		if not client.focus then return end
 		lain.util.magnify_client(client.focus)
 	end, "Magnify"},
 
@@ -262,14 +283,17 @@ imodal_client          = {
 	--end, "Picture-in-picture (use on Fullscreen client)"},
 
 	{ "s", function()
+		if not client.focus then return end
 		client.focus.sticky = not client.focus.sticky
 	end, "Sticky" },
 
 	{ "t", function()
+		if not client.focus then return end
 		client.focus.ontop = not client.focus.ontop
 	end, "on Top"},
 
 	{ "z", function()
+		if not client.focus then return end
 		client.focus.maximized = not client.focus.maximized
 		client.focus:raise()
 	end, "maximiZe" },
@@ -278,7 +302,23 @@ imodal_client          = {
 	backable,
 }
 
+imodal_client_placement = {
+	{ "b", function() if not client.focus then return end; awful.placement.bottom(client.focus)  end, "Bottom"},
+	{ "c", function() if not client.focus then return end; awful.placement.centered(client.focus)  end, "Center"},
+	{ "l", function() if not client.focus then return end; awful.placement.left(client.focus)  end, "Left"},
+	{ "r", function() if not client.focus then return end; awful.placement.right(client.focus)  end, "Right"},
+	{ "t", function() if not client.focus then return end; awful.placement.top(client.focus)  end, "Top"},
+	imodal_separator,
+	{ "^", function() if not client.focus then return end; client.focus.height = client.focus.height - 50  end, "Shrink ↑"},
+	{ "v", function() if not client.focus then return end; client.focus.height = client.focus.height + 50  end, "Grow ↓"},
+	{ "-", function() if not client.focus then return end; client.focus.width = client.focus.width - 50  end, "Shrink ←"},
+	{ "+", function() if not client.focus then return end; client.focus.width = client.focus.width + 50  end, "Grow →"},
+}
+
 imodal_layouts         = {
+	{ "b", function()
+		awful.layout.set(ia_layout_bigscreen)
+	end, "Big screen 4x4"},
 	{ "c", function()
 		awful.layout.set(lain.layout.centerwork)
 	end, "Centerwork" },
@@ -291,6 +331,9 @@ imodal_layouts         = {
 	{ "t", function()
 		awful.layout.set(awful.layout.suit.tile)
 	end, "Tile" },
+	{ "v", function()
+		awful.layout.set(ia_layout_vcolumns)
+	end, "Vertical columns"},
 	imodal_separator,
 	backable,
 }
@@ -402,11 +445,6 @@ imodal_main            = {
 		modalbind.grab { keymap = imodal_client, name = "Client", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Client" },
 
-	{ "j", function()
-		hints.focus();
-		client.focus:raise()
-	end, "  Jump-to hints" },
-
 	{ "l", function()
 		modalbind.grab { keymap = imodal_layouts, name = "Layouts", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Layout" },
@@ -415,7 +453,6 @@ imodal_main            = {
 		modalbind.grab { keymap = imodal_power, name = "Power/Awesome", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Power" },
 
-	{ "r", revelation, "  Revelation" },
 
 	{ "s", function()
 		modalbind.grab { keymap = imodal_screenshot, name = "Screenshot", stay_in_mode = false, hide_default_options = true }
@@ -424,6 +461,15 @@ imodal_main            = {
 	{ "t", function()
 		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Tag" },
+
+	imodal_separator,
+
+	{ "j", function()
+		hints.focus();
+		client.focus:raise()
+	end, "  Jump-to hints" },
+
+	{ "r", revelation, "  Revelation" },
 
 	{ "u", function()
 		local scr = awful.screen.focused()
@@ -1410,8 +1456,11 @@ local mytitlebars = function(c)
 		{
 			-- Right
 			awful.titlebar.widget.floatingbutton(c),
+			wibox.widget.textbox(' '),
 			awful.titlebar.widget.stickybutton(c),
+			wibox.widget.textbox(' '),
 			awful.titlebar.widget.ontopbutton(c),
+			wibox.widget.textbox(' '),
 			awful.titlebar.widget.maximizedbutton(c),
 			awful.titlebar.widget.closebutton(c),
 			layout = wibox.layout.fixed.horizontal()
@@ -1530,26 +1579,27 @@ client.connect_signal("unfocus",
 --awful.ewmh.add_activate_filter(function() return false end, "rules")
 
 ---- https://stackoverflow.com/questions/44571965/awesome-wm-applications-fullscreen-mode-without-taking-whole-screen
---client.disconnect_signal("request::geometry", awful.ewmh.geometry)
---client.connect_signal("request::geometry", function(c, context, ...)
---	if context ~= "fullscreen" then
---		awful.ewmh.geometry(c, context, ...)
---	else
---		--c.sticky = true
---		--c.ontop = true
---		--local geo
---		--geo = c:geometry()
---		--local geo_scr
---		--geo_scr = c.screen.geometry
---		--
---		--geo.width = geo_scr.width / 4
---		--geo.height = geo_scr.height / 3
---		--
---		--c:geometry(geo)
---		--local f = awful.placement.right + awful.placement.bottom;
---		--f(c)
---	end
---end)
+client.disconnect_signal("request::geometry", awful.ewmh.geometry)
+client.connect_signal("request::geometry", function(c, context, ...)
+	if context == "fullscreen" and c.sticky then
+		-- ignore; I want the world cup in a picture-in-picture type deal
+	else
+		awful.ewmh.geometry(c, context, ...)
+		--c.sticky = true
+		--c.ontop = true
+		--local geo
+		--geo = c:geometry()
+		--local geo_scr
+		--geo_scr = c.screen.geometry
+		--
+		--geo.width = geo_scr.width / 4
+		--geo.height = geo_scr.height / 3
+		--
+		--c:geometry(geo)
+		--local f = awful.placement.right + awful.placement.bottom;
+		--f(c)
+	end
+end)
 --
 --client.connect_signal("property::fullscreen", function(c)
 --	c.ontop = true

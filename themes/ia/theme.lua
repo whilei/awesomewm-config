@@ -152,6 +152,8 @@ theme.tasklist_plain_task_name                  = false -- true
 theme.tasklist_disable_icon                     = false -- true
 theme.useless_gap                               = 0
 
+-- OPTION 1
+
 --theme.titlebar_close_button_focus               = theme.dir .. "/icons/titlebar/close_focus.png"
 --theme.titlebar_close_button_normal              = theme.dir .. "/icons/titlebar/close_normal.png"
 --
@@ -175,29 +177,58 @@ theme.useless_gap                               = 0
 --theme.titlebar_maximized_button_focus_inactive  = theme.dir .. "/icons/titlebar/maximized_focus_inactive.png"
 --theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/maximized_normal_inactive.png"
 
+-- OPTION 2
+--
 theme.titlebar_close_button_focus               = theme.dir_macos .. "/icons/titlebar/close_focus.png"
 theme.titlebar_close_button_normal              = theme.dir_macos .. "/icons/titlebar/close_normal.png"
-
-theme.titlebar_ontop_button_focus_active        = theme.dir_macos .. "/icons/titlebar/ontop_focus_active.png"
-theme.titlebar_ontop_button_normal_active       = theme.dir_macos .. "/icons/titlebar/ontop_normal_active.png"
-theme.titlebar_ontop_button_focus_inactive      = theme.dir_macos .. "/icons/titlebar/ontop_focus_inactive.png"
-theme.titlebar_ontop_button_normal_inactive     = theme.dir_macos .. "/icons/titlebar/ontop_normal_inactive.png"
-
-theme.titlebar_sticky_button_focus_active       = theme.dir_macos .. "/icons/titlebar/sticky_focus_active.png"
-theme.titlebar_sticky_button_normal_active      = theme.dir_macos .. "/icons/titlebar/sticky_normal_active.png"
-theme.titlebar_sticky_button_focus_inactive     = theme.dir_macos .. "/icons/titlebar/sticky_focus_inactive.png"
-theme.titlebar_sticky_button_normal_inactive    = theme.dir_macos .. "/icons/titlebar/sticky_normal_inactive.png"
-
-theme.titlebar_floating_button_focus_active     = theme.dir .. "/icons/titlebar/floating_focus_active_blackburn.png"
---theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/titlebar/floating_normal_active.png"
-theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/titlebar/floating_focus_active_blackburn.png"
-theme.titlebar_floating_button_focus_inactive   = theme.dir_macos .. "/icons/titlebar/floating_focus_inactive.png"
-theme.titlebar_floating_button_normal_inactive  = theme.dir_macos .. "/icons/titlebar/floating_normal_inactive.png"
-
+--
+--theme.titlebar_ontop_button_focus_active        = theme.dir_macos .. "/icons/titlebar/ontop_focus_active.png"
+--theme.titlebar_ontop_button_normal_active       = theme.dir_macos .. "/icons/titlebar/ontop_normal_active.png"
+--theme.titlebar_ontop_button_focus_inactive      = theme.dir_macos .. "/icons/titlebar/ontop_focus_inactive.png"
+--theme.titlebar_ontop_button_normal_inactive     = theme.dir_macos .. "/icons/titlebar/ontop_normal_inactive.png"
+--
+--theme.titlebar_sticky_button_focus_active       = theme.dir_macos .. "/icons/titlebar/sticky_focus_active.png"
+--theme.titlebar_sticky_button_normal_active      = theme.dir_macos .. "/icons/titlebar/sticky_normal_active.png"
+--theme.titlebar_sticky_button_focus_inactive     = theme.dir_macos .. "/icons/titlebar/sticky_focus_inactive.png"
+--theme.titlebar_sticky_button_normal_inactive    = theme.dir_macos .. "/icons/titlebar/sticky_normal_inactive.png"
+--
+--theme.titlebar_floating_button_focus_active     = theme.dir .. "/icons/titlebar/floating_focus_active_blackburn.png"
+----theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/titlebar/floating_normal_active.png"
+--theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/titlebar/floating_focus_active_blackburn.png"
+--theme.titlebar_floating_button_focus_inactive   = theme.dir_macos .. "/icons/titlebar/floating_focus_inactive.png"
+--theme.titlebar_floating_button_normal_inactive  = theme.dir_macos .. "/icons/titlebar/floating_normal_inactive.png"
+--
 theme.titlebar_maximized_button_focus_active    = theme.dir_macos .. "/icons/titlebar/maximized_focus_active.png"
 theme.titlebar_maximized_button_normal_active   = theme.dir_macos .. "/icons/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_inactive  = theme.dir_macos .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir_macos .. "/icons/titlebar/maximized_normal_inactive.png"
+
+-- OPTION 3
+
+--theme.titlebar_close_button_focus               = theme.dir_macos .. "/icons/titlebar/close_focus.png"
+--theme.titlebar_close_button_normal              = theme.dir_macos .. "/icons/titlebar/close_normal.png"
+
+theme.titlebar_ontop_button_focus_active        = theme.dir .. "/icons/mytitlebar/ontop_active.png"
+theme.titlebar_ontop_button_normal_active       = theme.dir .. "/icons/mytitlebar/ontop_active.png"
+theme.titlebar_ontop_button_focus_inactive      = theme.dir .. "/icons/mytitlebar/ontop_inactive.png"
+theme.titlebar_ontop_button_normal_inactive     = theme.dir .. "/icons/mytitlebar/ontop_inactive.png"
+
+theme.titlebar_sticky_button_focus_active       = theme.dir .. "/icons/mytitlebar/sticky_active.png"
+theme.titlebar_sticky_button_normal_active      = theme.dir .. "/icons/mytitlebar/sticky_active.png"
+theme.titlebar_sticky_button_focus_inactive     = theme.dir .. "/icons/mytitlebar/sticky_inactive.png"
+theme.titlebar_sticky_button_normal_inactive    = theme.dir .. "/icons/mytitlebar/sticky_inactive.png"
+
+theme.titlebar_floating_button_focus_active     = theme.dir .. "/icons/mytitlebar/floating_active.png"
+theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/mytitlebar/floating_active.png"
+theme.titlebar_floating_button_focus_inactive   = theme.dir .. "/icons/mytitlebar/floating_inactive.png"
+theme.titlebar_floating_button_normal_inactive  = theme.dir .. "/icons/mytitlebar/floating_inactive.png"
+
+--theme.titlebar_maximized_button_focus_active    = theme.dir_macos .. "/icons/titlebar/maximized_focus_active.png"
+--theme.titlebar_maximized_button_normal_active   = theme.dir_macos .. "/icons/titlebar/maximized_normal_active.png"
+--theme.titlebar_maximized_button_focus_inactive  = theme.dir_macos .. "/icons/titlebar/maximized_focus_inactive.png"
+--theme.titlebar_maximized_button_normal_inactive = theme.dir_macos .. "/icons/titlebar/maximized_normal_inactive.png"
+
+-- END custom title bar icons
 
 --theme.modalbind_font = "Monospace 12" -- font
 theme.modalbind_font                            = "dejavu sans mono 12" -- font
