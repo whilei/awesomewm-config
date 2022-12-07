@@ -198,30 +198,35 @@ theme.titlebar_close_button_normal              = theme.dir_macos .. "/icons/tit
 --theme.titlebar_floating_button_focus_inactive   = theme.dir_macos .. "/icons/titlebar/floating_focus_inactive.png"
 --theme.titlebar_floating_button_normal_inactive  = theme.dir_macos .. "/icons/titlebar/floating_normal_inactive.png"
 --
-theme.titlebar_maximized_button_focus_active    = theme.dir_macos .. "/icons/titlebar/maximized_focus_active.png"
-theme.titlebar_maximized_button_normal_active   = theme.dir_macos .. "/icons/titlebar/maximized_normal_active.png"
-theme.titlebar_maximized_button_focus_inactive  = theme.dir_macos .. "/icons/titlebar/maximized_focus_inactive.png"
-theme.titlebar_maximized_button_normal_inactive = theme.dir_macos .. "/icons/titlebar/maximized_normal_inactive.png"
+--theme.titlebar_maximized_button_focus_active    = theme.dir_macos .. "/icons/titlebar/maximized_focus_active.png"
+--theme.titlebar_maximized_button_normal_active   = theme.dir_macos .. "/icons/titlebar/maximized_normal_active.png"
+--theme.titlebar_maximized_button_focus_inactive  = theme.dir_macos .. "/icons/titlebar/maximized_focus_inactive.png"
+--theme.titlebar_maximized_button_normal_inactive = theme.dir_macos .. "/icons/titlebar/maximized_normal_inactive.png"
 
 -- OPTION 3
 
 --theme.titlebar_close_button_focus               = theme.dir_macos .. "/icons/titlebar/close_focus.png"
 --theme.titlebar_close_button_normal              = theme.dir_macos .. "/icons/titlebar/close_normal.png"
 
-theme.titlebar_ontop_button_focus_active        = theme.dir .. "/icons/mytitlebar/converted/ontop_focus_active.png"
-theme.titlebar_ontop_button_normal_active       = theme.dir .. "/icons/mytitlebar/originals/ontop_normal_active.png"
-theme.titlebar_ontop_button_focus_inactive      = theme.dir .. "/icons/mytitlebar/converted/ontop_focus_inactive.png"
-theme.titlebar_ontop_button_normal_inactive     = theme.dir .. "/icons/mytitlebar/originals/ontop_normal_inactive.png"
+theme.titlebar_maximized_button_focus_active    = theme.dir .. "/icons/mytitlebar/generated/maximized_active_focus.png"
+theme.titlebar_maximized_button_normal_active   = theme.dir .. "/icons/mytitlebar/generated/maximized_active_normal.png"
+theme.titlebar_maximized_button_focus_inactive  = theme.dir .. "/icons/mytitlebar/generated/maximized_inactive_focus.png"
+theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/mytitlebar/generated/maximized_inactive_normal.png"
 
-theme.titlebar_sticky_button_focus_active       = theme.dir .. "/icons/mytitlebar/converted/sticky_focus_active.png"
-theme.titlebar_sticky_button_normal_active      = theme.dir .. "/icons/mytitlebar/originals/sticky_normal_active.png"
-theme.titlebar_sticky_button_focus_inactive     = theme.dir .. "/icons/mytitlebar/converted/sticky_focus_inactive.png"
-theme.titlebar_sticky_button_normal_inactive    = theme.dir .. "/icons/mytitlebar/originals/sticky_normal_inactive.png"
+theme.titlebar_ontop_button_focus_active        = theme.dir .. "/icons/mytitlebar/generated/ontop_active_focus.png"
+theme.titlebar_ontop_button_normal_active       = theme.dir .. "/icons/mytitlebar/generated/ontop_active_normal.png"
+theme.titlebar_ontop_button_focus_inactive      = theme.dir .. "/icons/mytitlebar/generated/ontop_inactive_focus.png"
+theme.titlebar_ontop_button_normal_inactive     = theme.dir .. "/icons/mytitlebar/generated/ontop_inactive_normal.png"
 
-theme.titlebar_floating_button_focus_active     = theme.dir .. "/icons/mytitlebar/converted/floating_focus_active.png"
-theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/mytitlebar/originals/floating_normal_active.png"
-theme.titlebar_floating_button_focus_inactive   = theme.dir .. "/icons/mytitlebar/converted/floating_focus_inactive.png"
-theme.titlebar_floating_button_normal_inactive  = theme.dir .. "/icons/mytitlebar/originals/floating_normal_inactive.png"
+theme.titlebar_sticky_button_focus_active       = theme.dir .. "/icons/mytitlebar/generated/sticky_active_focus.png"
+theme.titlebar_sticky_button_normal_active      = theme.dir .. "/icons/mytitlebar/generated/sticky_active_normal.png"
+theme.titlebar_sticky_button_focus_inactive     = theme.dir .. "/icons/mytitlebar/generated/sticky_inactive_focus.png"
+theme.titlebar_sticky_button_normal_inactive    = theme.dir .. "/icons/mytitlebar/generated/sticky_inactive_normal.png"
+
+theme.titlebar_floating_button_focus_active     = theme.dir .. "/icons/mytitlebar/generated/floating_active_focus.png"
+theme.titlebar_floating_button_normal_active    = theme.dir .. "/icons/mytitlebar/generated/floating_active_normal.png"
+theme.titlebar_floating_button_focus_inactive   = theme.dir .. "/icons/mytitlebar/generated/floating_inactive_focus.png"
+theme.titlebar_floating_button_normal_inactive  = theme.dir .. "/icons/mytitlebar/generated/floating_inactive_normal.png"
 
 --theme.titlebar_maximized_button_focus_active    = theme.dir_macos .. "/icons/titlebar/maximized_focus_active.png"
 --theme.titlebar_maximized_button_normal_active   = theme.dir_macos .. "/icons/titlebar/maximized_normal_active.png"

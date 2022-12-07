@@ -303,16 +303,16 @@ imodal_client          = {
 }
 
 imodal_client_placement = {
-	{ "b", function() if not client.focus then return end; awful.placement.bottom(client.focus)  end, "Bottom"},
-	{ "c", function() if not client.focus then return end; awful.placement.centered(client.focus)  end, "Center"},
-	{ "l", function() if not client.focus then return end; awful.placement.left(client.focus)  end, "Left"},
-	{ "r", function() if not client.focus then return end; awful.placement.right(client.focus)  end, "Right"},
-	{ "t", function() if not client.focus then return end; awful.placement.top(client.focus)  end, "Top"},
+	{ "b", function() if not client.focus then return end; client.focus.floating = true; awful.placement.bottom(client.focus)  end, "Bottom"},
+	{ "c", function() if not client.focus then return end; client.focus.floating = true; awful.placement.centered(client.focus)  end, "Center"},
+	{ "l", function() if not client.focus then return end; client.focus.floating = true; awful.placement.left(client.focus)  end, "Left"},
+	{ "r", function() if not client.focus then return end; client.focus.floating = true; awful.placement.right(client.focus)  end, "Right"},
+	{ "t", function() if not client.focus then return end; client.focus.floating = true; awful.placement.top(client.focus)  end, "Top"},
 	imodal_separator,
-	{ "^", function() if not client.focus then return end; client.focus.height = client.focus.height - 50  end, "Shrink ↑"},
-	{ "v", function() if not client.focus then return end; client.focus.height = client.focus.height + 50  end, "Grow ↓"},
-	{ "-", function() if not client.focus then return end; client.focus.width = client.focus.width - 50  end, "Shrink ←"},
-	{ "+", function() if not client.focus then return end; client.focus.width = client.focus.width + 50  end, "Grow →"},
+	{ "^", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.height - client.focus.screen.geometry.height / 10  end, "Shrink ↑"},
+	{ "v", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.height + client.focus.screen.geometry.height / 10  end, "Grow ↓"},
+	{ "-", function() if not client.focus then return end; client.focus.floating = true; client.focus.width = client.focus.width - client.focus.screen.geometry.height / 10  end, "Shrink ←"},
+	{ "+", function() if not client.focus then return end; client.focus.floating = true; client.focus.width = client.focus.width + client.focus.screen.geometry.height / 10  end, "Grow →"},
 }
 
 imodal_layouts         = {
@@ -1455,9 +1455,6 @@ local mytitlebars = function(c)
 		},
 		{
 			-- Right
-			--wibox.widget.textbox(' '),
-			--wibox.widget.textbox(' '),
-			--wibox.widget.textbox(' '),
 			awful.titlebar.widget.stickybutton(c),
 			awful.titlebar.widget.ontopbutton(c),
 			awful.titlebar.widget.floatingbutton(c),
