@@ -16,7 +16,8 @@ local lain            = require("lain")
 local awful           = require("awful")
 local wibox           = require("wibox")
 local common          = require("awful.widget.common")
-local dpi             = require("beautiful").xresources.apply_dpi
+local beautiful       = require("beautiful")
+local dpi             = beautiful.xresources.apply_dpi
 
 --local revelation = require("revelation")
 

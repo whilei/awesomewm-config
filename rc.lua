@@ -211,30 +211,11 @@ imodal_awesomewm = {
 
 imodal_client          = {
 
-	{ "p", function()
+	{ "c", function()
 		modalbind.grab { keymap = imodal_client_placement, name = "Client Placement", stay_in_mode = true, hide_default_options = true }
-	end, "➔ Position client"},
+	end, "➔ Position Client"},
 
 	imodal_separator,
-
-	{ "_", function()
-		if not client.focus then return end
-		client.focus.minimized = true
-	end, "Minimize client" },
-
-	{ "-", function()
-		local c = awful.client.restore()
-		-- Focus restored client
-		if c then
-			client.focus = c
-			c:raise()
-		end
-	end, "Un-Minimize a (random) client"},
-
-	{ "c", function()
-		if not client.focus then return end
-		client.focus:kill()
-	end, "Close"},
 
 	{ "f", function()
 		if not client.focus then return end
@@ -242,15 +223,40 @@ imodal_client          = {
 		client.focus:raise()
 	end, "Float" },
 
+	{ "m", function()
+		if not client.focus then return end
+		client.focus.maximized = not client.focus.maximized
+		client.focus:raise()
+	end, "Maximize" },
+
+	{ "o", function()
+		if not client.focus then return end
+		client.focus.ontop = not client.focus.ontop
+	end, "On top"},
+
+	{ "s", function()
+		if not client.focus then return end
+		client.focus.sticky = not client.focus.sticky
+	end, "Sticky" },
+
+	imodal_separator,
+
 	{ "F", function()
 		if not client.focus then return end
 		fullscreen_fn(client.focus)
 	end, "Fullscreen" },
 
-	{ "m", function()
+	{ "t", function()
 		if not client.focus then return end
-		lain.util.magnify_client(client.focus)
-	end, "Magnify"},
+		client.focus:cmove_to_screen()
+	end, "Throw to next screen"},
+
+	imodal_separator,
+
+	--{ "m", function()
+	--	if not client.focus then return end
+	--	lain.util.magnify_client(client.focus)
+	--end, "Magnify"},
 
 	--{ "p", function()
 	--	local c = client.focus;
@@ -282,37 +288,54 @@ imodal_client          = {
 	--	--end
 	--end, "Picture-in-picture (use on Fullscreen client)"},
 
-	{ "s", function()
+	{ "n", function()
 		if not client.focus then return end
-		client.focus.sticky = not client.focus.sticky
-	end, "Sticky" },
+		client.focus.minimized = true
+	end, "Minimize client" },
 
-	{ "t", function()
-		if not client.focus then return end
-		client.focus.ontop = not client.focus.ontop
-	end, "on Top"},
+	{ "r", function()
+		local c = awful.client.restore()
+		-- Focus restored client
+		if c then
+			client.focus = c
+			c:raise()
+		end
+	end, "Restore a (random) client"},
 
-	{ "z", function()
+	{ "x", function()
 		if not client.focus then return end
-		client.focus.maximized = not client.focus.maximized
-		client.focus:raise()
-	end, "maximiZe" },
+		client.focus:kill()
+	end, "Kill"},
 
 	imodal_separator,
 	backable,
 }
 
 imodal_client_placement = {
+
+	{ "B", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.screen.workarea.height / 10 * 5; client.focus.width = client.focus.screen.workarea.width / 10 * 5; awful.placement.bottom(client.focus)  end, "Bottom [resized]"},
+	{ "C", function() if not client.focus then return end; client.focus.floating = true; awful.placement.scale(client.focus, {to_percent=0.61}); awful.placement.centered(client.focus)  end, "Center [resized]"},
+	{ "L", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.screen.workarea.height / 10 * 8; client.focus.width = client.focus.screen.workarea.width / 100 * 25; awful.placement.left(client.focus)  end, "Left [resized]"},
+	{ "R", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.screen.workarea.height / 10 * 8; client.focus.width = client.focus.screen.workarea.width / 100 * 25; awful.placement.right(client.focus)  end, "Right [resized]"},
+	{ "T", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.screen.workarea.height / 10 * 5; client.focus.width = client.focus.screen.workarea.width / 10 * 5; awful.placement.top(client.focus)  end, "Top [resized]"},
+
+	imodal_separator,
+
 	{ "b", function() if not client.focus then return end; client.focus.floating = true; awful.placement.bottom(client.focus)  end, "Bottom"},
 	{ "c", function() if not client.focus then return end; client.focus.floating = true; awful.placement.centered(client.focus)  end, "Center"},
 	{ "l", function() if not client.focus then return end; client.focus.floating = true; awful.placement.left(client.focus)  end, "Left"},
 	{ "r", function() if not client.focus then return end; client.focus.floating = true; awful.placement.right(client.focus)  end, "Right"},
 	{ "t", function() if not client.focus then return end; client.focus.floating = true; awful.placement.top(client.focus)  end, "Top"},
+
 	imodal_separator,
-	{ "^", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.height - client.focus.screen.geometry.height / 10  end, "Shrink ↑"},
-	{ "v", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.height + client.focus.screen.geometry.height / 10  end, "Grow ↓"},
-	{ "-", function() if not client.focus then return end; client.focus.floating = true; client.focus.width = client.focus.width - client.focus.screen.geometry.height / 10  end, "Shrink ←"},
-	{ "+", function() if not client.focus then return end; client.focus.floating = true; client.focus.width = client.focus.width + client.focus.screen.geometry.height / 10  end, "Grow →"},
+
+	{ "v", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.height + client.focus.screen.workarea.height / 10  end, "Grow ↓"},
+	{ "V", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.height - client.focus.screen.workarea.height / 10  end, "Shrink ↑"},
+	{ "+", function() if not client.focus then return end; client.focus.floating = true; client.focus.width = client.focus.width + client.focus.screen.workarea.height / 10  end, "Grow →"},
+	{ "-", function() if not client.focus then return end; client.focus.floating = true; client.focus.width = client.focus.width - client.focus.screen.workarea.height / 10  end, "Shrink ←"},
+
+	{ "H", function() if not client.focus then return end; client.focus.floating = true; awful.placement.maximize_vertically(client.focus) end, "Height of work area"},
+	{ "W", function() if not client.focus then return end; client.focus.floating = true; awful.placement.maximize_horizontally(client.focus) end, "Width of work area"},
 }
 
 imodal_layouts         = {
@@ -480,6 +503,7 @@ imodal_main            = {
 			scr.selected_tag.gap = scr.geometry.height / 20
 		end
 		awful.layout.arrange(scr)
+		naughty.notify({ text = "Useless gaps set: " .. tostring(scr.selected_tag.gap), timeout = 3, bg = "#058B04", fg = "#ffffff" })
 	end, "  Useless gaps toggle"},
 }
 
@@ -1419,28 +1443,29 @@ local mytitlebars = function(c)
 
 	-- Default
 	-- buttons for the titlebar
-	local buttons = my_table.join(awful.button({},
-											   1,
-											   function()
-												   client.focus = c
-												   c:raise()
-												   awful.mouse.client.move(c)
-											   end),
-								  awful.button({},
-											   3,
-											   function()
-												   client.focus = c
-												   c:raise()
-												   awful.mouse.client.resize(c)
-											   end))
+	local buttons = my_table.join(
+		awful.button({},
+		   1,
+		   function()
+			   client.focus = c
+			   c:raise()
+			   awful.mouse.client.move(c)
+		   end),
+	    awful.button({},
+		   3,
+		   function()
+			   client.focus = c
+			   c:raise()
+			   awful.mouse.client.resize(c)
+		   end))
 
 	awful.titlebar(c, { size = 16 }):setup {
 		{
 			-- Left
 			awful.titlebar.widget.iconwidget(c),
-			wibox.widget.textbox(' '),
 			awful.titlebar.widget.titlewidget(c),
 			buttons = buttons,
+			spacing = 5,
 			layout  = wibox.layout.fixed.horizontal
 		},
 		{
@@ -1455,11 +1480,12 @@ local mytitlebars = function(c)
 		},
 		{
 			-- Right
+			awful.titlebar.widget.maximizedbutton(c),
 			awful.titlebar.widget.stickybutton(c),
 			awful.titlebar.widget.ontopbutton(c),
 			awful.titlebar.widget.floatingbutton(c),
-			awful.titlebar.widget.maximizedbutton(c),
 			awful.titlebar.widget.closebutton(c),
+			spacing = 5, -- https://awesomewm.org/doc/api/classes/wibox.layout.fixed.html#wibox.layout.fixed.spacing
 			layout = wibox.layout.fixed.horizontal()
 		},
 		layout = wibox.layout.align.horizontal
