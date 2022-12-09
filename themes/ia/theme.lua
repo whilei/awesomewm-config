@@ -944,54 +944,6 @@ function theme.at_screen_connect(s)
 										  end
 									  })
 
-	--s.quakeBrowser = lain.util.quake({
-	--    app = "ffox",
-	--    name = "MozillaFirefoxDD",
-	--    argname = "",
-	--    extra = "",
-	--    followtag = true,
-	--    vert = "top",
-	--    keepclientattrs = true,
-	--    border = 0,
-	--    settings = function (client)
-	--        client.floating = true;o
-	--        local geo
-	--        geo = client:geometry()
-	--        if geo.width > 2000 then
-	--            geo.x = geo.x + (geo.width / 4)
-	--            geo.width = geo.width / 2
-	--            geo.height = geo.height * 2
-	--            client:geometry(geo)
-	--        else
-	--            geo.height = geo.height * 2
-	--            client:geometry(geo)
-	--        end
-	--    end
-	--})
-
-	-- THIS WORKS, BUT is finnicky.
-	--s.quakeBrowser = lain.util.quake2({
-	--    app = "ffox", -- uses: 'snap alias firefox ffox'
-	--    name = "MozillaFirefoxDD",
-	--    extra = "",
-	--    argname = "",
-	--    followtag = true,
-	--    vert = "top",
-	--    keepclientattrs = true,
-	--    settings = function(client)
-	--        local geo
-	--        geo = client:geometry()
-	--        if geo.width > 2000 then
-	--            geo.x = geo.x + (geo.width / 4)
-	--            geo.width = geo.width / 2
-	--            geo.height = geo.height * 2
-	--            client:geometry(geo)
-	--        else
-	--            geo.height = geo.height * 2
-	--            client:geometry(geo)
-	--        end
-	--    end
-	--})
 
 	-- If wallpaper is a function, call it with the screen
 	local wallpaper = theme.wallpaper
@@ -1013,14 +965,14 @@ function theme.at_screen_connect(s)
 	--}
 	--
 	-- Create a promptbox for each screen
-	s.mypromptbox = awful.widget.prompt({
-											prompt    = "> ",
-											bg        = "#0000ff", -- "#1E2CEE", -- "#000000",
-											fg        = "#ffffff",
-											bg_cursor = "#e019c9", --pink
-											fg_cursor = "#e019c9", --pink
-											--textbox = my_promptbox_textbox,
-										})
+	--s.mypromptbox = awful.widget.prompt({
+	--										prompt    = "> ",
+	--										bg        = "#0000ff", -- "#1E2CEE", -- "#000000",
+	--										fg        = "#ffffff",
+	--										bg_cursor = "#e019c9", --pink
+	--										fg_cursor = "#e019c9", --pink
+	--										--textbox = my_promptbox_textbox,
+	--									})
 
 	-- Create an imagebox widget which will contains an icon indicating which layout we're using.
 	-- We need one layoutbox per screen.
@@ -1512,8 +1464,8 @@ function theme.at_screen_connect(s)
 		{ -- Center widgets
 			layout = wibox.layout.fixed.horizontal,
 
-			s.mypromptbox,
-			spr,
+			--s.mypromptbox,
+			--spr,
 
 			s.mytaglist,
 			spr,
@@ -1564,8 +1516,8 @@ function theme.at_screen_connect(s)
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,
 
-			s.mypromptbox,
-			spr,
+			--s.mypromptbox,
+			--spr,
 
 			s.mytaglist,
 			spr,

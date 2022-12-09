@@ -25,6 +25,8 @@ local hints         = require("hints")
 local ia_layout_bigscreen = require("bigscreen-layout")
 local ia_layout_vcolumns = require("columns-layout")
 
+local ia_popup_shell = require("ia-popup-run.popup-shell")
+
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- }}}
 
@@ -1096,7 +1098,8 @@ globalkeys = my_table.join(
 		awful.key({ modkey },
 				  "r",
 				  function()
-					  awful.screen.focused().mypromptbox:run()
+					  --awful.screen.focused().mypromptbox:run()
+					  ia_popup_shell.launch()
 				  end,
 				  { description = "run prompt", group = "launcher" }))
 
