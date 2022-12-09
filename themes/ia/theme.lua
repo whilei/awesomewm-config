@@ -1275,14 +1275,14 @@ function theme.at_screen_connect(s)
 	-- Create the wibox
 	-- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
 	s.mywibox       = awful.wibar({
-									  position = "top", -- top, bottom
-									  screen   = s,
-									  height   = 18,
-									  bg       = theme.bg_normal,
-									  fg       = theme.fg_normal,
-									  opacity  = 0.5,
-									  visible  = true,
-								  })
+						  position = "top", -- top, bottom
+						  screen   = s,
+						  height   = 18,
+						  bg       = theme.bg_normal,
+						  fg       = theme.fg_normal,
+						  opacity  = 0.5,
+						  visible  = true,
+					  })
 
 	-- The important part to make this actually float on top of all the stuff is
 	-- that it's a WIBOX and a not a WIBAR.
@@ -1301,7 +1301,7 @@ function theme.at_screen_connect(s)
 								height            = 16, -- 18
 								width             = 120 + 50 + 20, -- 50 for clock, 20 for font with ubuntu 20.04
 
-								---- Rotated:
+									---- Rotated:
 								--y = s.geometry.y + s.geometry.height / 2 - 60,
 								--x = s.geometry.x,
 								--height = 120, -- 18

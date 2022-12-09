@@ -51,6 +51,7 @@ local function launch()
 		textbox = my_shell_prompt_widget.widget,
 		history_path = gfs.get_cache_dir() .. '/history',
 		history_max = 500,
+		exe_callback = function(cmd) awful.spawn(cmd) end,
 		completion_callback = awful.completion.shell,
 		done_callback = clear
 	}
