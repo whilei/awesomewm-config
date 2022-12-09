@@ -248,7 +248,7 @@ imodal_client          = {
 
 	{ "t", function()
 		if not client.focus then return end
-		client.focus:cmove_to_screen()
+		client.focus:move_to_screen()
 	end, "Throw to next screen"},
 
 	imodal_separator,
