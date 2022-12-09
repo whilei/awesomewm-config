@@ -162,14 +162,14 @@ hints.init()
 local screenshot_selection_fn = function()
 	awful.util.mymainmenu:hide()
 	awful.spawn.easy_async_with_shell(scrnshotter_select, function()
-		naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+		naughty.notify({ text = "Screenshot of selection OK", timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
 	end)
 end
 
 local screenshot_window_fn = function()
 	awful.util.mymainmenu:hide()
 	awful.util.spawn_with_shell(scrnshotter_window)
-	naughty.notify({ text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+	naughty.notify({ text = "Screenshot of window OK", timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
 end
 
 -- Modal operation
@@ -503,7 +503,7 @@ imodal_main            = {
 			scr.selected_tag.gap = scr.geometry.height / 20
 		end
 		awful.layout.arrange(scr)
-		naughty.notify({ text = "Useless gaps set: " .. tostring(scr.selected_tag.gap), timeout = 3, bg = "#058B04", fg = "#ffffff" })
+		naughty.notify({ text = "Useless gaps set: " .. tostring(scr.selected_tag.gap), timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
 	end, "  Useless gaps toggle"},
 }
 
@@ -604,13 +604,13 @@ local myscreenshotmenu = {
 --												screenshot_menu:hide()
 --												--awful.util.spawn_with_shell(scrnshotter_select)
 --												awful.spawn.easy_async_with_shell(scrnshotter_select, function()
---													naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+--													naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff", position = "bottom_middle })
 --												end)
 --											end, nil },
 --											{ "Screenshot: Window", function()
 --												screenshot_menu:hide()
 --												awful.util.spawn_with_shell(scrnshotter_window)
---												naughty.notify({ text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+--												naughty.notify({ text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff", position = "bottom_middle })
 --											end, nil },
 --										}
 --									})
@@ -727,7 +727,7 @@ globalkeys = my_table.join(
 --awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
 		awful.key({ modkey }, "s", function()
 			awful.spawn.easy_async_with_shell(scrnshotter_select, function()
-				naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff" })
+				naughty.notify({ text = "Screenshot of selection OK", timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
 			end)
 		end, { description = "take a screenshot of a selection", group = "hotkeys" }),
 
