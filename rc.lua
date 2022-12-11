@@ -701,6 +701,7 @@ globalkeys = my_table.join(
 -- hints: client picker, window picker, letter
 		awful.key({ modkey }, "i", function()
 			hints.focus();
+			if not client.focus then return end
 			client.focus:raise()
 		end, { description = "Focus client with Hints", group = "hotkeys" }),
 
@@ -945,7 +946,7 @@ globalkeys = my_table.join(
 
 					  -- -sidebar-mode shows 'tabs' of available modi
 
-					  commandPrompter = "rofi --modi window,run -show window -sidebar-mode -location 5 -theme Indego"
+					  commandPrompter = "rofi --modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -sort"
 					  awful.spawn.easy_async(commandPrompter, function()
 						  if client.focus then
 							  awful.screen.focus(client.focus.screen)
