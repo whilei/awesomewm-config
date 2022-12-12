@@ -372,7 +372,7 @@ local clock              = awful.widget.watch(
 		end
 )
 
-local my_calendar_widget = calendar_widget({
+my_calendar_widget = calendar_widget({
 											   theme                 = 'outrun',
 											   --placement = 'bottom_right',
 											   --start_sunday = true,
@@ -1522,8 +1522,7 @@ function theme.at_screen_connect(s)
 			s.mytaglist,
 			spr,
 
-			s.mylayoutbox,
-			spr,
+
 
 			--awesomebuttons.with_icon_and_text {
 			--	icon    = 'crop',
@@ -1537,11 +1536,20 @@ function theme.at_screen_connect(s)
 			--s.mylayoutlist,
 			--spr,
 
-			s.mytasklist,
+
 		},
 		-- middle
 		{
-			layout = wibox.layout.fixed.horizontal,
+			layout = wibox.layout.flex.horizontal,
+			spr,
+			{
+				layout = wibox.layout.fixed.horizontal,
+				s.mylayoutbox,
+				spr,
+				s.mytasklist,
+			},
+
+			spr,
 		},
 
 		{ -- Right widgets

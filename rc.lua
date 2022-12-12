@@ -194,6 +194,7 @@ local imodal_layouts
 local imodal_power
 local imodal_screenshot
 local imodal_tag
+local imodal_toggle
 
 local backable         = { "<", function()
 	modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
@@ -219,11 +220,43 @@ imodal_client          = {
 
 	imodal_separator,
 
+	{"h", function()
+		awful.client.focus.global_bydirection("left")
+		if client.focus then
+			client.focus:raise()
+		end
+	end, "Focus client ← left"},
+	{"l", function()
+		awful.client.focus.global_bydirection("right")
+		if client.focus then
+			client.focus:raise()
+		end
+	end, "Focus client → right"},
+	{"j", function()
+		awful.client.focus.global_bydirection("down")
+		if client.focus then
+			client.focus:raise()
+		end
+	end, "Focus client ↓ down"},
+	{"k", function()
+		awful.client.focus.global_bydirection("up")
+		if client.focus then
+			client.focus:raise()
+		end
+	end, "Focus client ↑ up"},
+
+	imodal_separator,
+
 	{ "f", function()
 		if not client.focus then return end
 		client.focus.floating = not client.focus.floating
 		client.focus:raise()
 	end, "Float" },
+
+	{ "F", function()
+		if not client.focus then return end
+		fullscreen_fn(client.focus)
+	end, "Fullscreen" },
 
 	{ "m", function()
 		if not client.focus then return end
@@ -243,15 +276,15 @@ imodal_client          = {
 
 	imodal_separator,
 
-	{ "F", function()
-		if not client.focus then return end
-		fullscreen_fn(client.focus)
-	end, "Fullscreen" },
-
 	{ "t", function()
 		if not client.focus then return end
 		client.focus:move_to_screen()
 	end, "Throw to next screen"},
+
+	{ "T", function()
+		if not client.focus then return end
+		awful.titlebar.toggle(client.focus)
+	end, "Titlebar (toggle)"},
 
 	imodal_separator,
 
@@ -302,7 +335,7 @@ imodal_client          = {
 			client.focus = c
 			c:raise()
 		end
-	end, "Restore a (random) client"},
+	end, "Restore (=unminimize) a random client"},
 
 	{ "x", function()
 		if not client.focus then return end
@@ -370,7 +403,8 @@ imodal_power           = {
 	{ "s", function()
 		awful.util.spawn_with_shell("sudo systemctl suspend")
 	end, "Suspend" },
-	{ "S", function()
+	imodal_separator,
+	{ "P", function()
 		awful.util.spawn_with_shell("shutdown -P -h now")
 	end, "Shutdown" },
 	{ "R", function()
@@ -423,6 +457,7 @@ imodal_tag             = {
 			tag:view_only()
 		end
 	end, "[5] - View Tag"},
+	imodal_separator,
 	{ "a", function ()
 		awful.tag.add("NewTag", {
 			screen = awful.screen.focused(),
@@ -461,6 +496,37 @@ imodal_tag             = {
 	backable,
 }
 
+imodal_toggle = {
+	{ "c", function()
+		os.execute(invert_colors)
+	end, "Invert Colors"},
+
+	{ "i", function()
+		os.execute("amixer -q set Capture toggle")
+		beautiful.mic.update()
+	end, "Microphone"},
+
+	{"m", function()
+		os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
+		beautiful.volume.update()
+	end, "Mute"},
+
+	{ "u", function()
+		local scr = awful.screen.focused()
+		if scr.selected_tag.gap > 0 then
+			-- turn gaps off by setting to 0
+			scr.selected_tag.gap = 0
+		else
+			scr.selected_tag.gap = scr.geometry.height / 20
+		end
+		awful.layout.arrange(scr)
+		naughty.notify({ text = "Useless gaps set: " .. tostring(scr.selected_tag.gap), timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
+	end, "Useless gaps toggle"},
+
+	imodal_separator,
+	backable,
+}
+
 imodal_main            = {
 	{ "a", function()
 		modalbind.grab { keymap = imodal_awesomewm, name = "AwesomeWM", stay_in_mode = false, hide_default_options = true }
@@ -487,26 +553,23 @@ imodal_main            = {
 		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Tag" },
 
+	{ "x", function()
+		modalbind.grab { keymap = imodal_toggle, name = "Toggle Settings", stay_in_mode = false, hide_default_options = true }
+	end, "Toggle Settings"},
+
 	imodal_separator,
 
-	{ "j", function()
+	{ "d", function()
+		my_calendar_widget.toggle()
+	end, "Date = Toggle Calendar widget"},
+
+	{ "i", function()
 		hints.focus();
 		client.focus:raise()
-	end, "  Jump-to hints" },
+	end, "Jump-to h[i]nts" },
 
-	{ "r", revelation, "  Revelation" },
+	{ "r", revelation, "Revelation" },
 
-	{ "u", function()
-		local scr = awful.screen.focused()
-		if scr.selected_tag.gap > 0 then
-			-- turn gaps off by setting to 0
-			scr.selected_tag.gap = 0
-		else
-			scr.selected_tag.gap = scr.geometry.height / 20
-		end
-		awful.layout.arrange(scr)
-		naughty.notify({ text = "Useless gaps set: " .. tostring(scr.selected_tag.gap), timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
-	end, "  Useless gaps toggle"},
 }
 
 --
