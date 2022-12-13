@@ -95,11 +95,15 @@ theme.clock_mylocal                             = "#A51C48"
 -- theme.border_focus                              = "#606060"
 -- theme.border_marked                             = "#3ca4d8"
 
-theme.border_normal                             = theme.bg_normal .. "ff"
-theme.border_focus                              = "#08158a" -- "#0B1DC2"
-theme.border_marked                             = "#f05800"
+theme.border_color_normal                             = theme.bg_normal .. "ff"
+theme.border_color_focus                              = "#08158a" -- "#0B1DC2"
+theme.border_color_marked                             = "#f05800"
 
-theme.border_width                              = 0 -- 4
+--theme.border_width                              = 0 -- 4
+--theme.border_width_active = 10
+--theme.border_color_active = "black"
+--theme.border_width_normal = 40
+--theme.border_color_normal = "black"
 
 theme.tasklist_bg_normal                        = "#05092a" -- "#313452" -- "#c8def7"#f01800
 theme.tasklist_bg_focus                         = "#08158a" -- "#420f94"--purple -- blue="#08158a" -- "#1A1A1A"
@@ -1263,6 +1267,82 @@ function theme.at_screen_connect(s)
 	--}, -- style
 			list_update -- update function
 	)
+
+	-- https://awesomewm.org/apidoc/widgets/awful.widget.tasklist.html#widget_template
+	-- Change the widget template.
+	-- But this isn't actually changning anything.
+	-- I tried to use it to show the index of the client
+	-- as a textbox (so I would know which index number I want
+	-- so I can jump focus by index number), but it didn't work.
+	-- So I'm going to try messing with the client property:name
+	-- signal instead... maybe...
+	-- https://github.com/awesomeWM/awesome/issues/3052
+	-- https://www.reddit.com/r/awesomewm/comments/ell8go/customize_text_of_the_tasklist/
+	-- https://www.reddit.com/r/awesomewm/comments/cr0nqe/comment/ex25e6d/
+	--s.mytasklist.widget_template = {
+	--	{
+	--		{
+	--			{
+	--				{
+	--					id     = "icon_role",
+	--					widget = wibox.widget.imagebox,
+	--				},
+	--				margins = 2,
+	--				widget  = wibox.container.margin,
+	--			},
+	--			{
+	--				id = "text_client_index",
+	--				widget = wibox.widget.textbox,
+	--			},
+	--			{
+	--				id     = "text_role",
+	--				widget = wibox.widget.textbox,
+	--			},
+	--			layout = wibox.layout.fixed.horizontal,
+	--		},
+	--		left  = 10,
+	--		right = 10,
+	--		widget = wibox.container.margin
+	--	},
+	--	id     = "background_role",
+	--	widget = wibox.container.background,
+	--	--create_callback = function(self, c, index, clients)
+	--	--	local tb = self:get_children_by_id('text_client_index')[1]
+	--	--	local set_markup_silently = tb.set_markup_silently
+	--	--	tb.set_markup_silently = function(slf, text)
+	--	--		local new_text = '?: '
+	--	--		--local new_text = helpers.string.replace(text, c.name, c.class:lower())
+	--	--		--new_text = helpers.string.replace(new_text, "_", "-")
+	--	--		--if c.minimized then new_text = "-" .. new_text end
+	--	--		for idx, cl in ipairs(client.get()) do
+	--	--			if cl.name == c.name then
+	--	--				new_text = tostring(idx) .. ": a"
+	--	--			end
+	--	--		end
+	--	--
+	--	--		return set_markup_silently(tb, new_text)
+	--	--	end
+	--	--end,
+	--	--update_callback = function(self, c, index, clients)
+	--	--	local tb = self:get_children_by_id('text_client_index')[1]
+	--	--	local set_markup_silently = tb.set_markup_silently
+	--	--	tb.set_markup_silently = function(slf, text)
+	--	--		local new_text = '?: '
+	--	--		--local new_text = helpers.string.replace(text, c.name, c.class:lower())
+	--	--		--new_text = helpers.string.replace(new_text, "_", "-")
+	--	--		--if c.minimized then new_text = "-" .. new_text end
+	--	--		for idx, cl in ipairs(client.get()) do
+	--	--			if cl.name == c.name then
+	--	--				new_text = tostring(idx) .. ": a"
+	--	--			end
+	--	--		end
+	--	--
+	--	--		return set_markup_silently(tb, new_text)
+	--	--	end
+	--	--end
+	--}
+
+
 	-- This works. Just commented because I'm not using icon-only task list for the slim wibar now.
 	--s.mytasklist_slim = awful.widget.tasklist(
 	--    s, -- screen

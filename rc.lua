@@ -323,9 +323,16 @@ imodal_client          = {
 	--	--end
 	--end, "Picture-in-picture (use on Fullscreen client)"},
 
-	{ "n", function()
+	{ "*", function()
 		if not client.focus then return end
-		client.focus.minimized = true
+		client.focus:swap(awful.client.getmaster())
+	end, "Move to master"},
+
+	{ "n", function()
+		local c = client.focus
+		if not c then return end
+		c:lower()
+		c.minimized = true
 	end, "Minimize client" },
 
 	{ "r", function()
@@ -558,6 +565,11 @@ imodal_main            = {
 	end, "Toggle Settings"},
 
 	imodal_separator,
+
+	{ "*", function()
+		if not client.focus then return end
+		client.focus:swap(awful.client.getmaster())
+	end, "Move to client to master"},
 
 	{ "d", function()
 		my_calendar_widget.toggle()
@@ -1328,6 +1340,8 @@ clientkeys = my_table.join(
 				  function(c)
 					  -- The client currently has the input focus, so it cannot be
 					  -- minimized, since minimized clients can't have the focus.
+					  if not c then return end
+					  c:lower()
 					  c.minimized = true
 				  end,
 				  { description = "minimize", group = "client" }),
@@ -1423,8 +1437,8 @@ awful.rules.rules = {
 	{
 		rule       = {},
 		properties = {
-			border_width     = beautiful.border_width,
-			border_color     = beautiful.border_normal,
+			--border_width     = beautiful.border_width,
+			--border_color     = beautiful.border_color_normal,
 			focus            = awful.client.focus.filter,
 			raise            = true,
 			keys             = clientkeys,
@@ -1498,6 +1512,8 @@ client.connect_signal("manage",
 --                {description = "Show/Hide Titlebars", group="client"}),
 --    })
 --end)
+
+
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 
@@ -1653,13 +1669,13 @@ client.connect_signal("request::activate",
 					  end)
 
 client.connect_signal("focus", function(c)
-	border_adjust(c)
+	--border_adjust(c)
 	move_mouse_onto_focused_client(c)
 end)
-client.connect_signal("property::maximized", border_adjust)
+--client.connect_signal("property::maximized", border_adjust)
 client.connect_signal("unfocus",
 					  function(c)
-						  c.border_color = beautiful.border_normal
+						  --c.border_color = beautiful.border_normal
 					  end)
 
 -- }}}
@@ -1695,4 +1711,26 @@ end)
 --	c.ontop = true
 --	c.sticky = true
 --	c:raise()
+--end)
+
+--client.connect_signal("property::name", function(c)
+--	for i, cl in ipairs(client.get()) do
+--		if not c.renamed and cl == c then
+--			c.renamed = true
+--			c.name = tostring(i) .. " " .. c.name
+--			return
+--		end
+--	end
+--
+--	--if not (c.class == "Chromium" or c.class == "firefox") then return end
+--	--local patterns = {}
+--	--patterns["- Chromium$"] = "" -- removes "- Chromium"
+--	--patterns["- (Mozilla Firefox)$"] = "- [%1]" -- adds brackets - [Mozilla Firefox]
+--	--
+--	--for p, r in pairs(patterns) do
+--	--	if string.find(c.name, p) then
+--	--		c.name = string.gsub(c.name, p, r)
+--	--		break
+--	--	end
+--	--end
 --end)
