@@ -8,6 +8,7 @@
 local helpers  = require("lain.helpers")
 local json     = require("lain.util").dkjson
 local focused  = require("awful.screen").focused
+local awful = require("awful")
 local naughty  = require("naughty")
 local wibox    = require("wibox")
 local math     = math
@@ -72,7 +73,7 @@ local function factory(args)
                                       local desc = wn["weather"][1]["description"]
                                     local winddir = to_direction(wn["deg"])
                                     local windspeed = math.floor(wn["speed"])
-                                      return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s%d | 🌣 %s 🌜 %s | %s", day, tmin, tmax, winddir, windspeed, sunrise, sunset, desc)
+                                      return string.format("<b>%s</b>: High: %d°C, Low: %d°C, Wind: %s%d | 🌣 %s 🌜 %s | %s", day, tmax, tmin, winddir, windspeed, sunrise, sunset, desc)
 --                                        local winddir = to_direction(wn["wind"]["deg"])
 --                                      return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s | %s", day, tmin, tmax, winddir, desc)
 --                                  local windspeed = math.floor(wn["wind"]["speed"])
@@ -122,18 +123,35 @@ local function factory(args)
             weather.forecast_update()
         end
 
-        weather.notification = naughty.notify {
-            preset  = notification_preset,
-            text    = weather.notification_text,
---            icon    = weather.icon_path,
-            timeout = type(seconds) == "number" and seconds or notification_preset.timeout
+--        weather.notification = naughty.notify {
+--            preset  = notification_preset,
+--            text    = weather.notification_text,
+----            icon    = weather.icon_path,
+--            timeout = type(seconds) == "number" and seconds or notification_preset.timeout
+--        }
+
+		local text_widget = wibox.widget.textbox()
+		text_widget:set_markup(weather.notification_text)
+
+        weather.popup = awful.popup {
+			widget = {
+				text_widget,
+				margins = 10,
+				widget = wibox.container.margin,
+			},
+			border_color = "#00f",
+			screen = awful.screen.focused() or 1,
+			placement = awful.placement.centered,
+			visible = true,
+			ontop = true,
+			offset = { y = 40 },
         }
     end
 
     function weather.hide()
-        if weather.notification then
-            naughty.destroy(weather.notification)
-            weather.notification = nil
+        if weather.popup then
+            weather.popup.visible = false
+			weather.popup = nil
         end
     end
 
