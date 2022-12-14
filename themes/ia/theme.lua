@@ -100,7 +100,7 @@ theme.border_color_normal                             = theme.bg_normal .. "ff"
 theme.border_color_focus                              = "#08158a" -- "#0B1DC2"
 theme.border_color_marked                             = "#f05800"
 
---theme.border_width                              = 0 -- 4
+theme.border_width                              = 0 -- 4
 --theme.border_width_active = 10
 --theme.border_color_active = "black"
 --theme.border_width_normal = 40
@@ -385,6 +385,7 @@ my_calendar_widget = calendar_widget({
 											   -- with customized next/previous (see table above)
 											   previous_month_button = 1,
 											   next_month_button     = 3,
+											   placement = 'centered',
 										   })
 
 clock:connect_signal("button::press", function(_, _, _, button)
