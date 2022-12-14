@@ -67,7 +67,8 @@ theme.wallpaper                                 = theme.dir .. "/walls/solidcolo
 -- $ awesome-client
 -- $ b = require("beautiful"); local c = "#08158a"; b.titlebar_bg_focus = c; b.tasklist_bg_focus = c;
 
-theme.font                                      = "xos4 Terminus 9"
+--theme.font                                      = "xos4 Terminus 9"
+theme.font                                      = "monospace 9"
 theme.color_green                               = "#2EFE2E"
 theme.color_yellow                              = "#FFFF00"
 theme.color_orange                              = "#FF8000"
@@ -371,7 +372,7 @@ local clock              = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("monospace bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
 			)
 		end
 )
@@ -1141,7 +1142,12 @@ function theme.at_screen_connect(s)
 	local function list_update(w, buttons, label, data, objects)
 		--common.list_update(w, buttons, label, data, objects)
 		my_commonlist_update(w, buttons, label, data, objects)
-		w:set_max_widget_size(140)
+		if screen.width > 3000 then
+			w:set_max_widget_size(300)
+		else
+			w:set_max_widget_size(200)
+		end
+
 	end
 
 	--function myupdate(w, buttons, label, data, objects)

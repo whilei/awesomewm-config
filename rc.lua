@@ -329,10 +329,11 @@ imodal_client          = {
 	end, "Move to master"},
 
 	{ "n", function()
-		local c = client.focus
-		if not c then return end
-		c:lower()
-		c.minimized = true
+		local cc = client.focus
+		if not cc then return end
+		awful.client.focus.history.previous()
+		cc:lower()
+		cc.minimized = true
 	end, "Minimize client" },
 
 	{ "r", function()
@@ -354,6 +355,8 @@ imodal_client          = {
 }
 
 imodal_client_placement = {
+
+	imodal_separator,
 
 	{ "B", function() if not client.focus then return end; client.focus.floating = true; client.focus.height = client.focus.screen.workarea.height / 10 * 5; client.focus.width = client.focus.screen.workarea.width / 10 * 5; awful.placement.bottom(client.focus)  end, "Bottom [resized]"},
 	{ "C", function() if not client.focus then return end; client.focus.floating = true; awful.placement.scale(client.focus, {to_percent=0.61}); awful.placement.centered(client.focus)  end, "Center [resized]"},
@@ -560,11 +563,11 @@ imodal_main            = {
 		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Tag" },
 
+	imodal_separator,
+
 	{ "x", function()
 		modalbind.grab { keymap = imodal_toggle, name = "Toggle Settings", stay_in_mode = false, hide_default_options = true }
 	end, "Toggle Settings"},
-
-	imodal_separator,
 
 	{ "*", function()
 		if not client.focus then return end
@@ -1021,7 +1024,7 @@ globalkeys = my_table.join(
 
 					  -- -sidebar-mode shows 'tabs' of available modi
 
-					  commandPrompter = "rofi --modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -sort"
+					  commandPrompter = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -sort -show-icons"
 					  awful.spawn.easy_async(commandPrompter, function()
 						  if client.focus then
 							  awful.screen.focus(client.focus.screen)
@@ -1340,9 +1343,11 @@ clientkeys = my_table.join(
 				  function(c)
 					  -- The client currently has the input focus, so it cannot be
 					  -- minimized, since minimized clients can't have the focus.
-					  if not c then return end
-					  c:lower()
-					  c.minimized = true
+					  local cc = c or client.focus
+					  if not cc then return end
+					  awful.client.focus.history.previous()
+					  cc:lower()
+					  cc.minimized = true
 				  end,
 				  { description = "minimize", group = "client" }),
 		awful.key({ modkey },
