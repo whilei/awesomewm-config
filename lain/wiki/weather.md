@@ -133,7 +133,7 @@ Variable | Meaning | Type
 You can attach the forecast notification to any widget like this:
 
 ```lua
-myweather.attach(obj)
+my_weather.attach(obj)
 ```
 
 Hovering over ``obj`` will display the notification.
@@ -143,7 +143,9 @@ Hovering over ``obj`` will display the notification.
 You can create a keybinding for the weather popup like this:
 
 ```lua
-awful.key( { "Mod1" }, "w", function () myweather.show(5) end )
+awful.key({ "Mod1" }, "w", function()
+	my_weather.show(5)
+end)
 ```
 
 where ``show`` argument is an integer defining timeout seconds.

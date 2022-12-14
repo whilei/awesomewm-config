@@ -111,12 +111,7 @@ local function factory(args)
         --end
     end
 
-    function weather.show(seconds)
-        weather.hide()
-
-        if followtag then
-            notification_preset.screen = focused()
-        end
+    function weather.show()
 
         if not weather.notification_text then
             weather.update()
@@ -155,9 +150,15 @@ local function factory(args)
         end
     end
 
+	function weather.toggle()
+		if not weather.popup then weather.show() return end
+		if weather.popup.visible then weather.hide() return end
+		weather.show()
+	end
+
     function weather.attach(obj)
         obj:connect_signal("mouse::enter", function()
-            weather.show(0)
+            weather.show()
         end)
         obj:connect_signal("mouse::leave", function()
             weather.hide()

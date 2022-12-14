@@ -195,6 +195,7 @@ local imodal_power
 local imodal_screenshot
 local imodal_tag
 local imodal_toggle
+local imodal_widgets
 
 local backable         = { "<", function()
 	modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
@@ -509,7 +510,7 @@ imodal_tag             = {
 imodal_toggle = {
 	{ "c", function()
 		os.execute(invert_colors)
-	end, "Invert Colors"},
+	end, "(Invert) Colors"},
 
 	{ "i", function()
 		os.execute("amixer -q set Capture toggle")
@@ -537,6 +538,16 @@ imodal_toggle = {
 	backable,
 }
 
+imodal_widgets = {
+	{ "d", function()
+		my_calendar_widget.toggle()
+	end, "Date = Toggle Calendar widget"},
+
+	{ "w", function()
+		my_weather.toggle()
+	end, "Toggle Weather widget"}
+}
+
 imodal_main            = {
 	{ "a", function()
 		modalbind.grab { keymap = imodal_awesomewm, name = "AwesomeWM", stay_in_mode = false, hide_default_options = true }
@@ -550,11 +561,6 @@ imodal_main            = {
 		modalbind.grab { keymap = imodal_layouts, name = "Layouts", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Layout" },
 
-	{ "p", function()
-		modalbind.grab { keymap = imodal_power, name = "Power/Awesome", stay_in_mode = false, hide_default_options = true }
-	end, "➔ Power" },
-
-
 	{ "s", function()
 		modalbind.grab { keymap = imodal_screenshot, name = "Screenshot", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Screenshot"},
@@ -563,20 +569,24 @@ imodal_main            = {
 		modalbind.grab { keymap = imodal_tag, name = "Tag", stay_in_mode = false, hide_default_options = true }
 	end, "➔ Tag" },
 
-	imodal_separator,
+	{ "w", function()
+		modalbind.grab { keymap = imodal_widgets, name = "Widgets", stay_in_mode = false, hide_default_options = true }
+	end, "➔ Widgets"},
 
 	{ "x", function()
 		modalbind.grab { keymap = imodal_toggle, name = "Toggle Settings", stay_in_mode = false, hide_default_options = true }
-	end, "Toggle Settings"},
+	end, "➔ Toggle Settings"},
+
+	{ "P", function()
+		modalbind.grab { keymap = imodal_power, name = "Power / User", stay_in_mode = false, hide_default_options = true }
+	end, "➔ Power / User" },
+
+	imodal_separator,
 
 	{ "*", function()
 		if not client.focus then return end
 		client.focus:swap(awful.client.getmaster())
 	end, "Move to client to master"},
-
-	{ "d", function()
-		my_calendar_widget.toggle()
-	end, "Date = Toggle Calendar widget"},
 
 	{ "i", function()
 		hints.focus();
@@ -584,7 +594,6 @@ imodal_main            = {
 	end, "Jump-to h[i]nts" },
 
 	{ "r", revelation, "Revelation" },
-
 }
 
 --

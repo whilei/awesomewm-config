@@ -845,7 +845,7 @@ local function os_getenv(varname)
 	return line
 end
 
-local weather         = lain.widget.weather({
+my_weather = lain.widget.weather({
 												APPID    = os_getenv("OPENWEATHERMAP_API_KEY"),
 												city_id  = tonumber(os_getenv("OPENWEATHERMAP_CITY_ID")),
 												timeout  = 60 * 30, -- 15 * 60 = 15 minutes
@@ -1648,8 +1648,8 @@ function theme.at_screen_connect(s)
 			--                    wibox.widget.imagebox(weather.icon),
 			--                    wibox.widget.textbox('weather: '),
 			--
-			weather.icon,
-			weather.widget,
+			my_weather.icon,
+			my_weather.widget,
 			--        weather_widget({
 			--            api_key=os_getenv("OPENWEATHERMAP_API_KEY"),
 			--            coordinates = {46.786671, -92.100487},
