@@ -792,9 +792,9 @@ local net                     = lain.widget.net({
 														file:close()
 														widget:set_markup(markup.font(theme.font,
 																					  line .. "  " ..
-																							  markup("#fcc9ff", net_now.sent .. "↑")
+																							  markup("#fcc9ff", "🠉" .. net_now.sent)
 																							  .. "  " ..
-																							  markup("#2ECCFA", "↓" .. net_now.received)
+																							  markup("#2ECCFA", "🠋" .. net_now.received)
 																							  .. " kb"
 														))
 													end
