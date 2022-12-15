@@ -5,7 +5,7 @@
 
 --]]
 -- {{{ Required libraries
-local awesome, client, mouse, screen, tag                                   = awesome, client, mouse, screen, tag
+local awesome, client, mouse, screen, tag, titlebar                         = awesome, client, mouse, screen, tag, titlebar
 local ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type = ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type
 
 local gears                                                                 = require("gears")
@@ -424,6 +424,63 @@ imodal_client             = {
 		client.focus:kill()
 	end, "kill" },
 
+	{ "I", function()
+		if not client.focus then
+			return
+		end
+		local c = client.focus
+		local p = awful.popup {
+			widget              = {
+				{
+					{
+						text   = 'instance: ' .. c.instance,
+						widget = wibox.widget.textbox,
+					},
+					{
+						text   = 'class: ' .. c.class,
+						widget = wibox.widget.textbox,
+					},
+					{
+						text   = 'name: ' .. c.name,
+						widget = wibox.widget.textbox,
+					},
+					{
+						text   = 'window: ' .. c.window,
+						widget = wibox.widget.textbox,
+					},
+					{
+						text   = 'pid: ' .. c.pid,
+						widget = wibox.widget.textbox,
+					},
+					{
+						text   = 'role: ' .. (c.role or 'n/a'),
+						widget = wibox.widget.textbox,
+					},
+					layout = wibox.layout.fixed.vertical,
+				},
+				margins = 10,
+				widget  = wibox.container.margin,
+			},
+			screen              = client.focus.screen,
+			placement           = awful.placement.bottom,
+			visible             = true,
+			ontop               = true,
+			hide_on_right_click = true,
+
+			border_color        = '#FF0000',
+			border_width        = 10,
+		}
+		awful.keygrabber {
+			autostart     = true,
+			stop_key      = "Escape",
+			stop_event    = "press",
+			stop_callback = function()
+				p.visible = false
+				p         = nil
+			end,
+		}
+	end, "inspect" },
+
 	{ "N", function()
 		local cc = client.focus
 		if not cc then
@@ -612,15 +669,15 @@ imodal_useless            = {
 	{ "b", function()
 		lain.util.useless_gaps_resize(10)
 	end, "bigger =+ 10" },
-	{ "B", function()
-		lain.util.useless_gaps_resize(100)
-	end, "bigger =+ 100" },
 	{ "s", function()
 		lain.util.useless_gaps_resize(-10)
 	end, "smaller =- 10" },
+	{ "B", function()
+		lain.util.useless_gaps_resize(50)
+	end, "bigger =+ 50" },
 	{ "S", function()
-		lain.util.useless_gaps_resize(-100)
-	end, "smaller =- 100" },
+		lain.util.useless_gaps_resize(-50)
+	end, "smaller =- 50" },
 
 	imodal_separator,
 	to_main_menu,
