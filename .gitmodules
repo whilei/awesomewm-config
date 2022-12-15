@@ -13,3 +13,6 @@
 [submodule "awesome-macos"]
 	path = awesome-macos
 	url = https://github.com/dj95/awesome-macos.git
+[submodule "arc"]
+	path = arc
+	url = https://github.com/whilei/awesome-awesome-rc.git
