@@ -350,6 +350,20 @@ imodal_client_resize_move = {
 		client.focus.floating = true;
 		awful.placement.left(client.focus)
 	end, "left" },
+
+	{ "V", function()
+		if not client.focus then
+			return
+		end
+		client.focus.maximized_vertical = true
+	end, "maximize vertical" },
+	
+	{ "W", function()
+		if not client.focus then
+			return
+		end
+		client.focus.maximized_horizontal = true
+	end, "maximize horizontal" },
 }
 
 imodal_client_toggle      = {
@@ -464,8 +478,8 @@ imodal_client             = {
 	end, "→ focus right" },
 
 	{ "m", function()
-		modalbind.grab { keymap = imodal_client_resize_move, name = "Resize/Move", stay_in_mode = true, hide_default_options = true }
-	end, "+resize/move" },
+		modalbind.grab { keymap = imodal_client_resize_move, name = "Move/Resize", stay_in_mode = true, hide_default_options = true }
+	end, "+move/resize" },
 
 	{ "n", function()
 		awful.client.focus.byidx(1)
