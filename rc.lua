@@ -185,13 +185,26 @@ end
 
 local modalbind               = require("modalbind")
 modalbind.init()
-modalbind.set_location("centered")
+modalbind.set_location("bottom")
 modalbind.hide_default_options()
+
+-- c = client
+-- c,c = client change (focus)
+-- c,m = client move
+-- c,r = client resize
+-- c,p = client placement
+-- c,t = client toggle
+
 
 local imodal_main
 local imodal_awesomewm
 local imodal_client
 local imodal_client_placement
+local imodal_client_change
+local imodal_client_move
+local imodal_client_resize
+local imodal_client_toggle
+
 local imodal_layouts
 local imodal_power
 local imodal_screenshot
@@ -215,41 +228,90 @@ imodal_awesomewm        = {
 	backable,
 }
 
-imodal_client           = {
-
-	{ "c", function()
-		modalbind.grab { keymap = imodal_client_placement, name = "Client Placement", stay_in_mode = true, hide_default_options = true }
-	end, "➔ Position Client" },
-
-	imodal_separator,
-
+imodal_client_change    = {
 	{ "h", function()
 		awful.client.focus.global_bydirection("left")
 		if client.focus then
 			client.focus:raise()
 		end
-	end, "Focus client ← left" },
+	end, "Focus ← left" },
 	{ "l", function()
 		awful.client.focus.global_bydirection("right")
 		if client.focus then
 			client.focus:raise()
 		end
-	end, "Focus client → right" },
+	end, "Focus → right" },
 	{ "j", function()
 		awful.client.focus.global_bydirection("down")
 		if client.focus then
 			client.focus:raise()
 		end
-	end, "Focus client ↓ down" },
+	end, "Focus ↓ down" },
 	{ "k", function()
 		awful.client.focus.global_bydirection("up")
 		if client.focus then
 			client.focus:raise()
 		end
-	end, "Focus client ↑ up" },
+	end, "Focus ↑ up" },
+}
 
-	imodal_separator,
+imodal_client_move      = {
+	{ "s", function()
+		if not client.focus then
+			return
+		end
+		client.focus:move_to_screen()
+	end, "Next screen" },
+}
 
+imodal_client_resize    = {
+	{ "j", function()
+		if not client.focus then
+			return
+		end ;
+		client.focus.floating = true;
+		client.focus.height   = client.focus.height + client.focus.screen.workarea.height / 10
+	end, "Grow ↓" },
+	{ "k", function()
+		if not client.focus then
+			return
+		end ;
+		client.focus.floating = true;
+		client.focus.height   = client.focus.height - client.focus.screen.workarea.height / 10
+	end, "Shrink ↑" },
+	{ "l", function()
+		if not client.focus then
+			return
+		end ;
+		client.focus.floating = true;
+		client.focus.width    = client.focus.width + client.focus.screen.workarea.height / 10
+	end, "Grow →" },
+	{ "h", function()
+		if not client.focus then
+			return
+		end ;
+		client.focus.floating = true;
+		client.focus.width    = client.focus.width - client.focus.screen.workarea.height / 10
+	end, "Shrink ←" },
+
+	{ "V", function()
+		if not client.focus then
+			return
+		end ;
+		client.focus.floating = true;
+		awful.placement.maximize_vertically(client.focus)
+	end, "Maximize vertical" },
+
+	{ "W", function()
+		if not client.focus then
+			return
+		end ;
+		client.focus.floating = true;
+		awful.placement.maximize_horizontally(client.focus)
+	end, "Maximize width" },
+}
+
+imodal_client_toggle    = {
 	{ "f", function()
 		if not client.focus then
 			return
@@ -287,65 +349,44 @@ imodal_client           = {
 		client.focus.sticky = not client.focus.sticky
 	end, "Sticky" },
 
-	imodal_separator,
-
 	{ "t", function()
 		if not client.focus then
 			return
 		end
-		client.focus:move_to_screen()
-	end, "Throw to next screen" },
-
-	{ "T", function()
-		if not client.focus then
-			return
-		end
 		awful.titlebar.toggle(client.focus)
-	end, "Titlebar (toggle)" },
+	end, "Titlebar" },
+}
+
+imodal_client           = {
+
+	{ "c", function()
+		modalbind.grab { keymap = imodal_client_change, name = "Change (focus)", stay_in_mode = false, hide_default_options = true }
+	end, "➔ Change (focus)" },
+
+	{ "m", function()
+		modalbind.grab { keymap = imodal_client_move, name = "Move", stay_in_mode = true, hide_default_options = true }
+	end, "➔ Move" },
+
+	{ "p", function()
+		modalbind.grab { keymap = imodal_client_placement, name = "Placement", stay_in_mode = true, hide_default_options = true }
+	end, "➔ Placement" },
+	
+	{ "r", function()
+		modalbind.grab { keymap = imodal_client_resize, name = "Resize", stay_in_mode = true, hide_default_options = true }
+	end, "➔ Resize" },
+
+	{ "t", function()
+		modalbind.grab { keymap = imodal_client_toggle, name = "Toggle settings", stay_in_mode = false, hide_default_options = true }
+	end, "➔ Toggle" },
 
 	imodal_separator,
-
-	--{ "m", function()
-	--	if not client.focus then return end
-	--	lain.util.magnify_client(client.focus)
-	--end, "Magnify"},
-
-	--{ "p", function()
-	--	local c = client.focus;
-	--	if client.focus.fullscreen then
-	--		local geo
-	--		geo = c:geometry()
-	--		local geo_scr
-	--		geo_scr = c.screen.geometry
-	--
-	--		geo.width = geo_scr.width / 4
-	--		geo.height = geo_scr.height / 3
-	--
-	--		c:geometry(geo)
-	--		local f = awful.placement.right + awful.placement.bottom;
-	--		f(c)
-	--		c.ontop = true
-	--		c.sticky = true
-	--		c.fullscreen = true
-	--		--c:raise()
-	--	end
-	--	--if client.focus.fullscreen then
-	--	--	fullscreen_fn(client.focus)
-	--	--else
-	--	--	client.focus.disconnect_signal("request::geometry", awful.ewmh.geometry)
-	--	--	fullscreen_fn(client.focus)
-	--	--	client.focus.ontop = true
-	--	--	client.focus.sticky = true
-	--	--	client.connect_signal("request::geometry", awful.ewmh.geometry)
-	--	--end
-	--end, "Picture-in-picture (use on Fullscreen client)"},
 
 	{ "*", function()
 		if not client.focus then
 			return
 		end
 		client.focus:swap(awful.client.getmaster())
-	end, "Move to master" },
+	end, "Move client to master" },
 
 	{ "n", function()
 		local cc = client.focus
@@ -364,7 +405,7 @@ imodal_client           = {
 			client.focus = c
 			c:raise()
 		end
-	end, "Restore (=unminimize) a random client" },
+	end, "Restore (=unminimize) a client" },
 
 	{ "x", function()
 		if not client.focus then
@@ -463,52 +504,6 @@ imodal_client_placement = {
 		client.focus.floating = true;
 		awful.placement.top(client.focus)
 	end, "Top" },
-
-	imodal_separator,
-
-	{ "v", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		client.focus.height   = client.focus.height + client.focus.screen.workarea.height / 10
-	end, "Grow ↓" },
-	{ "V", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		client.focus.height   = client.focus.height - client.focus.screen.workarea.height / 10
-	end, "Shrink ↑" },
-	{ "+", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		client.focus.width    = client.focus.width + client.focus.screen.workarea.height / 10
-	end, "Grow →" },
-	{ "-", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		client.focus.width    = client.focus.width - client.focus.screen.workarea.height / 10
-	end, "Shrink ←" },
-
-	{ "H", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		awful.placement.maximize_vertically(client.focus)
-	end, "Height of work area" },
-	{ "W", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		awful.placement.maximize_horizontally(client.focus)
-	end, "Width of work area" },
 }
 
 imodal_layouts          = {
