@@ -758,16 +758,6 @@ imodal_toggle             = {
 		os.execute(invert_colors)
 	end, "invert colors" },
 
-	{ "i", function()
-		os.execute("amixer -q set Capture toggle")
-		beautiful.mic.update()
-	end, "microphone" },
-
-	{ "m", function()
-		os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
-		beautiful.volume.update()
-	end, "mute" },
-
 	imodal_separator,
 	to_main_menu,
 }
@@ -822,42 +812,6 @@ imodal_main               = {
 		end
 	end, "go back" },
 
-	{ "1", function()
-		local screen = awful.screen.focused()
-		local tag    = screen.tags[1]
-		if tag then
-			tag:view_only()
-		end
-	end, awful.util.tagnames[1] },
-	{ "2", function()
-		local screen = awful.screen.focused()
-		local tag    = screen.tags[2]
-		if tag then
-			tag:view_only()
-		end
-	end, awful.util.tagnames[2] },
-	{ "3", function()
-		local screen = awful.screen.focused()
-		local tag    = screen.tags[3]
-		if tag then
-			tag:view_only()
-		end
-	end, awful.util.tagnames[3] },
-	{ "4", function()
-		local screen = awful.screen.focused()
-		local tag    = screen.tags[4]
-		if tag then
-			tag:view_only()
-		end
-	end, awful.util.tagnames[4] },
-	{ "5", function()
-		local screen = awful.screen.focused()
-		local tag    = screen.tags[5]
-		if tag then
-			tag:view_only()
-		end
-	end, awful.util.tagnames[5] },
-	
 	{ "a", function()
 		modalbind.grab { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }
 	end, "+awesome" },
