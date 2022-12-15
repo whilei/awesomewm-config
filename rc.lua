@@ -199,6 +199,29 @@ local rofi_fn                 = function()
 	end)
 end
 
+local toggle_wibar_slim_fn    = function()
+	--for s in screen do
+	local s           = awful.screen.focused()
+	s.mywibox.visible = not s.mywibox.visible
+	if s.mybottomwibox then
+		s.mybottomwibox.visible = not s.mybottomwibox.visible
+	end
+	if s.mywibox_slim then
+		s.mywibox_slim.visible = not s.mywibox_slim.visible
+	end
+
+	--if s.mywibox_clock then
+	--    s.mywibox_clock.visible = not s.mywibox_clock.visible
+	--end
+end
+
+local toggle_worldtimes_fn    = function()
+	local s                      = awful.screen.focused()
+	--for s in screen do
+	s.mywibox_worldtimes.visible = not s.mywibox_worldtimes.visible
+	--end
+end
+
 beautiful.modebox_bg          = "#222222"
 beautiful.modebox_fg          = "#FFFFFF"
 beautiful.modebox_border      = beautiful.modebox_bg
@@ -219,10 +242,11 @@ modalbind.hide_default_options()
 local imodal_main
 local imodal_awesomewm
 local imodal_client
-local imodal_client_move_resize
+local imodal_client_resize_move
 local imodal_client_toggle
-
-local imodal_layouts
+local imodal_bars
+local imodal_layout
+local imodal_layout_adjust
 local imodal_power
 local imodal_screenshot
 local imodal_tag
@@ -246,7 +270,7 @@ imodal_awesomewm          = {
 	to_main_menu,
 }
 
-imodal_client_move_resize = {
+imodal_client_resize_move = {
 
 	{ "h", function()
 		if not client.focus then
@@ -385,6 +409,13 @@ imodal_client             = {
 	--	modalbind.grab { keymap = imodal_client_move, name = "Move", stay_in_mode = true, hide_default_options = true }
 	--end, "Move" },
 
+	{ "Tab", function()
+		awful.client.focus.history.previous()
+		if client.focus then
+			client.focus:raise()
+		end
+	end, "go back" },
+
 	{ "*", function()
 		if not client.focus then
 			return
@@ -392,12 +423,26 @@ imodal_client             = {
 		client.focus:swap(awful.client.getmaster())
 	end, "move client to master" },
 
+	{ "f", function()
+		if not client.focus then
+			return
+		end
+		client.focus.floating = not client.focus.floating
+		client.focus:raise()
+	end, "floating" },
+
 	{ "h", function()
 		awful.client.focus.global_bydirection("left")
 		if client.focus then
 			client.focus:raise()
 		end
 	end, "← focus left" },
+
+	{ "i", function()
+		hints.focus()
+		client.focus:raise()
+	end, "hints" },
+
 	{ "j", function()
 		awful.client.focus.global_bydirection("down")
 		if client.focus then
@@ -418,8 +463,8 @@ imodal_client             = {
 	end, "→ focus right" },
 
 	{ "m", function()
-		modalbind.grab { keymap = imodal_client_move_resize, name = "Move/Resize", stay_in_mode = true, hide_default_options = true }
-	end, "+move/resize" },
+		modalbind.grab { keymap = imodal_client_resize_move, name = "Resize/Move", stay_in_mode = true, hide_default_options = true }
+	end, "+resize/move" },
 
 	{ "n", function()
 		awful.client.focus.byidx(1)
@@ -497,6 +542,13 @@ imodal_client             = {
 		}
 	end, "inspect" },
 
+	{ "M", function()
+		if not client.focus then
+			return
+		end
+		client.focus.maximized = not client.focus.maximized
+	end, "maximized" },
+
 	{ "N", function()
 		local cc = client.focus
 		if not cc then
@@ -505,7 +557,7 @@ imodal_client             = {
 		awful.client.focus.history.previous()
 		cc:lower()
 		cc.minimized = true
-	end, "minimize" },
+	end, "minimized" },
 
 	{ "R", function()
 		local c = awful.client.restore()
@@ -527,10 +579,12 @@ imodal_client             = {
 	to_main_menu,
 }
 
-imodal_layouts            = {
-	{ "b", function()
-		awful.layout.set(ia_layout_bigscreen)
-	end, "big screen 4x4" },
+imodal_layout             = {
+	{ "a", function()
+		modalbind.keygrabber_stop()
+		modalbind.grab { keymap = imodal_layout_adjust, name = "Adjust Layout", stay_in_mode = true, hide_default_options = true }
+	end, "+adjust" },
+
 	{ "c", function()
 		awful.layout.set(lain.layout.centerwork)
 	end, "centerwork" },
@@ -540,12 +594,33 @@ imodal_layouts            = {
 	{ "m", function()
 		awful.layout.set(awful.layout.suit.magnifier)
 	end, "magnifier" },
+	{ "s", function()
+		awful.layout.set(ia_layout_bigscreen)
+	end, "swne" },
 	{ "t", function()
 		awful.layout.set(awful.layout.suit.tile)
 	end, "tile" },
 	{ "v", function()
 		awful.layout.set(ia_layout_vcolumns)
-	end, "vertical columns" },
+	end, "v. columns" },
+
+	imodal_separator,
+	to_main_menu,
+}
+
+imodal_layout_adjust      = {
+	{ "h", function()
+		awful.tag.incmwfact(-0.05)
+	end, "decrease master width factor" },
+	{ "j", function()
+		awful.client.swap.byidx(1)
+	end, "swap client with next" },
+	{ "k", function()
+		awful.client.swap.byidx(-1)
+	end, "swap client with previous" },
+	{ "l", function()
+		awful.tag.incmwfact(0.05)
+	end, "increase master width factor" },
 	--{ "Tab", function()
 	--	awful.layout.set(layout_bling_mstab)
 	--end, "MS-Tab"},
@@ -703,29 +778,43 @@ imodal_widgets            = {
 	{ "d", function()
 		my_calendar_widget.toggle()
 	end, "calendar widget" },
-
 	{ "w", function()
 		my_weather.toggle()
-	end, "weather widget" }
+	end, "weather widget" },
+	imodal_separator,
+	to_main_menu,
+}
+
+imodal_bars               = {
+	{ "b", toggle_wibar_slim_fn, "toggle wibar/slim" },
+	{ "g", toggle_worldtimes_fn, "toggle world times bar" },
+	imodal_separator,
+	to_main_menu,
 }
 
 imodal_main               = {
-	{ "Return", rofi_fn, "Rofi" },
+	{ "Return", rofi_fn, "rofi" },
+	{ "Tab", revelation, "revelation" },
 
 	{ "a", function()
 		modalbind.grab { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }
 	end, "+awesome" },
 
-	{ "i", function()
-		hints.focus()
-		client.focus:raise()
-	end, "hints" },
+	{ "b", function()
+		modalbind.grab { keymap = imodal_bars, name = "Bars", stay_in_mode = false, hide_default_options = true }
+	end, "+bars" },
 
 	{ "l", function()
-		modalbind.grab { keymap = imodal_layouts, name = "Layouts", stay_in_mode = false, hide_default_options = true }
+		modalbind.grab { keymap = imodal_layout, name = "Layout", stay_in_mode = false, hide_default_options = true }
 	end, "+layout" },
 
-	{ "r", revelation, "revelation" },
+	{ "o", function()
+		awful.screen.focus_relative(1)
+	end, "focus next screen" },
+
+	{ "r", function()
+		ia_popup_shell.launch()
+	end, "launcher" },
 
 	{ "s", function()
 		modalbind.grab { keymap = imodal_screenshot, name = "Screenshot", stay_in_mode = false, hide_default_options = true }
@@ -754,6 +843,10 @@ imodal_main               = {
 	{ "W", function()
 		modalbind.grab { keymap = imodal_widgets, name = "Widgets", stay_in_mode = false, hide_default_options = true }
 	end, "+widgets" },
+
+	{ "z", function()
+		awful.screen.focused().quake:toggle()
+	end, "quake" }
 }
 
 --
@@ -1088,35 +1181,10 @@ globalkeys = my_table.join(
 --end, {description = "Window Switcher", group = "bling"}),
 
 -- Show/Hide Wibox
-		awful.key({ modkey },
-				  "d",
-				  function()
-					  --for s in screen do
-					  local s           = awful.screen.focused()
-					  s.mywibox.visible = not s.mywibox.visible
-					  if s.mybottomwibox then
-						  s.mybottomwibox.visible = not s.mybottomwibox.visible
-					  end
-					  if s.mywibox_slim then
-						  s.mywibox_slim.visible = not s.mywibox_slim.visible
-					  end
-
-					  --if s.mywibox_clock then
-					  --    s.mywibox_clock.visible = not s.mywibox_clock.visible
-					  --end
-				  end,
-				  { description = "toggle wibox", group = "awesome" }),
+		awful.key({ modkey }, "d", toggle_wibar_slim_fn, { description = "toggle wibox", group = "awesome" }),
 
 -- Show/Hide Global Time Clock wibar
-		awful.key({ modkey },
-				  "g", -- g for Global times (and is on right)
-				  function()
-					  local s                      = awful.screen.focused()
-					  --for s in screen do
-					  s.mywibox_worldtimes.visible = not s.mywibox_worldtimes.visible
-					  --end
-				  end,
-				  { description = "toggle world times wibox", group = "awesome" }),
+		awful.key({ modkey }, "g", toggle_worldtimes_fn, { description = "toggle world times wibox", group = "awesome" }),
 
 ---- Show/Hide Time/Clock box
 --awful.key({ modkey },
