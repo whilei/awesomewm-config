@@ -183,6 +183,22 @@ local fullscreen_fn           = function(c)
 	c:raise()
 end
 
+local rofi_fn                 = function()
+	-- Location values:
+	-- 1   2   3
+	-- 8   0   4
+	-- 7   6   5
+
+	-- -sidebar-mode shows 'tabs' of available modi
+
+	commandPrompter = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
+	awful.spawn.easy_async(commandPrompter, function()
+		if client.focus then
+			awful.screen.focus(client.focus.screen)
+		end
+	end)
+end
+
 beautiful.modebox_bg          = "#222222"
 beautiful.modebox_fg          = "#FFFFFF"
 beautiful.modebox_border      = beautiful.modebox_bg
@@ -694,6 +710,8 @@ imodal_widgets            = {
 }
 
 imodal_main               = {
+	{ "Return", rofi_fn, "Rofi" },
+
 	{ "a", function()
 		modalbind.grab { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }
 	end, "+awesome" },
@@ -730,7 +748,7 @@ imodal_main               = {
 	end, "+client" },
 
 	{ "P", function()
-		modalbind.grab { keymap = imodal_power, name = "Power / User", stay_in_mode = false, hide_default_options = true }
+		modalbind.grab { keymap = imodal_power, name = "Power/User", stay_in_mode = false, hide_default_options = true }
 	end, "+power/user" },
 
 	{ "W", function()
@@ -1167,23 +1185,7 @@ globalkeys = my_table.join(
 --    { description = "delete tag", group = "tag" }),
 -- Standard program
 		awful.key({ modkey },
-				  "Return",
-		-- rofi binding
-				  function()
-					  -- Location values:
-					  -- 1   2   3
-					  -- 8   0   4
-					  -- 7   6   5
-
-					  -- -sidebar-mode shows 'tabs' of available modi
-
-					  commandPrompter = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
-					  awful.spawn.easy_async(commandPrompter, function()
-						  if client.focus then
-							  awful.screen.focus(client.focus.screen)
-						  end
-					  end)
-				  end, { description = "run Rofi", group = "awesome" }),
+				  "Return", rofi_fn, { description = "run Rofi", group = "awesome" }),
 
 --awful.key({ modkey, "Shift", }, "n",
 ---- cool buttons (custom program) binding
