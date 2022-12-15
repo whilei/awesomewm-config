@@ -20,7 +20,7 @@ local freedesktop         = require("freedesktop")
 local hotkeys_popup       = require("awful.hotkeys_popup").widget
 local revelation          = require("revelation")
 
-local layout_bling_mstab  = require("bling.layout.mstab")
+-- local layout_bling_mstab  = require("bling.layout.mstab")
 
 local hints               = require("hints")
 

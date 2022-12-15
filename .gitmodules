@@ -4,9 +4,6 @@
 [submodule "revelation"]
 	path = revelation
 	url = https://github.com/guotsuan/awesome-revelation
-[submodule "awesome-wm-widgets"]
-	path = awesome-wm-widgets
-	url = https://github.com/streetturtle/awesome-wm-widgets.git
 [submodule "handy"]
 	path = handy
 	url = https://github.com/crater2150/awesome-handy.git
