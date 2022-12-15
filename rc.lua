@@ -253,6 +253,7 @@ local imodal_tag
 local imodal_toggle
 local imodal_useless
 local imodal_widgets
+local imodal_volume
 
 local to_main_menu        = { "<", function()
 	modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
@@ -652,6 +653,25 @@ imodal_screenshot         = {
 	to_main_menu,
 }
 
+imodal_volume             = {
+	{ "p", function()
+		os.execute("amixer -q set Capture toggle")
+		beautiful.mic.update()
+	end, "microphone toggle" },
+	{ "m", function()
+		os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
+		beautiful.volume.update()
+	end, "mute toggle" },
+	{ "Up", function()
+		os.execute(string.format("amixer -q set %s 1%%+", beautiful.volume.channel))
+		beautiful.volume.update()
+	end, "up" },
+	{ "Down", function()
+		os.execute(string.format("amixer -q set %s 1%%-", beautiful.volume.channel))
+		beautiful.volume.update()
+	end, "down" },
+}
+
 imodal_tag                = {
 	{ "1", function()
 		local screen = awful.screen.focused()
@@ -659,35 +679,35 @@ imodal_tag                = {
 		if tag then
 			tag:view_only()
 		end
-	end, "[1] - view tag" },
+	end, awful.util.tagnames[1] },
 	{ "2", function()
 		local screen = awful.screen.focused()
 		local tag    = screen.tags[2]
 		if tag then
 			tag:view_only()
 		end
-	end, "[2] - view tag" },
+	end, awful.util.tagnames[2] },
 	{ "3", function()
 		local screen = awful.screen.focused()
 		local tag    = screen.tags[3]
 		if tag then
 			tag:view_only()
 		end
-	end, "[3] - view tag" },
+	end, awful.util.tagnames[3] },
 	{ "4", function()
 		local screen = awful.screen.focused()
 		local tag    = screen.tags[4]
 		if tag then
 			tag:view_only()
 		end
-	end, "[4] - view tag" },
+	end, awful.util.tagnames[4] },
 	{ "5", function()
 		local screen = awful.screen.focused()
 		local tag    = screen.tags[5]
 		if tag then
 			tag:view_only()
 		end
-	end, "[5] - view tag" },
+	end, awful.util.tagnames[5] },
 	imodal_separator,
 	{ "a", function()
 		awful                                     .tag.add("NewTag", {
@@ -794,8 +814,50 @@ imodal_bars               = {
 
 imodal_main               = {
 	{ "Return", rofi_fn, "rofi" },
-	{ "Tab", revelation, "revelation" },
 
+	{ "Tab", function()
+		awful.client.focus.history.previous()
+		if client.focus then
+			client.focus:raise()
+		end
+	end, "go back" },
+
+	{ "1", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[1]
+		if tag then
+			tag:view_only()
+		end
+	end, awful.util.tagnames[1] },
+	{ "2", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[2]
+		if tag then
+			tag:view_only()
+		end
+	end, awful.util.tagnames[2] },
+	{ "3", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[3]
+		if tag then
+			tag:view_only()
+		end
+	end, awful.util.tagnames[3] },
+	{ "4", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[4]
+		if tag then
+			tag:view_only()
+		end
+	end, awful.util.tagnames[4] },
+	{ "5", function()
+		local screen = awful.screen.focused()
+		local tag    = screen.tags[5]
+		if tag then
+			tag:view_only()
+		end
+	end, awful.util.tagnames[5] },
+	
 	{ "a", function()
 		modalbind.grab { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }
 	end, "+awesome" },
@@ -828,6 +890,10 @@ imodal_main               = {
 		modalbind.grab { keymap = imodal_useless, name = "Useless gaps", stay_in_mode = true, hide_default_options = true }
 	end, "+useless gaps" },
 
+	{ "v", function()
+		modalbind.grab { keymap = imodal_volume, name = "Useless gaps", stay_in_mode = true, hide_default_options = true }
+	end, "+volume" },
+
 	{ "x", function()
 		modalbind.grab { keymap = imodal_toggle, name = "Toggle Settings", stay_in_mode = false, hide_default_options = true }
 	end, "+toggle" },
@@ -839,6 +905,8 @@ imodal_main               = {
 	{ "P", function()
 		modalbind.grab { keymap = imodal_power, name = "Power/User", stay_in_mode = false, hide_default_options = true }
 	end, "+power/user" },
+
+	{ "R", revelation, "revelation" },
 
 	{ "W", function()
 		modalbind.grab { keymap = imodal_widgets, name = "Widgets", stay_in_mode = false, hide_default_options = true }
