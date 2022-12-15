@@ -767,6 +767,8 @@ theme.mic                     = lain.widget.alsa({
 local volicon                 = wibox.widget.imagebox(theme.widget_vol)
 theme.volume                  = lain.widget.alsa({
 													 settings = function()
+														 if not output_now then return end
+
 														 if output_now.status == "off" then
 															 volicon:set_image(theme.widget_vol_mute)
 														 elseif tonumber(output_now.level) == 0 then
