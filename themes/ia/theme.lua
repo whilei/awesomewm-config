@@ -96,9 +96,9 @@ theme.clock_mylocal                             = "#A51C48"
 -- theme.border_focus                              = "#606060"
 -- theme.border_marked                             = "#3ca4d8"
 
-theme.border_color_normal                             = theme.bg_normal .. "ff"
-theme.border_color_focus                              = "#08158a" -- "#0B1DC2"
-theme.border_color_marked                             = "#f05800"
+theme.border_color_normal                       = theme.bg_normal .. "ff"
+theme.border_color_focus                        = "#08158a" -- "#0B1DC2"
+theme.border_color_marked                       = "#f05800"
 
 theme.border_width                              = 0 -- 4
 --theme.border_width_active = 10
@@ -354,12 +354,12 @@ local function BoundedRGBVal(low, high, val)
 	return val
 end
 
-local world_clock_fmt    = "%H:%M%t%z"
+local world_clock_fmt = "%H:%M%t%z"
 
 -- THIS IS __THE__ CLOCK widget in top right wibox menu thingy
 -- Textclock
 --local clockicon = wibox.widget.imagebox(theme.widget_clock)
-local clock              = awful.widget.watch(
+local clock           = awful.widget.watch(
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%Y-%m-%dT%H:%MZ%:z'",
@@ -377,16 +377,16 @@ local clock              = awful.widget.watch(
 		end
 )
 
-my_calendar_widget = calendar_widget({
-											   theme                 = 'outrun',
-											   --placement = 'bottom_right',
-											   --start_sunday = true,
-											   --radius = 8,
-											   -- with customized next/previous (see table above)
-											   previous_month_button = 1,
-											   next_month_button     = 3,
-											   placement = 'centered',
-										   })
+my_calendar_widget    = calendar_widget({
+											theme                 = 'outrun',
+											--placement = 'bottom_right',
+											--start_sunday = true,
+											--radius = 8,
+											-- with customized next/previous (see table above)
+											previous_month_button = 1,
+											next_month_button     = 3,
+											placement             = 'centered',
+										})
 
 clock:connect_signal("button::press", function(_, _, _, button)
 	if button == 1 then
@@ -767,7 +767,9 @@ theme.mic                     = lain.widget.alsa({
 local volicon                 = wibox.widget.imagebox(theme.widget_vol)
 theme.volume                  = lain.widget.alsa({
 													 settings = function()
-														 if not output_now then return end
+														 if not output_now then
+															 return
+														 end
 
 														 if output_now.status == "off" then
 															 volicon:set_image(theme.widget_vol_mute)
@@ -848,7 +850,7 @@ local function os_getenv(varname)
 	return line
 end
 
-my_weather = lain.widget.weather({
+my_weather            = lain.widget.weather({
 												APPID    = os_getenv("OPENWEATHERMAP_API_KEY"),
 												city_id  = tonumber(os_getenv("OPENWEATHERMAP_CITY_ID")),
 												timeout  = 60 * 30, -- 15 * 60 = 15 minutes
@@ -1145,7 +1147,7 @@ function theme.at_screen_connect(s)
 	local function list_update(w, buttons, label, data, objects)
 		--common.list_update(w, buttons, label, data, objects)
 		my_commonlist_update(w, buttons, label, data, objects)
-		if screen.width > 3000 then
+		if s.geometry.width > 3000 then
 			w:set_max_widget_size(300)
 		else
 			w:set_max_widget_size(200)
@@ -1364,14 +1366,14 @@ function theme.at_screen_connect(s)
 	-- Create the wibox
 	-- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
 	s.mywibox       = awful.wibar({
-						  position = "top", -- top, bottom
-						  screen   = s,
-						  height   = 18,
-						  bg       = theme.bg_normal,
-						  fg       = theme.fg_normal,
-						  opacity  = 0.5,
-						  visible  = true,
-					  })
+									  position = "top", -- top, bottom
+									  screen   = s,
+									  height   = 18,
+									  bg       = theme.bg_normal,
+									  fg       = theme.fg_normal,
+									  opacity  = 0.5,
+									  visible  = true,
+								  })
 
 	-- The important part to make this actually float on top of all the stuff is
 	-- that it's a WIBOX and a not a WIBAR.
@@ -1390,7 +1392,7 @@ function theme.at_screen_connect(s)
 								height            = 16, -- 18
 								width             = 120 + 50 + 20, -- 50 for clock, 20 for font with ubuntu 20.04
 
-									---- Rotated:
+								---- Rotated:
 								--y = s.geometry.y + s.geometry.height / 2 - 60,
 								--x = s.geometry.x,
 								--height = 120, -- 18
@@ -1610,7 +1612,6 @@ function theme.at_screen_connect(s)
 
 			s.mytaglist,
 			spr,
-
 
 
 			--awesomebuttons.with_icon_and_text {
