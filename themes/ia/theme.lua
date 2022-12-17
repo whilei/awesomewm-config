@@ -10,6 +10,7 @@ local string          = string
 local type            = type
 local tonumber        = tonumber
 local tostring        = tostring
+local ipairs          = ipairs
 
 local gears           = require("gears")
 local lain            = require("lain")
@@ -247,6 +248,10 @@ theme.modebox_fg                                = theme.tasklist_fg_focus       
 theme.modebox_bg                                = theme.tasklist_bg_focus         -- background
 theme.modebox_border                            = theme.tasklist_bg_focus     -- border color
 theme.modebox_border_width                      = 10       -- border width
+
+
+theme.taglist_buttons_hover                     = "#AD67CB"
+theme.taglist_button_nohover                    = "#00000000"
 
 require('smart_borders') {
 	hot_corners_color  = "#0000ff",
@@ -1063,6 +1068,36 @@ function theme.at_screen_connect(s)
 	--
 	--p:bind_to_widget(s.mylayoutbox)
 
+	--local taglist_update = function(widget, buttons, label, data, objects)
+	--	widget:reset()
+	--
+	--	-- Set the icon for each client
+	--	-- https://github.com/Crylia/crylia-theme/blob/main/awesome/src/widgets/taglist.lua
+	--	for _, client in ipairs(object:clients()) do
+	--		tag_widget.container.margin:set_right(0)
+	--		local icon = wibox.widget {
+	--			{
+	--				id     = "icon_container",
+	--				{
+	--					id     = "icon",
+	--					resize = true,
+	--					widget = wibox.widget.imagebox
+	--				},
+	--				widget = wibox.container.place
+	--			},
+	--			forced_width = dpi(33),
+	--			margins      = dpi(6),
+	--			widget       = wibox.container.margin
+	--		}
+	--		icon.icon_container.icon:set_image(Get_icon(user_vars.icon_theme, client))
+	--		tag_widget.container:setup({
+	--									   icon,
+	--									   strategy = "exact",
+	--									   layout   = wibox.container.constraint,
+	--								   })
+	--	end
+	--end
+
 	-- Create a taglist widget
 	s.mytaglist = awful.widget.taglist(
 			s,
@@ -1082,6 +1117,200 @@ function theme.at_screen_connect(s)
 				--taglist_squares_sel
 			}
 	)
+
+	s.mytaglist = awful.widget.taglist {
+		screen          = s,
+		filter          = awful.widget.taglist.filter.all,
+		buttons         = awful.util.taglist_buttons,
+		style           = {
+			--fg_occupied = "#666666", -- "#777777",
+			fg_occupied = "#ffffff", -- "#777777",
+			fg_focus    = theme.fg_focus,
+			--fg_empty    = "#222222",
+			-- Use same as occupied because
+			-- now I have a border doing the job of telling me if a tag is empty
+			-- or occupied.
+			--fg_empty    = "#666666",
+
+			bg_focus    = "#00000000",
+			bg_urgent   = "#00000000",
+			bg_occupied = "#00000000",
+			bg_empty    = "#00000000",
+			bg_volatile = "#00000000",
+		},
+		layout          = wibox.layout.fixed.horizontal,
+		widget_template = {
+			{
+				{
+					{
+						{
+							id     = "index_role",
+							widget = wibox.widget.textbox,
+						},
+						{
+							id     = "icon_role",
+							widget = wibox.widget.imagebox,
+						},
+						{
+							{
+								{
+									id     = "text_role",
+									widget = wibox.widget.textbox,
+								},
+								left   = 5,
+								right  = 5,
+								widget = wibox.container.margin,
+							},
+							id     = "text_background_role",
+							--bg     = "#222222",
+							--shape  = gears.shape.rectangle,
+							widget = wibox.container.background,
+						},
+						{
+							{
+								id     = "client_icons_role",
+								widget = wibox.layout.fixed.horizontal,
+							},
+							widget = wibox.container.margin,
+							left   = 3,
+							right  = 3,
+						},
+						layout = wibox.layout.fixed.horizontal,
+					},
+					id     = "inner_background_role",
+					widget = wibox.container.background,
+					--shape        = gears.shape.rounded_rect,
+					--border_width = 1,
+					--border_color = theme.fg_focus,
+				},
+				left   = 0,
+				right  = 5,
+				widget = wibox.container.margin
+			},
+			id              = "background_role",
+			widget          = wibox.container.background,
+
+			-- https://awesomewm.org/apidoc/widgets/awful.widget.taglist.html
+			create_callback = function(self, tag, index, tags)
+				local tag_occupied = #tag:clients() > 0
+				if tag_occupied and tag.selected then
+					self:get_children_by_id("inner_background_role")[1].border_width = 2
+					self:get_children_by_id("inner_background_role")[1].border_color = theme.fg_focus
+
+					--self:get_children_by_id("text_background_role")[1].bg            = theme.fg_focus
+					--self:get_children_by_id("text_background_role")[1].fg            = "#000000"
+					--self:get_children_by_id("text_role")[1].fg                       = "#ffffff"
+				elseif tag_occupied then
+					self:get_children_by_id("inner_background_role")[1].border_width = 2
+					self:get_children_by_id("inner_background_role")[1].border_color = "#666666"
+
+					self:get_children_by_id("text_background_role")[1].bg            = "#00000000"
+				else
+					-- neither occupied, nor selected
+
+					-- disable border
+					self:get_children_by_id("inner_background_role")[1].border_width = 0
+
+
+					-- set background to transparent
+					self:get_children_by_id("inner_background_role")[1].bg           = "#000000"
+
+					self:get_children_by_id("text_background_role")[1].bg            = "#000000"
+					--self:get_children_by_id("text_background_role")[1].fg            = "#ffffff"
+				end
+
+				--self:connect_signal("mouse::enter", function()
+				--	if self.bg ~= theme.taglist_buttons_hover then
+				--		self.backup     = self.bg
+				--		self.has_backup = true
+				--	end
+				--	self.bg = theme.taglist_buttons_hover
+				--end)
+				--
+				--self:connect_signal("mouse::leave", function()
+				--	if self.has_backup then
+				--		self.bg = self.backup
+				--	end
+				--end)
+
+				self:get_children_by_id("client_icons_role")[1]:reset()
+				local icons = {}
+				for _, cl in ipairs(tag:clients()) do
+					local icon = wibox.widget {
+						{
+							id     = "icon_container",
+							{
+								id     = "icon",
+								resize = true,
+								widget = wibox.widget.imagebox
+							},
+							widget = wibox.container.place
+						},
+						forced_width = dpi(18),
+						--left         = dpi(3),
+						--right        = dpi(3),
+						margins      = dpi(5),
+						widget       = wibox.container.margin
+					}
+					icon.icon_container.icon:set_image(cl.icon)
+					table.insert(icons, icon)
+				end
+				self:get_children_by_id("client_icons_role")[1].children = icons
+			end,
+
+			update_callback = function(self, tag, index, tags)
+				local tag_occupied = #tag:clients() > 0
+				if tag_occupied and tag.selected then
+					self:get_children_by_id("inner_background_role")[1].border_width = 2
+					self:get_children_by_id("inner_background_role")[1].border_color = theme.fg_focus
+
+					--self:get_children_by_id("text_background_role")[1].bg            = theme.fg_focus
+					--self:get_children_by_id("text_background_role")[1].fg            = "#000000"
+					--self:get_children_by_id("text_role")[1].fg                       = "#ffffff"
+				elseif tag_occupied then
+					self:get_children_by_id("inner_background_role")[1].border_width = 2
+					self:get_children_by_id("inner_background_role")[1].border_color = "#666666"
+
+					self:get_children_by_id("text_background_role")[1].bg            = "#00000000"
+				else
+					-- neither occupied, nor selected
+
+					-- disable border
+					self:get_children_by_id("inner_background_role")[1].border_width = 0
+
+
+					-- set background to transparent
+					self:get_children_by_id("inner_background_role")[1].bg           = "#000000"
+
+					self:get_children_by_id("text_background_role")[1].bg            = "#000000"
+					--self:get_children_by_id("text_background_role")[1].fg            = "#ffffff"
+				end
+
+				self:get_children_by_id("client_icons_role")[1]:reset()
+				local icons = {}
+				for _, cl in ipairs(tag:clients()) do
+					local icon = wibox.widget {
+						{
+							id     = "icon_container",
+							{
+								id     = "icon",
+								resize = true,
+								widget = wibox.widget.imagebox
+							},
+							widget = wibox.container.place
+						},
+						forced_width = dpi(18),
+						left         = dpi(3),
+						right        = dpi(3),
+						widget       = wibox.container.margin
+					}
+					icon.icon_container.icon:set_image(cl.icon)
+					table.insert(icons, icon)
+				end
+				self:get_children_by_id("client_icons_role")[1].children = icons
+			end,
+		},
+	}
 
 	--s.mytaglist_slim = awful.widget.taglist {
 	--    args = {

@@ -28,7 +28,7 @@ local ia_layout_swne     = require("layout-swne")
 local ia_layout_vcolumns = require("columns-layout")
 
 local ia_popup_shell     = require("ia-popup-run.popup-shell")
---local special            = require("special")
+local special            = require("special")
 
 local my_table           = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- }}}
@@ -67,30 +67,6 @@ if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
 
--- focus_previous_client_global is a function that returns the last
--- focused client _anywhere_.
--- It accesses the history list directly to
--- get the global history.
--- The usual function for "going back" (eg. Mod4+Tab),
--- uses awful.client.focus.history.previous(), which
--- (I assume) filters the history list, limiting the
--- clients to those of the same tag as the current client.
--- This is not what we want here.
--- I want to go back in history globally; no matter the tag or the screen.
--- Copy-pasta from https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
-local function focus_previous_client_global()
-
-	local c = awful.client.focus.history.list[2]
-
-	local t = c and c.first_tag or nil
-	if t then
-		t:view_only()
-	end
-	client.focus = c
-	c.visible    = true -- Except this, I added this.
-	c:raise()
-end
-
 
 -- {{{ Variable definitions
 
@@ -124,9 +100,9 @@ for key, app in pairs(clientkeybindings) do
 end
 
 awful.util.terminal         = terminal
---awful.util.tagnames = { "1", "2", "3", "4", "5" }
+awful.util.tagnames         = { "1", "2", "3", "4", "5" }
 --awful.util.tagnames = { "●", "●", "●", "●", "●" }
-awful.util.tagnames         = { "❶", "❷", "❸", "❹", "❺" }
+--awful.util.tagnames         = { "❶", "❷", "❸", "❹", "❺" }
 --awful.util.tagnames = { "▇", "▇", "▇", "▇", "▇" }
 awful.layout.layouts        = {
 	-- awful.layout.suit.tile.bottom,
@@ -560,7 +536,7 @@ imodal_client_focus       = {
 	--	modalbind.grab { keymap = imodal_client_move, name = "Move", stay_in_mode = true, hide_default_options = true }
 	--end, "Move" },
 
-	{ "Tab", focus_previous_client_global, "focus last" },
+	{ "Tab", special.focus_previous_client_global, "focus last" },
 
 	{ "*", function()
 		if not client.focus then
@@ -879,7 +855,7 @@ imodal_bars               = {
 imodal_main               = {
 	{ "Return", rofi_fn, "rofi" },
 
-	{ "Tab", focus_previous_client_global, "focus last" },
+	{ "Tab", special.focus_previous_client_global, "focus last" },
 
 	{ "a", modalbind.grabf { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }, "+awesome" },
 	{ "b", modalbind.grabf { keymap = imodal_bars, name = "Bars", stay_in_mode = false, hide_default_options = true }, "+bars" },
@@ -1224,7 +1200,7 @@ globalkeys = my_table.join(
 --awful.key({ modkey }, "u", awful.client.urgent.jumpto, { description = "jump to urgent client", group = "client" }),
 
 		awful.key({ modkey }, "Tab",
-				  focus_previous_client_global,
+				  special.focus_previous_client_global,
 				  { description = "go back", group = "client" }),
 
 --awful.key({modkey}, "Tab", function()
@@ -1768,6 +1744,15 @@ awful.rules.rules = {
 		properties = {
 			focusable = true,
 			focus     = true
+		}
+	},
+	{
+		rule       = {
+			handy_id = ".*"
+		},
+		properties = {
+			skip_taskbar = true,
+			placement    = awful.placement.no_offscreen
 		}
 	}
 }
