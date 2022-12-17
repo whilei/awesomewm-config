@@ -990,14 +990,18 @@ function theme.at_screen_connect(s)
 	--}
 	--
 	-- Create a promptbox for each screen
-	--s.mypromptbox = awful.widget.prompt({
-	--										prompt    = "> ",
-	--										bg        = "#0000ff", -- "#1E2CEE", -- "#000000",
-	--										fg        = "#ffffff",
-	--										bg_cursor = "#e019c9", --pink
-	--										fg_cursor = "#e019c9", --pink
-	--										--textbox = my_promptbox_textbox,
-	--									})
+	-- This is only used by default library stuff,
+	-- like renaming tags.
+	-- For stuff like launching applications,
+	-- I have a custom prompt box that gets handled with a keybinding.
+	s.mypromptbox = awful.widget.prompt({
+											prompt    = "> ",
+											bg        = "#0000ff", -- "#1E2CEE", -- "#000000",
+											fg        = "#ffffff",
+											bg_cursor = "#e019c9", --pink
+											fg_cursor = "#e019c9", --pink
+											--textbox = my_promptbox_textbox,
+										})
 
 	-- Create an imagebox widget which will contains an icon indicating which layout we're using.
 	-- We need one layoutbox per screen.
@@ -1623,8 +1627,9 @@ function theme.at_screen_connect(s)
 	}
 
 	if s.is_tv then
-		mywibar_args.position = "bottom"
+		mywibar_args.position = "top"
 		mywibar_args.height   = 24
+		mywibar_args.width    = s.workarea.width / 3 * 2
 	end
 
 	s.mywibox       = awful.wibar(mywibar_args)
@@ -1861,8 +1866,11 @@ function theme.at_screen_connect(s)
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,
 
-			--s.mypromptbox,
-			--spr,
+			spr,
+			s.mylayoutbox,
+			spr,
+			s.mypromptbox,
+			spr,
 
 			s.mytaglist,
 			spr,
@@ -1881,19 +1889,23 @@ function theme.at_screen_connect(s)
 			--spr,
 
 
+			spr,
+			s.mytasklist,
+
 		},
+
 		-- middle
 		{
 			layout = wibox.layout.flex.horizontal,
-			spr,
-			{
-				layout = wibox.layout.fixed.horizontal,
-				s.mylayoutbox,
-				spr,
-				s.mytasklist,
-			},
-
-			spr,
+			--spr,
+			--{
+			--	layout = wibox.layout.fixed.horizontal,
+			--	s.mylayoutbox,
+			--	spr,
+			--	s.mytasklist,
+			--},
+			--
+			--spr,
 		},
 
 		{ -- Right widgets
