@@ -931,7 +931,17 @@ local arrl_ld         = separators.arrow_left("alpha", theme.bg_focus)
 function theme.at_screen_connect(s)
 
 	if s.geometry.width > 3000 then
-		s.padding = { left = 5, right = 0, top = 0, bottom = 0 }
+		s.is_tv = true
+	else
+		s.is_tv = false
+	end
+	if s.is_tv then
+		-- Add padding on the left because I the TV
+		-- is both hard to see over there and has a weird
+		-- refraction thing going on.
+		-- I want to do the same for the wibar, but screen.padding
+		-- skips the wibar, so I have to do it with a margin within the wibar.
+		s.padding = { left = 5 }
 	end
 
 	-- Quake application
@@ -1504,7 +1514,7 @@ function theme.at_screen_connect(s)
 	end
 
 	-- awful.widget.tasklist()
-	s.mytasklist    = awful.widget.tasklist(
+	s.mytasklist       = awful.widget.tasklist(
 			s, -- screen
 			awful.widget.tasklist.filter.currenttags, -- filter
 			awful.util.tasklist_buttons, -- buttons
@@ -1602,16 +1612,22 @@ function theme.at_screen_connect(s)
 	--)
 
 	-- Create the wibox
-	-- opacity isnt affected even with the table keybecause you need to add the two hex codes to the bg, eg.  '.. "aa"'
-	s.mywibox       = awful.wibar({
-									  position = "top", -- top, bottom
-									  screen   = s,
-									  height   = 18,
-									  bg       = theme.bg_normal,
-									  fg       = theme.fg_normal,
-									  opacity  = 0.5,
-									  visible  = true,
-								  })
+	local mywibar_args = {
+		position = "top", -- top, bottom
+		screen   = s,
+		height   = 18,
+		bg       = theme.bg_normal,
+		fg       = theme.fg_normal,
+		opacity  = 0.5,
+		visible  = true,
+	}
+
+	if s.is_tv then
+		mywibar_args.position = "bottom"
+		mywibar_args.height   = 24
+	end
+
+	s.mywibox       = awful.wibar(mywibar_args)
 
 	-- The important part to make this actually float on top of all the stuff is
 	-- that it's a WIBOX and a not a WIBAR.

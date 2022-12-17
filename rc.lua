@@ -939,7 +939,6 @@ imodal_main               = {
 --}
 
 local handy               = require("handy")
-local handy2              = require("handy2")
 
 -- {{{ Menwesomeu
 local myawesomemenu       = {
@@ -1064,7 +1063,7 @@ globalkeys = my_table.join(
 		end, { description = "Handy: Firefox (top)", group = "launcher" }),
 
 		awful.key({ modkey }, "a", function()
-			handy("ffox --class handy-left", awful.placement.left, 0.25, 1)
+			handy("ffox --class handy-left", awful.placement.left, 0.25, 0.9)
 		end, { description = "Handy: Firefox (left)", group = "launcher" }),
 
 -- revelation: expose-like application shower picker
