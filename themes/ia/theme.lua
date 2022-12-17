@@ -1,8 +1,6 @@
 --[[
-
-     Powerarrow Dark Awesome WM theme
-     github.com/lcpz
-
+     Isaac's Special theme.
+     Copyright 2022 Isaac.
 --]]
 
 local math            = math
@@ -20,18 +18,7 @@ local common          = require("awful.widget.common")
 local beautiful       = require("beautiful")
 local dpi             = beautiful.xresources.apply_dpi
 
---local revelation = require("revelation")
-
-
-local awesomebuttons  = require("awesome-buttons.awesome-buttons")
-
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
-
-
---local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
---local logout_menu = require("awesome-wm-widgets.logout-menu-widget.logout-menu")
---local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
---local weather_widget = require("awesome-wm-widgets.weather-widget.weather")
 
 local os              = {
 	getenv  = os.getenv,
@@ -368,8 +355,8 @@ local clock           = awful.widget.watch(
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%Y-%m-%dT%H:%MZ%:z'",
---"date +'%-m-%d %A %H:%M %:::z'",
---"date +'%H:%M %a %Y-%m-%d %:::z'",
+-- "date +'%-m-%d %A %H:%M %:::z'",
+-- "date +'%H:%M %a %Y-%m-%d %:::z'",
 		"date +'%Y-%m-%d %A %H:%M%-:::z'",
 		60,
 		function(widget, stdout)
@@ -400,11 +387,6 @@ clock:connect_signal("button::press", function(_, _, _, button)
 end)
 
 local clock_time              = awful.widget.watch(
--- "date +'%a %d %b %R UTC%:::z'",
--- "date +'%a %d %b %R UTC%:::z'",
--- "date +'%Y-%m-%dT%H:%MZ%:z'",
---"date +'%-m-%d %A %H:%M %:::z'",
---"date +'%H:%M %a %Y-%m-%d %:::z'",
 		"date +'%H:%M'",
 		60,
 		function(widget, stdout)
@@ -497,19 +479,6 @@ local world_clock_london      = awful.widget.watch(
 
 local world_clock_berlin      = awful.widget.watch(
 		"bash -c 'TZ='Europe/Berlin' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-			)
-		end
-)
-
-local world_clock_madrid      = awful.widget.watch(
-		"bash -c 'TZ='Europe/Madrid' date +'" .. world_clock_fmt .. "''",
 		60,
 		function(widget, stdout)
 			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
@@ -925,8 +894,6 @@ local mygithubwidget2 = lain.widget.mywidget({
 
 -- Separators
 local spr             = wibox.widget.textbox(' ')
-local arrl_dl         = separators.arrow_left(theme.bg_focus, "alpha")
-local arrl_ld         = separators.arrow_left("alpha", theme.bg_focus)
 
 function theme.at_screen_connect(s)
 
@@ -982,13 +949,6 @@ function theme.at_screen_connect(s)
 	-- Use the first layout as the default one for all tags.
 	awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
 
-	--local my_promptbox_textbox = wibox.widget{
-	--    markup = 'This <i>is</i> a <b>textbox</b>!!!',
-	--    align  = 'center',
-	--    valign = 'center',
-	--    widget = wibox.widget.textbox
-	--}
-	--
 	-- Create a promptbox for each screen
 	-- This is only used by default library stuff,
 	-- like renaming tags.
@@ -1006,21 +966,6 @@ function theme.at_screen_connect(s)
 	-- Create an imagebox widget which will contains an icon indicating which layout we're using.
 	-- We need one layoutbox per screen.
 	s.mylayoutbox = awful.widget.layoutbox(s)
-
-	--s.mylayoutlist = awful.widget.layoutlist({
-	--    screen = s,
-	--    style = {
-	--        disable_name = true,
-	--        spacing      = 3,
-	--    },
-	--    source = function() return {
-	--        awful.layout.suit.floating,
-	--        awful.layout.suit.tile,
-	--        awful.layout.suit.tile.left,
-	--        awful.layout.suit.tile.bottom,
-	--        awful.layout.suit.tile.top,
-	--    } end
-	--})
 
 	-- I think this is assigning buttons to keystrokes
 	-- awful.button:new (mod, _button, press, release)
@@ -1042,75 +987,6 @@ function theme.at_screen_connect(s)
 			awful.button({ }, 5, function()
 				awful.layout.inc(-1)
 			end)))
-
-	--local p = awful.popup {
-	--    widget = wibox.widget {
-	--        awful.widget.layoutlist {
-	--            source      = awful.layout.layouts,
-	--            screen      = 1,
-	--            base_layout = wibox.widget {
-	--                spacing         = 5,
-	--                forced_num_cols = 3,
-	--                layout          = wibox.layout.grid.vertical,
-	--            },
-	--            widget_template = {
-	--                {
-	--                    {
-	--                        id            = 'icon_role',
-	--                        forced_height = 22,
-	--                        forced_width  = 22,
-	--                        widget        = wibox.widget.imagebox,
-	--                    },
-	--                    margins = 4,
-	--                    widget  = wibox.container.margin,
-	--                },
-	--                id              = 'background_role',
-	--                forced_width    = 24,
-	--                forced_height   = 24,
-	--                shape           = gears.shape.rounded_rect,
-	--                widget          = wibox.container.background,
-	--            },
-	--        },
-	--        margins = 4,
-	--        widget  = wibox.container.margin,
-	--    },
-	--    preferred_anchors = 'middle',
-	--    border_color      = beautiful.border_color,
-	--    border_width      = beautiful.border_width,
-	--    shape             = gears.shape.infobubble,
-	--}
-	--
-	--p:bind_to_widget(s.mylayoutbox)
-
-	--local taglist_update = function(widget, buttons, label, data, objects)
-	--	widget:reset()
-	--
-	--	-- Set the icon for each client
-	--	-- https://github.com/Crylia/crylia-theme/blob/main/awesome/src/widgets/taglist.lua
-	--	for _, client in ipairs(object:clients()) do
-	--		tag_widget.container.margin:set_right(0)
-	--		local icon = wibox.widget {
-	--			{
-	--				id     = "icon_container",
-	--				{
-	--					id     = "icon",
-	--					resize = true,
-	--					widget = wibox.widget.imagebox
-	--				},
-	--				widget = wibox.container.place
-	--			},
-	--			forced_width = dpi(33),
-	--			margins      = dpi(6),
-	--			widget       = wibox.container.margin
-	--		}
-	--		icon.icon_container.icon:set_image(Get_icon(user_vars.icon_theme, client))
-	--		tag_widget.container:setup({
-	--									   icon,
-	--									   strategy = "exact",
-	--									   layout   = wibox.container.constraint,
-	--								   })
-	--	end
-	--end
 
 	-- Create a taglist widget
 	s.mytaglist = awful.widget.taglist(
@@ -1152,20 +1028,6 @@ function theme.at_screen_connect(s)
 		else
 			self:get_children_by_id("outer_margin_role")[1].right = 5
 		end
-
-		--self:connect_signal("mouse::enter", function()
-		--	if self.bg ~= theme.taglist_buttons_hover then
-		--		self.backup     = self.bg
-		--		self.has_backup = true
-		--	end
-		--	self.bg = theme.taglist_buttons_hover
-		--end)
-		--
-		--self:connect_signal("mouse::leave", function()
-		--	if self.has_backup then
-		--		self.bg = self.backup
-		--	end
-		--end)
 
 		self:get_children_by_id("client_icons_role")[1]:reset()
 		local icons = {}
@@ -1279,66 +1141,6 @@ function theme.at_screen_connect(s)
 		},
 	}
 
-	--s.mytaglist_slim = awful.widget.taglist {
-	--    args = {
-	--        screen = s,
-	--        filter = awful.widget.taglist.filter.all,
-	--        buttons = awful.util.taglist_buttons,
-	--        layout = wibox.layout.fixed.vertical,
-	--        style = {
-	--            -- style
-	--            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
-	--            fg_occupied = "#666666", -- "#777777",
-	--            fg_empty = "#222222",
-	--
-	--            bg_focus = "#00000000",
-	--            bg_urgent = "#00000000",
-	--            bg_occupied = "#00000000",
-	--            bg_empty = "#00000000",
-	--            bg_volatile = "#00000000",
-	--            --taglist_squares_sel
-	--        }
-	--    }
-	--}
-	--        s,
-	--        awful.widget.taglist.filter.all,
-	--        awful.util.taglist_buttons,
-	--        {
-	--            -- style
-	--            --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
-	--            fg_occupied = "#666666", -- "#777777",
-	--            fg_empty = "#222222",
-	--
-	--            bg_focus = "#00000000",
-	--            bg_urgent = "#00000000",
-	--            bg_occupied = "#00000000",
-	--            bg_empty = "#00000000",
-	--            bg_volatile = "#00000000",
-	--            --taglist_squares_sel
-	--        }
-	--)
-	--s.mytaglist_slim.widget = wibox.layout.fixed.vertical()
-
-	--s.mytaglist_slim = awful.widget.taglist({args = {
-	--    screen = s,
-	--    filter = awful.widget.taglist.filter.all,
-	--    buttons = awful.util.taglist_buttons,
-	--    layout = wibox.layout.fixed.vertical(),
-	--    style = {
-	--        -- style
-	--        --fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
-	--        fg_occupied = "#666666", -- "#777777",
-	--        fg_empty = "#222222",
-	--
-	--        bg_focus = "#00000000",
-	--        bg_urgent = "#00000000",
-	--        bg_occupied = "#00000000",
-	--        bg_empty = "#00000000",
-	--        bg_volatile = "#00000000",
-	--        --taglist_squares_sel
-	--    }
-	--}})
-
 	-- Create a tasklist widget
 	local function list_update(w, buttons, label, data, objects)
 		--common.list_update(w, buttons, label, data, objects)
@@ -1350,30 +1152,6 @@ function theme.at_screen_connect(s)
 		--end
 
 	end
-
-	--function myupdate(w, buttons, label, data, objects)
-	--    w:reset()
-	--    local l = wibox.layout.fixed.horizontal()
-	--    for i, o in ipairs(objects) do
-	--        local cache = data[o]
-	--        if cache then
-	--            ib = cache.ib
-	--        else
-	--            ib = wibox.widget.imagebox()
-	--            ib:buttons(common.create_buttons(buttons, o))
-	--
-	--            data[o] = {
-	--                ib = ib
-	--            }
-	--        end
-	--
-	--        local text, bg, bg_image, icon = label(o, cache.ib)
-	--        ib:set_image(icon)
-	--        l:add(ib)
-	--        --w:add(ib)
-	--    end
-	--    w:add(l)
-	--end
 
 	--- Common update method.
 	-- @param w The widget.
@@ -1467,97 +1245,9 @@ function theme.at_screen_connect(s)
 			awful.widget.tasklist.filter.currenttags, -- filter
 			awful.util.tasklist_buttons, -- buttons
 			nil,
-	--{
-	--    shape_border_width = 1,
-	--    shape_border_color = theme.tasklist_bg_normal,
-	--    shape = gears.shape.rounded_rect,
-	--}, -- style
 			list_update -- update function
 	)
 
-	-- https://awesomewm.org/apidoc/widgets/awful.widget.tasklist.html#widget_template
-	-- Change the widget template.
-	-- But this isn't actually changning anything.
-	-- I tried to use it to show the index of the client
-	-- as a textbox (so I would know which index number I want
-	-- so I can jump focus by index number), but it didn't work.
-	-- So I'm going to try messing with the client property:name
-	-- signal instead... maybe...
-	-- https://github.com/awesomeWM/awesome/issues/3052
-	-- https://www.reddit.com/r/awesomewm/comments/ell8go/customize_text_of_the_tasklist/
-	-- https://www.reddit.com/r/awesomewm/comments/cr0nqe/comment/ex25e6d/
-	--s.mytasklist.widget_template = {
-	--	{
-	--		{
-	--			{
-	--				{
-	--					id     = "icon_role",
-	--					widget = wibox.widget.imagebox,
-	--				},
-	--				margins = 2,
-	--				widget  = wibox.container.margin,
-	--			},
-	--			{
-	--				id = "text_client_index",
-	--				widget = wibox.widget.textbox,
-	--			},
-	--			{
-	--				id     = "text_role",
-	--				widget = wibox.widget.textbox,
-	--			},
-	--			layout = wibox.layout.fixed.horizontal,
-	--		},
-	--		left  = 10,
-	--		right = 10,
-	--		widget = wibox.container.margin
-	--	},
-	--	id     = "background_role",
-	--	widget = wibox.container.background,
-	--	--create_callback = function(self, c, index, clients)
-	--	--	local tb = self:get_children_by_id('text_client_index')[1]
-	--	--	local set_markup_silently = tb.set_markup_silently
-	--	--	tb.set_markup_silently = function(slf, text)
-	--	--		local new_text = '?: '
-	--	--		--local new_text = helpers.string.replace(text, c.name, c.class:lower())
-	--	--		--new_text = helpers.string.replace(new_text, "_", "-")
-	--	--		--if c.minimized then new_text = "-" .. new_text end
-	--	--		for idx, cl in ipairs(client.get()) do
-	--	--			if cl.name == c.name then
-	--	--				new_text = tostring(idx) .. ": a"
-	--	--			end
-	--	--		end
-	--	--
-	--	--		return set_markup_silently(tb, new_text)
-	--	--	end
-	--	--end,
-	--	--update_callback = function(self, c, index, clients)
-	--	--	local tb = self:get_children_by_id('text_client_index')[1]
-	--	--	local set_markup_silently = tb.set_markup_silently
-	--	--	tb.set_markup_silently = function(slf, text)
-	--	--		local new_text = '?: '
-	--	--		--local new_text = helpers.string.replace(text, c.name, c.class:lower())
-	--	--		--new_text = helpers.string.replace(new_text, "_", "-")
-	--	--		--if c.minimized then new_text = "-" .. new_text end
-	--	--		for idx, cl in ipairs(client.get()) do
-	--	--			if cl.name == c.name then
-	--	--				new_text = tostring(idx) .. ": a"
-	--	--			end
-	--	--		end
-	--	--
-	--	--		return set_markup_silently(tb, new_text)
-	--	--	end
-	--	--end
-	--}
-
-
-	-- This works. Just commented because I'm not using icon-only task list for the slim wibar now.
-	--s.mytasklist_slim = awful.widget.tasklist(
-	--    s, -- screen
-	--    awful.widget.tasklist.filter.currenttags, -- filter
-	--    awful.util.tasklist_buttons, -- buttons
-	--    nil, -- style
-	--    my_commonlist_update
-	--)
 
 	-- Create the wibox
 	local mywibar_args = {
@@ -1776,22 +1466,6 @@ function theme.at_screen_connect(s)
 		}
 	}
 
-	--s.mywibox_slim:setup {
-	--    layout = wibox.layout.align.vertical,
-	--    { -- Center widgets
-	--        layout = wibox.layout.fixed.vertical,
-	--
-	--        --s.mypromptbox,
-	--        --spr,
-	--
-	--        s.mytaglist_slim,
-	--        spr,
-	--
-	--        s.mylayoutbox,
-	--
-	--    },
-	--}
-
 	s.togglegaps = function()
 		mul = 40
 		if s.geometry.width > 2000 then
@@ -1819,20 +1493,6 @@ function theme.at_screen_connect(s)
 			s.mytaglist,
 			spr,
 
-
-			--awesomebuttons.with_icon_and_text {
-			--	icon    = 'crop',
-			--	text    = s.selected_tag.gap,
-			--	color   = theme.titlebar_fg_focus,
-			--	shape   = 'rounded_rect',
-			--	onclick = s.togglegaps,
-			--},
-			--spr,
-
-			--s.mylayoutlist,
-			--spr,
-
-
 			spr,
 			s.mytasklist,
 
@@ -1841,50 +1501,21 @@ function theme.at_screen_connect(s)
 		-- middle
 		{
 			layout = wibox.layout.flex.horizontal,
-			--spr,
-			--{
-			--	layout = wibox.layout.fixed.horizontal,
-			--	s.mylayoutbox,
-			--	spr,
-			--	s.mytasklist,
-			--},
-			--
-			--spr,
 		},
 
-		{ -- Right widgets
+		-- Right widgets
+		{
 			layout = wibox.layout.fixed.horizontal,
 			wibox.widget.systray(),
 
-
-			-- weather insert
 			spr,
-			--                    wibox.widget.imagebox(weather.icon),
-			--                    wibox.widget.textbox('weather: '),
-			--
 			my_weather.icon,
 			my_weather.widget,
-			--        weather_widget({
-			--            api_key=os_getenv("OPENWEATHERMAP_API_KEY"),
-			--            coordinates = {46.786671, -92.100487},
-			--        }),
-			--
 
 			-- Net up/down
 			spr,
 			neticon,
-			-- How to wrap items in a custom background.
-			--                     wibox.container.background(neticon, theme.bg_focus),
-			--                     wibox.container.background(net.widget, theme.bg_focus),
 			net.widget,
-
-			-- spr,
-			-- cpu_widget({
-			--     width = 100,
-			--     step_width = 2,
-			--     step_spacing = 0,
-			--     color = "#4070cf" -- '#434c5e'
-			-- }),
 
 			-- CPU
 			spr,
@@ -1892,7 +1523,6 @@ function theme.at_screen_connect(s)
 			cpu.widget,
 
 			-- Memory
-			-- spr,
 			-- memicon,
 			mem.widget,
 
@@ -1911,25 +1541,16 @@ function theme.at_screen_connect(s)
 			volicon,
 			theme.volume.widget,
 
-			--spr,
-			-- default
-			--logout_menu_widget,
-			--logout_menu.logout_menu_widget,
-
 			-- Clock
 			spr,
 			clock,
-			--wibox.widget.textbox('/'),
-			-- clock_utc,
 
 			-- Microphone
 			spr,
 			theme.mic.widget,
-			-- micicon,
 
 			-- Temperature
 			spr,
-			-- tempicon,
 			temp.widget,
 		},
 	}
