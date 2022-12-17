@@ -1170,6 +1170,10 @@ function theme.at_screen_connect(s)
 		self:get_children_by_id("client_icons_role")[1]:reset()
 		local icons = {}
 		for _, cl in ipairs(tag:clients()) do
+			-- Exclude clients with a 'handy_id'.
+			-- These are client created via the Handy module,
+			-- which is intended to be HUD/Quake style dropdown/on-demand
+			-- application window.
 			if cl:get_xproperty("handy_id") == "" then
 				local icon = wibox.widget {
 					{
