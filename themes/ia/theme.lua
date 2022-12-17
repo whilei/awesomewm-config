@@ -1147,11 +1147,11 @@ function theme.at_screen_connect(s)
 	local function list_update(w, buttons, label, data, objects)
 		--common.list_update(w, buttons, label, data, objects)
 		my_commonlist_update(w, buttons, label, data, objects)
-		if s.geometry.width > 3000 then
-			w:set_max_widget_size(300)
-		else
-			w:set_max_widget_size(200)
-		end
+		--if s.geometry.width > 3000 then
+		--	w:set_max_widget_size(300)
+		--else
+		--	w:set_max_widget_size(200)
+		--end
 
 	end
 

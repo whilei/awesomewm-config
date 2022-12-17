@@ -28,6 +28,7 @@ local ia_layout_swne     = require("layout-swne")
 local ia_layout_vcolumns = require("columns-layout")
 
 local ia_popup_shell     = require("ia-popup-run.popup-shell")
+--local special            = require("special")
 
 local my_table           = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- }}}
@@ -60,16 +61,36 @@ do
 end
 -- }}}
 
--- {{{ Autostart windowless processes
+--run_once({ "urxvtd", "unclutter -root" }) -- entries must be comma-separated
 
--- This function will run once every time Awesome is started
-local function run_once(cmd_arr)
-	for _, cmd in ipairs(cmd_arr) do
-		awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
-	end
+if not awful.client.focus.history.is_enabled() then
+	awful.client.focus.history.enable_tracking()
 end
 
---run_once({ "urxvtd", "unclutter -root" }) -- entries must be comma-separated
+-- focus_previous_client_global is a function that returns the last
+-- focused client _anywhere_.
+-- It accesses the history list directly to
+-- get the global history.
+-- The usual function for "going back" (eg. Mod4+Tab),
+-- uses awful.client.focus.history.previous(), which
+-- (I assume) filters the history list, limiting the
+-- clients to those of the same tag as the current client.
+-- This is not what we want here.
+-- I want to go back in history globally; no matter the tag or the screen.
+-- Copy-pasta from https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
+local function focus_previous_client_global()
+
+	local c = awful.client.focus.history.list[2]
+
+	local t = c and c.first_tag or nil
+	if t then
+		t:view_only()
+	end
+	client.focus = c
+	c.visible    = true -- Except this, I added this.
+	c:raise()
+end
+
 
 -- {{{ Variable definitions
 
@@ -118,43 +139,45 @@ awful.layout.layouts        = {
 	--ia_layout_bigscreen,
 }
 
-awful.util.taglist_buttons  = my_table.join(awful.button({}, 1, function(t)
-	t:view_only()
-end),
-											awful.button({ modkey }, 1, function(t)
-												if client.focus then
-													client.focus:move_to_tag(t)
-												end
-											end),
-											awful.button({}, 3, awful.tag.viewtoggle),
-											awful.button({ modkey }, 3, function(t)
-												if client.focus then
-													client.focus:toggle_tag(t)
-												end
-											end),
-											awful.button({}, 4, function(t)
-												awful.tag.viewnext(t.screen)
-											end),
-											awful.button({}, 5, function(t)
-												awful.tag.viewprev(t.screen)
-											end))
+awful.util.taglist_buttons  = my_table.join(
+		awful.button({}, 1, function(t)
+			t:view_only()
+		end),
+		awful.button({ modkey }, 1, function(t)
+			if client.focus then
+				client.focus:move_to_tag(t)
+			end
+		end),
+		awful.button({}, 3, awful.tag.viewtoggle),
+		awful.button({ modkey }, 3, function(t)
+			if client.focus then
+				client.focus:toggle_tag(t)
+			end
+		end),
+		awful.button({}, 4, function(t)
+			awful.tag.viewnext(t.screen)
+		end),
+		awful.button({}, 5, function(t)
+			awful.tag.viewprev(t.screen)
+		end))
 
-awful.util.tasklist_buttons = my_table.join(awful.button({}, 1, function(c)
-	if c == client.focus then
-		c.minimized = true
-	else
-		-- Without this, the following
-		-- :isvisible() makes no senseF
-		c.minimized = false
-		if not c:isvisible() and c.first_tag then
-			c.first_tag:view_only()
-		end
-		-- This will also un-minimize
-		-- the client, if needed
-		client.focus = c
-		c:raise()
-	end
-end))
+awful.util.tasklist_buttons = my_table.join(
+		awful.button({}, 1, function(c)
+			if c == client.focus then
+				c.minimized = true
+			else
+				-- Without this, the following
+				-- :isvisible() makes no senseF
+				c.minimized = false
+				if not c:isvisible() and c.first_tag then
+					c.first_tag:view_only()
+				end
+				-- This will also un-minimize
+				-- the client, if needed
+				client.focus = c
+				c:raise()
+			end
+		end))
 
 local theme_path            = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme)
 --local theme_path = string.format("%s/.config/awesome/awesome-macos/themes/macos-dark/theme.lua", os.getenv("HOME"))
@@ -537,12 +560,7 @@ imodal_client_focus       = {
 	--	modalbind.grab { keymap = imodal_client_move, name = "Move", stay_in_mode = true, hide_default_options = true }
 	--end, "Move" },
 
-	{ "Tab", function()
-		awful.client.focus.history.previous()
-		if client.focus then
-			client.focus:raise()
-		end
-	end, "focus last" },
+	{ "Tab", focus_previous_client_global, "focus last" },
 
 	{ "*", function()
 		if not client.focus then
@@ -861,12 +879,7 @@ imodal_bars               = {
 imodal_main               = {
 	{ "Return", rofi_fn, "rofi" },
 
-	{ "Tab", function()
-		awful.client.focus.history.previous()
-		if client.focus then
-			client.focus:raise()
-		end
-	end, "focus last" },
+	{ "Tab", focus_previous_client_global, "focus last" },
 
 	{ "a", modalbind.grabf { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }, "+awesome" },
 	{ "b", modalbind.grabf { keymap = imodal_bars, name = "Bars", stay_in_mode = false, hide_default_options = true }, "+bars" },
@@ -1211,12 +1224,7 @@ globalkeys = my_table.join(
 --awful.key({ modkey }, "u", awful.client.urgent.jumpto, { description = "jump to urgent client", group = "client" }),
 
 		awful.key({ modkey }, "Tab",
-				  function()
-					  awful.client.focus.history.previous()
-					  if client.focus then
-						  client.focus:raise()
-					  end
-				  end,
+				  focus_previous_client_global,
 				  { description = "go back", group = "client" }),
 
 --awful.key({modkey}, "Tab", function()
@@ -1762,7 +1770,6 @@ awful.rules.rules = {
 			focus     = true
 		}
 	}
-
 }
 -- }}}
 
@@ -1942,11 +1949,34 @@ client.connect_signal("request::activate",
 							  c.minimized = false
 						  end
 						  awful.ewmh.activate(c, context, hints)
-					  end)
+
+						  local t   = c.first_tag
+						  local cls = t:clients()
+						  for _, tc in ipairs(cls) do
+							  if tc ~= c then
+								  tc.border_color = beautiful.border_normal
+
+								  --if #cls > 1 then
+								  --  awful.titlebar.hide(tc)
+								  --else
+								  --  awful.titlebar.show(tc)
+								  --end
+							  end
+						  end
+					  end
+)
 
 client.connect_signal("focus", function(c)
 	--border_adjust(c)
 	move_mouse_onto_focused_client(c)
+
+	local t = c.first_tag
+	for _, tc in ipairs(t:clients()) do
+		if tc ~= c then
+			--awful.titlebar.show(c)
+			tc.border_color = beautiful.border_normal
+		end
+	end
 end)
 --client.connect_signal("property::maximized", border_adjust)
 client.connect_signal("unfocus",
