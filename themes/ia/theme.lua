@@ -1174,6 +1174,8 @@ function theme.at_screen_connect(s)
 							widget = wibox.container.margin,
 							left   = 3,
 							right  = 3,
+							top    = dpi(2),
+							bottom = dpi(2),
 						},
 						layout = wibox.layout.fixed.horizontal,
 					},
@@ -1183,6 +1185,7 @@ function theme.at_screen_connect(s)
 					--border_width = 1,
 					--border_color = theme.fg_focus,
 				},
+				id     = "outer_margin_role",
 				left   = 0,
 				right  = 5,
 				widget = wibox.container.margin
@@ -1194,29 +1197,30 @@ function theme.at_screen_connect(s)
 			create_callback = function(self, tag, index, tags)
 				local tag_occupied = #tag:clients() > 0
 				if tag_occupied and tag.selected then
+
 					self:get_children_by_id("inner_background_role")[1].border_width = 2
 					self:get_children_by_id("inner_background_role")[1].border_color = theme.fg_focus
 
-					--self:get_children_by_id("text_background_role")[1].bg            = theme.fg_focus
-					--self:get_children_by_id("text_background_role")[1].fg            = "#000000"
-					--self:get_children_by_id("text_role")[1].fg                       = "#ffffff"
 				elseif tag_occupied then
 					self:get_children_by_id("inner_background_role")[1].border_width = 2
 					self:get_children_by_id("inner_background_role")[1].border_color = "#666666"
 
 					self:get_children_by_id("text_background_role")[1].bg            = "#00000000"
 				else
-					-- neither occupied, nor selected
-
 					-- disable border
 					self:get_children_by_id("inner_background_role")[1].border_width = 0
-
 
 					-- set background to transparent
 					self:get_children_by_id("inner_background_role")[1].bg           = "#000000"
 
 					self:get_children_by_id("text_background_role")[1].bg            = "#000000"
 					--self:get_children_by_id("text_background_role")[1].fg            = "#ffffff"
+				end
+
+				if not tag_occupied then
+					self:get_children_by_id("outer_margin_role")[1].right = 0
+				else
+					self:get_children_by_id("outer_margin_role")[1].right = 5
 				end
 
 				--self:connect_signal("mouse::enter", function()
@@ -1236,24 +1240,25 @@ function theme.at_screen_connect(s)
 				self:get_children_by_id("client_icons_role")[1]:reset()
 				local icons = {}
 				for _, cl in ipairs(tag:clients()) do
-					local icon = wibox.widget {
-						{
-							id     = "icon_container",
+					if cl:get_xproperty("handy_id") == "" then
+						local icon = wibox.widget {
 							{
-								id     = "icon",
-								resize = true,
-								widget = wibox.widget.imagebox
+								id     = "icon_container",
+								{
+									id     = "icon",
+									resize = true,
+									widget = wibox.widget.imagebox
+								},
+								widget = wibox.container.place
 							},
-							widget = wibox.container.place
-						},
-						forced_width = dpi(18),
-						--left         = dpi(3),
-						--right        = dpi(3),
-						margins      = dpi(5),
-						widget       = wibox.container.margin
-					}
-					icon.icon_container.icon:set_image(cl.icon)
-					table.insert(icons, icon)
+							forced_width = dpi(18),
+							left         = dpi(3),
+							right        = dpi(3),
+							widget       = wibox.container.margin
+						}
+						icon.icon_container.icon:set_image(cl.icon)
+						table.insert(icons, icon)
+					end
 				end
 				self:get_children_by_id("client_icons_role")[1].children = icons
 			end,
@@ -1261,23 +1266,18 @@ function theme.at_screen_connect(s)
 			update_callback = function(self, tag, index, tags)
 				local tag_occupied = #tag:clients() > 0
 				if tag_occupied and tag.selected then
+
 					self:get_children_by_id("inner_background_role")[1].border_width = 2
 					self:get_children_by_id("inner_background_role")[1].border_color = theme.fg_focus
 
-					--self:get_children_by_id("text_background_role")[1].bg            = theme.fg_focus
-					--self:get_children_by_id("text_background_role")[1].fg            = "#000000"
-					--self:get_children_by_id("text_role")[1].fg                       = "#ffffff"
 				elseif tag_occupied then
 					self:get_children_by_id("inner_background_role")[1].border_width = 2
 					self:get_children_by_id("inner_background_role")[1].border_color = "#666666"
 
 					self:get_children_by_id("text_background_role")[1].bg            = "#00000000"
 				else
-					-- neither occupied, nor selected
-
 					-- disable border
 					self:get_children_by_id("inner_background_role")[1].border_width = 0
-
 
 					-- set background to transparent
 					self:get_children_by_id("inner_background_role")[1].bg           = "#000000"
@@ -1286,26 +1286,35 @@ function theme.at_screen_connect(s)
 					--self:get_children_by_id("text_background_role")[1].fg            = "#ffffff"
 				end
 
+				if not tag_occupied then
+					self:get_children_by_id("outer_margin_role")[1].right = 0
+				else
+					self:get_children_by_id("outer_margin_role")[1].right = 5
+				end
+
 				self:get_children_by_id("client_icons_role")[1]:reset()
 				local icons = {}
 				for _, cl in ipairs(tag:clients()) do
-					local icon = wibox.widget {
-						{
-							id     = "icon_container",
+					if cl:get_xproperty("handy_id") == "" then
+						local icon = wibox.widget {
 							{
-								id     = "icon",
-								resize = true,
-								widget = wibox.widget.imagebox
+								id     = "icon_container",
+								{
+									id     = "icon",
+									resize = true,
+									widget = wibox.widget.imagebox
+								},
+								widget = wibox.container.place
 							},
-							widget = wibox.container.place
-						},
-						forced_width = dpi(18),
-						left         = dpi(3),
-						right        = dpi(3),
-						widget       = wibox.container.margin
-					}
-					icon.icon_container.icon:set_image(cl.icon)
-					table.insert(icons, icon)
+							forced_width = dpi(18),
+							left         = dpi(3),
+							right        = dpi(3),
+							widget       = wibox.container.margin
+						}
+						icon.icon_container.icon:set_image(cl.icon)
+						table.insert(icons, icon)
+					end
+
 				end
 				self:get_children_by_id("client_icons_role")[1].children = icons
 			end,
