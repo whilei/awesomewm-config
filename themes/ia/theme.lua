@@ -375,7 +375,7 @@ local clock           = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("monospace bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("monospace bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -390,12 +390,9 @@ local clock_time_only         = awful.widget.watch(
 		"date +'%H:%M'",
 		60,
 		function(widget, stdout)
+			--stdout = string.gsub(stdout, "\n", "")
 			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
-			)
+			widget:set_markup(markup.fontbg("monospace bold 14", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " "))
 		end
 )
 
@@ -407,7 +404,7 @@ local world_clock_vancouver   = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_fg, " " .. markup(theme.clock_bg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_fg, " " .. markup(theme.clock_bg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -420,7 +417,7 @@ local world_clock_denver      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -433,7 +430,7 @@ local world_clock_chicago     = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -446,7 +443,7 @@ local world_clock_newyork     = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -459,7 +456,7 @@ local clock_utc               = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -472,7 +469,7 @@ local world_clock_london      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -485,7 +482,7 @@ local world_clock_berlin      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -498,7 +495,7 @@ local world_clock_athens      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -511,7 +508,7 @@ local world_clock_dubai       = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -524,7 +521,7 @@ local world_clock_shanghai    = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -537,7 +534,7 @@ local world_clock_tokyo       = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -550,7 +547,7 @@ local world_clock_buenosaires = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -563,7 +560,7 @@ local world_clock_madrid      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -576,7 +573,7 @@ local world_clock_anchorage   = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -589,7 +586,7 @@ local world_clock_moscow      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -1278,61 +1275,96 @@ function theme.at_screen_connect(s)
 		mywibar_args.width    = s.workarea.width / 3 * 2
 	end
 
-	s.mywibox      = awful.wibar(mywibar_args)
+	s.mywibox            = awful.wibar(mywibar_args)
 
 	-- The important part to make this actually float on top of all the stuff is
 	-- that it's a WIBOX and a not a WIBAR.
 	-- It's also NOT an awful.wibox, but just a wibox. These are important things.
-	s.mywibox_slim = awful.wibar({
-									 position          = mywibar_args.position,
-									 screen            = s,
-									 height            = mywibar_args.height,
-									 width             = 500,
-									 bg                = nil,
-									 restrict_workarea = false,
-									 stretch           = false,
-									 visible           = not s.mywibox.visible,
-									 ontop             = true,
-									 --type              = "dock",
-									 --Valid types are:
-									 --
-									 --desktop: The root client, it cannot be moved or resized.
-									 --dock: A client attached to the side of the screen.
-									 --splash: A client, usually without titlebar shown when an application starts.
-									 --dialog: A dialog, see transient_for.
-									 --menu: A context menu.
-									 --toolbar: A floating toolbar.
-									 --utility:
-									 --dropdown_menu: A context menu attached to a parent position.
-									 --popup_menu: A context menu.
-									 --notification: A notification popup.
-									 --combo: A combobox list menu.
-									 --dnd: A drag and drop indicator.
-									 --normal: A normal application main window.
-								 })
+	--[[
+		 --position          = mywibar_args.position,
+		 --screen            = s,
+		 --height            = mywibar_args.height,
+		 --width             = 500,
+		 --bg                = nil,
+		 --restrict_workarea = false,
+		 --stretch           = false,
+		 --visible           = not s.mywibox.visible,
+		 --ontop             = true,
+		 ----type              = "dock",
+		 ----Valid types are:
+		 ----
+		 ----desktop: The root client, it cannot be moved or resized.
+		 ----dock: A client attached to the side of the screen.
+		 ----splash: A client, usually without titlebar shown when an application starts.
+		 ----dialog: A dialog, see transient_for.
+		 ----menu: A context menu.
+		 ----toolbar: A floating toolbar.
+		 ----utility:
+		 ----dropdown_menu: A context menu attached to a parent position.
+		 ----popup_menu: A context menu.
+		 ----notification: A notification popup.
+		 ----combo: A combobox list menu.
+		 ----dnd: A drag and drop indicator.
+		 ----normal: A normal application main window.
+	--]]
+	--s.mywibox_slim       = awful.popup {
+	--	widget = {
+	--		{
+	--			{
+	--				s.mypromptbox,
+	--				spr,
+	--
+	--				s.mytaglist,
+	--				spr,
+	--
+	--				s.mylayoutbox,
+	--				spr,
+	--
+	--				clock_time_only,
+	--				layout = wibox.layout.fixed.horizontal,
+	--			},
+	--			margins = 10,
+	--			widget  = wibox.container.margin
+	--		},
+	--		border_color = "#00ff00",
+	--		border_width = 5,
+	--		screen       = s,
+	--		placement    = awful.placement.bottom,
+	--		shape        = gears.shape.rounded_rect,
+	--		visible      = true,
+	--		height       = 24,
+	--		width        = 500,
+	--		ontop        = true,
+	--		type         = "dock",
+	--	}
+	--}
 
-	s.mywibox_slim:setup {
-		layout = wibox.layout.align.horizontal,
-		{
-			layout = wibox.layout.align.horizontal,
-
-			s.mypromptbox,
-			spr,
-
-			s.mytaglist,
-			spr,
-
-			s.mylayoutbox,
-			spr,
-
+	s.mywibox_slim       = awful.popup {
+		widget       = {
+			{
+				{
+					s.mypromptbox,
+					s.mytaglist,
+					clock_time_only,
+					layout = wibox.layout.fixed.horizontal,
+				},
+				margins = 0,
+				widget  = wibox.container.margin,
+			},
+			forced_height = 24,
+			widget        = wibox.container.constraint
 		},
-		{
-			layout = wibox.layout.flex.horizontal,
-		},
-		{
-			layout = wibox.layout.align.horizontal,
-			clock_time_only,
-		}
+		screen       = s,
+		type         = "dock",
+		placement    = awful.placement.bottom,
+		shape        = function(c, w, h)
+			local tl, tr, br, bl = false, true, false, false
+			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
+		end,
+		visible      = false,
+		ontop        = true,
+		border_width = 0,
+		border_color = "#ff0000",
 	}
 
 	s.mywibox_worldtimes = awful.wibar({

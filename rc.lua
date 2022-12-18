@@ -196,7 +196,6 @@ local toggle_wibar_slim_fn    = function()
 	local s                = awful.screen.focused()
 	s.mywibox.visible      = not s.mywibox.visible
 	s.mywibox_slim.visible = not s.mywibox.visible
-	s.mywibox_slim:emit_signal("widget::redraw_needed")
 end
 
 local toggle_worldtimes_fn    = function()
@@ -265,7 +264,7 @@ imodal_awesomewm          = {
 						widget = wibox.widget.textbox,
 					},
 					{
-						text   = 'pid: ' .. c.pid,
+						text   = 'pid: ' .. (c.pid or 'n/a'),
 						widget = wibox.widget.textbox,
 					},
 					{
@@ -1730,6 +1729,20 @@ awful.rules.rules = {
 		properties = {
 			skip_taskbar = true,
 			placement    = awful.placement.no_offscreen
+		}
+	},
+	{
+		rule       = {
+			class = "Xephyr"
+		},
+		properties = {
+			border_width = 2,
+			border_color = '#ff0000',
+			screen       = 1,
+			position     = awful.placement.centered,
+			floating     = true,
+			ontop        = true,
+			focus        = false,
 		}
 	}
 }
