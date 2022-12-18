@@ -951,8 +951,31 @@ function theme.at_screen_connect(s)
 	gears.wallpaper.fit(wallpaper, s)
 
 	-- Tags
-	-- Use the first layout as the default one for all tags.
-	awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
+	-- I want to define names for the tags that differ by screen, eg.
+	-- A1 => screen 1 (A), tag 1
+	-- B3 => screen 2 (B), tag 3
+	-- This helps with rofi, because it shows the tag name when selecting
+	-- clients, and its nice to know where rofi is going to go in case there
+	-- are clients with instances on multiple screens.
+	-- So now, with Rofi, I can see 'A3' and know that its over on screen A, tag 3.
+	local my_tags      = {
+		tags = {
+			{
+				names  = { "A1", "A2", "A3", "A4", "A5" },
+				layout = awful.layout.layouts[1],
+			},
+			{
+				names  = { "B1", "B2", "B3", "B4", "B5" },
+				layout = awful.layout.layouts[1],
+			}
+		}
+	}
+	local screen_index = s.index
+	awful.tag(my_tags.tags[screen_index].names, s, my_tags.tags[screen_index].layout)
+
+	-- This is the default tag assignment boilerplate, which
+	-- uses the awful.util.tagnames assignment defined in rc.lua.
+	-- awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
 
 	-- Create a promptbox for each screen
 	-- This is only used by default library stuff,

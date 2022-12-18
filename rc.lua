@@ -100,10 +100,17 @@ for key, app in pairs(clientkeybindings) do
 end
 
 awful.util.terminal         = terminal
+
+-- These tag names are now only used for reference by widgets and things
+-- that need to name the indexes of the tags.
+-- The logic here is assumed to be tightly coupled with
+-- the tag screen-setup logic defined in ia/theme.lua,
+-- which assigns tags per screen, using custom naming tables.
 awful.util.tagnames         = { "1", "2", "3", "4", "5" }
 --awful.util.tagnames = { "●", "●", "●", "●", "●" }
---awful.util.tagnames         = { "❶", "❷", "❸", "❹", "❺" }
+--awful.util.tagnames = { "❶", "❷", "❸", "❹", "❺" }
 --awful.util.tagnames = { "▇", "▇", "▇", "▇", "▇" }
+
 awful.layout.layouts        = {
 	-- awful.layout.suit.tile.bottom,
 	awful.layout.suit.tile,
