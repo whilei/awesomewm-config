@@ -16,3 +16,6 @@
 [submodule "arc"]
 	path = arc
 	url = https://github.com/whilei/awesome-awesome-rc.git
+[submodule "vicious"]
+	path = vicious
+	url = https://github.com/vicious-widgets/vicious.git
