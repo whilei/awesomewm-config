@@ -1878,7 +1878,7 @@ local mytitlebars = function(c)
 			awful.titlebar.widget.stickybutton(c),
 			awful.titlebar.widget.ontopbutton(c),
 			awful.titlebar.widget.floatingbutton(c),
-			awful.titlebar.widget.closebutton(c),
+			-- awful.titlebar.widget.closebutton(c),
 			spacing = 5, -- https://awesomewm.org/doc/api/classes/wibox.layout.fixed.html#wibox.layout.fixed.spacing
 			layout  = wibox.layout.fixed.horizontal()
 		},

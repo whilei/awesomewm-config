@@ -905,7 +905,7 @@ function theme.at_screen_connect(s)
 		-- refraction thing going on.
 		-- I want to do the same for the wibar, but screen.padding
 		-- skips the wibar, so I have to do it with a margin within the wibar.
-		s.padding = { left = 5 }
+		s.padding = { left = 5, right = 5 }
 	end
 
 	-- Hide Handy clients on screen connect;
@@ -930,6 +930,7 @@ function theme.at_screen_connect(s)
 											  client.opacity           = 0.7
 											  client.border_color      = gears.color.parse_color("#ff0000ff")
 											  client.titlebars_enabled = false
+											  client.skip_taskbar      = true
 
 											  local geo
 											  geo                      = client:geometry()
