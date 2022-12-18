@@ -962,12 +962,55 @@ function theme.at_screen_connect(s)
 		tags = {
 			{
 				names  = { "A1", "A2", "A3", "A4", "A5" },
-				layout = awful.layout.layouts[1],
+				layout = {
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.suit.floating, -- 5th tag is floating by default
+				},
 			},
 			{
 				names  = { "B1", "B2", "B3", "B4", "B5" },
-				layout = awful.layout.layouts[1],
+				layout = {
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.suit.floating, -- 5th tag is floating by default
+				},
+			},
+			{
+				names  = { "C1", "C2", "C3", "C4", "C5" },
+				layout = {
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.suit.floating, -- 5th tag is floating by default
+				},
+			},
+			{
+				names  = { "D1", "D2", "D3", "D4", "D5" },
+				layout = {
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.suit.floating, -- 5th tag is floating by default
+				},
+			},
+			{
+				names  = { "E1", "E2", "E3", "E4", "E5" },
+				layout = {
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.layouts[1],
+					awful.layout.suit.floating, -- 5th tag is floating by default
+				},
 			}
+			-- Assume I'm never going to have more than 5 screens connected.
 		}
 	}
 	local screen_index = s.index

@@ -335,8 +335,6 @@ imodal_awesomewm          = {
 		awful.util.mymainmenu:show()
 	end, "menu" },
 	{ "r", awesome.restart, "restart" },
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_client_move_resize = {
@@ -669,9 +667,6 @@ imodal_client_focus       = {
 			c:raise()
 		end
 	end, "restore (=unminimize) a client" },
-
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_layout             = {
@@ -699,8 +694,6 @@ imodal_layout             = {
 		awful.layout.set(ia_layout_vcolumns)
 	end, "v. columns" },
 
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_layout_adjust      = {
@@ -719,8 +712,6 @@ imodal_layout_adjust      = {
 	--{ "Tab", function()
 	--	awful.layout.set(layout_bling_mstab)
 	--end, "MS-Tab"},
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_power              = {
@@ -736,15 +727,11 @@ imodal_power              = {
 	{ "R", function()
 		os.execute("reboot")
 	end, "reboot" },
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_screenshot         = {
 	{ "s", screenshot_selection_fn, "selection" },
 	{ "w", screenshot_window_fn, "window" },
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_volume             = {
@@ -843,17 +830,12 @@ imodal_tag                = {
 		c:tags({ t })
 		t:view_only()
 	end, "move client to new tag" },
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_toggle             = {
 	{ "c", function()
 		os.execute(invert_colors)
 	end, "invert colors" },
-
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_useless            = {
@@ -873,9 +855,6 @@ imodal_useless            = {
 	{ "S", function()
 		lain.util.useless_gaps_resize(-50)
 	end, "smaller =- 50" },
-
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_widgets            = {
@@ -886,14 +865,10 @@ imodal_widgets            = {
 	{ "w", function()
 		my_weather.toggle()
 	end, "weather" },
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_bars               = {
 	{ "b", toggle_wibar_slim_fn, "wibar/slim" },
-	imodal_separator,
-	to_main_menu,
 }
 
 imodal_main               = {
