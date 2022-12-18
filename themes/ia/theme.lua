@@ -404,7 +404,7 @@ local world_clock_vancouver   = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_fg, " " .. markup(theme.clock_bg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -417,7 +417,7 @@ local world_clock_denver      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -430,7 +430,7 @@ local world_clock_chicago     = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -443,7 +443,7 @@ local world_clock_newyork     = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -456,7 +456,7 @@ local clock_utc               = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -469,7 +469,7 @@ local world_clock_london      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -482,7 +482,7 @@ local world_clock_berlin      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -495,7 +495,7 @@ local world_clock_athens      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -508,7 +508,7 @@ local world_clock_dubai       = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -521,7 +521,7 @@ local world_clock_shanghai    = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -534,7 +534,7 @@ local world_clock_tokyo       = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -547,7 +547,7 @@ local world_clock_buenosaires = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -560,7 +560,7 @@ local world_clock_madrid      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -573,7 +573,7 @@ local world_clock_anchorage   = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -586,7 +586,7 @@ local world_clock_moscow      = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end
 )
@@ -1367,103 +1367,191 @@ function theme.at_screen_connect(s)
 		border_color = "#ff0000",
 	}
 
-	s.mywibox_worldtimes = awful.wibar({
-										   visible  = false,
-										   position = "right",
-										   --stretch = false,
-										   --ontop = true,
-										   screen   = s,
-										   --height = 500,
-										   width    = 100,
-										   y        = 18,
-										   bg       = theme.bg_normal,
-										   fg       = theme.fg_normal,
-										   opacity  = 0.5,
-									   })
-
-	s.mywibox_worldtimes:setup {
-		layout = wibox.layout.align.vertical,
-		-- left
-		{
-			layout = wibox.layout.fixed.vertical,
-
-			spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Anchorage (AKDT/AKST)'))),
-			world_clock_anchorage,
-
-			--wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Vancouver (PT)'))),
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_fg, " " .. markup(theme.clock_bg, 'Vancouver,Seattle (PT)'))),
-			world_clock_vancouver,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Denver, (MT)'))),
-			world_clock_denver,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Chicago (CT)'))),
-			world_clock_chicago,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'New York, Toronto (ET)'))),
-			world_clock_newyork,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Buenos Aires'))),
-			world_clock_buenosaires,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'UTC'))),
-			clock_utc,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'London (BT,WET)'))),
-			world_clock_london,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Berlin (CET/CEST)'))),
-			world_clock_berlin,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Madrid (CET/CEST)'))),
-			world_clock_madrid,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Athens,Kiev (EET)'))),
-			world_clock_athens,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Moscow (MSK)'))),
-			world_clock_moscow,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Dubai'))),
-			world_clock_dubai,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Shanghai'))),
-			world_clock_shanghai,
-			--spr,
-
-			wibox.widget.textbox(markup.fontbg("Roboto 8", theme.clock_bg, " " .. markup(theme.clock_fg, 'Tokyo'))),
-			world_clock_tokyo,
-
-
-			spr,
-			-- my github widget
+	s.mywibox_worldtimes = awful.popup {
+		screen    = s,
+		placement = awful.placement.bottom,
+		type      = "dock",
+		visible   = false,
+		ontop     = true,
+		widget    = {
+			widget = wibox.container.constraint,
 			{
-				layout = wibox.layout.fixed.horizontal,
-				mygithubwidget.icon,
-				spr,
-				mygithubwidget.widget,
+				layout = wibox.layout.align.horizontal,
+				-- left
+				{
+					layout = wibox.layout.flex.horizontal,
+					spr,
+				},
+				{
+					layout = wibox.layout.fixed.horizontal,
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("Roboto 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Anchorage (AKDT/AKST)'))),
+							world_clock_anchorage,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Vancouver,Seattle (PT)'))),
+							world_clock_vancouver,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Denver (MT)'))),
+							world_clock_denver,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Chicago (CT)'))),
+							world_clock_chicago,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'New York, Toronto (ET)'))),
+							world_clock_newyork,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Buenos Aires'))),
+							world_clock_buenosaires,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'UTC'))),
+							clock_utc,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'London (BT,WET)'))),
+							world_clock_london,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Berlin (CET/CEST)'))),
+							world_clock_berlin,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Madrid (CET/CEST)'))),
+							world_clock_madrid,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Athens,Kiev (EET)'))),
+							world_clock_athens,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Moscow (MSK)'))),
+							world_clock_moscow,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Dubai'))),
+							world_clock_dubai,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Shanghai'))),
+							world_clock_shanghai,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					{
+						{
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Tokyo'))),
+							world_clock_tokyo,
+							layout = wibox.layout.fixed.vertical,
+						},
+						widget  = wibox.container.margin,
+						margins = 10,
+					},
+					--{
+					--	{
+					--		{
+					--			layout = wibox.layout.fixed.horizontal,
+					--			mygithubwidget.icon,
+					--			spr,
+					--			mygithubwidget.widget,
+					--		},
+					--		{
+					--			layout = wibox.layout.fixed.horizontal,
+					--			mygithubwidget2.icon,
+					--			spr,
+					--			mygithubwidget2.widget,
+					--		},
+					--		layout = wibox.layout.fixed.vertical,
+					--	},
+					--	widget  = wibox.container.margin,
+					--	margins = 10,
+					--},
+				},
+				{
+					layout = wibox.layout.flex.horizontal,
+					spr,
+				},
 			},
-			{
-				layout = wibox.layout.fixed.horizontal,
-				mygithubwidget2.icon,
-				spr,
-				mygithubwidget2.widget,
-			},
-		},
+		}
 	}
 
-	s.togglegaps = function()
+	--s.mywibox_worldtimes:setup {
+	--
+	--}
+
+	s.togglegaps         = function()
 		mul = 40
 		if s.geometry.width > 2000 then
 			mul = 30

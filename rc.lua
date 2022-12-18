@@ -814,17 +814,17 @@ imodal_useless            = {
 imodal_widgets            = {
 	{ "d", function()
 		my_calendar_widget.toggle()
-	end, "calendar widget" },
+	end, "calendar" },
+	{ "t", toggle_worldtimes_fn, "world times" },
 	{ "w", function()
 		my_weather.toggle()
-	end, "weather widget" },
+	end, "weather" },
 	imodal_separator,
 	to_main_menu,
 }
 
 imodal_bars               = {
-	{ "b", toggle_wibar_slim_fn, "toggle wibar/slim" },
-	{ "g", toggle_worldtimes_fn, "toggle world times bar" },
+	{ "b", toggle_wibar_slim_fn, "wibar/slim" },
 	imodal_separator,
 	to_main_menu,
 }
@@ -1739,7 +1739,7 @@ awful.rules.rules = {
 			border_width = 2,
 			border_color = '#ff0000',
 			screen       = 1,
-			position     = awful.placement.centered,
+			position     = awful.placement.center,
 			floating     = true,
 			ontop        = true,
 			focus        = false,
