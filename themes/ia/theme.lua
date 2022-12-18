@@ -1368,12 +1368,17 @@ function theme.at_screen_connect(s)
 	}
 
 	s.mywibox_worldtimes = awful.popup {
-		screen    = s,
-		placement = awful.placement.bottom,
-		type      = "dock",
-		visible   = false,
-		ontop     = true,
-		widget    = {
+		screen            = s,
+		placement         = awful.placement.bottom,
+		type              = "dock",
+		visible           = false,
+		ontop             = true,
+		input_passthrough = true,
+		shape             = function(c, w, h)
+			local tl, tr, br, bl = true, true, false, false
+			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
+		end,
+		widget            = {
 			widget = wibox.container.constraint,
 			{
 				layout = wibox.layout.align.horizontal,
@@ -1395,7 +1400,7 @@ function theme.at_screen_connect(s)
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Vancouver,Seattle (PT)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, ' ● Vancouver,Seattle (PT)'))),
 							world_clock_vancouver,
 							layout = wibox.layout.fixed.vertical,
 						},
@@ -1465,15 +1470,15 @@ function theme.at_screen_connect(s)
 						widget  = wibox.container.margin,
 						margins = 10,
 					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Madrid (CET/CEST)'))),
-							world_clock_madrid,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = 10,
-					},
+					--{
+					--	{
+					--		wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Madrid (CET/CEST)'))),
+					--		world_clock_madrid,
+					--		layout = wibox.layout.fixed.vertical,
+					--	},
+					--	widget  = wibox.container.margin,
+					--	margins = 10,
+					--},
 					{
 						{
 							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Athens,Kiev (EET)'))),

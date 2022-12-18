@@ -24,7 +24,7 @@ local revelation         = require("revelation")
 
 local hints              = require("hints")
 
-local ia_layout_swne     = require("layout-swne")
+local ia_layout_swen     = require("layout-swen")
 local ia_layout_vcolumns = require("columns-layout")
 
 local ia_popup_shell     = require("ia-popup-run.popup-shell")
@@ -107,6 +107,7 @@ awful.util.tagnames         = { "1", "2", "3", "4", "5" }
 awful.layout.layouts        = {
 	-- awful.layout.suit.tile.bottom,
 	awful.layout.suit.tile,
+	ia_layout_swen,
 	lain.layout.centerwork,
 	--awful.layout.suit.fair,
 	awful.layout.suit.magnifier,
@@ -201,6 +202,32 @@ end
 local toggle_worldtimes_fn    = function()
 	local s                      = awful.screen.focused()
 	s.mywibox_worldtimes.visible = not s.mywibox_worldtimes.visible
+end
+
+local fancy_float_toggle      = function(c)
+	c.floating = not c.floating
+
+	if not c.floating then
+		return
+	end
+
+	c.maximized = false
+
+	-- On big screens (ie. the TV I use as a desktop monitor)
+	-- adjust the window size and position to make for comfortable website reading.
+	if c.screen.is_tv then
+		local geo
+		geo        = c:geometry()
+		local sgeo
+		sgeo       = c.screen.geometry
+
+		geo.x      = sgeo.x + sgeo.width / 3
+		geo.y      = sgeo.y + sgeo.height / 3
+		geo.width  = sgeo.width / 3
+		geo.height = sgeo.height * 2 / 3
+
+		c:geometry(geo)
+	end
 end
 
 
@@ -400,6 +427,33 @@ imodal_client_move_resize = {
 		client.focus.maximized = not client.focus.maximized
 	end, "maximized" },
 
+	{ "n", function()
+		local cc = client.focus
+		if not cc then
+			return
+		end
+		awful.client.focus.history.previous()
+		cc.focus = false
+		cc:lower()
+		cc.minimized = true
+	end, "minimized" },
+
+	{ "r", function()
+		local c = awful.client.restore()
+		-- Focus restored client
+		if c then
+			client.focus = c
+			c:raise()
+		end
+	end, "restore" },
+
+	{ "s", function()
+		if not client.focus then
+			return
+		end
+		client.focus:move_to_screen()
+	end, "swap screen" },
+
 	{ "C", function()
 		if not client.focus then
 			return
@@ -436,6 +490,7 @@ imodal_client_move_resize = {
 		client.focus.floating = true;
 		awful.placement.right(client.focus)
 	end, "right" },
+
 	{ "V", function()
 		if not client.focus then
 			return
@@ -471,6 +526,19 @@ imodal_client_toggle      = {
 		client.focus.maximized = not client.focus.maximized
 		client.focus:raise()
 	end, "maximized" },
+
+	{ "n", function(c)
+		-- The client currently has the input focus, so it cannot be
+		-- minimized, since minimized clients can't have the focus.
+		local cc = c or client.focus
+		if not cc then
+			return
+		end
+		cc.focus = false
+		cc:lower()
+		cc.minimized = true
+		awful.client.focus.history.previous()
+	end, "minimized" },
 
 	{ "o", function()
 		if not client.focus then
@@ -581,6 +649,7 @@ imodal_client_focus       = {
 			return
 		end
 		awful.client.focus.history.previous()
+		cc.focus = false
 		cc:lower()
 		cc.minimized = true
 	end, "minimized" },
@@ -593,13 +662,6 @@ imodal_client_focus       = {
 			c:raise()
 		end
 	end, "restore (=unminimize) a client" },
-
-	{ "S", function()
-		if not client.focus then
-			return
-		end
-		client.focus:move_to_screen()
-	end, "to next screen" },
 
 	imodal_separator,
 	to_main_menu,
@@ -621,7 +683,7 @@ imodal_layout             = {
 		awful.layout.set(awful.layout.suit.magnifier)
 	end, "magnifier" },
 	{ "s", function()
-		awful.layout.set(ia_layout_swne)
+		awful.layout.set(ia_layout_swen)
 	end, "swne" },
 	{ "t", function()
 		awful.layout.set(awful.layout.suit.tile)
@@ -747,16 +809,6 @@ imodal_tag                = {
 		t:delete()
 	end, "delete tag" },
 	{ "n", awful.tag.viewnext, "next tag" },
-	{ "N", function()
-		local c = client.focus
-		if not c then
-			return
-		end
-
-		local t = awful.tag.add(c.class, { screen = c.screen })
-		c:tags({ t })
-		t:view_only()
-	end, "move client to new tag" },
 	{ "p", awful.tag.viewprev, "previous tag" },
 	{ "r", function()
 		awful.prompt.run {
@@ -774,6 +826,16 @@ imodal_tag                = {
 			end
 		}
 	end, "rename tag" },
+	{ "N", function()
+		local c = client.focus
+		if not c then
+			return
+		end
+
+		local t = awful.tag.add(c.class, { screen = c.screen })
+		c:tags({ t })
+		t:view_only()
+	end, "move client to new tag" },
 	imodal_separator,
 	to_main_menu,
 }
@@ -832,6 +894,13 @@ imodal_main               = {
 
 	{ "Tab", special.focus_previous_client_global, "focus last" },
 
+	{ "!", function()
+		local c = client.focus
+		if not c then
+			return
+		end
+		fancy_float_toggle(c)
+	end, "fancy float" },
 	{ "-", function(c)
 		-- The client currently has the input focus, so it cannot be
 		-- minimized, since minimized clients can't have the focus.
@@ -875,7 +944,7 @@ imodal_main               = {
 	{ "u", modalbind.grabf { keymap = imodal_useless, name = "Useless gaps", stay_in_mode = true, hide_default_options = true }, "+useless gaps" },
 	{ "v", modalbind.grabf { keymap = imodal_volume, name = "Useless gaps", stay_in_mode = true, hide_default_options = true }, "+volume" },
 	{ "x", modalbind.grabf { keymap = imodal_toggle, name = "Toggle Settings", stay_in_mode = false, hide_default_options = true }, "+toggle" },
-	{ "w", modalbind.grabf { keymap = imodal_client_toggle, name = "Client settings", stay_in_mode = false, hide_default_options = true }, "+client settings" },
+	{ "w", modalbind.grabf { keymap = imodal_client_toggle, name = "Client window", stay_in_mode = false, hide_default_options = true }, "+window (client)" },
 	{ "z", function()
 		awful.screen.focused().quake:toggle()
 	end, "quake" },
@@ -1516,50 +1585,23 @@ clientkeys = my_table.join(
 				  end,
 				  { description = "toggle floating centered client (tall)", group = "client" }),
 
--- Isaac
--- I want a hotkey to toggle useless gaps, a function that I've developed a fancy
--- new button for, but now I want to make a key so I don't have to use the button.
-		awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
-				  "k",
-				  function(c)
-					  if c.screen.selected_tag.gap == 0 then
-						  c.screen.selected_tag.gap = c.screen.geometry.height / 20
-					  else
-						  c.screen.selected_tag.gap = 0
-					  end
-				  end,
-				  { description = "toggle useless gaps", group = "client" }),
+---- Isaac
+---- I want a hotkey to toggle useless gaps, a function that I've developed a fancy
+---- new button for, but now I want to make a key so I don't have to use the button.
+--		awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
+--				  "k",
+--				  function(c)
+--					  if c.screen.selected_tag.gap == 0 then
+--						  c.screen.selected_tag.gap = c.screen.geometry.height / 20
+--					  else
+--						  c.screen.selected_tag.gap = 0
+--					  end
+--				  end,
+--				  { description = "toggle useless gaps", group = "client" }),
 
 -- Isaac
 -- Now I want a keystroke that toggles whether a client is floating.
-		awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
-				  "f",
-				  function(c)
-					  awful.client.floating.toggle()
-
-					  if not c.floating then
-						  return
-					  end
-
-					  c.maximized = false
-
-					  -- On big screens (ie. the TV I use as a desktop monitor)
-					  -- adjust the window size and position to make for comfortable website reading.
-					  if c.screen.geometry.width > 2000 then
-						  local geo
-						  geo        = c:geometry()
-						  local sgeo
-						  sgeo       = c.screen.geometry
-
-						  geo.x      = sgeo.x + sgeo.width / 3
-						  geo.y      = sgeo.y + sgeo.height / 3
-						  geo.width  = sgeo.width / 3
-						  geo.height = sgeo.height * 2 / 3
-
-						  c:geometry(geo)
-					  end
-				  end,
-				  { description = "toggle floating", group = "client" }),
+		awful.key({ altkey, "Control", "Shift", }, "f", fancy_float_toggle, { description = "toggle floating", group = "client" }),
 
 
 		awful.key({ modkey }, "u", function()
