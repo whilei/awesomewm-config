@@ -561,8 +561,6 @@ imodal_client_focus       = {
 		awful.client.focus.byidx(-1)
 	end, "previous" },
 
-	{ "w", modalbind.grabf { keymap = imodal_client_toggle, name = "Client settings", stay_in_mode = false, hide_default_options = true }, "+client settings" },
-
 	{ "x", function()
 		if not client.focus then
 			return
@@ -834,28 +832,58 @@ imodal_main               = {
 
 	{ "Tab", special.focus_previous_client_global, "focus last" },
 
+	{ "-", function(c)
+		-- The client currently has the input focus, so it cannot be
+		-- minimized, since minimized clients can't have the focus.
+		local cc = c or client.focus
+		if not cc then
+			return
+		end
+		cc.focus = false
+		cc:lower()
+		cc.minimized = true
+		awful.client.focus.history.previous()
+	end, "minimize" },
+	{ "+", function()
+		local c = awful.client.restore()
+		-- Focus restored client
+		if c then
+			client.focus = c
+			c:raise()
+		end
+	end, "restore" },
+
 	{ "a", modalbind.grabf { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }, "+awesome" },
 	{ "b", modalbind.grabf { keymap = imodal_bars, name = "Bars", stay_in_mode = false, hide_default_options = true }, "+bars" },
-	{ "c", modalbind.grabf { keymap = imodal_client_move_resize, name = "Client", stay_in_mode = true, hide_default_options = true }, "+client move/resize" },
+	{ "e", revelation, "revelation" },
+	{ "f", modalbind.grabf { keymap = imodal_client_focus, name = "Client (focus)", stay_in_mode = false, hide_default_options = true }, "+focus (client)" },
+	{ "g", modalbind.grabf { keymap = imodal_widgets, name = "Widgets", stay_in_mode = false, hide_default_options = true }, "+widgets" },
+	{ "i", function()
+		hints.focus();
+		if not client.focus then
+			return
+		end
+		client.focus:raise()
+	end, "hints" },
 	{ "l", modalbind.grabf { keymap = imodal_layout, name = "Layout", stay_in_mode = false, hide_default_options = true }, "+layout" },
-	{ "o", function()
+	{ "p", modalbind.grabf { keymap = imodal_client_move_resize, name = "Client", stay_in_mode = true, hide_default_options = true }, "+position (client)" },
+	{ "r", revelation, "revelation" },
+	{ "s", function()
 		awful.screen.focus_relative(1)
-	end, "focus opposite screen" },
-	{ "r", function()
-		ia_popup_shell.launch()
-	end, "run launcher" },
-	{ "s", modalbind.grabf { keymap = imodal_screenshot, name = "Screenshot", stay_in_mode = false, hide_default_options = true }, "+screenshot" },
+	end, "switch screen" },
 	{ "t", modalbind.grabf { keymap = imodal_tag, name = "Tag", stay_in_mode = false, hide_default_options = true }, "+tag" },
 	{ "u", modalbind.grabf { keymap = imodal_useless, name = "Useless gaps", stay_in_mode = true, hide_default_options = true }, "+useless gaps" },
 	{ "v", modalbind.grabf { keymap = imodal_volume, name = "Useless gaps", stay_in_mode = true, hide_default_options = true }, "+volume" },
 	{ "x", modalbind.grabf { keymap = imodal_toggle, name = "Toggle Settings", stay_in_mode = false, hide_default_options = true }, "+toggle" },
-	{ "w", modalbind.grabf { keymap = imodal_client_focus, name = "Client (focus)", stay_in_mode = false, hide_default_options = true }, "+client (focus)" },
-	{ "P", modalbind.grabf { keymap = imodal_power, name = "Power/User", stay_in_mode = false, hide_default_options = true }, "+power/user" },
-	{ "R", revelation, "revelation" },
-	{ "W", modalbind.grabf { keymap = imodal_widgets, name = "Widgets", stay_in_mode = false, hide_default_options = true }, "+widgets" },
+	{ "w", modalbind.grabf { keymap = imodal_client_toggle, name = "Client settings", stay_in_mode = false, hide_default_options = true }, "+client settings" },
 	{ "z", function()
 		awful.screen.focused().quake:toggle()
-	end, "quake" }
+	end, "quake" },
+	{ "P", modalbind.grabf { keymap = imodal_power, name = "Power/User", stay_in_mode = false, hide_default_options = true }, "+power/user" },
+	{ "R", function()
+		ia_popup_shell.launch()
+	end, "run launcher" },
+	{ "S", modalbind.grabf { keymap = imodal_screenshot, name = "Screenshot", stay_in_mode = false, hide_default_options = true }, "+screenshot" },
 }
 
 --
@@ -1576,6 +1604,7 @@ clientkeys = my_table.join(
 					  if not cc then
 						  return
 					  end
+					  cc.focus = false
 					  cc:lower()
 					  cc.minimized = true
 					  awful.client.focus.history.previous()

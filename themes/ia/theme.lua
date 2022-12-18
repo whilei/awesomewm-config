@@ -1356,9 +1356,9 @@ function theme.at_screen_connect(s)
 		},
 		screen       = s,
 		type         = "dock",
-		placement    = awful.placement.bottom,
+		placement    = awful.placement.top,
 		shape        = function(c, w, h)
-			local tl, tr, br, bl = false, true, false, false
+			local tl, tr, br, bl = false, false, true, false
 			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
 		end,
 		visible      = false,
