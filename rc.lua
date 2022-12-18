@@ -156,7 +156,6 @@ awful.util.tasklist_buttons = my_table.join(
 		end))
 
 local theme_path            = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme)
---local theme_path = string.format("%s/.config/awesome/awesome-macos/themes/macos-dark/theme.lua", os.getenv("HOME"))
 
 beautiful.init(theme_path)
 revelation.init()
@@ -175,8 +174,6 @@ local screenshot_window_fn    = function()
 	naughty.notify({ text = "Screenshot of window OK", timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
 end
 
--- Modal operation
---
 local fullscreen_fn           = function(c)
 	c.fullscreen = not c.fullscreen
 	c:raise()
@@ -187,9 +184,6 @@ local rofi_fn                 = function()
 	-- 1   2   3
 	-- 8   0   4
 	-- 7   6   5
-
-	-- -sidebar-mode shows 'tabs' of available modi
-
 	commandPrompter = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
 	awful.spawn.easy_async(commandPrompter, function()
 		if client.focus then
@@ -199,27 +193,19 @@ local rofi_fn                 = function()
 end
 
 local toggle_wibar_slim_fn    = function()
-	--for s in screen do
-	local s           = awful.screen.focused()
-	s.mywibox.visible = not s.mywibox.visible
-	if s.mybottomwibox then
-		s.mybottomwibox.visible = not s.mybottomwibox.visible
-	end
-	if s.mywibox_slim then
-		s.mywibox_slim.visible = not s.mywibox_slim.visible
-	end
-
-	--if s.mywibox_clock then
-	--    s.mywibox_clock.visible = not s.mywibox_clock.visible
-	--end
+	local s                = awful.screen.focused()
+	s.mywibox.visible      = not s.mywibox.visible
+	s.mywibox_slim.visible = not s.mywibox.visible
+	s.mywibox_slim:emit_signal("widget::redraw_needed")
 end
 
 local toggle_worldtimes_fn    = function()
 	local s                      = awful.screen.focused()
-	--for s in screen do
 	s.mywibox_worldtimes.visible = not s.mywibox_worldtimes.visible
-	--end
 end
+
+
+-- Modality
 
 beautiful.modebox_bg          = "#222222"
 beautiful.modebox_fg          = "#FFFFFF"
@@ -229,14 +215,6 @@ local modalbind               = require("modalbind")
 modalbind.init()
 modalbind.set_location("bottom")
 modalbind.hide_default_options()
-
--- c = client
--- c,c = client change (focus)
--- c,m = client move
--- c,r = client resize
--- c,p = client placement
--- c,t = client toggle
-
 
 local imodal_main
 local imodal_awesomewm

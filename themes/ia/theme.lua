@@ -346,6 +346,17 @@ local function BoundedRGBVal(low, high, val)
 	return val
 end
 
+my_calendar_widget    = calendar_widget({
+											theme                 = 'outrun',
+											--placement = 'bottom_right',
+											--start_sunday = true,
+											--radius = 8,
+											-- with customized next/previous (see table above)
+											previous_month_button = 1,
+											next_month_button     = 3,
+											placement             = 'centered',
+										})
+
 local world_clock_fmt = "%H:%M%t%z"
 
 -- THIS IS __THE__ CLOCK widget in top right wibox menu thingy
@@ -369,24 +380,13 @@ local clock           = awful.widget.watch(
 		end
 )
 
-my_calendar_widget    = calendar_widget({
-											theme                 = 'outrun',
-											--placement = 'bottom_right',
-											--start_sunday = true,
-											--radius = 8,
-											-- with customized next/previous (see table above)
-											previous_month_button = 1,
-											next_month_button     = 3,
-											placement             = 'centered',
-										})
-
 clock:connect_signal("button::press", function(_, _, _, button)
 	if button == 1 then
 		my_calendar_widget.toggle()
 	end
 end)
 
-local clock_time              = awful.widget.watch(
+local clock_time_only         = awful.widget.watch(
 		"date +'%H:%M'",
 		60,
 		function(widget, stdout)
@@ -394,7 +394,7 @@ local clock_time              = awful.widget.watch(
 
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("Roboto Bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
+					markup.fontbg("monospace bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout) .. " ")
 			)
 		end
 )
@@ -911,6 +911,14 @@ function theme.at_screen_connect(s)
 		s.padding = { left = 5 }
 	end
 
+	-- Hide Handy clients on screen connect;
+	-- otherwise they show up (on top) when I restart Awesome.
+	for _, cl in ipairs(s.clients) do
+		if cl:get_xproperty("handy_id") ~= "" then
+			cl.visible = false
+		end
+	end
+
 	-- Quake application
 	s.quake         = lain.util.quake({
 										  app             = "konsole",
@@ -1011,10 +1019,10 @@ function theme.at_screen_connect(s)
 	local function taglist_create_update(self, tag, index, tags)
 		local tag_occupied = #tag:clients() > 0
 		if tag_occupied and tag.selected then
-			self:get_children_by_id("inner_background_role")[1].border_width = 2
+			self:get_children_by_id("inner_background_role")[1].border_width = 1
 			self:get_children_by_id("inner_background_role")[1].border_color = theme.fg_focus
 		elseif tag_occupied then
-			self:get_children_by_id("inner_background_role")[1].border_width = 2
+			self:get_children_by_id("inner_background_role")[1].border_width = 1
 			self:get_children_by_id("inner_background_role")[1].border_color = "#666666"
 			self:get_children_by_id("text_background_role")[1].bg            = "#00000000"
 		else
@@ -1123,7 +1131,9 @@ function theme.at_screen_connect(s)
 					},
 					id     = "inner_background_role",
 					widget = wibox.container.background,
-					--shape        = gears.shape.rounded_rect,
+					shape  = function(cr, width, height)
+						return gears.shape.rounded_rect(cr, width, height, height / 10)
+					end,
 					--border_width = 1,
 					--border_color = theme.fg_focus,
 				},
@@ -1251,13 +1261,15 @@ function theme.at_screen_connect(s)
 
 	-- Create the wibox
 	local mywibar_args = {
-		position = "top", -- top, bottom
-		screen   = s,
-		height   = 18,
-		bg       = theme.bg_normal,
-		fg       = theme.fg_normal,
-		opacity  = 0.5,
-		visible  = true,
+		position          = "top", -- top, bottom
+		screen            = s,
+		height            = 18,
+		bg                = theme.bg_normal,
+		fg                = theme.fg_normal,
+		opacity           = 0.5,
+		visible           = true,
+		restrict_workarea = true, -- Allow or deny the tiled client to cover the wibar.
+		margins           = { left = 0, right = 0, top = 0, bottom = dpi(5) },
 	}
 
 	if s.is_tv then
@@ -1266,81 +1278,60 @@ function theme.at_screen_connect(s)
 		mywibar_args.width    = s.workarea.width / 3 * 2
 	end
 
-	s.mywibox       = awful.wibar(mywibar_args)
+	s.mywibox      = awful.wibar(mywibar_args)
 
 	-- The important part to make this actually float on top of all the stuff is
 	-- that it's a WIBOX and a not a WIBAR.
 	-- It's also NOT an awful.wibox, but just a wibox. These are important things.
-	s.mywibox_slim  = wibox({
-								visible           = not s.mywibox.visible, -- Needs to be opposite of the default mywibox wibar to make it work like I want.
-								screen            = s,
+	s.mywibox_slim = awful.wibar({
+									 position          = mywibar_args.position,
+									 screen            = s,
+									 height            = mywibar_args.height,
+									 width             = 500,
+									 bg                = nil,
+									 restrict_workarea = false,
+									 stretch           = false,
+									 visible           = not s.mywibox.visible,
+									 ontop             = true,
+									 --type              = "dock",
+									 --Valid types are:
+									 --
+									 --desktop: The root client, it cannot be moved or resized.
+									 --dock: A client attached to the side of the screen.
+									 --splash: A client, usually without titlebar shown when an application starts.
+									 --dialog: A dialog, see transient_for.
+									 --menu: A context menu.
+									 --toolbar: A floating toolbar.
+									 --utility:
+									 --dropdown_menu: A context menu attached to a parent position.
+									 --popup_menu: A context menu.
+									 --notification: A notification popup.
+									 --combo: A combobox list menu.
+									 --dnd: A drag and drop indicator.
+									 --normal: A normal application main window.
+								 })
 
-								y                 = s.geometry.y,
-								x                 = s.geometry.x + s.geometry.width / 4 - 60,
-
-								-- Bottom
-								--y = s.geometry.y + s.geometry.height - 14,
-								--x = s.geometry.x + s.geometry.width / 2 - 60,
-
-								height            = 16, -- 18
-								width             = 120 + 50 + 20, -- 50 for clock, 20 for font with ubuntu 20.04
-
-								---- Rotated:
-								--y = s.geometry.y + s.geometry.height / 2 - 60,
-								--x = s.geometry.x,
-								--height = 120, -- 18
-								--width = 14,
-
-								bg                = theme.tasklist_bg_normal,
-
-								ontop             = true,
-								type              = "dock", -- "toolbar", -- ,
-
-								--Valid types are:
-								--
-								--desktop: The root client, it cannot be moved or resized.
-								--dock: A client attached to the side of the screen.
-								--splash: A client, usually without titlebar shown when an application starts.
-								--dialog: A dialog, see transient_for.
-								--menu: A context menu.
-								--toolbar: A floating toolbar.
-								--utility:
-								--dropdown_menu: A context menu attached to a parent position.
-								--popup_menu: A context menu.
-								--notification: A notification popup.
-								--combo: A combobox list menu.
-								--dnd: A drag and drop indicator.
-								--normal: A normal application main window.
-
-
-								input_passthrough = true, -- noop, btw
-							})
-
-	s.mywibox_clock = wibox({
-								visible           = false,
-								screen            = s,
-								y                 = s.geometry.y,
-								x                 = s.geometry.x + s.geometry.width - (s.geometry.width / 16),
-								--height = 24 + 8,
-								height            = 18,
-								width             = s.geometry.width / 16,
-								bg                = theme.clock_bg,
-								ontop             = true,
-								type              = "toolbar",
-								input_passthrough = true,
-							})
-
-	s.mywibox_clock:setup {
+	s.mywibox_slim:setup {
 		layout = wibox.layout.align.horizontal,
 		{
-			layout = wibox.layout.fixed.horizontal, -- left
+			layout = wibox.layout.align.horizontal,
+
+			s.mypromptbox,
+			spr,
+
+			s.mytaglist,
+			spr,
+
+			s.mylayoutbox,
+			spr,
+
 		},
 		{
-			layout = wibox.layout.fixed.horizontal, -- center
+			layout = wibox.layout.flex.horizontal,
 		},
 		{
-			layout = wibox.layout.fixed.horizontal, -- right
-			clock,
+			layout = wibox.layout.align.horizontal,
+			clock_time_only,
 		}
 	}
 
@@ -1438,32 +1429,6 @@ function theme.at_screen_connect(s)
 				mygithubwidget2.widget,
 			},
 		},
-	}
-
-	s.mywibox_slim:setup {
-		layout = wibox.layout.align.horizontal,
-		---- Rotated:
-		--layout = wibox.container.rotate,
-		--direction = "west",
-		{ -- Center widgets
-			layout = wibox.layout.fixed.horizontal,
-
-			--s.mypromptbox,
-			--spr,
-
-			s.mytaglist,
-			spr,
-
-			s.mylayoutbox,
-			spr,
-
-			--s.mytasklist_slim,
-			--spr,
-		},
-		{
-			layout = wibox.layout.align.horizontal,
-			clock_time,
-		}
 	}
 
 	s.togglegaps = function()
