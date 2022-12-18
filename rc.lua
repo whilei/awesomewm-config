@@ -686,7 +686,7 @@ imodal_layout             = {
 	end, "magnifier" },
 	{ "s", function()
 		awful.layout.set(ia_layout_swen)
-	end, "swne" },
+	end, "SWEN" },
 	{ "t", function()
 		awful.layout.set(awful.layout.suit.tile)
 	end, "tile" },

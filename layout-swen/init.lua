@@ -43,7 +43,7 @@ local capi   = {
 }
 
 local swen   = {
-	name = "swen"
+	name = "SWEN"
 }
 
 local function arrange(p, layout)
