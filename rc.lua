@@ -7,30 +7,24 @@
 -- {{{ Required libraries
 local awesome, client, mouse, screen, tag, titlebar                         = awesome, client, mouse, screen, tag, titlebar
 local ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type = ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type
-
 local gears                                                                 = require("gears")
 local awful                                                                 = require("awful")
-require("awful.autofocus")
-local wibox              = require("wibox")
-local beautiful          = require("beautiful")
-local naughty            = require("naughty")
-local lain               = require("lain")
---local menubar       = require("menubar")
-local freedesktop        = require("freedesktop")
-local hotkeys_popup      = require("awful.hotkeys_popup").widget
-local revelation         = require("revelation")
+local _                                                                     = require("awful.autofocus")
+local wibox                                                                 = require("wibox")
+local beautiful                                                             = require("beautiful")
+local naughty                                                               = require("naughty")
+local lain                                                                  = require("lain")
+local freedesktop                                                           = require("freedesktop")
+local hotkeys_popup                                                         = require("awful.hotkeys_popup").widget
+local revelation                                                            = require("revelation")
+local hints                                                                 = require("hints")
 
--- local layout_bling_mstab  = require("bling.layout.mstab")
+local ia_layout_swen                                                        = require("layout-swen")
+local ia_layout_vcolumns                                                    = require("columns-layout")
 
-local hints              = require("hints")
-
-local ia_layout_swen     = require("layout-swen")
-local ia_layout_vcolumns = require("columns-layout")
-
-local ia_popup_shell     = require("ia-popup-run.popup-shell")
-local special            = require("special")
-
-local my_table           = awful.util.table or gears.table -- 4.{0,1} compatibility
+local ia_popup_shell                                                        = require("ia-popup-run.popup-shell")
+local special                                                               = require("special")
+local a_util_table                                                          = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- }}}
 
 -- {{{ Error handling
@@ -60,8 +54,6 @@ do
 						   end)
 end
 -- }}}
-
---run_once({ "urxvtd", "unclutter -root" }) -- entries must be comma-separated
 
 if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
@@ -123,7 +115,7 @@ awful.layout.layouts        = {
 	--ia_layout_bigscreen,
 }
 
-awful.util.taglist_buttons  = my_table.join(
+awful.util.taglist_buttons  = a_util_table.join(
 		awful.button({}, 1, function(t)
 			t:view_only()
 		end),
@@ -145,7 +137,7 @@ awful.util.taglist_buttons  = my_table.join(
 			awful.tag.viewprev(t.screen)
 		end))
 
-awful.util.tasklist_buttons = my_table.join(
+awful.util.tasklist_buttons = a_util_table.join(
 		awful.button({}, 1, function(c)
 			if c == client.focus then
 				c.minimized = true
@@ -1103,7 +1095,7 @@ end)
 
 -- }}}
 -- {{{ Key bindings
-globalkeys = my_table.join(
+globalkeys = a_util_table.join(
 
 		awful.key({ modkey }, ",", function()
 			modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
@@ -1490,7 +1482,7 @@ globalkeys = my_table.join(
 				  end,
 				  { description = "run prompt", group = "launcher" }))
 
-clientkeys = my_table.join(
+clientkeys = a_util_table.join(
 
 		awful.key({ altkey, "Shift" }, "m", function(c)
 			lain.util.magnify_client(c)
@@ -1654,65 +1646,65 @@ for i = 1, 9 do
 		descr_move         = { description = "move focused client to tag #", group = "tag" }
 		descr_toggle_focus = { description = "toggle focused client on tag #", group = "tag" }
 	end
-	globalkeys = my_table.join(globalkeys,
+	globalkeys = a_util_table.join(globalkeys,
 	-- View tag only.
-							   awful.key({ modkey },
-										 "#" .. i + 9,
-										 function()
-											 local screen = awful.screen.focused()
-											 local tag    = screen.tags[i]
-											 if tag then
-												 tag:view_only()
-											 end
-										 end,
-										 descr_view),
+								   awful.key({ modkey },
+											 "#" .. i + 9,
+											 function()
+												 local screen = awful.screen.focused()
+												 local tag    = screen.tags[i]
+												 if tag then
+													 tag:view_only()
+												 end
+											 end,
+											 descr_view),
 	-- Toggle tag display.
-							   awful.key({ modkey, "Control" },
-										 "#" .. i + 9,
-										 function()
-											 local screen = awful.screen.focused()
-											 local tag    = screen.tags[i]
-											 if tag then
-												 awful.tag.viewtoggle(tag)
-											 end
-										 end,
-										 descr_toggle),
+								   awful.key({ modkey, "Control" },
+											 "#" .. i + 9,
+											 function()
+												 local screen = awful.screen.focused()
+												 local tag    = screen.tags[i]
+												 if tag then
+													 awful.tag.viewtoggle(tag)
+												 end
+											 end,
+											 descr_toggle),
 	-- Move client to tag.
-							   awful.key({ modkey, "Shift" },
-										 "#" .. i + 9,
-										 function()
-											 if client.focus then
-												 local tag = client.focus.screen.tags[i]
-												 if tag then
-													 client.focus:move_to_tag(tag)
+								   awful.key({ modkey, "Shift" },
+											 "#" .. i + 9,
+											 function()
+												 if client.focus then
+													 local tag = client.focus.screen.tags[i]
+													 if tag then
+														 client.focus:move_to_tag(tag)
+													 end
 												 end
-											 end
-										 end,
-										 descr_move),
+											 end,
+											 descr_move),
 	-- Toggle tag on focused client.
-							   awful.key({ modkey, "Control", "Shift" },
-										 "#" .. i + 9,
-										 function()
-											 if client.focus then
-												 local tag = client.focus.screen.tags[i]
-												 if tag then
-													 client.focus:toggle_tag(tag)
+								   awful.key({ modkey, "Control", "Shift" },
+											 "#" .. i + 9,
+											 function()
+												 if client.focus then
+													 local tag = client.focus.screen.tags[i]
+													 if tag then
+														 client.focus:toggle_tag(tag)
+													 end
 												 end
-											 end
-										 end,
-										 descr_toggle_focus))
+											 end,
+											 descr_toggle_focus))
 end
 
 -- Set up client management buttons FOR THE MOUSE.
 -- (1 is left, 3 is right)
-clientbuttons = my_table.join(awful.button({},
-										   1,
-										   function(c)
-											   client.focus = c
-											   c:raise()
-										   end),
-							  awful.button({ modkey }, 1, awful.mouse.client.move),
-							  awful.button({ modkey }, 3, awful.mouse.client.resize))
+clientbuttons = a_util_table.join(awful.button({},
+											   1,
+											   function(c)
+												   client.focus = c
+												   c:raise()
+											   end),
+								  awful.button({ modkey }, 1, awful.mouse.client.move),
+								  awful.button({ modkey }, 3, awful.mouse.client.resize))
 
 -- Set keys
 root.keys(globalkeys)
@@ -1837,7 +1829,7 @@ local mytitlebars = function(c)
 
 	-- Default
 	-- buttons for the titlebar
-	local buttons = my_table.join(
+	local buttons = a_util_table.join(
 			awful.button({},
 						 1,
 						 function()
