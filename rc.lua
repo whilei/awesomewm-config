@@ -5,7 +5,7 @@
 
 --]]
 -- {{{ Required libraries
-local awesome, client, mouse, screen, tag, titlebar                         = awesome, client, mouse, screen, tag, titlebar
+local awesome, screen, client, mouse, screen, tag, titlebar                 = awesome, screen, client, mouse, screen, tag, titlebar
 local ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type = ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type
 local gears                                                                 = require("gears")
 local awful                                                                 = require("awful")
@@ -18,9 +18,10 @@ local freedesktop                                                           = re
 local hotkeys_popup                                                         = require("awful.hotkeys_popup").widget
 local revelation                                                            = require("revelation")
 local hints                                                                 = require("hints")
-
+local cairo                                                                 = require("lgi").cairo
 local ia_layout_swen                                                        = require("layout-swen")
 local ia_layout_vcolumns                                                    = require("columns-layout")
+local layout_titlebars_conditional                                          = require("layout-titlebars-conditional")
 
 local ia_popup_shell                                                        = require("ia-popup-run.popup-shell")
 local special                                                               = require("special")
@@ -103,10 +104,16 @@ awful.util.tagnames         = { "1", "2", "3", "4", "5" }
 --awful.util.tagnames = { "❶", "❷", "❸", "❹", "❺" }
 --awful.util.tagnames = { "▇", "▇", "▇", "▇", "▇" }
 
+local _layouts              = {
+	tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
+	swen  = layout_titlebars_conditional { layout = ia_layout_swen },
+}
+
 awful.layout.layouts        = {
 	-- awful.layout.suit.tile.bottom,
-	awful.layout.suit.tile,
-	ia_layout_swen,
+	--awful.layout.suit.tile,
+	_layouts.tiler,
+	_layouts.swen,
 	lain.layout.centerwork,
 	--awful.layout.suit.fair,
 	awful.layout.suit.magnifier,
@@ -184,7 +191,10 @@ local rofi_fn                 = function()
 	-- 1   2   3
 	-- 8   0   4
 	-- 7   6   5
-	commandPrompter = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
+
+	local tv_prompt     = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
+	local laptop_prompt = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
+	commandPrompter     = awful.screen.focused().is_tv and tv_prompt or laptop_prompt
 	awful.spawn.easy_async(commandPrompter, function()
 		if client.focus then
 			awful.screen.focus(client.focus.screen)
@@ -207,10 +217,28 @@ local fancy_float_toggle      = function(c)
 	c.floating = not c.floating
 
 	if not c.floating then
+		-- The client is not floating now, which means
+		-- we are toggling-off this fancy layout.
+		c.screen          = c.original_screen
+		c.original_screen = nil
+		c:raise()
+		client.focus = c
 		return
 	end
 
-	c.maximized = false
+	c.maximized       = false
+	c.original_screen = c.screen
+
+	-- Move to TV screen.
+	if not c.screen.is_tv then
+		for s in screen do
+			if s.is_tv then
+				c.screen = s
+				c:raise()
+				client.focus = c
+			end
+		end
+	end
 
 	-- On big screens (ie. the TV I use as a desktop monitor)
 	-- adjust the window size and position to make for comfortable website reading.
@@ -218,12 +246,12 @@ local fancy_float_toggle      = function(c)
 		local geo
 		geo        = c:geometry()
 		local sgeo
-		sgeo       = c.screen.geometry
+		sgeo       = c.screen.workarea
 
-		geo.x      = sgeo.x + sgeo.width / 3
-		geo.y      = sgeo.y + sgeo.height / 3
-		geo.width  = sgeo.width / 3
-		geo.height = sgeo.height * 2 / 3
+		geo.x      = sgeo.x + sgeo.width / 4
+		geo.y      = sgeo.y + sgeo.height / 4
+		geo.width  = sgeo.width / 2
+		geo.height = sgeo.height * 3 / 4
 
 		c:geometry(geo)
 	end
@@ -677,10 +705,10 @@ imodal_layout             = {
 		awful.layout.set(awful.layout.suit.magnifier)
 	end, "magnifier" },
 	{ "s", function()
-		awful.layout.set(ia_layout_swen)
+		awful.layout.set(_layouts.swen)
 	end, "SWEN" },
 	{ "t", function()
-		awful.layout.set(awful.layout.suit.tile)
+		awful.layout.set(_layouts.tiler)
 	end, "tile" },
 	{ "v", function()
 		awful.layout.set(ia_layout_vcolumns)
@@ -1697,18 +1725,36 @@ end
 
 -- Set up client management buttons FOR THE MOUSE.
 -- (1 is left, 3 is right)
-clientbuttons = a_util_table.join(awful.button({},
-											   1,
-											   function(c)
-												   client.focus = c
-												   c:raise()
-											   end),
-								  awful.button({ modkey }, 1, awful.mouse.client.move),
-								  awful.button({ modkey }, 3, awful.mouse.client.resize))
+clientbuttons = a_util_table.join(
+		awful.button({}, 1, function(c)
+			client.focus = c
+			c:raise()
+		end),
+		awful.button({ modkey }, 1, function(c)
+			c.floating  = true
+			c.maximized = false
+			awful.mouse.client.move()
+		end
+		),
+		awful.button({ modkey }, 3, function(c)
+			c.floating  = true
+			c.maximized = false
+			awful.mouse.client.resize()
+		end
+		))
 
 -- Set keys
 root.keys(globalkeys)
 -- }}}
+
+--local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "/awesome-buttons/icons/terminal.svg"
+--local konsole_icon      = gears.surface(konsole_icon_path)
+--local konsole_img       = cairo.ImageSurface.create(cairo.Format.ARGB32, konsole_icon:get_width(), konsole_icon:get_height())
+--local konsole_cr        = cairo.Context(konsole_img)
+--konsole_cr:set_source_surface(s, 0, 0)
+--konsole_cr:paint()
+
+--awesome.set_preferred_icon_size(32, 32)
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
@@ -1731,6 +1777,10 @@ awful.rules.rules = {
 		}
 	},
 	-- Titlebars
+	{
+		rule       = { maximized = true },
+		properties = { titlebars_enabled = false },
+	},
 	{
 		rule_any   = { type = { "dialog", "normal" } },
 		-- properties = {titlebars_enabled = true}
@@ -1789,7 +1839,15 @@ awful.rules.rules = {
 			ontop        = true,
 			focus        = false,
 		}
-	}
+	},
+	--{
+	--	rule       = {
+	--		class = "konsole",
+	--	},
+	--	properties = {
+	--		icon = konsole_icon,
+	--	}
+	--}
 }
 -- }}}
 

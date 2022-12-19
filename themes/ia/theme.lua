@@ -1060,34 +1060,36 @@ function theme.at_screen_connect(s)
 				awful.layout.inc(-1)
 			end)))
 
-	-- Create a taglist widget
-	s.mytaglist = awful.widget.taglist(
-			s,
-			awful.widget.taglist.filter.all,
-			awful.util.taglist_buttons,
-			{
-				-- style
-				--fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
-				fg_occupied = "#666666", -- "#777777",
-				fg_empty    = "#222222",
-
-				bg_focus    = "#00000000",
-				bg_urgent   = "#00000000",
-				bg_occupied = "#00000000",
-				bg_empty    = "#00000000",
-				bg_volatile = "#00000000",
-				--taglist_squares_sel
-			}
-	)
+	---- Create a taglist widget
+	--s.mytaglist = awful.widget.taglist(
+	--		s,
+	--		awful.widget.taglist.filter.all,
+	--		awful.util.taglist_buttons,
+	--		{
+	--			-- style
+	--			--fg_focus = "#3846c7", -- theme.color_lightblue, -- theme.tasklist_bg_focus,
+	--			fg_occupied = "#666666", -- "#777777",
+	--			fg_empty    = "#222222",
+	--
+	--			bg_focus    = "#00000000",
+	--			bg_urgent   = "#00000000",
+	--			bg_occupied = "#00000000",
+	--			bg_empty    = "#00000000",
+	--			bg_volatile = "#00000000",
+	--			--taglist_squares_sel
+	--		}
+	--)
 
 	local function taglist_create_update(self, tag, index, tags)
 		local tag_occupied = #tag:clients() > 0
 		if tag_occupied and tag.selected then
 			self:get_children_by_id("inner_background_role")[1].border_width = 1
 			self:get_children_by_id("inner_background_role")[1].border_color = theme.fg_focus
+			self:get_children_by_id("inner_background_role")[1].bg           = "#142924"
 		elseif tag_occupied then
 			self:get_children_by_id("inner_background_role")[1].border_width = 1
 			self:get_children_by_id("inner_background_role")[1].border_color = "#666666"
+			self:get_children_by_id("inner_background_role")[1].bg           = "#000000"
 			self:get_children_by_id("text_background_role")[1].bg            = "#00000000"
 		else
 			self:get_children_by_id("inner_background_role")[1].border_width = 0
@@ -1147,7 +1149,7 @@ function theme.at_screen_connect(s)
 			--fg_empty    = "#666666",
 
 			bg_focus    = "#00000000",
-			bg_urgent   = "#00000000",
+			bg_urgent   = "#ff0000",
 			bg_occupied = "#00000000",
 			bg_empty    = "#00000000",
 			bg_volatile = "#00000000",
@@ -1219,11 +1221,9 @@ function theme.at_screen_connect(s)
 	local function list_update(w, buttons, label, data, objects)
 		--common.list_update(w, buttons, label, data, objects)
 		my_commonlist_update(w, buttons, label, data, objects)
-		--if s.geometry.width > 3000 then
-		--	w:set_max_widget_size(300)
-		--else
-		--	w:set_max_widget_size(200)
-		--end
+		if not s.is_tv then
+			w:set_max_widget_size(200)
+		end
 
 	end
 
@@ -1288,6 +1288,12 @@ function theme.at_screen_connect(s)
 			if text == nil or text == "" then
 				tbm:set_margins(0)
 			else
+				tbm:set_margins({
+									left   = dpi(2),
+									right  = dpi(8),
+									top    = dpi(2),
+									bottom = dpi(2),
+								})
 				if not tb:set_markup_silently(text) then
 					tb:set_markup("<i>&lt;Invalid text&gt;</i>")
 				end
@@ -1302,14 +1308,24 @@ function theme.at_screen_connect(s)
 			if icon then
 				ib:set_image(icon)
 			else
-				ibm:set_margins(0)
+				ibm:set_margins(dpi(4))
 			end
+			ibm:set_margins({
+								left   = dpi(8),
+								right  = dpi(4),
+								top    = dpi(4),
+								bottom = dpi(4),
+							})
 
 			bgb.shape              = args.shape
+			bgb.shape              = function(c, w, h)
+				gears.shape.rounded_rect(c, w, h, h / 10)
+			end
 			bgb.shape_border_width = args.shape_border_width
 			bgb.shape_border_color = args.shape_border_color
 
-			w:add(bgb)
+			local bgbm             = wibox.container.margin(bgb, dpi(4), dpi(0))
+			w:add(bgbm)
 		end
 	end
 
@@ -1431,7 +1447,7 @@ function theme.at_screen_connect(s)
 		visible      = false,
 		ontop        = true,
 		border_width = 0,
-		border_color = "#ff0000",
+		border_color = "#222222",
 	}
 
 	s.mywibox_worldtimes = awful.popup {
@@ -1445,6 +1461,8 @@ function theme.at_screen_connect(s)
 			local tl, tr, br, bl = true, true, false, false
 			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
 		end,
+		border_width      = dpi(4),
+		border_color      = theme.clock_fg,
 		widget            = {
 			widget = wibox.container.constraint,
 			{
