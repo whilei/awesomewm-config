@@ -249,9 +249,9 @@ local fancy_float_toggle      = function(c)
 		sgeo       = c.screen.workarea
 
 		geo.x      = sgeo.x + sgeo.width / 4
-		geo.y      = sgeo.y + sgeo.height / 4
+		geo.y      = sgeo.y + sgeo.height / 8
 		geo.width  = sgeo.width / 2
-		geo.height = sgeo.height * 3 / 4
+		geo.height = sgeo.height * 7 / 8
 
 		c:geometry(geo)
 	end
@@ -1838,6 +1838,14 @@ awful.rules.rules = {
 			floating     = true,
 			ontop        = true,
 			focus        = false,
+		}
+	},
+	{
+		rule       = {
+			floating = true,
+		},
+		properties = {
+			shape = gears.shape.rounded_rect,
 		}
 	},
 	--{
