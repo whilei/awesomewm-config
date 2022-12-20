@@ -219,7 +219,7 @@ local fancy_float_toggle      = function(c)
 	if not c.floating then
 		-- The client is not floating now, which means
 		-- we are toggling-off this fancy layout.
-		c.screen          = c.original_screen
+		c.screen          = c.original_screen or awful.screen.focused()
 		c.original_screen = nil
 		c:raise()
 		client.focus = c
@@ -1914,6 +1914,7 @@ local mytitlebars = function(c)
 	awful.titlebar(c, { size = 16 }):setup {
 		{
 			-- Left
+			wibox.widget.textbox(" "),
 			awful.titlebar.widget.iconwidget(c),
 			awful.titlebar.widget.titlewidget(c),
 			buttons = buttons,
@@ -1936,6 +1937,7 @@ local mytitlebars = function(c)
 			awful.titlebar.widget.stickybutton(c),
 			awful.titlebar.widget.ontopbutton(c),
 			awful.titlebar.widget.floatingbutton(c),
+			wibox.widget.textbox(" "),
 			-- awful.titlebar.widget.closebutton(c),
 			spacing = 5, -- https://awesomewm.org/doc/api/classes/wibox.layout.fixed.html#wibox.layout.fixed.spacing
 			layout  = wibox.layout.fixed.horizontal()
