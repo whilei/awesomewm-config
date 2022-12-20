@@ -1282,10 +1282,11 @@ function theme.at_screen_connect(s)
 			-- This is my special additional
 			-- to REMOVE TEXT (LEAVING ONLY ICON)
 			-- if the task does indeed have an icon.
-			--if icon then text = "" end
+			if icon then text = "" end
 
 			-- The text might be invalid, so use pcall.
-			if text == nil or text == "" then
+			local no_text = text == nil or text == ""
+			if no_text then
 				tbm:set_margins(0)
 			else
 				tbm:set_margins({
@@ -1312,7 +1313,7 @@ function theme.at_screen_connect(s)
 			end
 			ibm:set_margins({
 								left   = dpi(8),
-								right  = dpi(4),
+								right  = no_text and dpi(8) or dpi(4),
 								top    = dpi(4),
 								bottom = dpi(4),
 							})
@@ -1680,6 +1681,7 @@ function theme.at_screen_connect(s)
 		-- middle
 		{
 			layout = wibox.layout.flex.horizontal,
+			spr,
 		},
 
 		-- Right widgets

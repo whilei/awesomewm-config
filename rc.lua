@@ -924,6 +924,13 @@ imodal_main               = {
 		end
 	end, "restore" },
 
+	{ "*", function()
+		if not client.focus then
+			return
+		end
+		client.focus:swap(awful.client.getmaster())
+	end, "move client to master" },
+
 	{ "a", modalbind.grabf { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }, "+awesome" },
 	{ "b", modalbind.grabf { keymap = imodal_bars, name = "Bars", stay_in_mode = false, hide_default_options = true }, "+bars" },
 	{ "e", revelation, "revelation" },
@@ -1911,15 +1918,19 @@ local mytitlebars = function(c)
 							 awful.mouse.client.resize(c)
 						 end))
 
+	-- forced_height = 12, forced_width = 12
+	local ci = awful.widget.clienticon(c);
+	ci.forced_width = 12
+	ci.forced_height = 12
 	awful.titlebar(c, { size = 16 }):setup {
 		{
 			-- Left
+			layout = wibox.layout.fixed.horizontal,
 			wibox.widget.textbox(" "),
-			awful.titlebar.widget.iconwidget(c),
+			wibox.container.place { widget = ci, valign = "center" },
 			awful.titlebar.widget.titlewidget(c),
 			buttons = buttons,
 			spacing = 5,
-			layout  = wibox.layout.fixed.horizontal
 		},
 		{
 			--                -- Middle
@@ -1940,7 +1951,7 @@ local mytitlebars = function(c)
 			wibox.widget.textbox(" "),
 			-- awful.titlebar.widget.closebutton(c),
 			spacing = 5, -- https://awesomewm.org/doc/api/classes/wibox.layout.fixed.html#wibox.layout.fixed.spacing
-			layout  = wibox.layout.fixed.horizontal()
+			layout  = wibox.layout.fixed.horizontal
 		},
 		layout = wibox.layout.align.horizontal
 	}
