@@ -54,14 +54,19 @@ local function arrange(p, layout)
 	local south, west, east, north = 1, 2, 3, 4
 
 	local mwfact                   = t.master_width_factor
+
 	local main_width               = math.floor(wa.width * mwfact)
-	local main_height              = (#cls < 4) and math.floor(wa.height * 3 / 4) or math.floor(wa.height / 2)
+	if #cls == 1 then
+		main_width = math.floor(main_width * 1.5)
+	end
+	main_width = math.min(wa.width, main_width) -- do not overflow work area
 
-	local slave_width_ew           = (wa.width - main_width) / 2 -- sides a,b
-	local slave_width_n            = main_width
+	local main_height    = (#cls < 4) and math.floor(wa.height * 3 / 4) or math.floor(wa.height / 2)
 
-	local wa_bottom                = wa.y + wa.height
-	local wa_right                 = wa.x + wa.width
+	local slave_width_ew = (wa.width - main_width) / 2 -- sides a,b
+
+	local wa_bottom      = wa.y + wa.height
+	local wa_right       = wa.x + wa.width
 
 	for i, cl in ipairs(cls) do
 		if i == south then
