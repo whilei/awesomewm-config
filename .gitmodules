@@ -19,3 +19,6 @@
 [submodule "vicious"]
 	path = vicious
 	url = https://github.com/vicious-widgets/vicious.git
+[submodule "awesome"]
+	path = awesome
+	url = https://github.com/awesomeWM/awesome.git
