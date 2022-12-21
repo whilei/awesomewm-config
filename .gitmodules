@@ -22,3 +22,6 @@
 [submodule "awesome"]
 	path = awesome
 	url = https://github.com/awesomeWM/awesome.git
+[submodule "poppin"]
+	path = poppin
+	url = https://github.com/raksooo/poppin.git

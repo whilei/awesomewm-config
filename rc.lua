@@ -1128,9 +1128,8 @@ awful.screen.connect_for_each_screen(function(s)
 	beautiful.at_screen_connect(s)
 end)
 
--- }}}
 -- {{{ Key bindings
-globalkeys = a_util_table.join(
+globalkeys            = a_util_table.join(
 
 		awful.key({ modkey }, ",", function()
 			modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
@@ -1176,11 +1175,11 @@ globalkeys = a_util_table.join(
 --        end,
 --        { description = "show screenshot menu", group = "hotkeys" }),
 
-		awful.key({ modkey }, "x",
-				  function()
-					  os.execute(invert_colors)
-				  end,
-				  { description = "invert colors on all screens with xrandr", group = "hotkeys" }),
+--awful.key({ modkey }, "x",
+--		  function()
+--			  os.execute(invert_colors)
+--		  end,
+--		  { description = "invert colors on all screens with xrandr", group = "hotkeys" }),
 
 -- Hotkeys
 --awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
@@ -1517,7 +1516,7 @@ globalkeys = a_util_table.join(
 				  end,
 				  { description = "run prompt", group = "launcher" }))
 
-clientkeys = a_util_table.join(
+clientkeys            = a_util_table.join(
 
 		awful.key({ altkey, "Shift" }, "m", function(c)
 			lain.util.magnify_client(c)
@@ -1902,7 +1901,7 @@ local mytitlebars = function(c)
 
 	-- Default
 	-- buttons for the titlebar
-	local buttons = a_util_table.join(
+	local buttons    = a_util_table.join(
 			awful.button({},
 						 1,
 						 function()
@@ -1919,13 +1918,13 @@ local mytitlebars = function(c)
 						 end))
 
 	-- forced_height = 12, forced_width = 12
-	local ci = awful.widget.clienticon(c);
-	ci.forced_width = 12
+	local ci         = awful.widget.clienticon(c);
+	ci.forced_width  = 12
 	ci.forced_height = 12
 	awful.titlebar(c, { size = 16 }):setup {
 		{
 			-- Left
-			layout = wibox.layout.fixed.horizontal,
+			layout  = wibox.layout.fixed.horizontal,
 			wibox.widget.textbox(" "),
 			wibox.container.place { widget = ci, valign = "center" },
 			awful.titlebar.widget.titlewidget(c),

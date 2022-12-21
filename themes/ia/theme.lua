@@ -1642,22 +1642,6 @@ function theme.at_screen_connect(s)
 		}
 	}
 
-	--s.mywibox_worldtimes:setup {
-	--
-	--}
-
-	s.togglegaps         = function()
-		mul = 40
-		if s.geometry.width > 2000 then
-			mul = 30
-		end
-		if s.selected_tag.gap == 0 then
-			s.selected_tag.gap = s.geometry.height / mul
-		else
-			s.selected_tag.gap = 0
-		end
-	end
-
 	-- Add widgets to the wibox
 	s.mywibox:setup {
 		layout = wibox.layout.align.horizontal,
