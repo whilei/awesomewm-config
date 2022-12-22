@@ -45,5 +45,5 @@
   url = https://github.com/andOrlando/rubato.git
 [submodule "smart_borders"]
   path = smart_borders
-  url = https://github.com/intrntbrn/smart_borders.git
+  url = https://github.com/whilei/smart_borders.git
 
