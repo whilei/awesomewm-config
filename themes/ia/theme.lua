@@ -1282,7 +1282,9 @@ function theme.at_screen_connect(s)
 			-- This is my special additional
 			-- to REMOVE TEXT (LEAVING ONLY ICON)
 			-- if the task does indeed have an icon.
-			if icon then text = "" end
+			if icon then
+				text = ""
+			end
 
 			-- The text might be invalid, so use pcall.
 			local no_text = text == nil or text == ""
@@ -1452,7 +1454,7 @@ function theme.at_screen_connect(s)
 		visible      = false,
 		ontop        = true,
 		border_width = 0,
-		border_color = "#222222",
+		border_color = "#0000ff",
 	}
 
 	s.mywibox_worldtimes = awful.popup {

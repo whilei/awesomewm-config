@@ -214,20 +214,31 @@ local toggle_worldtimes_fn    = function()
 end
 
 local fancy_float_toggle      = function(c)
-	c.floating = not c.floating
 
-	if not c.floating then
-		-- The client is not floating now, which means
-		-- we are toggling-off this fancy layout.
+	local turning_off = c.fancy_floating ~= nil
+
+	if turning_off then
+		c.fancy_floating = nil
+
 		c.screen          = c.original_screen or awful.screen.focused()
 		c.original_screen = nil
+
+		c.floating = c.was_floating or false
+		c.was_floating = nil
+
+		c.maximized = c.was_maximized or false
+		c.was_maximized = nil
+
 		c:raise()
 		client.focus = c
 		return
 	end
 
-	c.maximized       = false
-	c.original_screen = c.screen
+	-- Else: turning ona
+	c.fancy_floating = true
+	c.original_screen = c.screen or awful.screen.focused()
+	c.was_floating = c.floating
+	c.was_maximized = c.maximized
 
 	-- Move to TV screen.
 	if not c.screen.is_tv then
@@ -903,6 +914,7 @@ imodal_main               = {
 		end
 		fancy_float_toggle(c)
 	end, "fancy float" },
+
 	{ "-", function(c)
 		-- The client currently has the input focus, so it cannot be
 		-- minimized, since minimized clients can't have the focus.
