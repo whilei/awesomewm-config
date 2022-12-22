@@ -184,6 +184,10 @@ end
 local fullscreen_fn           = function(c)
 	c.fullscreen = not c.fullscreen
 	c:raise()
+
+	if c.screen and c.screen.mywibox.visible then
+		toggle_wibar_slim_fn()
+	end
 end
 
 local rofi_fn                 = function()
@@ -218,16 +222,16 @@ local fancy_float_toggle      = function(c)
 	local turning_off = c.fancy_floating ~= nil
 
 	if turning_off then
-		c.fancy_floating = nil
+		c.fancy_floating  = nil
 
 		c.screen          = c.original_screen or awful.screen.focused()
 		c.original_screen = nil
 
-		c.floating = c.was_floating or false
-		c.was_floating = nil
+		c.floating        = c.was_floating or false
+		c.was_floating    = nil
 
-		c.maximized = c.was_maximized or false
-		c.was_maximized = nil
+		c.maximized       = c.was_maximized or false
+		c.was_maximized   = nil
 
 		c:raise()
 		client.focus = c
@@ -235,10 +239,10 @@ local fancy_float_toggle      = function(c)
 	end
 
 	-- Else: turning ona
-	c.fancy_floating = true
+	c.fancy_floating  = true
 	c.original_screen = c.screen or awful.screen.focused()
-	c.was_floating = c.floating
-	c.was_maximized = c.maximized
+	c.was_floating    = c.floating
+	c.was_maximized   = c.maximized
 
 	-- Move to TV screen.
 	if not c.screen.is_tv then
@@ -1141,7 +1145,7 @@ awful.screen.connect_for_each_screen(function(s)
 end)
 
 -- {{{ Key bindings
-globalkeys            = a_util_table.join(
+globalkeys = a_util_table.join(
 
 		awful.key({ modkey }, ",", function()
 			modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
@@ -1528,7 +1532,7 @@ globalkeys            = a_util_table.join(
 				  end,
 				  { description = "run prompt", group = "launcher" }))
 
-clientkeys            = a_util_table.join(
+clientkeys = a_util_table.join(
 
 		awful.key({ altkey, "Shift" }, "m", function(c)
 			lain.util.magnify_client(c)
@@ -1852,7 +1856,7 @@ awful.rules.rules = {
 			border_width = 2,
 			border_color = '#ff0000',
 			screen       = 1,
-			position     = awful.placement.center,
+			placement    = awful.placement.centered,
 			floating     = true,
 			ontop        = true,
 			focus        = false,

@@ -1011,7 +1011,7 @@ function theme.at_screen_connect(s)
 					awful.layout.suit.floating, -- 5th tag is floating by default
 				},
 			}
-			-- Assume I'm never going to have more than 5 screens connected.
+			-- I'm never going to have more than 5 screens connected.
 		}
 	}
 	local screen_index = s.index
@@ -1468,10 +1468,11 @@ function theme.at_screen_connect(s)
 			local tl, tr, br, bl = true, true, false, false
 			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
 		end,
-		border_width      = dpi(4),
+		border_width      = s.is_tv and dpi(4) or dpi(1),
 		border_color      = theme.clock_fg,
 		widget            = {
-			widget = wibox.container.constraint,
+			widget = wibox.container.margin,
+			top    = 4, left = 4, right = 4,
 			{
 				layout = wibox.layout.align.horizontal,
 				-- left
@@ -1480,7 +1481,7 @@ function theme.at_screen_connect(s)
 					spr,
 				},
 				{
-					layout = wibox.layout.fixed.horizontal,
+					layout = wibox.layout.flex.horizontal,
 					{
 						{
 							wibox.widget.textbox(markup.fontbg("Roboto 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Anchorage (AKDT/AKST)'))),
@@ -1488,16 +1489,16 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, ' ● Vancouver,Seattle (PT)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Seattle (PT)'))),
 							world_clock_vancouver,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1506,7 +1507,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1515,16 +1516,16 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'New York, Toronto (ET)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'New York (ET)'))),
 							world_clock_newyork,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1533,7 +1534,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1542,7 +1543,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1551,7 +1552,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1560,7 +1561,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					--{
 					--	{
@@ -1569,7 +1570,7 @@ function theme.at_screen_connect(s)
 					--		layout = wibox.layout.fixed.vertical,
 					--	},
 					--	widget  = wibox.container.margin,
-					--	margins = 10,
+					--	margins = s.is_tv and 10 or 1,
 					--},
 					{
 						{
@@ -1578,7 +1579,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1587,7 +1588,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1596,7 +1597,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1605,7 +1606,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					{
 						{
@@ -1614,7 +1615,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = 10,
+						margins = s.is_tv and 10 or 1,
 					},
 					--{
 					--	{
