@@ -27,7 +27,7 @@
 	url = https://github.com/raksooo/poppin.git
 [submodule "awesome-buttons"]
 	path = awesome-buttons
-	url = https://github.com/streetturtle/awesome-butttons.git
+	url = https://github.com/streetturtle/awesome-buttons.git
 [submodule "bling"]
   path = bling
   url = https://github.com/BlingCorp/bling.git
