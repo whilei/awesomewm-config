@@ -47,3 +47,6 @@
   path = smart_borders
   url = https://github.com/whilei/smart_borders.git
 
+[submodule "lain"]
+	path = lain
+	url = https://github.com/lcpz/lain.git
