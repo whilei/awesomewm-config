@@ -726,12 +726,12 @@ theme.mic                     = lain.widget.alsa({
 														 local words = " • "
 														 local bg    = "#d93600" -- theme.color_red
 														 local fg    = "#fbff00"
-														 if input_now.status == "off" then
-															 --words = " • Off Air " --✕
-															 words = " x " --✕
-															 bg    = "#3b383e" -- "#370e5c"
-															 fg    = "#887b94"
-														 end
+														 --if input_now.status == "off" then
+														 -- --words = " • Off Air " --✕
+														 -- words = " x " --✕
+														 -- bg    = "#3b383e" -- "#370e5c"
+														 -- fg    = "#887b94"
+														 --end
 														 widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
 													 end
 												 })
