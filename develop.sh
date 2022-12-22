@@ -1,4 +1,4 @@
-awmtt start -C ~/.config/awesome/rc.lua \
+awmtt start -C ~/dev/awesomeWM/awesome/awesomei/rc.lua \
   --display 1 \
   --size 1728x972 &
 
@@ -10,7 +10,7 @@ inotifywait -q -m \
   do
     echo "changed: $path"
     echo "skipping $(timeout 3 cat | wc -l) further changes"
-    awmtt restart 
+    awmtt restart
   done
 
 # awmtt restart
