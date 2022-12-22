@@ -3,7 +3,7 @@ awmtt start -C ~/.config/awesome/rc.lua \
   --size 1728x972 &
 
 inotifywait -q -m \
-  --exclude .swp --exclude .idea \
+  --exclude .swp --exclude .idea --exclude .git --exclude .ia \
   -e modify -e close_write -e delete -r \
   . |\
   while read -r path
