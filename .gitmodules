@@ -25,3 +25,25 @@
 [submodule "poppin"]
 	path = poppin
 	url = https://github.com/raksooo/poppin.git
+[submodule "awesome-buttons"]
+	path = awesome-buttons
+	url = https://github.com/streetturtle/awesome-butttons.git
+[submodule "bling"]
+  path = bling
+  url = https://github.com/BlingCorp/bling.git
+[submodule "modalawesome"]
+  path = modalawesome
+  url = https://github.com/potamides/modalawesome.git
+[submodule "net_widgets"]
+  path = net_widgets
+  url = https://github.com/whilei/net_widgets.git
+[submodule "nice"]
+  path = nice
+  url = https://github.com/mut-ex/awesome-wm-nice.git
+[submodule "rubato"]
+  path = rubato
+  url = https://github.com/andOrlando/rubator.git
+[submodule "smart_borders"]
+  path = smart_borders
+  url = https://github.com/intrntbrn/smart_borders.git
+
