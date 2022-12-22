@@ -823,63 +823,63 @@ local function os_getenv(varname)
 	return line
 end
 
-my_weather            = lain.widget.weather({
-												APPID    = os_getenv("OPENWEATHERMAP_API_KEY"),
-												city_id  = tonumber(os_getenv("OPENWEATHERMAP_CITY_ID")),
-												timeout  = 60 * 30, -- 15 * 60 = 15 minutes
-												--    notification_text_fun = function (wn)
-												--        local day = os.date("%a %d", wn["dt"])
-												--        local tmin = math.floor(wn["temp"]["min"])
-												--        local tmax = math.floor(wn["temp"]["max"])
-												--        local desc = wn["weather"][1]["description"]
-												--        return string.format("<b>%s</b>: %s, %d - %d ", day, desc, tmin, tmax)
-												--    end,
-												--    notification_text_fun = function (wn)
-												--        local day = os.date("%a %d", wn["dt"]) or "DATE"
-												--        local tmin = math.floor(wn["temp"]["min"]) or -42
-												--        local tmax = math.floor(wn["temp"]["max"]) or 69
-												--        local desc = wn["weather"][1]["description"] or "Outside"
-												----        local name = wn["name"] or "NONAME"
-												----        return string.format("%s", tostring(wn))
-												--        return string.format("<b>%s</b>: %s, High: %d Low: %d ", day, desc, tmax, tmin)
-												--    end,
-												settings = function()
-													local str = ""
+my_weather = lain.widget.weather({
+									 APPID    = os_getenv("OPENWEATHERMAP_API_KEY"),
+									 city_id  = tonumber(os_getenv("OPENWEATHERMAP_CITY_ID")),
+									 timeout  = 60 * 30, -- 15 * 60 = 15 minutes
+									 --    notification_text_fun = function (wn)
+									 --        local day = os.date("%a %d", wn["dt"])
+									 --        local tmin = math.floor(wn["temp"]["min"])
+									 --        local tmax = math.floor(wn["temp"]["max"])
+									 --        local desc = wn["weather"][1]["description"]
+									 --        return string.format("<b>%s</b>: %s, %d - %d ", day, desc, tmin, tmax)
+									 --    end,
+									 --    notification_text_fun = function (wn)
+									 --        local day = os.date("%a %d", wn["dt"]) or "DATE"
+									 --        local tmin = math.floor(wn["temp"]["min"]) or -42
+									 --        local tmax = math.floor(wn["temp"]["max"]) or 69
+									 --        local desc = wn["weather"][1]["description"] or "Outside"
+									 ----        local name = wn["name"] or "NONAME"
+									 ----        return string.format("%s", tostring(wn))
+									 --        return string.format("<b>%s</b>: %s, High: %d Low: %d ", day, desc, tmax, tmin)
+									 --    end,
+									 settings = function()
+										 local str = ""
 
-													--        local loc_now = os.time()
-													--        local sunrise = tonumber(weather_now["sys"]["sunrise"])
-													--        local sunset  = tonumber(weather_now["sys"]["sunset"])
-													--        if sunrise <= loc_now and loc_now <= sunset then
-													--            -- day time, pre sunset; show sunset time
-													--            str = string.format(" %s 🌜", os.date("%H:%M", weather_now["sys"]["sunset"]))
-													--        elseif loc_now <= sunrise then
-													--            -- pre dawn
-													--            str = string.format(" %s 🌣", os.date("%H:%M", weather_now["sys"]["sunrise"]))
-													--        elseif sunset <= loc_now then
-													--            -- after sunset
-													--            str =  string.format(" 🌜 %s", os.date("%H:%M", weather_now["sys"]["sunset"]))
-													--        end
+										 --        local loc_now = os.time()
+										 --        local sunrise = tonumber(weather_now["sys"]["sunrise"])
+										 --        local sunset  = tonumber(weather_now["sys"]["sunset"])
+										 --        if sunrise <= loc_now and loc_now <= sunset then
+										 --            -- day time, pre sunset; show sunset time
+										 --            str = string.format(" %s 🌜", os.date("%H:%M", weather_now["sys"]["sunset"]))
+										 --        elseif loc_now <= sunrise then
+										 --            -- pre dawn
+										 --            str = string.format(" %s 🌣", os.date("%H:%M", weather_now["sys"]["sunrise"]))
+										 --        elseif sunset <= loc_now then
+										 --            -- after sunset
+										 --            str =  string.format(" 🌜 %s", os.date("%H:%M", weather_now["sys"]["sunset"]))
+										 --        end
 
-													widget:set_markup(
-															markup.font(theme.font, " " .. math.floor(weather_now["main"]["temp"]) .. "°C" ..
-																	" " .. to_direction(weather_now["wind"]["deg"]) .. math.floor(weather_now["wind"]["speed"]))
-													)
-													--    showpopup = "off",
-												end
-											})
+										 widget:set_markup(
+												 markup.font(theme.font, " " .. math.floor(weather_now["main"]["temp"]) .. "°C" ..
+														 " " .. to_direction(weather_now["wind"]["deg"]) .. math.floor(weather_now["wind"]["speed"]))
+										 )
+										 --    showpopup = "off",
+									 end
+								 })
 
-local mygithubwidget  = lain.widget.mywidget({
-												 TOKEN       = os_getenv("GITHUB_MEOWSBITS_PERSONAL"),
-												 name        = "Github Notifications",
-												 labelprefix = "meowsbits: ",
-												 timeout     = 60 * 2,
-											 })
-local mygithubwidget2 = lain.widget.mywidget({
-												 TOKEN       = os_getenv("GITHUB_WHILEI_PERSONAL"),
-												 name        = "Github Notifications",
-												 labelprefix = "whilei: ",
-												 timeout     = 60 * 2,
-											 })
+--local mygithubwidget  = lain.widget.mywidget({
+--												 TOKEN       = os_getenv("GITHUB_MEOWSBITS_PERSONAL"),
+--												 name        = "Github Notifications",
+--												 labelprefix = "meowsbits: ",
+--												 timeout     = 60 * 2,
+--											 })
+--local mygithubwidget2 = lain.widget.mywidget({
+--												 TOKEN       = os_getenv("GITHUB_WHILEI_PERSONAL"),
+--												 name        = "Github Notifications",
+--												 labelprefix = "whilei: ",
+--												 timeout     = 60 * 2,
+--											 })
 
 --local function set_random_wallpaper()
 --    local wallpaper_path = theme.dir .. "walls"
@@ -892,7 +892,7 @@ local mygithubwidget2 = lain.widget.mywidget({
 --screen.connect_signal("request::wallpaper", set_random_wallpaper)
 
 -- Separators
-local spr             = wibox.widget.textbox(' ')
+local spr  = wibox.widget.textbox(' ')
 
 function theme.at_screen_connect(s)
 
