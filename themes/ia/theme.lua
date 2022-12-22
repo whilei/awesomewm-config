@@ -55,6 +55,8 @@ theme.wallpaper                                 = theme.dir .. "/walls/solidcolo
 -- $ awesome-client
 -- $ b = require("beautiful"); local c = "#08158a"; b.titlebar_bg_focus = c; b.tasklist_bg_focus = c;
 
+theme.master_width_factor                       = 0.7
+
 --theme.font                                      = "xos4 Terminus 9"
 theme.font                                      = "monospace 9"
 theme.color_green                               = "#2EFE2E"

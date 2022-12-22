@@ -181,6 +181,12 @@ local screenshot_window_fn    = function()
 	naughty.notify({ text = "Screenshot of window OK", timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
 end
 
+local toggle_wibar_slim_fn    = function()
+	local s                = awful.screen.focused()
+	s.mywibox.visible      = not s.mywibox.visible
+	s.mywibox_slim.visible = not s.mywibox.visible
+end
+
 local fullscreen_fn           = function(c)
 	c.fullscreen = not c.fullscreen
 	c:raise()
@@ -204,12 +210,6 @@ local rofi_fn                 = function()
 			awful.screen.focus(client.focus.screen)
 		end
 	end)
-end
-
-local toggle_wibar_slim_fn    = function()
-	local s                = awful.screen.focused()
-	s.mywibox.visible      = not s.mywibox.visible
-	s.mywibox_slim.visible = not s.mywibox.visible
 end
 
 local toggle_worldtimes_fn    = function()
