@@ -74,20 +74,18 @@ end
 
 -- {{{ Variable definitions
 
-local chosen_theme       = "ia"
-local modkey             = "Mod4"
-local altkey             = "Mod1"
-local terminal           = "xterm"
-local editor             = os.getenv("EDITOR") or "vim"
-local gui_editor         = "code"
-local browser            = "ffox"
-local guieditor          = "code"
-local scrlocker          = "xlock"
-local scrnshotter_select = "sleep 0.5 && scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' --quality 100 --silent --select --freeze --exec 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
-local scrnshotter_window = "sleep 0.5 && scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' --quality 100 --silent --focused --exec 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
-local invert_colors      = "xrandr-invert-colors"
+local chosen_theme      = "ia"
+local modkey            = "Mod4"
+local altkey            = "Mod1"
+local terminal          = "xterm"
+local editor            = os.getenv("EDITOR") or "vim"
+local gui_editor        = "code"
+local browser           = "ffox"
+local guieditor         = "code"
+local scrlocker         = "xlock"
+local invert_colors     = "xrandr-invert-colors"
 
-local clientkeybindings  = {}
+local clientkeybindings = {}
 -- clientkeybindings["z"] = "Konsole"
 -- clientkeybindings["a"] = "Google Chrome"
 -- clientkeybindings["e"] = "Emacs"
@@ -177,12 +175,6 @@ local theme_path            = gears.filesystem.get_configuration_dir() .. "theme
 beautiful.init(theme_path)
 revelation.init()
 hints.init()
-
-local screenshot_window_fn = function()
-	awful.util.mymainmenu:hide()
-	awful.util.spawn_with_shell(scrnshotter_window)
-	naughty.notify({ text = "Screenshot of window OK", timeout = 2, bg = "#058B04", fg = "#ffffff", position = "bottom_middle" })
-end
 
 local toggle_wibar_slim_fn = function()
 	local s                = awful.screen.focused()
@@ -1162,7 +1154,7 @@ awful.keyboard.append_global_keybindings({
 											 --end, { description = "Handy: Firefox (left)", group = "launcher" }),
 
 											 -- revelation: expose-like application shower picker
-											 awful.key({ modkey, "Shift" }, "e", revelation, { description = "Revelation (Expose)", group = "hotkeys" }),
+											 --awful.key({ modkey, "Shift" }, "e", revelation, { description = "Revelation (Expose)", group = "hotkeys" }),
 
 											 -- hints: client picker, window picker, letter
 											 --awful.key({ modkey }, "i", function()
@@ -1205,61 +1197,62 @@ awful.keyboard.append_global_keybindings({
 											 -- Tag browsing
 											 --awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 											 --awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
-											 awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
+											 --awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
 
 											 -- Revelation client focus
 
 											 -- Default client focus
-											 awful.key({ altkey },
-													   "j",
-													   function()
-														   awful.client.focus.byidx(1)
-													   end,
-													   { description = "focus next by index", group = "client" }),
-											 awful.key({ altkey },
-													   "k",
-													   function()
-														   awful.client.focus.byidx(-1)
-													   end,
-													   { description = "focus previous by index", group = "client" }),
+											 --awful.key({ altkey },
+											 --	   "j",
+											 --	   function()
+											 --		   awful.client.focus.byidx(1)
+											 --	   end,
+											 --	   { description = "focus next by index", group = "client" }),
+											 --awful.key({ altkey },
+											 --	   "k",
+											 --	   function()
+											 --		   awful.client.focus.byidx(-1)
+											 --	   end,
+											 --	   { description = "focus previous by index", group = "client" }),
+
 											 -- By direction client focus
-											 awful.key({ modkey },
-													   "j",
-													   function()
-														   awful.client.focus.global_bydirection("down")
-														   if client.focus then
-															   client.focus:raise()
-														   end
-													   end,
-													   { description = "focus down", group = "client" }),
-											 awful.key({ modkey },
-													   "k",
-													   function()
-														   awful.client.focus.global_bydirection("up")
-														   if client.focus then
-															   client.focus:raise()
-														   end
-													   end,
-													   { description = "focus up", group = "client" }),
-											 awful.key({ modkey },
-													   "h",
-													   function()
-														   awful.client.focus.global_bydirection("left")
-														   if client.focus then
-															   client.focus:raise()
-														   end
-													   end,
-													   { description = "focus left", group = "client" }),
-											 awful.key({ modkey },
-													   "l",
-													   function()
-														   awful.client.focus.global_bydirection("right")
-														   if client.focus then
-															   client.focus:raise()
-														   end
-													   end,
-													   { description = "focus right", group = "client" }),
+											 --awful.key({ modkey },
+											 --	   "j",
+											 --	   function()
+											 --		   awful.client.focus.global_bydirection("down")
+											 --		   if client.focus then
+											 --			   client.focus:raise()
+											 --		   end
+											 --	   end,
+											 --	   { description = "focus down", group = "client" }),
+											 --awful.key({ modkey },
+											 --	   "k",
+											 --	   function()
+											 --		   awful.client.focus.global_bydirection("up")
+											 --		   if client.focus then
+											 --			   client.focus:raise()
+											 --		   end
+											 --	   end,
+											 --	   { description = "focus up", group = "client" }),
+											 --awful.key({ modkey },
+											 --	   "h",
+											 --	   function()
+											 --		   awful.client.focus.global_bydirection("left")
+											 --		   if client.focus then
+											 --			   client.focus:raise()
+											 --		   end
+											 --	   end,
+											 --	   { description = "focus left", group = "client" }),
+											 --awful.key({ modkey },
+											 --	   "l",
+											 --	   function()
+											 --		   awful.client.focus.global_bydirection("right")
+											 --		   if client.focus then
+											 --			   client.focus:raise()
+											 --		   end
+											 --	   end,
+											 --	   { description = "focus right", group = "client" }),
 											 awful.key({ modkey },
 													   "w",
 													   function()
