@@ -9,6 +9,12 @@ inotifywait -q -m \
   while read -r path
   do
     echo "changed: $path"
+    base=${path%.*}
+    ext=${base#$base.}
+    if [[ ! $ext == "lua" ]]; then
+        echo 'skipping non-lua file'
+        continue
+    fi
     echo "skipping $(timeout 3 cat | wc -l) further changes"
     awmtt restart
   done
