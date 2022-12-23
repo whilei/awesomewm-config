@@ -29,8 +29,8 @@ local os              = {
 local my_table        = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme           = {}
-theme.dir             = gears.filesystem.get_configuration_dir() .. "/themes/ia"
-theme.dir_macos       = gears.filesystem.get_configuration_dir() .. "/awesome-macos/themes/macos-dark"
+theme.dir             = gears.filesystem.get_configuration_dir() .. "themes/ia"
+theme.dir_macos       = gears.filesystem.get_configuration_dir() .. "awesome-macos/themes/macos-dark"
 
 -- Wallpaper, wallpaper
 theme.wallTallIndex   = 0

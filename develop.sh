@@ -2,16 +2,14 @@ awmtt start -C ~/dev/awesomeWM/awesome/awesomei/rc.lua \
   --display 1 \
   --size 1728x972 &
 
-inotifywait -q -m \
+inotifywait --quiet --monitor --recursive \
   --exclude .swp --exclude .idea --exclude .git --exclude .ia \
-  -e modify -e close_write -e delete -r \
+  -e modify -e close_write -e delete \
   . |\
   while read -r path
   do
     echo "changed: $path"
-    base=${path%.*}
-    ext=${base#$base.}
-    if [[ ! $ext == "lua" ]]; then
+    if [[ ! $path =~ lua ]]; then
         echo 'skipping non-lua file'
         continue
     fi
