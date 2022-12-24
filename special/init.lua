@@ -1,5 +1,18 @@
-local awful  = require("awful")
+---------------------------------------------------------------------------
+-- Special
+--
+-- Special functions and (variable) instances that are primarily for me and how I like things.
+--
+-- @author whilei
+-- @author Isaac &lt;isaac.ardis@gmail.com&gt;
+-- @copyright 2022 Isaac
+-- @coreclassmod special
+---------------------------------------------------------------------------
+
 local client = client
+local awful  = require("awful")
+local lain   = require("lain")
+local gears  = require("gears")
 
 -- focus_previous_client_global is a function that returns the last
 -- focused client _anywhere_.
@@ -25,6 +38,33 @@ local function focus_previous_client_global()
 	c:raise()
 end
 
+local quake = lain.util.quake({
+								  app             = "konsole",
+								  name            = "xterm-konsole",
+								  extra           = "--hide-menubar --hide-tabbar",
+								  followtag       = true,
+								  vert            = "bottom",
+								  keepclientattrs = true,
+								  border          = 0,
+								  settings        = function(client)
+									  -- these don't work. don't know why.
+									  client.opacity           = 0.7
+									  client.border_color      = gears.color.parse_color("#ff0000ff")
+									  client.titlebars_enabled = false
+									  client.skip_taskbar      = true
+
+									  local geo
+									  geo                      = client:geometry()
+									  if geo.width > 2000 then
+										  geo.x     = geo.x + (geo.width / 4)
+										  geo.width = geo.width / 2
+										  client:geometry(geo)
+									  end
+								  end
+							  })
+
 return {
 	focus_previous_client_global = focus_previous_client_global,
+	quake                        = quake,
+	popup_launcher               = require("special.popup-launcher"),
 }

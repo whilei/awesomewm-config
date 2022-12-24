@@ -918,31 +918,31 @@ function theme.at_screen_connect(s)
 		end
 	end
 
-	-- Quake application
-	s.quake         = lain.util.quake({
-										  app             = "konsole",
-										  name            = "xterm-konsole",
-										  extra           = "--hide-menubar --hide-tabbar",
-										  followtag       = true,
-										  vert            = "bottom",
-										  keepclientattrs = true,
-										  border          = 0,
-										  settings        = function(client)
-											  -- these don't work. don't know why.
-											  client.opacity           = 0.7
-											  client.border_color      = gears.color.parse_color("#ff0000ff")
-											  client.titlebars_enabled = false
-											  client.skip_taskbar      = true
-
-											  local geo
-											  geo                      = client:geometry()
-											  if geo.width > 2000 then
-												  geo.x     = geo.x + (geo.width / 4)
-												  geo.width = geo.width / 2
-												  client:geometry(geo)
-											  end
-										  end
-									  })
+	-- -- Quake application
+	--s.quake         = lain.util.quake({
+	--									  app             = "konsole",
+	--									  name            = "xterm-konsole",
+	--									  extra           = "--hide-menubar --hide-tabbar",
+	--									  followtag       = true,
+	--									  vert            = "bottom",
+	--									  keepclientattrs = true,
+	--									  border          = 0,
+	--									  settings        = function(client)
+	--										  -- these don't work. don't know why.
+	--										  client.opacity           = 0.7
+	--										  client.border_color      = gears.color.parse_color("#ff0000ff")
+	--										  client.titlebars_enabled = false
+	--										  client.skip_taskbar      = true
+	--
+	--										  local geo
+	--										  geo                      = client:geometry()
+	--										  if geo.width > 2000 then
+	--											  geo.x     = geo.x + (geo.width / 4)
+	--											  geo.width = geo.width / 2
+	--											  client:geometry(geo)
+	--										  end
+	--									  end
+	--								  })
 
 
 	-- If wallpaper is a function, call it with the screen
