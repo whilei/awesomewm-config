@@ -493,10 +493,25 @@ function lib.init()
 	install_global_tag_fns_by_index()
 end
 
---return keys
-
 return setmetatable(lib, {
 	__call = function(_, args)
 		return lib.init()
 	end
 })
+
+--[[
+This is commented code is a reminder that there are signals
+that can be used to do things like connecting keybinds too.
+
+I'm under the impression that one can use either/or pattern, but
+probably not both because that would be confusing.
+
+-- https://www.reddit.com/r/awesomewm/comments/sok8dm/how_to_hide_titlebar/
+client.connect_signal("request::default_keybindings", function()
+    awful.keyboard.append_client_keybindings({
+        -- show/hide titlebar
+        awful.key({ modkey }, "t", awful.titlebar.toggle,
+                {description = "Show/Hide Titlebars", group="client"}),
+    })
+--end)
+--]]
