@@ -12,6 +12,7 @@
 ---------------------------------------------------------------------------
 
 local ipairs        = ipairs
+local client        = client
 
 local awful         = require("awful")
 local global_fns    = require("icky.fns").global
@@ -290,7 +291,7 @@ local function install_global_tag_fns_by_index()
 		end
 		awful.keyboard.append_global_keybindings({
 													 -- View tag only.
-													 awful.key({ modkey },
+													 awful.key({ _keys.MOD },
 															   "#" .. i + 9,
 															   function()
 																   local screen = awful.screen.focused()
@@ -301,7 +302,7 @@ local function install_global_tag_fns_by_index()
 															   end,
 															   descr_view),
 													 -- Toggle tag display.
-													 awful.key({ modkey, "Control" },
+													 awful.key({ _keys.MOD, _keys.CTRL },
 															   "#" .. i + 9,
 															   function()
 																   local screen = awful.screen.focused()
@@ -312,7 +313,7 @@ local function install_global_tag_fns_by_index()
 															   end,
 															   descr_toggle),
 													 -- Move client to tag.
-													 awful.key({ modkey, "Shift" },
+													 awful.key({ _keys.MOD, _keys.SHIFT },
 															   "#" .. i + 9,
 															   function()
 																   if client.focus then
@@ -324,7 +325,7 @@ local function install_global_tag_fns_by_index()
 															   end,
 															   descr_move),
 													 -- Toggle tag on focused client.
-													 awful.key({ modkey, "Control", "Shift" },
+													 awful.key({ _keys.MOD, _keys.CTRL, _keys.SHIFT },
 															   "#" .. i + 9,
 															   function()
 																   if client.focus then

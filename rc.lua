@@ -898,7 +898,7 @@ imodal_bars               = {
 }
 
 imodal_main               = {
-	{ "Return", rofi_fn, "rofi" },
+	{ "Return", icky_fns.apps.rofi, "rofi" },
 
 	{ "Tab", special.focus_previous_client_global, "focus last" },
 
