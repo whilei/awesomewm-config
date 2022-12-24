@@ -38,6 +38,8 @@ end
 
 local global_fns           = {
 	awesome    = {
+		wibar          = special.toggle_wibar_slim,
+		world_times    = special.toggle_wibar_worldtimes,
 		show_main_menu = function()
 			awful.util.mymainmenu:show()
 		end,
@@ -244,7 +246,7 @@ local client_fns           = {
 		c.fullscreen = not c.fullscreen
 		c:raise()
 
-		if c.screen and c.screen.mywibox and c.screen.mywibox.visible then
+		if c.screen and c.screen.mywibox then
 			special.toggle_wibar_slim()
 		end
 	end,
@@ -276,6 +278,10 @@ local client_fns           = {
 			c:move_to_screen(c.screen.index + 1)
 		end,
 	},
+	present    = {
+		reader_view_tall = special.reader_view_tall,
+		fancy_float      = special.fancy_float,
+	}
 }
 
 -- {{{ SCREENSHOT

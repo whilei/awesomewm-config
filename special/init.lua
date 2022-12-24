@@ -38,45 +38,141 @@ local function focus_previous_client_global()
 	c:raise()
 end
 
-local quake             = lain.util.quake({
-											  app             = "konsole",
-											  name            = "xterm-konsole",
-											  extra           = "--hide-menubar --hide-tabbar",
-											  followtag       = true,
-											  vert            = "bottom",
-											  keepclientattrs = true,
-											  border          = 0,
-											  settings        = function(client)
-												  -- these don't work. don't know why.
-												  client.opacity           = 0.7
-												  client.border_color      = gears.color.parse_color("#ff0000ff")
-												  client.titlebars_enabled = false
-												  client.skip_taskbar      = true
+local quake                   = lain.util.quake({
+													app             = "konsole",
+													name            = "xterm-konsole",
+													extra           = "--hide-menubar --hide-tabbar",
+													followtag       = true,
+													vert            = "bottom",
+													keepclientattrs = true,
+													border          = 0,
+													settings        = function(c)
+														-- these don't work. don't know why.
+														c.opacity           = 0.7
+														c.border_width      = 2
+														c.border_color      = "#000000"
+														c.titlebars_enabled = false
+														c.skip_taskbar      = true
+														c.shape             = function(cc, w, h)
+															return gears.shape.partially_rounded_rect(
+																	cc, w, h, true, true, false, false, 10
+															)
+														end
 
-												  local geo
-												  geo                      = client:geometry()
-												  if geo.width > 2000 then
-													  geo.x     = geo.x + (geo.width / 4)
-													  geo.width = geo.width / 2
-													  client:geometry(geo)
-												  end
-											  end
-										  })
+														if not c.placement then
+															c.placement = awful.placement.bottom
+														end
+														if c.screen.is_tv then
+															local geo = c:geometry()
+															geo.x     = geo.x + (geo.width / 4)
+															geo.width = geo.width / 2
+															c:geometry(geo)
+														end
+													end
+												})
 
-local toggle_wibar_slim = function()
+local toggle_wibar_slim       = function()
 	local s = awful.screen.focused()
 	if s.mywibox then
 		s.mywibox.visible = not s.mywibox.visible
+		if s.mywibox_slim then
+			s.mywibox_slim.visible = not s.mywibox.visible
+		end
 	end
-	if s.mywibox and s.mywibox_slim then
-		s.mywibox_slim.visible = not s.mywibox.visible
+end
+
+local toggle_wibar_worldtimes = function()
+	local s = awful.screen.focused()
+	if s.mywibox_worldtimes then
+		s.mywibox_worldtimes.visible = not s.mywibox_worldtimes.visible
+	end
+end
+
+-- reader_view_tall is client function that positions the client
+-- in a tall way, not taking up all the width though, especially
+-- so that websites can be nice and skinny but use the height of the tv.
+local reader_view_tall        = function(c)
+	awful.client.floating.toggle()
+	awful.client.maximized = false
+
+	if c.floating then
+		-- place the screen in the middle
+		local geo        = c:geometry()
+
+		local screen_geo = c.screen.geometry
+
+		geo.x            = screen_geo.x + screen_geo.width / 4
+		geo.y            = screen_geo.y
+		geo.width        = screen_geo.width * 2 / 4
+		geo.height       = screen_geo.height
+
+		c:geometry(geo)
+	end
+	client.focus = c
+	c:raise()
+end
+
+local fancy_float_toggle      = function(c)
+
+	local turning_off = c.fancy_floating ~= nil
+
+	if turning_off then
+		c.fancy_floating  = nil
+
+		c.screen          = c.original_screen or awful.screen.focused()
+		c.original_screen = nil
+
+		c.floating        = c.was_floating or false
+		c.was_floating    = nil
+
+		c.maximized       = c.was_maximized or false
+		c.was_maximized   = nil
+
+		c:raise()
+		client.focus = c
+		return
 	end
 
+	-- Else: turning ona
+	c.fancy_floating  = true
+	c.original_screen = c.screen or awful.screen.focused()
+	c.was_floating    = c.floating
+	c.was_maximized   = c.maximized
+
+	-- Move to TV screen.
+	if not c.screen.is_tv then
+		for s in screen do
+			if s.is_tv then
+				c.screen = s
+				c:raise()
+				client.focus = c
+			end
+		end
+	end
+
+	-- On big screens (ie. the TV I use as a desktop monitor)
+	-- adjust the window size and position to make for comfortable website reading.
+	if c.screen.is_tv then
+		local geo
+		geo        = c:geometry()
+		local sgeo
+		sgeo       = c.screen.workarea
+
+		geo.x      = sgeo.x + sgeo.width / 4
+		geo.y      = sgeo.y + sgeo.height / 8
+		geo.width  = sgeo.width / 2
+		geo.height = sgeo.height * 7 / 8
+
+		c:geometry(geo)
+	end
 end
 
 return {
+	popup_launcher               = require("special.popup-launcher"),
 	focus_previous_client_global = focus_previous_client_global,
 	quake                        = quake,
-	popup_launcher               = require("special.popup-launcher"),
 	toggle_wibar_slim            = toggle_wibar_slim,
+	toggle_wibar_worldtimes      = toggle_wibar_worldtimes,
+	reader_view_tall             = reader_view_tall,
+	fancy_float_toggle           = fancy_float_toggle,
 }

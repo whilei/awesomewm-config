@@ -1296,10 +1296,10 @@ awful.keyboard.append_global_keybindings({
 											 --end, {description = "Window Switcher", group = "bling"}),
 
 											 -- Show/Hide Wibox
-											 awful.key({ modkey }, "d", toggle_wibar_slim_fn, { description = "toggle wibox", group = "awesome" }),
+											 --awful.key({ modkey }, "d", toggle_wibar_slim_fn, { description = "toggle wibox", group = "awesome" }),
 
 											 -- Show/Hide Global Time Clock wibar
-											 awful.key({ modkey }, "g", toggle_worldtimes_fn, { description = "toggle world times wibox", group = "awesome" }),
+											 --awful.key({ modkey }, "g", toggle_worldtimes_fn, { description = "toggle world times wibox", group = "awesome" }),
 
 											 ---- Show/Hide Time/Clock box
 											 --awful.key({ modkey },
@@ -1530,159 +1530,159 @@ awful.keyboard.append_global_keybindings({
 											 --	   { description = "run prompt", group = "launcher" }),
 										 })
 
-clientkeys        = a_util_table.join(
-
-		awful.key({ altkey, "Shift" }, "m", function(c)
-			lain.util.magnify_client(c)
-			c:raise()
-		end, { description = "magnify client", group = "client" }),
-
---awful.key({ modkey }, "f", fullscreen_fn, { description = "toggle fullscreen", group = "client" }),
+--myclientkeys      = a_util_table.join(
 --
---awful.key({ modkey, "Shift" },
---		  "c",
---		  function(c)
---			  c:kill()
---		  end,
---		  { description = "close", group = "client" }),
-
--- Place the client window floating in the middle, centered, on top.
--- This is a nice focus geometry.
---awful.key({ modkey, "Control" },
---    "space",
---    function(c)
---        awful.client.floating.toggle()
---        awful.client.maximized = false
+----awful.key({ altkey, "Shift" }, "m", function(c)
+----    lain.util.magnify_client(c)
+----    c:raise()
+----end, { description = "magnify client", group = "client" }),
 --
---        if c.floating then
---            -- place the screen in the middle
---            local geo
---            geo = c:geometry()
---            local sgeo
---            sgeo = c.screen.geometry
+----awful.key({ modkey }, "f", fullscreen_fn, { description = "toggle fullscreen", group = "client" }),
+----
+----awful.key({ modkey, "Shift" },
+----          "c",
+----          function(c)
+----              c:kill()
+----          end,
+----          { description = "close", group = "client" }),
 --
---            local margin_divisor = 8
---            if sgeo.width > 3000 then
---                margin_divisor = margin_divisor * 2
---            end
+---- Place the client window floating in the middle, centered, on top.
+---- This is a nice focus geometry.
+----awful.key({ modkey, "Control" },
+----    "space",
+----    function(c)
+----        awful.client.floating.toggle()
+----        awful.client.maximized = false
+----
+----        if c.floating then
+----            -- place the screen in the middle
+----            local geo
+----            geo = c:geometry()
+----            local sgeo
+----            sgeo = c.screen.geometry
+----
+----            local margin_divisor = 8
+----            if sgeo.width > 3000 then
+----                margin_divisor = margin_divisor * 2
+----            end
+----
+----            geo.x = sgeo.x + sgeo.width / margin_divisor
+----            geo.y = sgeo.y + sgeo.height / margin_divisor
+----
+----            geo.width = sgeo.width - ((sgeo.width / margin_divisor)*2)
+----            geo.height = sgeo.height - ((sgeo.height / margin_divisor)*2)
+----            c:geometry(geo)
+----        end
+----        client.focus = c
+----        c:raise()
+----    end,
+----    { description = "toggle floating centered client", group = "client" }),
 --
---            geo.x = sgeo.x + sgeo.width / margin_divisor
---            geo.y = sgeo.y + sgeo.height / margin_divisor
+---- Place the client window floating in the middle, on top.
+---- This is a nice focus geometry.
+---- *BUT* this version will stretch the floating geometry vertically,
+---- easier for reading.
+----        awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
+----                  "space",
+----                  function(c)
+----                      awful.client.floating.toggle()
+----                      awful.client.maximized = false
+----
+----                      if c.floating then
+----                          -- place the screen in the middle
+----                          local geo
+----                          geo        = c:geometry()
+----                          local sgeo
+----                          sgeo       = c.screen.geometry
+----
+----                          geo.x      = sgeo.x + sgeo.width / 4
+----                          geo.y      = sgeo.y
+----
+----                          geo.width  = sgeo.width * 2 / 4
+----                          geo.height = sgeo.height
+----                          c:geometry(geo)
+----                      end
+----                      client.focus = c
+----                      c:raise()
+----                  end,
+----                  { description = "toggle floating centered client (tall)", group = "client" }),
 --
---            geo.width = sgeo.width - ((sgeo.width / margin_divisor)*2)
---            geo.height = sgeo.height - ((sgeo.height / margin_divisor)*2)
---            c:geometry(geo)
---        end
---        client.focus = c
---        c:raise()
---    end,
---    { description = "toggle floating centered client", group = "client" }),
-
--- Place the client window floating in the middle, on top.
--- This is a nice focus geometry.
--- *BUT* this version will stretch the floating geometry vertically,
--- easier for reading.
-		awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
-				  "space",
-				  function(c)
-					  awful.client.floating.toggle()
-					  awful.client.maximized = false
-
-					  if c.floating then
-						  -- place the screen in the middle
-						  local geo
-						  geo        = c:geometry()
-						  local sgeo
-						  sgeo       = c.screen.geometry
-
-						  geo.x      = sgeo.x + sgeo.width / 4
-						  geo.y      = sgeo.y
-
-						  geo.width  = sgeo.width * 2 / 4
-						  geo.height = sgeo.height
-						  c:geometry(geo)
-					  end
-					  client.focus = c
-					  c:raise()
-				  end,
-				  { description = "toggle floating centered client (tall)", group = "client" }),
-
+------ Isaac
+------ I want a hotkey to toggle useless gaps, a function that I've developed a fancy
+------ new button for, but now I want to make a key so I don't have to use the button.
+----        awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
+----                  "k",
+----                  function(c)
+----                      if c.screen.selected_tag.gap == 0 then
+----                          c.screen.selected_tag.gap = c.screen.geometry.height / 20
+----                      else
+----                          c.screen.selected_tag.gap = 0
+----                      end
+----                  end,
+----                  { description = "toggle useless gaps", group = "client" }),
+--
 ---- Isaac
----- I want a hotkey to toggle useless gaps, a function that I've developed a fancy
----- new button for, but now I want to make a key so I don't have to use the button.
---		awful.key({ altkey, "Control", "Shift", }, -- MEH=ctl+alt+shift
---				  "k",
---				  function(c)
---					  if c.screen.selected_tag.gap == 0 then
---						  c.screen.selected_tag.gap = c.screen.geometry.height / 20
---					  else
---						  c.screen.selected_tag.gap = 0
---					  end
---				  end,
---				  { description = "toggle useless gaps", group = "client" }),
-
--- Isaac
--- Now I want a keystroke that toggles whether a client is floating.
-		awful.key({ altkey, "Control", "Shift", }, "f", fancy_float_toggle, { description = "toggle floating", group = "client" })
-
-
---awful.key({ modkey }, "u", function()
---	-- Instead of jumping between current and latest CLIENT,
---	-- it seems to me now, several months and as many uses of this keybinding later,
---	-- that it may be more useful to jump between SCREENS in this way.
---	-- Also, this feature is already implemented with MOD+Tab.
---	--
---	-- https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
---	-- https://unix.stackexchange.com/a/449265
+---- Now I want a keystroke that toggles whether a client is floating.
+----        awful.key({ altkey, "Control", "Shift", }, "f", fancy_float_toggle, { description = "toggle floating", group = "client" })
 --
---	awful.screen.focus_relative(1)
---end, {
---			  description = "focus next screen", group = "client"
---		  }),
 --
---awful.key({ modkey, "Control" },
---		  "Return",
---		  function(c)
---			  c:swap(awful.client.getmaster())
---		  end,
---		  { description = "move to master", group = "client" }),
-
---awful.key({ modkey },
---    "i",
---    function(c)
---        c:move_to_screen(c.screen.index - 1)
---    end,
---    { description = "move to screen", group = "client" }),
---		awful.key({ modkey },
---				  "o",
---				  function(c)
---					  c:move_to_screen()
---				  end,
---				  { description = "move to screen", group = "client" }),
---		awful.key({ modkey },
---				  "n",
---				  function(c)
---					  -- The client currently has the input focus, so it cannot be
---					  -- minimized, since minimized clients can't have the focus.
---					  local cc = c or client.focus
---					  if not cc then
---						  return
---					  end
---					  cc.focus = false
---					  cc:lower()
---					  cc.minimized = true
---					  awful.client.focus.history.previous()
---				  end,
---				  { description = "minimize", group = "client" }),
-
---awful.key({ modkey },
---		  "m",
---		  function(c)
---			  c.maximized = not c.maximized
---			  c:raise()
---		  end,
---		  { description = "maximize", group = "client" })
-)
+----awful.key({ modkey }, "u", function()
+----    -- Instead of jumping between current and latest CLIENT,
+----    -- it seems to me now, several months and as many uses of this keybinding later,
+----    -- that it may be more useful to jump between SCREENS in this way.
+----    -- Also, this feature is already implemented with MOD+Tab.
+----    --
+----    -- https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
+----    -- https://unix.stackexchange.com/a/449265
+----
+----    awful.screen.focus_relative(1)
+----end, {
+----              description = "focus next screen", group = "client"
+----          }),
+----
+----awful.key({ modkey, "Control" },
+----          "Return",
+----          function(c)
+----              c:swap(awful.client.getmaster())
+----          end,
+----          { description = "move to master", group = "client" }),
+--
+----awful.key({ modkey },
+----    "i",
+----    function(c)
+----        c:move_to_screen(c.screen.index - 1)
+----    end,
+----    { description = "move to screen", group = "client" }),
+----        awful.key({ modkey },
+----                  "o",
+----                  function(c)
+----                      c:move_to_screen()
+----                  end,
+----                  { description = "move to screen", group = "client" }),
+----        awful.key({ modkey },
+----                  "n",
+----                  function(c)
+----                      -- The client currently has the input focus, so it cannot be
+----                      -- minimized, since minimized clients can't have the focus.
+----                      local cc = c or client.focus
+----                      if not cc then
+----                          return
+----                      end
+----                      cc.focus = false
+----                      cc:lower()
+----                      cc.minimized = true
+----                      awful.client.focus.history.previous()
+----                  end,
+----                  { description = "minimize", group = "client" }),
+--
+----awful.key({ modkey },
+----          "m",
+----          function(c)
+----              c.maximized = not c.maximized
+----              c:raise()
+----          end,
+----          { description = "maximize", group = "client" })
+--)
 
 
 -- Set up client management buttons FOR THE MOUSE.
@@ -1735,7 +1735,7 @@ awful.rules.rules = {
 			--border_color     = beautiful.border_color_normal,
 			focus            = awful.client.focus.filter,
 			raise            = true,
-			keys             = clientkeys,
+			keys             = icky_keys.get_client_awful_keys(),
 			buttons          = clientbuttons,
 			screen           = awful.screen.preferred, --.focused(),
 			-- placement = awful.placement.no_overlap + awful.placement.no_offscreen,

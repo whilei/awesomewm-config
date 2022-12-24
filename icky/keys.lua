@@ -11,12 +11,13 @@
 -- @coreclassmod icky.keys
 ---------------------------------------------------------------------------
 
-local ipairs        = ipairs
-local client        = client
+local ipairs, table       = ipairs, table
+local client              = client
 
-local awful         = require("awful")
-local global_fns    = require("icky.fns").global
-local client_fns    = require("icky.fns").client
+local awful               = require("awful")
+local utable              = awful.util.table or gears.table -- 4.{0,1} compatibility
+local global_fns          = require("icky.fns").global
+local client_fns          = require("icky.fns").client
 
 --[[
 
@@ -29,7 +30,7 @@ awful.key
 
 --]]
 
-local _keys         = {
+local _keys               = {
 	MOD   = "Mod4",
 	SHIFT = "Shift",
 	ALT   = "Mod1",
@@ -37,21 +38,42 @@ local _keys         = {
 }
 
 -- lib is the returned table.
-local lib           = {}
+local lib                 = {
+	global_awful_keys = {},
+	client_awful_keys = {},
+}
+
+lib.get_client_awful_keys = function()
+	return lib.client_awful_keys
+end
+
+lib.get_global_awful_keys = function()
+	return lib.global_awful_keys
+end
 
 -- modality is an organization of leader-based key bindings.
 -- TODO
-local modality      = {
+local modality            = {
 	applications = "a",
 	awesome      = "A",
 }
 
-lib.global_bindings = {
+lib.global_bindings       = {
 	-- {{{ AWESOME
 	{
 		h        = { group = "awesome", description = "show main menu", name = "main menu" },
 		hotkeys  = { { _keys.MOD, "w" } },
 		on_press = global_fns.awesome.show_main_menu,
+	},
+	{
+		h        = { group = "awesome", description = "wibar style switcher", name = "toggle wibar" },
+		hotkeys  = { { _keys.MOD, "d" } },
+		on_press = global_fns.awesome.wibar,
+	},
+	{
+		h        = { group = "awesome", description = "toggle world times widget", name = "world times" },
+		hotkeys  = { { _keys.MOD, "g" } },
+		on_press = global_fns.awesome.world_times,
 	},
 	-- }}}
 	-- {{{ APPS
@@ -65,7 +87,7 @@ lib.global_bindings = {
 		hotkeys    = {
 			{
 				mods      = { _keys.MOD }, code = "v",
-				key_group = nil, -- eg. "numrow"=1,2,3,4,5,6,7,8,9,0
+				key_group = nil, -- eg. "numrow" (=1,2,3,4,5,6,7,8,9,0, callbacks get index arg)
 			},
 		},
 		on_press   = global_fns.apps.handy.top,
@@ -181,22 +203,22 @@ lib.global_bindings = {
 
 	-- {{{ TAGS
 	{
-		h        = { group = "tag", description = "view previous", name = "view previous tag" },
+		h        = { group = "tag", description = "view previous (by index)", name = "previous" },
 		hotkeys  = { { mods = { _keys.MOD }, code = "Left" } },
 		on_press = global_fns.tag.prev,
 	},
 	{
-		h        = { group = "tag", description = "view next", name = "view next tag" },
+		h        = { group = "tag", description = "view next (by index)", name = "next" },
 		hotkeys  = { { mods = { _keys.MOD }, code = "Right" } },
 		on_press = global_fns.tag.next,
 	},
 	{
-		h        = { group = "tag", description = "move left", name = "move tag left" },
+		h        = { group = "tag", description = "move left", name = "left" },
 		hotkeys  = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Left" } },
 		on_press = global_fns.tag.move.left,
 	},
 	{
-		h        = { group = "tag", description = "move right", name = "move tag right" },
+		h        = { group = "tag", description = "move right", name = "right" },
 		hotkeys  = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Right" } },
 		on_press = global_fns.tag.move.right,
 	},
@@ -212,6 +234,50 @@ lib.global_bindings = {
 		hotkeys  = { { mods = { _keys.ALT, _keys.SHIFT }, code = "h" } },
 		on_press = global_fns.tag.layout.master_width_factor.decrease,
 	},
+
+	--{
+	--	h        = { group = "tag", description = "view tag # (by index)", name = "view" },
+	--	hotkeys  = {
+	--		{ mods      = { _keys.MOD },
+	--		  key_group = {
+	--			  { "#1", 1 + 9 },
+	--		  },
+	--		},
+	--	},
+	--	on_press = function(i)
+	--		local screen = awful.screen.focused()
+	--		local tag    = screen.tags[i]
+	--		if tag then
+	--			tag:view_only()
+	--		end
+	--	end,
+	--},
+	--
+	--{
+	--	-- omit (most) h data; we don't want to show all these in the help menu
+	--	h        = { name = "view" },
+	--	hotkeys  = {
+	--		{ mods      = { _keys.MOD },
+	--		  key_group = {
+	--			  { "#2", 2 + 9 },
+	--			  { "#3", 3 + 9 },
+	--			  { "#4", 4 + 9 },
+	--			  { "#5", 5 + 9 },
+	--			  { "#6", 6 + 9 },
+	--			  { "#7", 7 + 9 },
+	--			  { "#8", 8 + 9 },
+	--			  { "#9", 9 + 9 },
+	--		  },
+	--		},
+	--	},
+	--	on_press = function(i)
+	--		local screen = awful.screen.focused()
+	--		local tag    = screen.tags[i]
+	--		if tag then
+	--			tag:view_only()
+	--		end
+	--	end,
+	--},
 
 	-- }}}
 
@@ -247,7 +313,7 @@ lib.global_bindings = {
 	-- }}}
 }
 
-lib.client_bindings = {
+lib.client_bindings       = {
 	{
 		h        = { group = "client", description = "fullscreen client", name = "fullscreen" },
 		hotkeys  = { { mods = { _keys.MOD }, code = "f" } },
@@ -273,6 +339,18 @@ lib.client_bindings = {
 		hotkeys  = { { mods = { _keys.MOD }, code = "o" } },
 		on_press = client_fns.screen.move_next,
 	},
+
+	-- specialty items
+	{
+		h        = { group = "client", description = "reader view (tall)", name = "reader (tall)" },
+		hotkeys  = { { mods = { _keys.MOD, _keys.CTRL, _keys.SHIFT, }, code = "space" } },
+		on_press = client_fns.present.reader_view_tall,
+	},
+	--{
+	--	h        = { group = "client", description = "toggle fancy float position", name = "fancy float" },
+	--	hotkeys  = { { mods = { _keys.MOD, }, code = "!" } },
+	--	on_press = client_fns.present.fancy_float,
+	--},
 }
 
 local function install_global_tag_fns_by_index()
@@ -341,6 +419,51 @@ local function install_global_tag_fns_by_index()
 end
 
 function lib.init()
+	-- build_key builds a key object.
+	-- it takes an entry from the lib (1) and a hotkey definition (2)
+	-- it returns an awful.key
+	-- FIXME: Handle key groups.. they are currently not handled well at all.
+	-- Notes
+	-- key groups are tables
+	-- 	 where keys for num row numbers are #1, #2, #3, etc
+	--   where values for num row numbers are +9, maybe because that's the underlying keycode representation?
+	--   eg. {{ '#1', 10 }, { '#2', 11 }, { '#3', 12 }}
+	-- I'm not sure if you have to install a custom one at awful.key.keygroups (eg. awful.key.keygroup.NUMROW),
+	-- or if you can just use it literally.
+	local function build_key(b, hk)
+		return awful.key(
+				(hk.mods or { hk[1] }),
+				((hk.code or hk.key_group) or hk[2]),
+				b.on_press,
+				b.on_release,
+				b.h)
+
+		-- Commented here is WIP from trying to handle keygroups correctly.
+		--local k = awful.key(
+		--		(hk.mods or { hk[1] }),
+		--		((hk.code or hk.key_group) or hk[2]),
+		--		b.on_press,
+		--		b.on_release,
+		--		b.h)
+
+		--local args = {
+		--	modifiers   = (hk.mods or { hk[1] }),
+		--	on_press    = b.on_press,
+		--	on_release  = b.on_release,
+		--	name        = b.h.name,
+		--	description = b.h.description,
+		--	group       = b.h.group
+		--}
+
+		--if hk.key_group ~= nil then
+		--	args.keygroup = hk.key_group
+		--else
+		--	args.key = (hk.code or hk[2])
+		--end
+
+
+		--local k = awful.key { args }
+	end
 	for _, b in ipairs(lib.global_bindings) do
 
 		-- Iterate and install all hotkeys through awful.
@@ -348,8 +471,9 @@ function lib.init()
 
 			assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
 
-			local k = awful.key((hk.mods or { hk[1] }), ((hk.code or hk.key_group) or hk[2]), b.on_press, b.on_release, b.h)
-			awful.keyboard.append_global_keybindings({ k })
+			local k = build_key(b, hk)
+			table.insert(lib.global_awful_keys, k)
+			awful.keyboard.append_global_keybinding(k)
 		end
 	end
 
@@ -357,8 +481,12 @@ function lib.init()
 		for _, hk in ipairs(b.hotkeys) do
 			assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
 
-			local k = awful.key((hk.mods or { hk[1] }), ((hk.code or hk.key_group) or hk[2]), b.on_press, b.on_release, b.h)
-			awful.keyboard.append_client_keybindings({ k })
+			--local k = awful.key((hk.mods or { hk[1] }), ((hk.code or hk.key_group) or hk[2]), b.on_press, b.on_release, b.h)
+			--awful.keyboard.append_client_keybinding(k)
+
+			local k = build_key(b, hk)
+			table.insert(lib.client_awful_keys, k)
+			awful.keyboard.append_client_keybinding(k)
 		end
 	end
 
