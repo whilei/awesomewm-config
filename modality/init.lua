@@ -181,44 +181,65 @@ modality.init     = function()
 end
 
 -- Docs: https://awesomewm.org/apidoc/core_components/awful.keygrabber.html
-local function stop_parser(bindings_parent)
-	return function(self, stop_key, stop_mods, sequence)
+local function keypressed_callback(bindings_parent)
+	return function(self, mods, key, event)
+		print("[modality] keypressed", "event=", event, "key=", key, "mods=", mods, "sequence=", sequence)
 
-		print("[modality] stop_parse", "key=", stop_key, "mods=", stop_mods, "sequence=", sequence)
-
-		print "[modality] stop_parse bindings_parent:"
-		modality_util.debug_print_paths("[modality]", bindings_parent)
-
+		-- exit provides a handy exit function that
+		-- stop the keygrabber and hides the widget.
 		local function exit(reason)
-			print("[modality] stop_parse exiting: " .. reason)
+			print("[modality] keypressed exiting: " .. reason)
+
+			self:stop()
 			modality.widget.hide(awful.screen.focused())
 			return true
 		end
 
+		-- Without bindings we can't do anything.
 		if not bindings_parent.bindings then
 			-- TODO Show error? (No list of bindings.)
 			return exit("no bindings")
 		end
 
-		local bound = bindings_parent.bindings[stop_key]
+		if event ~= "press" then
+			return true
+		end
+
+		-- This happens, for example, when the user wants L and pressed
+		-- L_SHIFT to get an uppercase L.
+		-- Other modifiers are not checked because I haven't had problems with them yet.
+		if (not key) or (key == "") or (string.find(key:lower(), "shift")) then
+			return true
+		end
+
+		print "[modality] keypressed bindings_parent:"
+		modality_util.debug_print_paths("[modality]", bindings_parent)
+
+		local bound = bindings_parent.bindings[key]
 		if not bound then
 			-- TODO Show error? (Invalid binding, no such binding.)
 			return exit("unmatched binding")
 		end
-		print("[modality] matched binding", "key=", stop_key, "binding.label=", bound.label)
-		print "[modality] bound:"
+
+		print("[modality] matched binding", "key=", key, "binding.label=", bound.label)
 		modality_util.debug_print_paths("[modality]", bound)
 
 		if bound.fn then
 			print("[modality] matched binding has function, executing")
+
+			self:stop()
 			modality.widget.hide(awful.screen.focused())
 			return bound.fn() -- call the function and return its result
 
 		elseif bound.bindings then
 			print("[modality] entering submenu", "label=", bound.label, "#bindings=", #bound.bindings)
+
+			self:stop()
 			modality.enter(bound)
 			return true
+
 		else
+			-- Should be nearly usually mostly probably unreachable.
 			exit("no fn or bindings!")
 		end
 	end
@@ -246,19 +267,19 @@ modality.enter = function(bindings_parent)
 
 	modality.kg = awful.keygrabber {
 		-- Start the grabbing immediately.
-		autostart     = true,
+		autostart           = true,
 
 		-- The event on which the keygrabbing will be terminated.
-		stop_event    = "press",
+		--stop_event    = "press",
 
 		-- The key on which the keygrabber listen to terminate itself.
-		stop_key      = stop_keys,
+		--stop_key      = stop_keys,
 
 		---- If any key is pressed that is not in this list, the keygrabber is stopped.
 		--allowed_keys  = gears.table.keys(bindings_parent.bindings),
 
 		-- The callback when the keygrabbing stops.
-		stop_callback = stop_parser(bindings_parent),
+		keypressed_callback = keypressed_callback(bindings_parent),
 	}
 
 end

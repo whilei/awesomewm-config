@@ -9,7 +9,7 @@
 -- @coreclassmod special
 ---------------------------------------------------------------------------
 
-local client                       = client
+local client, screen               = client, screen
 local awful                        = require("awful")
 local lain                         = require("lain")
 local gears                        = require("gears")
@@ -44,7 +44,9 @@ local quake                        = lain.util.quake({
 														 vert            = "bottom",
 														 keepclientattrs = true,
 														 border          = 0,
+														 screen          = awful.screen.focused() or screen[1],
 														 settings        = function(c)
+
 															 -- these don't work. don't know why.
 															 c.opacity           = 0.7
 															 c.border_width      = 2
@@ -57,16 +59,20 @@ local quake                        = lain.util.quake({
 																 )
 															 end
 
-															 if not c.placement then
-																 c.placement = awful.placement.bottom
-															 end
-															 if c.screen.is_tv then
-																 local geo  = c:geometry()
+															 -- Make it smaller for the tv screen.
+															 local geo           = c:geometry()
+															 if c.screen.is_tv or c.screen.workarea.width > 3000 then
 																 geo.x      = geo.x + (geo.width / 4)
 																 geo.width  = geo.width / 2
-																 geo.height = c.sceen.workarea.height / 3
+																 geo.height = c.screen.workarea.height / 3
 																 c:geometry(geo)
 															 end
+
+															 awful.placement.align(c, {
+																 position       = "bottom",
+																 honor_padding  = true,
+																 honor_workarea = true,
+															 })
 														 end
 													 })
 
