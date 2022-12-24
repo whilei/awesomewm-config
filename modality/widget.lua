@@ -4,6 +4,7 @@ local awful                       = require("awful")
 local beautiful                   = require("beautiful")
 local gears                       = require("gears")
 local wibox                       = require("wibox")
+local modality_util               = require("modality.util")
 
 local config                      = {
 	arrow_color      = '#47A590', -- faded teal
@@ -83,11 +84,13 @@ end
 --
 -- The map should be of the form defined in modality paths.
 --]]
-lib.show                          = function(s, bindings_parent)
-	local mbox     = s.modality_box
-	mbox.screen    = s
+lib.show                          = function(s, parent)
+	local mbox  = s.modality_box
+	mbox.screen = s
 
-	local name     = bindings_parent.label or "???"
+	modality_util.debug_print_paths("[modality] show", parent)
+
+	local name     = parent.label or "???"
 
 	local mar      = mbox:get_children_by_id("margin")[1]
 	local tbc      = mbox:get_children_by_id("textbox_container")[1]
@@ -156,42 +159,44 @@ lib.show                          = function(s, bindings_parent)
 	end
 
 	-- Show options
-	local _pc            = 0
+	local _pc      = 0
 	--local _last_row, _last_col = 1, 1
-	local _largest       = { width = 24, height = 8 }
+	local _largest = { width = 24, height = 8 }
 
-	sorted_binding_codes = gears.table.keys(bindings_parent.bindings)
-	table.sort(sorted_binding_codes)
+	-- Add bindings textboxes for this binding table.
 
-	for _, code in ipairs(sorted_binding_codes) do
-		local bound = bindings_parent.bindings[code]
+	if parent.bindings then
+		local sorted_binding_codes = gears.table.keys(parent.bindings)
+		for _, code in ipairs(sorted_binding_codes) do
+			local bound = parent.bindings[code]
 
-		local m     = get_markup_for_entry(code, bound.label, bound.bindings, bound.fn)
-		if string.lower(code) ~= "escape" and m ~= "" then
-			local txtbx = wibox.widget.textbox()
-			txtbx:set_markup_silently(m)
+			local m     = get_markup_for_entry(code, bound.label, bound.bindings, bound.fn)
+			if string.lower(code) ~= "escape" and m ~= "" then
+				local txtbx = wibox.widget.textbox()
+				txtbx:set_markup_silently(m)
 
-			local _w, _h    = txtbx:get_preferred_size()
-			_largest.width  = math.max(_largest.width, math.max(config.min_entry_width, _w))
-			_largest.height = math.max(_largest.height, math.max(config.min_entry_height, _h))
+				local _w, _h    = txtbx:get_preferred_size()
+				_largest.width  = math.max(_largest.width, math.max(config.min_entry_width, _w))
+				_largest.height = math.max(_largest.height, math.max(config.min_entry_height, _h))
 
-			--local _r, _c    = tbc:get_next_empty(_last_row, _last_col)
-			--if _r > config.max_rows then
-			--	-- Reset the row, increment the column.
-			--	_r, _c = 1, _c + 1
-			--end
+				--local _r, _c    = tbc:get_next_empty(_last_row, _last_col)
+				--if _r > config.max_rows then
+				--	-- Reset the row, increment the column.
+				--	_r, _c = 1, _c + 1
+				--end
 
-			local _r        = _pc % config.max_rows + 1
-			local _c        = math.floor(_pc / config.max_rows) + 1
+				local _r        = _pc % config.max_rows + 1
+				local _c        = math.floor(_pc / config.max_rows) + 1
 
-			--tbc:add_widget_at(txtbx, _r, _c, 1, 1) -- child, row, col, ~row_span, ~col_span
-			tbc:add_widget_at(txtbx, _r, _c, 1, 1) -- child, row, col, ~row_span, ~col_span
-			-- tbc:add(txtbx)
-			-- https://awesomewm.org/apidoc/widget_layouts/wibox.layout.grid.html
+				--tbc:add_widget_at(txtbx, _r, _c, 1, 1) -- child, row, col, ~row_span, ~col_span
+				tbc:add_widget_at(txtbx, _r, _c, 1, 1) -- child, row, col, ~row_span, ~col_span
+				-- tbc:add(txtbx)
+				-- https://awesomewm.org/apidoc/widget_layouts/wibox.layout.grid.html
 
-			_pc = _pc + 1
-			--_last_row = _r
-			--_last_col = _c
+				_pc = _pc + 1
+				--_last_row = _r
+				--_last_col = _c
+			end
 		end
 	end
 

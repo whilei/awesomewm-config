@@ -19,6 +19,7 @@ inotifywait --quiet --monitor --recursive \
 
     [[ $firing -ge 0 ]] && { echo '  d-duping restart'; continue ; }
 
+    echo "----------------------------------------------------------------"
     echo ":: restarting awmtt"
     firing=$(awmtt restart)
     # could do something with the exit status?

@@ -61,9 +61,10 @@ local quake                        = lain.util.quake({
 																 c.placement = awful.placement.bottom
 															 end
 															 if c.screen.is_tv then
-																 local geo = c:geometry()
-																 geo.x     = geo.x + (geo.width / 4)
-																 geo.width = geo.width / 2
+																 local geo  = c:geometry()
+																 geo.x      = geo.x + (geo.width / 4)
+																 geo.width  = geo.width / 2
+																 geo.height = c.sceen.workarea.height / 3
 																 c:geometry(geo)
 															 end
 														 end

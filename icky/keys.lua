@@ -19,6 +19,7 @@ local utable              = awful.util.table or gears.table -- 4.{0,1} compatibi
 local global_fns          = require("icky.fns").global
 local client_fns          = require("icky.fns").client
 local modality            = require("modality")
+local modality_util       = require("modality.util")
 
 --[[
 
@@ -52,33 +53,26 @@ lib.get_global_awful_keys = function()
 	return lib.global_awful_keys
 end
 
--- modality is an organization of leader-based key bindings.
--- TODO
-local modes               = {
-	applications = "a:applications,",
-	awesome      = "A:awesome,",
-}
-
 lib.global_bindings       = {
 	-- {{{ AWESOME
 	{
 		h          = { group = "awesome", description = "show main menu", name = "main menu" },
 		hotkeys    = { { _keys.MOD, "w" } },
 		on_press   = global_fns.awesome.show_main_menu,
-		modalities = { modes.awesome .. "w:my very special menu", },
+		modalities = { "a:awesome,w:show main menu" },
 	},
 	{
 		h          = { group = "awesome", description = "wibar style switcher", name = "toggle wibar" },
 		hotkeys    = { { _keys.MOD, "d" } },
 		on_press   = global_fns.awesome.wibar,
-		modalities = { modes.awesome .. "d", },
+		modalities = { "a:awesome,d:wibar" },
 
 	},
 	{
 		h          = { group = "awesome", description = "toggle world times widget", name = "world times" },
 		hotkeys    = { { _keys.MOD, "g" } },
 		on_press   = global_fns.awesome.world_times,
-		modalities = { modes.awesome .. "g", },
+		modalities = { "a:awesome,g:world times" },
 	},
 	{
 		h        = { group = "awesome", description = "enter modality mode", name = "modality" },
@@ -95,7 +89,7 @@ lib.global_bindings       = {
 			description = "handy firefox (top)",
 			name        = "handy firefox (top)",
 		},
-		modalities = { modes.applications .. "h:handy,k" },
+		modalities = { "A:applications,t" },
 		hotkeys    = {
 			{
 				mods      = { _keys.MOD }, code = "v",
@@ -499,6 +493,10 @@ function lib.init()
 		end
 
 		for _, keypath in ipairs(b.modalities or {}) do
+			-- Turn "a:awesome,f:foo,b" into "a:awesome,f:foo,b:<name(=bar)>"
+			-- if no :<label> is provided.
+			-- This is only intended to support leaving an explicit label off,
+			-- and to use the data.name of the (awful.key) binding as a default.
 			local kp = keypath
 			if modality.keypath_target_label(kp) == "" then
 				kp = kp .. ":" .. b.h.name
@@ -522,6 +520,9 @@ function lib.init()
 	end
 
 	install_global_tag_fns_by_index()
+
+	-- DEBUG
+	modality_util.debug_print_paths("[modality]", modality.paths)
 end
 
 return setmetatable(lib, {

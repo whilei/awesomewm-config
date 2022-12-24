@@ -16,6 +16,7 @@
 local string, table, ipairs   = string, table, ipairs
 local awful                   = require("awful")
 local gears                   = require("gears")
+local modality_util           = require("modality.util")
 
 ---------------------------------------------------------------------------
 
@@ -100,112 +101,150 @@ modality.label_separator      = ":" -- the separator between keypath code:label
 -- keypath_target_label returns the label of the function that a keypath binding ultimately describes (the "target").
 -- If no label is provided (eg. "a:awesome,h:help,k"), then an empty string is returned.
 modality.keypath_target_label = function(keypath)
-	local steps     = split_string(keypath, modality.keypath_separator)
+	-- Split keypath to get last element.
+	local steps = split_string(keypath, modality.keypath_separator)
+	if #steps == 0 then
+		return ""
+	end
+
+	-- Get the last element from the keypath.
 	local last_step = steps[#steps]
 	return split_string(last_step, modality.label_separator)[2] or ""
+end
+
+local function install_steps(parent, steps, fn)
+
+	--[[
+	ROOT
+
+	modality.paths                = {
+	label    = "Modality",
+	bindings = {
+		["Escape"] = {
+	--]]
+
+	-- Split the keypath into a table of steps.
+	-- eg.
+	-- nested: "a:applications,r:raise or spawn,f:firefox" => {"a:applications", "r:raise or spawn", "f:firefox"}
+	-- flat: "i:hints"
+	local steps_list = split_string(steps, modality.keypath_separator)
+
+	local is_last    = #steps_list == 1
+	local first_step = steps_list[1]
+
+	local spl        = split_string(first_step, modality.label_separator)
+	-- "a:applications" => {"a", "applications"}
+	-- "r:raise or spawn" => {"r", "raise or spawn"}
+	-- "f:firefox" => {"f", "firefox"}
+
+	local code       = spl[1]
+	local label      = spl[2] or "???"
+
+	if not parent.bindings then
+		parent.bindings = {}
+	end
+
+	-- The parent bindings table does not have an entry at this key.
+	-- Initialize it as a table.
+	-- eg. "a" = { label = "applications", ... }
+	if not parent.bindings[code] then
+		parent.bindings[code]          = {
+			label = label,
+		}
+		parent.bindings[code].bindings = {}
+	end
+
+	-- Overwrite any label and function with the new one.
+	parent.bindings[code].label = label
+
+	if is_last then
+		-- All last elements in keypaths are required to have functions, for now.
+		parent.bindings[code].fn       = fn
+		parent.bindings[code].bindings = nil
+	else
+		-- Recurse.
+		-- We remove the first element from the steps list because we've already processed it.
+		local remaining_steps = table.concat(steps_list, modality.keypath_separator, 2)
+		install_steps(parent.bindings[code], remaining_steps, fn)
+	end
 end
 
 -- register registers a keypath (eg. "ahk") to a function.
 -- @keypath: the keypath to register
 -- @fn: the function to execute when the keypath is completed
-modality.register             = function(keypath, fn)
-	--modality.paths[keypath] = fn
-
-	-- split the keypath into a table
-	-- eg.
-	-- nested: "a:applications,r:raise or spawn,f:firefox" => {"a:applications", "r:raise or spawn", "f:firefox"}
-	-- flat: "i:hints"
-	local codes_w_labels = split_string(keypath, modality.keypath_separator)
-
-	local binding_parent = modality.paths.bindings
-
-	for i, cl in ipairs(codes_w_labels) do
-
-		local is_last = i == #codes_w_labels
-
-		local spl     = split_string(cl, modality.label_separator)
-		-- "a:applications" => {"a", "applications"}
-		-- "r:raise or spawn" => {"r", "raise or spawn"}
-		-- "f:firefox" => {"f", "firefox"}
-
-		local code    = spl[1]
-		local label   = spl[2] or "???"
-
-		-- eg. "a" = { label = "applications", ... }
-		if binding_parent[code] == nil then
-			binding_parent[code] = {
-				label    = label,
-				bindings = {}
-			}
-		else
-			-- Overwrite any label and function with the new one.
-			binding_parent[code].label = label
-			--
-			-- Do not overwrite any existing bindings.
-		end
-		if is_last then
-			binding_parent[code] = {
-				label = label,
-				fn    = fn,
-			}
-		else
-			-- Reassign binding_parent because we're not at the end of the keypath
-			-- Nest deeper.
-			binding_parent = binding_parent[code].bindings
-		end
-	end
+modality.register = function(keypath, fn)
+	install_steps(modality.paths, keypath, fn)
 end
 
-modality.init                 = function()
+modality.init     = function()
 	modality.widget.init()
+end
+
+-- Docs: https://awesomewm.org/apidoc/core_components/awful.keygrabber.html
+local function stop_parser(bindings_parent)
+	return function(self, stop_key, stop_mods, sequence)
+
+		print("[modality] stop_parse", "key=", stop_key, "mods=", stop_mods, "sequence=", sequence)
+
+		print "[modality] stop_parse bindings_parent:"
+		modality_util.debug_print_paths("[modality]", bindings_parent)
+
+		local function exit(reason)
+			print("[modality] stop_parse exiting: " .. reason)
+			modality.widget.hide(awful.screen.focused())
+			return true
+		end
+
+		if not bindings_parent.bindings then
+			-- TODO Show error? (No list of bindings.)
+			return exit("no bindings")
+		end
+
+		local bound = bindings_parent.bindings[stop_key]
+		if not bound then
+			-- TODO Show error? (Invalid binding, no such binding.)
+			return exit("unmatched binding")
+		end
+		print("[modality] matched binding", "key=", stop_key, "binding.label=", bound.label)
+		print "[modality] bound:"
+		modality_util.debug_print_paths("[modality]", bound)
+
+		if bound.fn then
+			print("[modality] matched binding has function, executing")
+			modality.widget.hide(awful.screen.focused())
+			return bound.fn() -- call the function and return its result
+
+		elseif bound.bindings then
+			print("[modality] entering submenu", "label=", bound.label, "#bindings=", #bound.bindings)
+			modality.enter(bound)
+			return true
+		else
+			exit("no fn or bindings!")
+		end
+	end
 end
 
 -- enter enters the modality mode.
 -- @bindings_parent: the parent bindings object to start with.
 --   This object should have {label, bindings} fields.
-modality.enter                = function(bindings_parent)
+modality.enter = function(bindings_parent)
 	local s = awful.screen.focused()
 
-	-- Docs: https://awesomewm.org/apidoc/core_components/awful.keygrabber.html
-	local function stop_parse(self, stop_key, stop_mods, sequence)
-
-		print("stop_parse", stop_key, stop_mods, sequence)
-
-		local function exit()
-			modality.widget.hide(s)
-			return true
-		end
-
-		if not bindings_parent then
-			return exit()
-		end
-
-		if not bindings_parent.bindings then
-			-- TODO Show error? (Unmatched keybinding.)
-			return exit()
-		end
-
-		local binding = bindings_parent.bindings[stop_key]
-		if not binding then
-			return exit()
-		end
-
-		if binding.fn then
-			modality.widget.hide(s)
-			return binding.fn() -- call the function and return its result
-
-		elseif binding.bindings then
-			modality.enter(s, binding.bindings, binding.label)
-
-		else
-			-- TODO Handle case when both label and binding are nil, which is not allowed
-			return true
-		end
+	if modality.kg and modality.kg.is_running then
+		print("[modality] already running, stopping")
+		modality.widget.hide(s)
+		modality.kg:stop()
+		modality.kg = nil
 	end
 
 	modality.widget.show(s, bindings_parent)
 
-	awful.keygrabber {
+	local stop_keys = gears.table.keys(bindings_parent.bindings)
+	if not gears.table.hasitem(stop_keys, "Escape") then
+		table.insert(stop_keys, "Escape")
+	end
+
+	modality.kg = awful.keygrabber {
 		-- Start the grabbing immediately.
 		autostart     = true,
 
@@ -213,18 +252,18 @@ modality.enter                = function(bindings_parent)
 		stop_event    = "press",
 
 		-- The key on which the keygrabber listen to terminate itself.
-		stop_key      = gears.table.keys(bindings_parent.bindings),
+		stop_key      = stop_keys,
 
 		---- If any key is pressed that is not in this list, the keygrabber is stopped.
 		--allowed_keys  = gears.table.keys(bindings_parent.bindings),
 
 		-- The callback when the keygrabbing stops.
-		stop_callback = stop_parse,
+		stop_callback = stop_parser(bindings_parent),
 	}
 
 end
 
-modality.exit                 = function()
+modality.exit  = function()
 	modality.widget.hide(awful.screen.focused())
 end
 
