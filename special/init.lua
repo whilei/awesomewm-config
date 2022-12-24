@@ -50,7 +50,7 @@ local quake                   = lain.util.quake({
 														-- these don't work. don't know why.
 														c.opacity           = 0.7
 														c.border_width      = 2
-														c.border_color      = "#000000"
+														c.border_color      = "#00su0000"
 														c.titlebars_enabled = false
 														c.skip_taskbar      = true
 														c.shape             = function(cc, w, h)
