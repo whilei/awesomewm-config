@@ -36,9 +36,9 @@ end
 
 ---------------------------------------------------------------------------
 
-local fns                  = {
+local global_fns           = {
 	awesome    = {
-		show_mainmenu = function()
+		show_main_menu = function()
 			awful.util.mymainmenu:show()
 		end,
 	},
@@ -222,6 +222,60 @@ local fns                  = {
 			end,
 		},
 	},
+	screen     = {
+		-- Instead of jumping between current and latest CLIENT,
+		-- it seems to me now, several months and as many uses of this keybinding later,
+		-- that it may be more useful to jump between SCREENS in this way.
+		-- Also, this feature is already implemented with MOD+Tab.
+		next = function()
+			awful.screen.focus_relative(1)
+		end,
+		prev = function()
+			awful.screen.focus_relative(-1)
+		end,
+	},
+}
+
+-- fns_c are client functions.
+-- They are/should be registered with awful.keyboard.append_client_keybindings
+-- and will be passed the current focused client as the first arg.
+local client_fns           = {
+	fullscreen = function(c)
+		c.fullscreen = not c.fullscreen
+		c:raise()
+
+		if c.screen and c.screen.mywibox and c.screen.mywibox.visible then
+			special.toggle_wibar_slim()
+		end
+	end,
+	maximize   = function(c)
+		c.maximized = not c.maximized
+		c:raise()
+	end,
+	minimize   = function(c)
+		-- The client currently has the input focus, so it cannot be
+		-- minimized, since minimized clients can't have the focus.
+		local cc = c or client.focus
+		if not cc then
+			return
+		end
+		cc.focus = false
+		cc:lower()
+		cc.minimized = true
+		-- FIXME
+		awful.client.focus.history.previous()
+	end,
+	kill       = function(c)
+		c:kill()
+	end,
+	screen     = {
+		move_next = function(c)
+			c:move_to_screen(c.screen.index - 1)
+		end,
+		move_prev = function(c)
+			c:move_to_screen(c.screen.index + 1)
+		end,
+	},
 }
 
 -- {{{ SCREENSHOT
@@ -241,7 +295,7 @@ local screenshot_notifier  = function(args)
 	end
 end
 
-fns.screenshot             = {
+global_fns.screenshot      = {
 	selection = function()
 		awful.util.mymainmenu:hide()
 		awful.spawn.easy_async_with_shell(
@@ -259,4 +313,7 @@ fns.screenshot             = {
 }
 -- }}}
 
-return fns
+return {
+	global = global_fns,
+	client = client_fns,
+}

@@ -38,33 +38,45 @@ local function focus_previous_client_global()
 	c:raise()
 end
 
-local quake = lain.util.quake({
-								  app             = "konsole",
-								  name            = "xterm-konsole",
-								  extra           = "--hide-menubar --hide-tabbar",
-								  followtag       = true,
-								  vert            = "bottom",
-								  keepclientattrs = true,
-								  border          = 0,
-								  settings        = function(client)
-									  -- these don't work. don't know why.
-									  client.opacity           = 0.7
-									  client.border_color      = gears.color.parse_color("#ff0000ff")
-									  client.titlebars_enabled = false
-									  client.skip_taskbar      = true
+local quake             = lain.util.quake({
+											  app             = "konsole",
+											  name            = "xterm-konsole",
+											  extra           = "--hide-menubar --hide-tabbar",
+											  followtag       = true,
+											  vert            = "bottom",
+											  keepclientattrs = true,
+											  border          = 0,
+											  settings        = function(client)
+												  -- these don't work. don't know why.
+												  client.opacity           = 0.7
+												  client.border_color      = gears.color.parse_color("#ff0000ff")
+												  client.titlebars_enabled = false
+												  client.skip_taskbar      = true
 
-									  local geo
-									  geo                      = client:geometry()
-									  if geo.width > 2000 then
-										  geo.x     = geo.x + (geo.width / 4)
-										  geo.width = geo.width / 2
-										  client:geometry(geo)
-									  end
-								  end
-							  })
+												  local geo
+												  geo                      = client:geometry()
+												  if geo.width > 2000 then
+													  geo.x     = geo.x + (geo.width / 4)
+													  geo.width = geo.width / 2
+													  client:geometry(geo)
+												  end
+											  end
+										  })
+
+local toggle_wibar_slim = function()
+	local s = awful.screen.focused()
+	if s.mywibox then
+		s.mywibox.visible = not s.mywibox.visible
+	end
+	if s.mywibox and s.mywibox_slim then
+		s.mywibox_slim.visible = not s.mywibox.visible
+	end
+
+end
 
 return {
 	focus_previous_client_global = focus_previous_client_global,
 	quake                        = quake,
 	popup_launcher               = require("special.popup-launcher"),
+	toggle_wibar_slim            = toggle_wibar_slim,
 }

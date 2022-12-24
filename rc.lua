@@ -35,7 +35,7 @@ local layout_titlebars_conditional                                          = re
 local special                                                               = require("special")
 
 local icky_keys                                                             = require("icky.keys")
-local icky_fns                                                              = require("icky.fns")
+local icky_fns                                                              = require("icky.fns").global
 -- }}}
 
 -- {{{ Error handling
@@ -1530,21 +1530,21 @@ awful.keyboard.append_global_keybindings({
 											 --	   { description = "run prompt", group = "launcher" }),
 										 })
 
-clientkeys = a_util_table.join(
+clientkeys        = a_util_table.join(
 
 		awful.key({ altkey, "Shift" }, "m", function(c)
 			lain.util.magnify_client(c)
 			c:raise()
 		end, { description = "magnify client", group = "client" }),
 
-		awful.key({ modkey }, "f", fullscreen_fn, { description = "toggle fullscreen", group = "client" }),
-
-		awful.key({ modkey, "Shift" },
-				  "c",
-				  function(c)
-					  c:kill()
-				  end,
-				  { description = "close", group = "client" }),
+--awful.key({ modkey }, "f", fullscreen_fn, { description = "toggle fullscreen", group = "client" }),
+--
+--awful.key({ modkey, "Shift" },
+--		  "c",
+--		  function(c)
+--			  c:kill()
+--		  end,
+--		  { description = "close", group = "client" }),
 
 -- Place the client window floating in the middle, centered, on top.
 -- This is a nice focus geometry.
@@ -1623,29 +1623,29 @@ clientkeys = a_util_table.join(
 
 -- Isaac
 -- Now I want a keystroke that toggles whether a client is floating.
-		awful.key({ altkey, "Control", "Shift", }, "f", fancy_float_toggle, { description = "toggle floating", group = "client" }),
+		awful.key({ altkey, "Control", "Shift", }, "f", fancy_float_toggle, { description = "toggle floating", group = "client" })
 
 
-		awful.key({ modkey }, "u", function()
-			-- Instead of jumping between current and latest CLIENT,
-			-- it seems to me now, several months and as many uses of this keybinding later,
-			-- that it may be more useful to jump between SCREENS in this way.
-			-- Also, this feature is already implemented with MOD+Tab.
-			--
-			-- https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
-			-- https://unix.stackexchange.com/a/449265
-
-			awful.screen.focus_relative(1)
-		end, {
-					  description = "focus next screen", group = "client"
-				  }),
-
-		awful.key({ modkey, "Control" },
-				  "Return",
-				  function(c)
-					  c:swap(awful.client.getmaster())
-				  end,
-				  { description = "move to master", group = "client" }),
+--awful.key({ modkey }, "u", function()
+--	-- Instead of jumping between current and latest CLIENT,
+--	-- it seems to me now, several months and as many uses of this keybinding later,
+--	-- that it may be more useful to jump between SCREENS in this way.
+--	-- Also, this feature is already implemented with MOD+Tab.
+--	--
+--	-- https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
+--	-- https://unix.stackexchange.com/a/449265
+--
+--	awful.screen.focus_relative(1)
+--end, {
+--			  description = "focus next screen", group = "client"
+--		  }),
+--
+--awful.key({ modkey, "Control" },
+--		  "Return",
+--		  function(c)
+--			  c:swap(awful.client.getmaster())
+--		  end,
+--		  { description = "move to master", group = "client" }),
 
 --awful.key({ modkey },
 --    "i",
@@ -1653,98 +1653,37 @@ clientkeys = a_util_table.join(
 --        c:move_to_screen(c.screen.index - 1)
 --    end,
 --    { description = "move to screen", group = "client" }),
-		awful.key({ modkey },
-				  "o",
-				  function(c)
-					  c:move_to_screen()
-				  end,
-				  { description = "move to screen", group = "client" }),
-		awful.key({ modkey },
-				  "n",
-				  function(c)
-					  -- The client currently has the input focus, so it cannot be
-					  -- minimized, since minimized clients can't have the focus.
-					  local cc = c or client.focus
-					  if not cc then
-						  return
-					  end
-					  cc.focus = false
-					  cc:lower()
-					  cc.minimized = true
-					  awful.client.focus.history.previous()
-				  end,
-				  { description = "minimize", group = "client" }),
+--		awful.key({ modkey },
+--				  "o",
+--				  function(c)
+--					  c:move_to_screen()
+--				  end,
+--				  { description = "move to screen", group = "client" }),
+--		awful.key({ modkey },
+--				  "n",
+--				  function(c)
+--					  -- The client currently has the input focus, so it cannot be
+--					  -- minimized, since minimized clients can't have the focus.
+--					  local cc = c or client.focus
+--					  if not cc then
+--						  return
+--					  end
+--					  cc.focus = false
+--					  cc:lower()
+--					  cc.minimized = true
+--					  awful.client.focus.history.previous()
+--				  end,
+--				  { description = "minimize", group = "client" }),
 
-		awful.key({ modkey },
-				  "m",
-				  function(c)
-					  c.maximized = not c.maximized
-					  c:raise()
-				  end,
-				  { description = "maximize", group = "client" })
+--awful.key({ modkey },
+--		  "m",
+--		  function(c)
+--			  c.maximized = not c.maximized
+--			  c:raise()
+--		  end,
+--		  { description = "maximize", group = "client" })
 )
 
--- Bind all key numbers to tags.
--- Be careful: we use keycodes to make it works on any keyboard layout.
--- This should map on the top row of your keyboard, usually 1 to 9.
-for i = 1, 9 do
-	-- Hack to only show tags 1 and 9 in the shortcut window (mod+s)
-	local descr_view, descr_toggle, descr_move, descr_toggle_focus
-	if i == 1 or i == 9 then
-		descr_view         = { description = "view tag #", group = "tag" }
-		descr_toggle       = { description = "toggle tag #", group = "tag" }
-		descr_move         = { description = "move focused client to tag #", group = "tag" }
-		descr_toggle_focus = { description = "toggle focused client on tag #", group = "tag" }
-	end
-	awful.keyboard.append_global_keybindings({
-												 -- View tag only.
-												 awful.key({ modkey },
-														   "#" .. i + 9,
-														   function()
-															   local screen = awful.screen.focused()
-															   local tag    = screen.tags[i]
-															   if tag then
-																   tag:view_only()
-															   end
-														   end,
-														   descr_view),
-												 -- Toggle tag display.
-												 awful.key({ modkey, "Control" },
-														   "#" .. i + 9,
-														   function()
-															   local screen = awful.screen.focused()
-															   local tag    = screen.tags[i]
-															   if tag then
-																   awful.tag.viewtoggle(tag)
-															   end
-														   end,
-														   descr_toggle),
-												 -- Move client to tag.
-												 awful.key({ modkey, "Shift" },
-														   "#" .. i + 9,
-														   function()
-															   if client.focus then
-																   local tag = client.focus.screen.tags[i]
-																   if tag then
-																	   client.focus:move_to_tag(tag)
-																   end
-															   end
-														   end,
-														   descr_move),
-												 -- Toggle tag on focused client.
-												 awful.key({ modkey, "Control", "Shift" },
-														   "#" .. i + 9,
-														   function()
-															   if client.focus then
-																   local tag = client.focus.screen.tags[i]
-																   if tag then
-																	   client.focus:toggle_tag(tag)
-																   end
-															   end
-														   end,
-														   descr_toggle_focus),
-											 })
-end
 
 -- Set up client management buttons FOR THE MOUSE.
 -- (1 is left, 3 is right)
