@@ -9,17 +9,22 @@ inotifywait --quiet --monitor --recursive \
   . |\
   while read -r path
   do
-    echo "changed: $path"
+    echo ":: changed: $path"
     if [[ ! $path =~ lua ]]; then
-        echo 'skipping non-lua file'
+        echo '  skipping non-lua file'
         continue
     fi
-    echo "skipping $(timeout 3 cat | wc -l) further changes"
-    [[ $firing -ge 0 ]] && { echo 'd-duping restart'; continue ; }
+
+    echo "  skipping $(timeout 3 cat | wc -l) further changes"
+
+    [[ $firing -ge 0 ]] && { echo '  d-duping restart'; continue ; }
+
+    echo ":: restarting awmtt"
     firing=$(awmtt restart)
     # could do something with the exit status?
+    echo ":: restarted awmtt, code: ${firing}"
     firing=-1
-    echo "done, waiting further changes..."
+    echo ":: done, waiting further changes..."
   done
 
 # awmtt restart

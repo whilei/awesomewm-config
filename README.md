@@ -1,10 +1,15 @@
-- [ ] client move/resize with Mod4 + mouse R
-- [ ] move -> resize at modality: cmr = client move resize
-- [ ] move -> resize at modality: cmrm = client move resize move => client move
 
 
-- `very` : aka very special
-- `better`: a pro pro `beautiful`
-- `special`: custom functions and widgets that i like and you maybe wont
-- `icky`: my very own keybindings
-- `modality`: a SpaceMacs-like way of using leader-based keybindings and modes
+
+## TODO
+
+- [ ] `very` : aka very special
+- [ ] `better`: a pro pro `beautiful`
+- [ ] `special`: custom functions and widgets that i like and you maybe wont
+- [x] `icky`: my very own keybindings
+- [ ] `modality`: a SpaceMacs-like way of using leader-based keybindings and modes
+
+- [ ] `colorpicker`: a widget that allows you to pick a color from the screen.
+  - it should also show a preview of the color you're picking
+  - and it should have a history of colors you've picked
+  - and maybe a library of colors you've marked as favorites

@@ -13,7 +13,7 @@ local gears                                                                 = re
 
 -- This chunk adds this path (of the current configuration)
 -- to the Lua packages search path, enabling the loading of local libs.
-local prefix                                                                = gears.filesystem.get_configuration_dir() .. "/"
+local prefix                                                                = gears.filesystem.get_configuration_dir() .. ""
 package.path                                                                = package.path .. ";" .. prefix .. "?.lua;" .. prefix .. "?/init.lua"
 
 local awful                                                                 = require("awful")
@@ -36,6 +36,8 @@ local special                                                               = re
 
 local icky_keys                                                             = require("icky.keys")
 local icky_fns                                                              = require("icky.fns").global
+
+local modality                                                              = require("modality")
 -- }}}
 
 -- {{{ Error handling
@@ -174,6 +176,7 @@ local theme_path            = gears.filesystem.get_configuration_dir() .. "theme
 beautiful.init(theme_path)
 revelation.init()
 hints.init()
+modality.init()
 
 local toggle_wibar_slim_fn = function()
 	local s                = awful.screen.focused()
@@ -268,10 +271,6 @@ end
 
 
 -- Modality
-
-beautiful.modebox_bg       = "#222222"
-beautiful.modebox_fg       = "#FFFFFF"
-beautiful.modebox_border   = beautiful.modebox_bg
 
 local modalbind            = require("modalbind")
 modalbind.init()
@@ -1256,7 +1255,7 @@ awful.rules.rules = {
 		},
 		properties = {
 			border_width = 2,
-			border_color = '#ff0000',
+			border_color = "#A32BCE",
 			screen       = 1,
 			placement    = awful.placement.centered,
 			floating     = true,

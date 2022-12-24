@@ -18,6 +18,7 @@ local awful               = require("awful")
 local utable              = awful.util.table or gears.table -- 4.{0,1} compatibility
 local global_fns          = require("icky.fns").global
 local client_fns          = require("icky.fns").client
+local modality            = require("modality")
 
 --[[
 
@@ -53,27 +54,38 @@ end
 
 -- modality is an organization of leader-based key bindings.
 -- TODO
-local modality            = {
-	applications = "a",
-	awesome      = "A",
+local modes               = {
+	applications = "a:applications,",
+	awesome      = "A:awesome,",
 }
 
 lib.global_bindings       = {
 	-- {{{ AWESOME
 	{
-		h        = { group = "awesome", description = "show main menu", name = "main menu" },
-		hotkeys  = { { _keys.MOD, "w" } },
-		on_press = global_fns.awesome.show_main_menu,
+		h          = { group = "awesome", description = "show main menu", name = "main menu" },
+		hotkeys    = { { _keys.MOD, "w" } },
+		on_press   = global_fns.awesome.show_main_menu,
+		modalities = { modes.awesome .. "w:my very special menu", },
 	},
 	{
-		h        = { group = "awesome", description = "wibar style switcher", name = "toggle wibar" },
-		hotkeys  = { { _keys.MOD, "d" } },
-		on_press = global_fns.awesome.wibar,
+		h          = { group = "awesome", description = "wibar style switcher", name = "toggle wibar" },
+		hotkeys    = { { _keys.MOD, "d" } },
+		on_press   = global_fns.awesome.wibar,
+		modalities = { modes.awesome .. "d", },
+
 	},
 	{
-		h        = { group = "awesome", description = "toggle world times widget", name = "world times" },
-		hotkeys  = { { _keys.MOD, "g" } },
-		on_press = global_fns.awesome.world_times,
+		h          = { group = "awesome", description = "toggle world times widget", name = "world times" },
+		hotkeys    = { { _keys.MOD, "g" } },
+		on_press   = global_fns.awesome.world_times,
+		modalities = { modes.awesome .. "g", },
+	},
+	{
+		h        = { group = "awesome", description = "enter modality mode", name = "modality" },
+		hotkeys  = { { _keys.MOD, "y" } },
+		on_press = function()
+			modality.enter(modality.paths)
+		end,
 	},
 	-- }}}
 	-- {{{ APPS
@@ -83,7 +95,7 @@ lib.global_bindings       = {
 			description = "handy firefox (top)",
 			name        = "handy firefox (top)",
 		},
-		modalities = { modality.applications .. "hk" },
+		modalities = { modes.applications .. "h:handy,k" },
 		hotkeys    = {
 			{
 				mods      = { _keys.MOD }, code = "v",
@@ -92,6 +104,7 @@ lib.global_bindings       = {
 		},
 		on_press   = global_fns.apps.handy.top,
 		on_release = nil,
+
 	},
 	{
 		h        = { group = "launcher", description = "handy firefox (left)", name = "handy firefox (left)", },
@@ -431,6 +444,8 @@ function lib.init()
 	-- I'm not sure if you have to install a custom one at awful.key.keygroups (eg. awful.key.keygroup.NUMROW),
 	-- or if you can just use it literally.
 	local function build_key(b, hk)
+		assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
+
 		return awful.key(
 				(hk.mods or { hk[1] }),
 				((hk.code or hk.key_group) or hk[2]),
@@ -464,29 +479,45 @@ function lib.init()
 
 		--local k = awful.key { args }
 	end
-	for _, b in ipairs(lib.global_bindings) do
 
-		-- Iterate and install all hotkeys through awful.
-		for _, hk in ipairs(b.hotkeys) do
+	local function register_binding(scope, b, hk)
+		local k = build_key(b, hk)
 
-			assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
-
-			local k = build_key(b, hk)
+		if scope == "global" then
 			table.insert(lib.global_awful_keys, k)
 			awful.keyboard.append_global_keybinding(k)
+		elseif scope == "client" then
+			table.insert(lib.client_awful_keys, k)
+			awful.keyboard.append_client_keybinding(k)
+		end
+	end
+
+	-- Iterate and install all hotkeys through awful.
+	for _, b in ipairs(lib.global_bindings) do
+		for _, hk in ipairs(b.hotkeys or {}) do
+			register_binding("global", b, hk)
+		end
+
+		for _, keypath in ipairs(b.modalities or {}) do
+			local kp = keypath
+			if modality.keypath_target_label(kp) == "" then
+				kp = kp .. ":" .. b.h.name
+			end
+			modality.register(kp, b.on_press)
 		end
 	end
 
 	for _, b in ipairs(lib.client_bindings) do
-		for _, hk in ipairs(b.hotkeys) do
-			assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
+		for _, hk in ipairs(b.hotkeys or {}) do
+			register_binding("client", b, hk)
+		end
 
-			--local k = awful.key((hk.mods or { hk[1] }), ((hk.code or hk.key_group) or hk[2]), b.on_press, b.on_release, b.h)
-			--awful.keyboard.append_client_keybinding(k)
-
-			local k = build_key(b, hk)
-			table.insert(lib.client_awful_keys, k)
-			awful.keyboard.append_client_keybinding(k)
+		for _, keypath in ipairs(b.modalities or {}) do
+			local kp = keypath
+			if modality.keypath_target_label(kp) == "" then
+				kp = kp .. ":" .. b.h.name
+			end
+			modality.register(kp, b.on_press)
 		end
 	end
 

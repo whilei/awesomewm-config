@@ -231,16 +231,19 @@ theme.titlebar_floating_button_normal_inactive  = theme.dir .. "/icons/mytitleba
 
 -- END custom title bar icons
 
---theme.modalbind_font = "Monospace 12" -- font
-theme.modalbind_font                            = "dejavu sans mono 12" -- font
-theme.modebox_fg                                = theme.tasklist_fg_focus         -- foreground
-theme.modebox_bg                                = theme.tasklist_bg_focus         -- background
-theme.modebox_border                            = theme.tasklist_bg_focus     -- border color
-theme.modebox_border_width                      = 10       -- border width
-
-
 theme.taglist_buttons_hover                     = "#AD67CB"
 theme.taglist_button_nohover                    = "#00000000"
+
+theme.modalbind_font                            = "dejavu sans mono 12" -- font
+theme.modebox_bg                                = "#222222"
+theme.modebox_fg                                = "#FFFFFF"
+theme.modebox_border                            = beautiful.modebox_bg
+theme.modebox_border_width                      = 10       -- border width
+
+theme.modality_box_bg                           = "#222222"
+theme.modality_box_fg                           = "#ffffff"
+theme.modality_box_border                       = theme.modality_box_bg
+theme.modality_box_border_width                 = 10
 
 require('smart_borders') {
 	hot_corners_color  = "#0000ff",
@@ -1448,9 +1451,10 @@ function theme.at_screen_connect(s)
 		},
 		screen       = s,
 		type         = "dock",
-		placement    = awful.placement.top,
+		placement    = awful.placement.bottom,
 		shape        = function(c, w, h)
-			local tl, tr, br, bl = false, false, true, false
+			--local tl, tr, br, bl = false, false, true, false
+			local tl, tr, br, bl = false, false, true, true
 			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
 		end,
 		visible      = false,
