@@ -18,8 +18,10 @@ local config                      = {
 -- lib is our returned object.
 local lib                         = {}
 
-lib.init                          = function()
-	local w = wibox {
+lib.init                          = function(modality)
+	lib.modality = modality
+
+	local w      = wibox {
 		ontop   = true,
 		visible = false,
 		x       = 0,
@@ -57,6 +59,36 @@ lib.init                          = function()
 				--min_cols_size = 10,
 				--min_rows_size = 10,
 			},
+			{
+				id     = "search_mode",
+				layout = wibox.layout.align.vertical,
+				{
+					id     = "search_prompt",
+					widget = awful.widget.prompt {
+						prompt           = "Search: ",
+						history_path     = gears.filesystem.get_cache_dir() .. "/history_modality",
+						history_max      = 50,
+						changed_callback = lib.search_changed_callback,
+						exe_callback     = lib.search_exe_callback,
+						done_callback    = function()
+							lib.modality.search_mode = false
+						end
+					},
+				},
+				{
+					id            = "search_results",
+					widget        = wibox.container.margin,
+					margins       = 10,
+					forced_height = 128,
+					visible       = false,
+					--{
+					--	-- SITE OF FUTURE SEARCH RESULTS (TEXTBOX)
+					--},
+					--{
+					--	-- SITE OF FUTURE SEARCH RESULTS (TEXTBOX)
+					--},
+				}
+			},
 			id     = "valigner",
 			layout = wibox.layout.align.vertical,
 		},
@@ -74,12 +106,41 @@ lib.init                          = function()
 end
 
 lib.hide                          = function(s)
+	lib.stop_search(s)
 	local mbox   = s.modality_box
 	mbox.visible = false
 end
 
--- get_markup_for_entry returns the pango-styled markup for some modality entry (a keypath->function binding).
-local function get_markup_for_entry(code, label, bindings, fn)
+lib.show_search                   = function(s)
+	local mbox                                     = s.modality_box
+	mbox.visible                                   = true -- Probably not necessary, but harmless.
+	mbox.margin.valigner.search_mode.visible       = true
+	mbox.margin.valigner.textbox_container.visible = false
+end
+
+lib.search_changed_callback       = function(query)
+	local mbox    = s.modality_box
+	local results = lib.modality.keypaths_textfn_lines(query)
+	mbox.margin.valigner.search_mode.search_results:reset()
+	for _, matched in ipairs(results) do
+		local w = wibox.widget.textbox(matched[1])
+		mbox.margin.valigner.search_mode.search_results:add(w)
+	end
+end
+
+lib.search_exe_callback           = function(query)
+	print("[modality] EXECUTING SEARCH QUERY: " .. query)
+end
+
+lib.stop_search                   = function(s)
+	lib.modality.search_mode                       = false
+	local mbox                                     = s.modality_box
+	mbox.margin.valigner.search_mode.visible       = false
+	mbox.margin.valigner.textbox_container.visible = true
+end
+
+-- get_keypath_markup returns the pango-styled markup for some modality entry (a keypath->function binding).
+local function get_keypath_markup(code, label, bindings, fn)
 	if code == "separator" then
 		--return "\n"
 		return ""
@@ -121,7 +182,7 @@ local function get_markup_for_entry(code, label, bindings, fn)
 			'</span>' ..
 			'</span>' ..
 			"</b>" ..
-			"<span foreground='" .. config.arrow_color .. "'> ➞ </span>" ..
+			"<span foreground='" .. config.arrow_color .. "'>  ➞  </span>" ..
 			action_markup
 end
 
@@ -182,7 +243,7 @@ lib.show = function(s, parent)
 		for _, code in ipairs(sorted_binding_codes) do
 			local bound = parent.bindings[code]
 
-			local m     = get_markup_for_entry(code, bound.label, bound.bindings, bound.fn)
+			local m     = get_keypath_markup(code, bound.label, bound.bindings, bound.fn)
 
 			if string.lower(code) ~= "escape" and m ~= "" then
 				local txtbx = wibox.widget.textbox()

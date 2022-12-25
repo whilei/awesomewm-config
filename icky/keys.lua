@@ -83,7 +83,7 @@ lib.global_bindings       = {
 		h        = { group = "awesome", description = "enter modality mode", name = "modality" },
 		hotkeys  = { { _keys.MOD, "y" } },
 		on_press = function()
-			modality.enter(modality.paths)
+			modality.enter(modality.path_tree)
 		end,
 	},
 	-- }}}
@@ -434,7 +434,7 @@ local function install_global_tag_fns_by_index()
 end
 
 function lib.init()
-	-- build_key builds a key object.
+	-- build_awful_key builds an awful.key object.
 	-- it takes an entry from the lib (1) and a hotkey definition (2)
 	-- it returns an awful.key
 	-- FIXME: Handle key groups.. they are currently not handled well at all.
@@ -445,15 +445,18 @@ function lib.init()
 	--   eg. {{ '#1', 10 }, { '#2', 11 }, { '#3', 12 }}
 	-- I'm not sure if you have to install a custom one at awful.key.keygroups (eg. awful.key.keygroup.NUMROW),
 	-- or if you can just use it literally.
-	local function build_key(b, hk)
+	local function build_awful_key(b, hk)
 		assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
 
-		return awful.key(
+		local k      = awful.key(
 				(hk.mods or { hk[1] }),
 				((hk.code or hk.key_group) or hk[2]),
 				b.on_press,
 				b.on_release,
 				b.h)
+
+		k.modalities = b.modalities
+		return k
 
 		-- Commented here is WIP from trying to handle keygroups correctly.
 		--local k = awful.key(
@@ -482,8 +485,8 @@ function lib.init()
 		--local k = awful.key { args }
 	end
 
-	local function register_binding(scope, b, hk)
-		local k = build_key(b, hk)
+	local function register_awful_binding(scope, b, hk)
+		local k = build_awful_key(b, hk)
 
 		if scope == "global" then
 			table.insert(lib.global_awful_keys, k)
@@ -497,7 +500,7 @@ function lib.init()
 	-- Iterate and install all hotkeys through awful.
 	for _, b in ipairs(lib.global_bindings) do
 		for _, hk in ipairs(b.hotkeys or {}) do
-			register_binding("global", b, hk)
+			register_awful_binding("global", b, hk)
 		end
 
 		for _, keypath in ipairs(b.modalities or {}) do
@@ -515,7 +518,7 @@ function lib.init()
 
 	for _, b in ipairs(lib.client_bindings) do
 		for _, hk in ipairs(b.hotkeys or {}) do
-			register_binding("client", b, hk)
+			register_awful_binding("client", b, hk)
 		end
 
 		for _, keypath in ipairs(b.modalities or {}) do
@@ -530,7 +533,7 @@ function lib.init()
 	install_global_tag_fns_by_index()
 
 	-- DEBUG
-	modality_util.debug_print_paths("[modality]", modality.paths)
+	modality_util.debug_print_paths("[modality]", modality.path_tree)
 end
 
 return setmetatable(lib, {
