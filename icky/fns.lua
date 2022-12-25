@@ -16,6 +16,7 @@ local os, string                   = os, string
 -- awesome libs
 local awful                        = require("awful")
 local hotkeys_popup                = require("awful.hotkeys_popup").widget
+local beautiful                    = require("beautiful")
 local naughty                      = require("naughty")
 local lain                         = require("lain")
 
@@ -61,7 +62,7 @@ local global_fns           = {
 				awful.screen.focused().my_calendar_widget.toggle()
 			end,
 			weather     = function()
-				awful.screen.focused().my_weather_widget.toggle()
+				special.weather.toggle()
 			end,
 		},
 	},

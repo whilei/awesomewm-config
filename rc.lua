@@ -1388,7 +1388,10 @@ client.connect_signal("request::activate",
 						  end
 						  awful.ewmh.activate(c, context, hints)
 
-						  local t   = c.first_tag
+						  local t = c.first_tag
+						  if not t then
+							  return
+						  end
 						  local cls = t:clients()
 						  for _, tc in ipairs(cls) do
 							  if tc ~= c then

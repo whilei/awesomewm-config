@@ -825,6 +825,8 @@ function theme.at_screen_connect(s)
 											   placement             = 'centered',
 										   })
 
+	--s.my_calendar_widget:connect_signal("")
+
 	clock:connect_signal("button::press", function(_, _, _, button)
 		if button == 1 then
 			s.my_calendar_widget.toggle()

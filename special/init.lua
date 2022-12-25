@@ -112,6 +112,9 @@ local fancy_float_toggle           = function(cc)
 	c.was_maximized   = c.maximized
 	c.original_screen = c.screen or awful.screen.focused()
 
+	c.maximized       = false
+	c.floating        = true
+
 	-- Move to TV screen.
 	if not c.screen.is_tv then
 		for s in screen do

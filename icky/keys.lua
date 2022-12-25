@@ -175,14 +175,14 @@ lib.global_bindings           = {
 		on_press   = global_fns.apps.handy.left,
 	},
 	{
-		h          = { group = "applications", description = "hints", name = "Hints" },
+		h          = { group = "applications", description = "hints", name = "hints" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "i", }, },
 		modalities = { "i", m.APPLICATIONS .. "i" },
 		on_press   = global_fns.client.hints,
 	},
 	{
 		h          = { group = "applications", description = "rofi client picker", name = "rofi", },
-		modalities = { "Return", m.APPLICATIONS .. "Return" },
+		modalities = { "r", m.APPLICATIONS .. "r" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "Return", }, },
 		on_press   = global_fns.apps.rofi,
 	},
@@ -200,7 +200,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "launcher", description = "awesome launcher", name = "launcher", },
-		modalities = { "r" },
+		modalities = { "l" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "r", }, },
 		on_press   = global_fns.apps.popup_launcher,
 	},
@@ -306,13 +306,13 @@ lib.global_bindings           = {
 	-- {{{ TAGS
 	{
 		h          = { group = "tag", description = "view previous (by index)", name = "previous" },
-		modalities = { m.TAG .. "h~" }, -- stays (it is common to want to move around more than one tag)
+		modalities = { m.TAG .. "n~" }, -- stays (it is common to want to move around more than one tag)
 		hotkeys    = { { mods = { _keys.MOD }, code = "Left" } },
 		on_press   = global_fns.tag.prev,
 	},
 	{
 		h          = { group = "tag", description = "view next (by index)", name = "next" },
-		modalities = { m.TAG .. "l~" }, --stays, ditto
+		modalities = { m.TAG .. "p~" }, --stays, ditto
 		hotkeys    = { { mods = { _keys.MOD }, code = "Right" } },
 		on_press   = global_fns.tag.next,
 	},

@@ -59,12 +59,14 @@ local modality                      = {}
 modality.widget                     = modality_widget
 
 local get_rofi_cmd                  = function(s)
-	local tv_prompt     = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 100 -no-plugins -no-config"
-	local laptop_prompt = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 100 -no-plugins -no-config"
+	local tv_prompt     = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config"
+	local laptop_prompt = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 60 -no-plugins -no-config"
 	return s.is_tv and tv_prompt or laptop_prompt
 end
 
 -- search uses Rofi to search for a keybinding/command.
+-- TODO Only show unique commands. (Currently dupes commands with multiple modality keypaths).
+-- TODO Show awful hotkey bindings.
 modality.search                     = function()
 	modality.exit()
 
@@ -117,68 +119,25 @@ modality.search                     = function()
 	end)
 end
 
--- modality.paths establishes the paths table that modality will use.
+-- modality.path_tree establishes the paths table (a tree) that modality will use.
 -- It implicitly (for now) assigns defaults (coded below).
 -- modality.register(keypath, fn) will add to this table.
---[[
-paths = {
-	label = "Modality",
-	bindings = {
-		["a"] = {
-			label = "applications",
-			fn = nil,
-			bindings = {
-				["h"] = {
-					["k"] = function()
-						-- do something
-					end
-				},
-				["i"] = function()
-					-- do something
-				end
-			}
-		},
-		["b"] = {
-			label = "do things that starts with b",
-			fn = function()
-				-- do something
-			end
-			bindings = nil,
-		}
-		["c"] = {
-			["d"] = function()
-				-- do something
-			end
-		}
-	},
-}
-]]
---]]
 modality.path_tree                  = {
 	label    = "Modality",
 	bindings = {
-		["Escape"]  = {
+		["Escape"] = {
 			label    = "exit",
 			fn       = function()
 				return true
 			end,
 			bindings = nil,
 		},
-		["?"]       = {
-			label    = "search",
-			fn       = modality.search,
-			bindings = nil,
-			stay     = false,
-		},
-		-- FIXME This is my very special hacky hack that lets me tap my key
-		-- twice and jump right into the rofi help.
-		["Super_L"] = {
+		["Return"] = {
 			label    = "search",
 			fn       = modality.search,
 			bindings = nil,
 			stay     = false,
 		}
-
 	},
 }
 

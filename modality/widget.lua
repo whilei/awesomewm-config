@@ -84,10 +84,11 @@ lib.hide                          = function(s)
 end
 
 lib.keycode_ui_aliases            = {
-	["return"] = "RET",
-	["space"]  = "SPC",
-	["tab"]    = "TAB",
-	["escape"] = "ESC",
+	["return"]  = "RET",
+	["space"]   = "SPC",
+	["tab"]     = "TAB",
+	["escape"]  = "ESC",
+	["super_l"] = "SUPER",
 }
 
 -- keycode_ui_aliases takes a keycode and returns
@@ -200,8 +201,33 @@ lib.show = function(s, parent)
 	-- Add bindings textboxes for this binding table.
 	-- Docs: https://awesomewm.org/apidoc/widget_layouts/wibox.layout.grid.html
 	if parent.bindings then
-		-- Sort alphabetically.
+
+		-- Sort alphabetically, sort of.
+		-- I want punctuation first, then modifier and other special keys, then letters.
 		local sorted_binding_codes = gears.table.keys(parent.bindings)
+		local punctuation_chars    = "!@#$%^&*()_+{}|:<>?`~[];',./-=\""
+		local specialty_keys       = gears.table.keys(lib.keycode_ui_aliases)
+
+		table.sort(sorted_binding_codes, function(a, b)
+			local a_reserved_first = string.find(punctuation_chars, a, 1, true)
+			local b_reserved_first = string.find(punctuation_chars, b, 1, true)
+			if a_reserved_first and not b_reserved_first then
+				return true
+			end
+			if not a_reserved_first and b_reserved_first then
+				return false
+			end
+
+			local a_reserved_second = gears.table.hasitem(specialty_keys, a:lower())
+			local b_reserved_second = gears.table.hasitem(specialty_keys, b:lower())
+			if a_reserved_second and not b_reserved_second then
+				return true
+			end
+			if not a_reserved_second and b_reserved_second then
+				return false
+			end
+			return a:lower() < b:lower()
+		end)
 
 		for _, code in ipairs(sorted_binding_codes) do
 			local bound = parent.bindings[code]
