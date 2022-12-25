@@ -53,26 +53,31 @@ lib.get_global_awful_keys = function()
 	return lib.global_awful_keys
 end
 
+local m                   = {
+	awesome      = "a~:awesome,", -- trailing , allows for easy concatenation
+	applications = "A:applications,",
+}
+
 lib.global_bindings       = {
 	-- {{{ AWESOME
 	{
 		h          = { group = "awesome", description = "show main menu", name = "main menu" },
+		modalities = { m.awesome .. "w:show main menu" },
 		hotkeys    = { { _keys.MOD, "w" } },
 		on_press   = global_fns.awesome.show_main_menu,
-		modalities = { "a:awesome,w:show main menu" },
 	},
 	{
 		h          = { group = "awesome", description = "wibar style switcher", name = "toggle wibar" },
+		modalities = { m.awesome .. "d:wibar" },
 		hotkeys    = { { _keys.MOD, "d" } },
 		on_press   = global_fns.awesome.wibar,
-		modalities = { "a:awesome,d:wibar" },
 
 	},
 	{
 		h          = { group = "awesome", description = "toggle world times widget", name = "world times" },
+		modalities = { m.awesome .. "g:world times" },
 		hotkeys    = { { _keys.MOD, "g" } },
 		on_press   = global_fns.awesome.world_times,
-		modalities = { "a:awesome,g:world times" },
 	},
 	{
 		h        = { group = "awesome", description = "enter modality mode", name = "modality" },
@@ -89,7 +94,7 @@ lib.global_bindings       = {
 			description = "handy firefox (top)",
 			name        = "handy firefox (top)",
 		},
-		modalities = { "A:applications,t" },
+		modalities = { m.applications .. "h:handy,t" },
 		hotkeys    = {
 			{
 				mods      = { _keys.MOD }, code = "v",
@@ -101,19 +106,22 @@ lib.global_bindings       = {
 
 	},
 	{
-		h        = { group = "launcher", description = "handy firefox (left)", name = "handy firefox (left)", },
-		hotkeys  = { { mods = { _keys.MOD }, code = "a", }, },
-		on_press = global_fns.apps.handy.left,
+		h          = { group = "launcher", description = "handy firefox (left)", name = "handy firefox (left)", },
+		modalities = { m.applications .. "h:handy,l" },
+		hotkeys    = { { mods = { _keys.MOD }, code = "a", }, },
+		on_press   = global_fns.apps.handy.left,
 	},
 	{
-		h        = { group = "launcher", description = "rofi client picker", name = "rofi", },
-		hotkeys  = { { mods = { _keys.MOD }, code = "Return", }, },
-		on_press = global_fns.apps.rofi,
+		h          = { group = "launcher", description = "rofi client picker", name = "rofi", },
+		modalities = { "r" },
+		hotkeys    = { { mods = { _keys.MOD }, code = "Return", }, },
+		on_press   = global_fns.apps.rofi,
 	},
 	{
-		h        = { group = "launcher", description = "toggle quake popup terminal", name = "quake", },
-		hotkeys  = { { mods = { _keys.MOD }, code = "z", }, },
-		on_press = global_fns.apps.quake,
+		h          = { group = "launcher", description = "toggle quake popup terminal", name = "quake", },
+		modalities = { "q" },
+		hotkeys    = { { mods = { _keys.MOD }, code = "z", }, },
+		on_press   = global_fns.apps.quake,
 	},
 	{
 		h        = { group = "launcher", description = "awesome launcher", name = "launcher", },

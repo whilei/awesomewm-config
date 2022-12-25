@@ -107,6 +107,9 @@ lib.show                          = function(s, parent)
 	if name ~= "" then
 		titlebox:set_markup("<big><b>" .. name .. "</b></big>\n")
 		titlebox.visible = true
+		if parent.stay then
+			titlebox:set_markup("<big><b>" .. name .. " (~)" .. "</b></big>\n")
+		end
 	else
 		titlebox:set_markup("")
 		titlebox.visible = false

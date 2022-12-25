@@ -14,7 +14,7 @@ function split_string(inputstr, sep)
 	end
 end
 
-local split = split_string("a:awesome,b,h", ",")
+local split = split_string("a", ":")
 
 for i, s in ipairs(split) do
 	print(i .. " => " .. s)

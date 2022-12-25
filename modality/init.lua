@@ -13,10 +13,10 @@
 -- @coreclassmod modality
 ---------------------------------------------------------------------------
 
-local string, table, ipairs   = string, table, ipairs
-local awful                   = require("awful")
-local gears                   = require("gears")
-local modality_util           = require("modality.util")
+local string, table, ipairs     = string, table, ipairs
+local awful                     = require("awful")
+local gears                     = require("gears")
+local modality_util             = require("modality.util")
 
 ---------------------------------------------------------------------------
 
@@ -27,7 +27,7 @@ local modality_util           = require("modality.util")
 --  split_string("a::c", ":")  == {"a", "", "c"}
 --  split_string("a", ":")     == {"a"}
 -- https://stackoverflow.com/a/7615129
-local split_string            = function(inputstr, sep)
+local split_string              = function(inputstr, sep)
 	sep     = sep or '%s'
 	local t = {}
 	for field, s in string.gmatch(inputstr, "([^" .. sep .. "]*)(" .. sep .. "?)") do
@@ -41,8 +41,8 @@ end
 ---------------------------------------------------------------------------
 
 -- modality is the returned object.
-local modality                = {}
-modality.widget               = require("modality.widget")
+local modality                  = {}
+modality.widget                 = require("modality.widget")
 
 -- modality.paths establishes the paths table that modality will use.
 -- It implicitly (for now) assigns defaults (coded below).
@@ -81,7 +81,7 @@ paths = {
 }
 ]]
 --]]
-modality.paths                = {
+modality.paths                  = {
 	label    = "Modality",
 	bindings = {
 		["Escape"] = {
@@ -95,12 +95,13 @@ modality.paths                = {
 }
 
 -- Assign separator fields as non-local so they can be reassigned by the user.
-modality.keypath_separator    = "," -- the separator between keypaths
-modality.label_separator      = ":" -- the separator between keypath code:label
+modality.keypath_separator      = "," -- the separator between keypaths
+modality.label_separator        = ":" -- the separator between keypath code:label
+modality.stay_in_mode_character = "~" -- the character that will keep you in the mode, use as suffix to character
 
 -- keypath_target_label returns the label of the function that a keypath binding ultimately describes (the "target").
 -- If no label is provided (eg. "a:awesome,h:help,k"), then an empty string is returned.
-modality.keypath_target_label = function(keypath)
+modality.keypath_target_label   = function(keypath)
 	-- Split keypath to get last element.
 	local steps = split_string(keypath, modality.keypath_separator)
 	if #steps == 0 then
@@ -112,22 +113,22 @@ modality.keypath_target_label = function(keypath)
 	return split_string(last_step, modality.label_separator)[2] or ""
 end
 
-local function install_steps(parent, steps, fn)
+-- register_keypath is a recursive function that iterates through the keypath
+-- and ultimately adds the function to the modality.paths map under the appropriately-nested
+-- object, eg. modality.paths.bindings["a"].bindings["h"].bindings["k"] = { fn = fn, label = "label" }
+local function register_keypath(parent, steps, fn)
 
-	--[[
-	ROOT
-
-	modality.paths                = {
-	label    = "Modality",
-	bindings = {
-		["Escape"] = {
-	--]]
+	assert(type(parent) == "table", "parent must be a table")
+	assert(type(steps) == "string", "steps must be a string")
+	assert(type(fn) == "function", "fn must be a function")
 
 	-- Split the keypath into a table of steps.
 	-- eg.
 	-- nested: "a:applications,r:raise or spawn,f:firefox" => {"a:applications", "r:raise or spawn", "f:firefox"}
 	-- flat: "i:hints"
 	local steps_list = split_string(steps, modality.keypath_separator)
+
+	assert(#steps_list > 0, "keypath must have at least one step")
 
 	local is_last    = #steps_list == 1
 	local first_step = steps_list[1]
@@ -138,7 +139,20 @@ local function install_steps(parent, steps, fn)
 	-- "f:firefox" => {"f", "firefox"}
 
 	local code       = spl[1]
+	local stay       = false
 	local label      = spl[2] or "???"
+
+	-- Decode the character that if suffixed to the characters means: Stay in Mode.
+	-- If true, reassign the variable.
+	-- eg. "a~"
+	local stay_i, _  = string.find(code, modality.stay_in_mode_character, 1, true)
+	if stay_i ~= nil and stay_i == 2 then
+		stay = true
+		-- Clean up the dangling '~' character.
+		code = string.sub(code, 1, 1)
+	end
+
+	-- eg. "a~"
 
 	if not parent.bindings then
 		parent.bindings = {}
@@ -148,32 +162,41 @@ local function install_steps(parent, steps, fn)
 	-- Initialize it as a table.
 	-- eg. "a" = { label = "applications", ... }
 	if not parent.bindings[code] then
-		parent.bindings[code]          = {
-			label = label,
+		parent.bindings[code] = {
+			label    = label,
+			stay     = stay,
+			bindings = {},
+			fn       = fn,
 		}
-		parent.bindings[code].bindings = {}
+		--parent.bindings[code].bindings = {}
 	end
 
 	-- Overwrite any label and function with the new one.
 	parent.bindings[code].label = label
 
-	if is_last then
+	if not is_last then
 		-- All last elements in keypaths are required to have functions, for now.
-		parent.bindings[code].fn       = fn
-		parent.bindings[code].bindings = nil
-	else
+		-- Likewise, all non-last elements are required NOT to have functions.
+		-- This is also important because of how the code is structured.
+		-- We assign fn = fn in the initialization scope for each step,
+		-- so we need to delete that assignment if we're not at the last step.
+		-- I know, it kind of seems upside-down.
+		parent.bindings[code].fn = nil
+
 		-- Recurse.
 		-- We remove the first element from the steps list because we've already processed it.
-		local remaining_steps = table.concat(steps_list, modality.keypath_separator, 2)
-		install_steps(parent.bindings[code], remaining_steps, fn)
+		local remaining_steps    = table.concat(steps_list, modality.keypath_separator, 2)
+		register_keypath(parent.bindings[code], remaining_steps, fn)
 	end
 end
 
 -- register registers a keypath (eg. "ahk") to a function.
 -- @keypath: the keypath to register
 -- @fn: the function to execute when the keypath is completed
+-- @stay: boolean: whether the keygrabber should exit/exist after the first use.
 modality.register = function(keypath, fn)
-	install_steps(modality.paths, keypath, fn)
+	print("[modality] register", keypath, fn)
+	register_keypath(modality.paths, keypath, fn)
 end
 
 modality.init     = function()
@@ -209,6 +232,7 @@ local function keypressed_callback(bindings_parent)
 		-- L_SHIFT to get an uppercase L.
 		-- Other modifiers are not checked because I haven't had problems with them yet.
 		if (not key) or (key == "") or (string.find(key:lower(), "shift")) then
+			-- Returning true keeps the keygrabber running (and the widget visible).
 			return true
 		end
 
@@ -218,6 +242,7 @@ local function keypressed_callback(bindings_parent)
 		local bound = bindings_parent.bindings[key]
 		if not bound then
 			-- TODO Show error? (Invalid binding, no such binding.)
+			-- Exiting the mode seems like a harsh punishment for a typo...
 			return exit("unmatched binding")
 		end
 
@@ -227,9 +252,14 @@ local function keypressed_callback(bindings_parent)
 		if bound.fn then
 			print("[modality] matched binding has function, executing")
 
-			self:stop()
-			modality.widget.hide(awful.screen.focused())
-			return bound.fn() -- call the function and return its result
+			if bindings_parent.stay then
+				bound.fn()
+				return true
+			else
+				self:stop()
+				modality.widget.hide(awful.screen.focused())
+				return false -- call the function and return its result
+			end
 
 		elseif bound.bindings then
 			print("[modality] entering submenu", "label=", bound.label, "#bindings=", #bound.bindings)
