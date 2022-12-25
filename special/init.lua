@@ -59,20 +59,20 @@ local quake                        = lain.util.quake({
 																 )
 															 end
 
-															 -- Make it smaller for the tv screen.
-															 local geo           = c:geometry()
-															 if c.screen.is_tv or c.screen.workarea.width > 3000 then
-																 geo.x      = geo.x + (geo.width / 4)
-																 geo.width  = geo.width / 2
-																 geo.height = c.screen.workarea.height / 3
-																 c:geometry(geo)
-															 end
+															 ---- Make it smaller for the tv screen.
+															 --local geo           = c:geometry()
+															 --if c.screen.is_tv or c.screen.workarea.width > 3000 then
+															 -- geo.x      = geo.x + (geo.width / 4)
+															 -- geo.width  = geo.width / 2
+															 -- geo.height = c.screen.workarea.height / 3
+															 -- c:geometry(geo)
+															 --end
 
-															 awful.placement.align(c, {
-																 position       = "bottom",
-																 honor_padding  = true,
-																 honor_workarea = true,
-															 })
+															 --awful.placement.align(c, {
+															 -- position       = "bottom",
+															 -- honor_padding  = true,
+															 -- honor_workarea = true,
+															 --})
 														 end
 													 })
 
