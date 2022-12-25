@@ -5,6 +5,10 @@
 
 --]]
 
+-- awesome_mode: api-level=4:screen=on
+-- If LuaRocks is installed, make sure that packages installed through it are
+-- found (e.g. lgi). If LuaRocks is not installed, do nothing.
+pcall(require, "luarocks.loader")
 
 -- {{{ Required libraries
 local awesome, screen, client, mouse, screen, tag, titlebar = awesome, screen, client, mouse, screen, tag, titlebar
@@ -85,7 +89,6 @@ local gui_editor        = "code"
 local browser           = "ffox"
 local guieditor         = "code"
 local scrlocker         = "xlock"
-local invert_colors     = "xrandr-invert-colors"
 
 local clientkeybindings = {}
 -- clientkeybindings["z"] = "Konsole"
@@ -103,34 +106,29 @@ for key, app in pairs(clientkeybindings) do
 			  end)
 end
 
-awful.util.terminal         = terminal
+awful.util.terminal = terminal
 
 -- These tag names are now only used for reference by widgets and things
 -- that need to name the indexes of the tags.
 -- The logic here is assumed to be tightly coupled with
 -- the tag screen-setup logic defined in ia/theme.lua,
 -- which assigns tags per screen, using custom naming tables.
-awful.util.tagnames         = { "1", "2", "3", "4", "5" }
+awful.util.tagnames = { "1", "2", "3", "4", "5" }
 --awful.util.tagnames = { "●", "●", "●", "●", "●" }
 --awful.util.tagnames = { "❶", "❷", "❸", "❹", "❺" }
 --awful.util.tagnames = { "▇", "▇", "▇", "▇", "▇" }
 
-local _layouts              = {
+local _layouts      = {
 	tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
 	swen  = layout_titlebars_conditional { layout = ia_layout_swen },
 }
 
-awful.layout.layouts        = {
-	-- awful.layout.suit.tile.bottom,
-	--awful.layout.suit.tile,
+awful.layout.append_default_layouts {
 	_layouts.tiler,
 	_layouts.swen,
 	lain.layout.centerwork,
-	--awful.layout.suit.fair,
 	awful.layout.suit.magnifier,
-	-- awful.layout.suit.corner.nw,
 	awful.layout.suit.floating,
-	--ia_layout_bigscreen,
 }
 
 awful.util.taglist_buttons  = a_util_table.join(
@@ -175,8 +173,8 @@ awful.util.tasklist_buttons = a_util_table.join(
 
 local theme_path            = gears.filesystem.get_configuration_dir() .. "themes/" .. chosen_theme .. "/theme.lua"
 beautiful.init(theme_path)
-revelation.init()
-hints.init()
+--revelation.init()
+--hints.init()
 modality.init()
 
 local toggle_wibar_slim_fn = function()
@@ -192,22 +190,6 @@ local fullscreen_fn        = function(c)
 	if c.screen and c.screen.mywibox.visible then
 		toggle_wibar_slim_fn()
 	end
-end
-
-local rofi_fn              = function()
-	-- Location values:
-	-- 1   2   3
-	-- 8   0   4
-	-- 7   6   5
-
-	local tv_prompt     = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
-	local laptop_prompt = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
-	commandPrompter     = awful.screen.focused().is_tv and tv_prompt or laptop_prompt
-	awful.spawn.easy_async(commandPrompter, function()
-		if client.focus then
-			awful.screen.focus(client.focus.screen)
-		end
-	end)
 end
 
 local toggle_worldtimes_fn = function()
@@ -302,242 +284,189 @@ end, "main menu" }
 local imodal_separator    = { "separator", "" }
 
 imodal_awesomewm          = {
-	{ "i", function()
-		if not client.focus then
-			return
-		end
-		local c = client.focus
-		local p = awful.popup {
-			widget              = {
-				{
-					{
-						text   = 'instance: ' .. c.instance,
-						widget = wibox.widget.textbox,
-					},
-					{
-						text   = 'class: ' .. c.class,
-						widget = wibox.widget.textbox,
-					},
-					{
-						text   = 'name: ' .. c.name,
-						widget = wibox.widget.textbox,
-					},
-					{
-						text   = 'window: ' .. c.window,
-						widget = wibox.widget.textbox,
-					},
-					{
-						text   = 'pid: ' .. (c.pid or 'n/a'),
-						widget = wibox.widget.textbox,
-					},
-					{
-						text   = 'role: ' .. (c.role or 'n/a'),
-						widget = wibox.widget.textbox,
-					},
-					layout = wibox.layout.fixed.vertical,
-				},
-				margins = 10,
-				widget  = wibox.container.margin,
-			},
-			screen              = client.focus.screen,
-			placement           = awful.placement.bottom,
-			visible             = true,
-			ontop               = true,
-			hide_on_right_click = true,
+	--{ "i",, "inspect client" },
 
-			border_color        = '#FF0000',
-			border_width        = 10,
-		}
-		awful.keygrabber {
-			autostart     = true,
-			stop_key      = "Escape",
-			stop_event    = "press",
-			stop_callback = function()
-				p.visible = false
-				p         = nil
-			end,
-		}
-	end, "inspect client" },
-
-	{ "k", hotkeys_popup.show_help, "hotkeys" },
-	{ "m", function()
-		awful.util.mymainmenu:show()
-	end, "menu" },
-	{ "r", awesome.restart, "restart" },
+	--{ "k", hotkeys_popup.show_help, "hotkeys" },
+	--{ "m", function()
+	--	awful.util.mymainmenu:show()
+	--end, "menu" },
+	--{ "r", awesome.restart, "restart" },
 }
 
 imodal_client_move_resize = {
-	{ "1", function()
-		if client.focus then
-			local tag = client.focus.screen.tags[1]
-			if tag then
-				client.focus:move_to_tag(tag)
-			end
-		end
-	end, "move to " .. awful.util.tagnames[1] },
-	{ "2", function()
-		if client.focus then
-			local tag = client.focus.screen.tags[2]
-			if tag then
-				client.focus:move_to_tag(tag)
-			end
-		end
-	end, "move to " .. awful.util.tagnames[2] },
-	{ "3", function()
-		if client.focus then
-			local tag = client.focus.screen.tags[3]
-			if tag then
-				client.focus:move_to_tag(tag)
-			end
-		end
-	end, "move to " .. awful.util.tagnames[3] },
-	{ "4", function()
-		if client.focus then
-			local tag = client.focus.screen.tags[4]
-			if tag then
-				client.focus:move_to_tag(tag)
-			end
-		end
-	end, "move to " .. awful.util.tagnames[4] },
-	{ "5", function()
-		if client.focus then
-			local tag = client.focus.screen.tags[5]
-			if tag then
-				client.focus:move_to_tag(tag)
-			end
-		end
-	end, "move to " .. awful.util.tagnames[5] },
+	--{ "1", function()
+	--	if client.focus then
+	--		local tag = client.focus.screen.tags[1]
+	--		if tag then
+	--			client.focus:move_to_tag(tag)
+	--		end
+	--	end
+	--end, "move to " .. awful.util.tagnames[1] },
+	--{ "2", function()
+	--	if client.focus then
+	--		local tag = client.focus.screen.tags[2]
+	--		if tag then
+	--			client.focus:move_to_tag(tag)
+	--		end
+	--	end
+	--end, "move to " .. awful.util.tagnames[2] },
+	--{ "3", function()
+	--	if client.focus then
+	--		local tag = client.focus.screen.tags[3]
+	--		if tag then
+	--			client.focus:move_to_tag(tag)
+	--		end
+	--	end
+	--end, "move to " .. awful.util.tagnames[3] },
+	--{ "4", function()
+	--	if client.focus then
+	--		local tag = client.focus.screen.tags[4]
+	--		if tag then
+	--			client.focus:move_to_tag(tag)
+	--		end
+	--	end
+	--end, "move to " .. awful.util.tagnames[4] },
+	--{ "5", function()
+	--	if client.focus then
+	--		local tag = client.focus.screen.tags[5]
+	--		if tag then
+	--			client.focus:move_to_tag(tag)
+	--		end
+	--	end
+	--end, "move to " .. awful.util.tagnames[5] },
 
-	{ "f", function()
-		if not client.focus then
-			return
-		end
-		client.focus.floating = not client.focus.floating
-		client.focus:raise()
-	end, "floating" },
+	--{ "f", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.floating = not client.focus.floating
+	--	client.focus:raise()
+	--end, "floating" },
 
-	{ "h", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		client.focus.width    = client.focus.width - client.focus.screen.workarea.height / 10
-		awful.placement.no_offscreen(client.focus)
-	end, "shrink ←" },
-	{ "j", function()
-		if not client.focus then
-			return
-		end
-		client.focus.floating = true;
-		client.focus.height   = client.focus.height + client.focus.screen.workarea.height / 10
-		awful.placement.no_offscreen(client.focus)
-	end, "grow ↓" },
-	{ "k", function()
-		if not client.focus then
-			return
-		end
-		client.focus.floating = true;
-		client.focus.height   = client.focus.height - client.focus.screen.workarea.height / 10
-		awful.placement.no_offscreen(client.focus)
-	end, "shrink ↑" },
-	{ "l", function()
-		if not client.focus then
-			return
-		end
-		client.focus.floating = true;
-		client.focus.width    = client.focus.width + client.focus.screen.workarea.height / 10
-		awful.placement.no_offscreen(client.focus)
-	end, "grow →" },
+	--{ "h", function()
+	--	if not client.focus then
+	--		return
+	--	end ;
+	--	client.focus.floating = true;
+	--	client.focus.width    = client.focus.width - client.focus.screen.workarea.height / 10
+	--	awful.placement.no_offscreen(client.focus)
+	--end, "shrink ←" },
+	--
+	--{ "j", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.floating = true;
+	--	client.focus.height   = client.focus.height + client.focus.screen.workarea.height / 10
+	--	awful.placement.no_offscreen(client.focus)
+	--end, "grow ↓" },
+	--{ "k", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.floating = true;
+	--	client.focus.height   = client.focus.height - client.focus.screen.workarea.height / 10
+	--	awful.placement.no_offscreen(client.focus)
+	--end, "shrink ↑" },
+	--{ "l", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.floating = true;
+	--	client.focus.width    = client.focus.width + client.focus.screen.workarea.height / 10
+	--	awful.placement.no_offscreen(client.focus)
+	--end, "grow →" },
 
 	--{ "m", function()
 	--	modalbind.close_box({})
 	--	modalbind.grab { keymap = imodal_client_move, name = "Move client", stay_in_mode = true, hide_default_options = true }
 	--end, "+move" },
 
-	{ "m", function()
-		if not client.focus then
-			return
-		end
-		client.focus.maximized = not client.focus.maximized
-	end, "maximized" },
+	--{ "m", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.maximized = not client.focus.maximized
+	--end, "maximized" },
 
-	{ "n", function()
-		local cc = client.focus
-		if not cc then
-			return
-		end
-		awful.client.focus.history.previous()
-		cc.focus = false
-		cc:lower()
-		cc.minimized = true
-	end, "minimized" },
+	--{ "n", function()
+	--	local cc = client.focus
+	--	if not cc then
+	--		return
+	--	end
+	--	awful.client.focus.history.previous()
+	--	cc.focus = false
+	--	cc:lower()
+	--	cc.minimized = true
+	--end, "minimized" },
 
-	{ "r", function()
-		local c = awful.client.restore()
-		-- Focus restored client
-		if c then
-			client.focus = c
-			c:raise()
-		end
-	end, "restore" },
+	--{ "r", function()
+	--	local c = awful.client.restore()
+	--	-- Focus restored client
+	--	if c then
+	--		client.focus = c
+	--		c:raise()
+	--	end
+	--end, "restore" },
+	--
+	--{ "s", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus:move_to_screen()
+	--end, "swap screen" },
 
-	{ "s", function()
-		if not client.focus then
-			return
-		end
-		client.focus:move_to_screen()
-	end, "swap screen" },
-
-	{ "C", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		awful.placement.centered(client.focus)
-	end, "center" },
-	{ "H", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		awful.placement.left(client.focus)
-	end, "left" },
-
-	{ "J", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		awful.placement.bottom(client.focus)
-	end, "bottom" },
-	{ "K", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		awful.placement.top(client.focus)
-	end, "top" },
-	{ "L", function()
-		if not client.focus then
-			return
-		end ;
-		client.focus.floating = true;
-		awful.placement.right(client.focus)
-	end, "right" },
-
-	{ "V", function()
-		if not client.focus then
-			return
-		end
-		client.focus.maximized_vertical = true
-	end, "maximize vertical" },
-
-	{ "W", function()
-		if not client.focus then
-			return
-		end
-		client.focus.maximized_horizontal = true
-	end, "maximize horizontal" },
+	--{ "C", function()
+	--	if not client.focus then
+	--		return
+	--	end ;
+	--	client.focus.floating = true;
+	--	awful.placement.centered(client.focus)
+	--end, "center" },
+	--
+	--{ "H", function()
+	--	if not client.focus then
+	--		return
+	--	end ;
+	--	client.focus.floating = true;
+	--	awful.placement.left(client.focus)
+	--end, "left" },
+	--
+	--{ "J", function()
+	--	if not client.focus then
+	--		return
+	--	end ;
+	--	client.focus.floating = true;
+	--	awful.placement.bottom(client.focus)
+	--end, "bottom" },
+	--{ "K", function()
+	--	if not client.focus then
+	--		return
+	--	end ;
+	--	client.focus.floating = true;
+	--	awful.placement.top(client.focus)
+	--end, "top" },
+	--{ "L", function()
+	--	if not client.focus then
+	--		return
+	--	end ;
+	--	client.focus.floating = true;
+	--	awful.placement.right(client.focus)
+	--end, "right" },
+	--
+	--{ "V", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.maximized_vertical = true
+	--end, "maximize vertical" },
+	--
+	--{ "W", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.maximized_horizontal = true
+	--end, "maximize horizontal" },
 }
 
 imodal_client_move        = {
@@ -545,62 +474,62 @@ imodal_client_move        = {
 }
 
 imodal_client_toggle      = {
-	{ "f", function()
-		if not client.focus then
-			return
-		end
-		client.focus.floating = not client.focus.floating
-		client.focus:raise()
-	end, "floating" },
+	--{ "f", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.floating = not client.focus.floating
+	--	client.focus:raise()
+	--end, "floating" },
 
-	{ "m", function()
-		if not client.focus then
-			return
-		end
-		client.focus.maximized = not client.focus.maximized
-		client.focus:raise()
-	end, "maximized" },
+	--{ "m", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.maximized = not client.focus.maximized
+	--	client.focus:raise()
+	--end, "maximized" },
 
-	{ "n", function(c)
-		-- The client currently has the input focus, so it cannot be
-		-- minimized, since minimized clients can't have the focus.
-		local cc = c or client.focus
-		if not cc then
-			return
-		end
-		cc.focus = false
-		cc:lower()
-		cc.minimized = true
-		awful.client.focus.history.previous()
-	end, "minimized" },
+	--{ "n", function(c)
+	--	-- The client currently has the input focus, so it cannot be
+	--	-- minimized, since minimized clients can't have the focus.
+	--	local cc = c or client.focus
+	--	if not cc then
+	--		return
+	--	end
+	--	cc.focus = false
+	--	cc:lower()
+	--	cc.minimized = true
+	--	awful.client.focus.history.previous()
+	--end, "minimized" },
 
-	{ "o", function()
-		if not client.focus then
-			return
-		end
-		client.focus.ontop = not client.focus.ontop
-	end, "ontop" },
+	--{ "o", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.ontop = not client.focus.ontop
+	--end, "ontop" },
 
-	{ "s", function()
-		if not client.focus then
-			return
-		end
-		client.focus.sticky = not client.focus.sticky
-	end, "sticky" },
+	--{ "s", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.sticky = not client.focus.sticky
+	--end, "sticky" },
 
-	{ "t", function()
-		if not client.focus then
-			return
-		end
-		awful.titlebar.toggle(client.focus)
-	end, "titlebar" },
+	--{ "t", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	awful.titlebar.toggle(client.focus)
+	--end, "titlebar" },
 
-	{ "F", function()
-		if not client.focus then
-			return
-		end
-		fullscreen_fn(client.focus)
-	end, "fullscreen" },
+	--{ "F", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	fullscreen_fn(client.focus)
+	--end, "fullscreen" },
 }
 
 
@@ -615,84 +544,84 @@ imodal_client_focus       = {
 	--	modalbind.grab { keymap = imodal_client_move, name = "Move", stay_in_mode = true, hide_default_options = true }
 	--end, "Move" },
 
-	{ "Tab", special.focus_previous_client_global, "focus last" },
+	--{ "Tab", special.focus_previous_client_global, "focus last" },
+	--
+	--{ "*", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus:swap(awful.client.getmaster())
+	--end, "move client to master" },
 
-	{ "*", function()
-		if not client.focus then
-			return
-		end
-		client.focus:swap(awful.client.getmaster())
-	end, "move client to master" },
+	--{ "h", function()
+	--	awful.client.focus.global_bydirection("left")
+	--	if client.focus then
+	--		client.focus:raise()
+	--	end
+	--end, "← focus left" },
+	--
+	--{ "i", icky_fns.client.hints, "hints" },
+	--
+	--{ "j", function()
+	--	awful.client.focus.global_bydirection("down")
+	--	if client.focus then
+	--		client.focus:raise()
+	--	end
+	--end, "↓ focus down" },
+	--{ "k", function()
+	--	awful.client.focus.global_bydirection("up")
+	--	if client.focus then
+	--		client.focus:raise()
+	--	end
+	--end, "↑ focus up" },
+	--{ "l", function()
+	--	awful.client.focus.global_bydirection("right")
+	--	if client.focus then
+	--		client.focus:raise()
+	--	end
+	--end, "→ focus right" },
 
-	{ "h", function()
-		awful.client.focus.global_bydirection("left")
-		if client.focus then
-			client.focus:raise()
-		end
-	end, "← focus left" },
+	--{ "n", function()
+	--	awful.client.focus.byidx(1)
+	--end, "next" },
+	--
+	--{ "p", function()
+	--	awful.client.focus.byidx(-1)
+	--end, "previous" },
 
-	{ "i", icky_fns.client.hints, "hints" },
+	--{ "x", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus:kill()
+	--end, "kill" },
 
-	{ "j", function()
-		awful.client.focus.global_bydirection("down")
-		if client.focus then
-			client.focus:raise()
-		end
-	end, "↓ focus down" },
-	{ "k", function()
-		awful.client.focus.global_bydirection("up")
-		if client.focus then
-			client.focus:raise()
-		end
-	end, "↑ focus up" },
-	{ "l", function()
-		awful.client.focus.global_bydirection("right")
-		if client.focus then
-			client.focus:raise()
-		end
-	end, "→ focus right" },
+	--{ "M", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus.maximized = not client.focus.maximized
+	--end, "maximized" },
 
-	{ "n", function()
-		awful.client.focus.byidx(1)
-	end, "next" },
+	--{ "N", function()
+	--	local cc = client.focus
+	--	if not cc then
+	--		return
+	--	end
+	--	awful.client.focus.history.previous()
+	--	cc.focus = false
+	--	cc:lower()
+	--	cc.minimized = true
+	--end, "minimized" },
 
-	{ "p", function()
-		awful.client.focus.byidx(-1)
-	end, "previous" },
-
-	{ "x", function()
-		if not client.focus then
-			return
-		end
-		client.focus:kill()
-	end, "kill" },
-
-	{ "M", function()
-		if not client.focus then
-			return
-		end
-		client.focus.maximized = not client.focus.maximized
-	end, "maximized" },
-
-	{ "N", function()
-		local cc = client.focus
-		if not cc then
-			return
-		end
-		awful.client.focus.history.previous()
-		cc.focus = false
-		cc:lower()
-		cc.minimized = true
-	end, "minimized" },
-
-	{ "R", function()
-		local c = awful.client.restore()
-		-- Focus restored client
-		if c then
-			client.focus = c
-			c:raise()
-		end
-	end, "restore (=unminimize) a client" },
+	--{ "R", function()
+	--	local c = awful.client.restore()
+	--	-- Focus restored client
+	--	if c then
+	--		client.focus = c
+	--		c:raise()
+	--	end
+	--end, "restore (=unminimize) a client" },
 }
 
 imodal_layout             = {
@@ -701,82 +630,83 @@ imodal_layout             = {
 		modalbind.grab { keymap = imodal_layout_adjust, name = "Adjust Layout", stay_in_mode = true, hide_default_options = true }
 	end, "+adjust" },
 
-	{ "c", function()
-		awful.layout.set(lain.layout.centerwork)
-	end, "centerwork" },
-	{ "f", function()
-		awful.layout.set(awful.layout.suit.floating)
-	end, "floating" },
-	{ "m", function()
-		awful.layout.set(awful.layout.suit.magnifier)
-	end, "magnifier" },
-	{ "s", function()
-		awful.layout.set(_layouts.swen)
-	end, "SWEN" },
-	{ "t", function()
-		awful.layout.set(_layouts.tiler)
-	end, "tile" },
-	{ "v", function()
-		awful.layout.set(ia_layout_vcolumns)
-	end, "v. columns" },
+	--{ "c", function()
+	--	awful.layout.set(lain.layout.centerwork)
+	--end, "centerwork" },
+	--{ "f", function()
+	--	awful.layout.set(awful.layout.suit.floating)
+	--end, "floating" },
+	--{ "m", function()
+	--	awful.layout.set(awful.layout.suit.magnifier)
+	--end, "magnifier" },
+	--{ "s", function()
+	--	awful.layout.set(_layouts.swen)
+	--end, "SWEN" },
+	--{ "t", function()
+	--	awful.layout.set(_layouts.tiler)
+	--end, "tile" },
+	--{ "v", function()
+	--	awful.layout.set(ia_layout_vcolumns)
+	--end, "v. columns" },
 
 }
 
 imodal_layout_adjust      = {
-	{ "h", function()
-		awful.tag.incmwfact(-0.05)
-	end, "decrease master width factor" },
-	{ "j", function()
-		awful.client.swap.byidx(1)
-	end, "swap client with next" },
-	{ "k", function()
-		awful.client.swap.byidx(-1)
-	end, "swap client with previous" },
-	{ "l", function()
-		awful.tag.incmwfact(0.05)
-	end, "increase master width factor" },
+	--{ "h", function()
+	--	awful.tag.incmwfact(-0.05)
+	--end, "decrease master width factor" },
+	--{ "j", function()
+	--	awful.client.swap.byidx(1)
+	--end, "swap client with next" },
+	--
+	--{ "k", function()
+	--	awful.client.swap.byidx(-1)
+	--end, "swap client with previous" },
+	--{ "l", function()
+	--	awful.tag.incmwfact(0.05)
+	--end, "increase master width factor" },
 	--{ "Tab", function()
 	--	awful.layout.set(layout_bling_mstab)
 	--end, "MS-Tab"},
 }
 
 imodal_power              = {
-	{ "l", function()
-		awful.util.spawn_with_shell("sudo service lightdm restart")
-	end, "log out" },
-	{ "s", function()
-		awful.util.spawn_with_shell("sudo systemctl suspend")
-	end, "suspend" },
-	{ "P", function()
-		awful.util.spawn_with_shell("shutdown -P -h now")
-	end, "shutdown" },
-	{ "R", function()
-		os.execute("reboot")
-	end, "reboot" },
+	--{ "l", function()
+	--	awful.util.spawn_with_shell("sudo service lightdm restart")
+	--end, "log out" },
+	--{ "s", function()
+	--	awful.util.spawn_with_shell("sudo systemctl suspend")
+	--end, "suspend" },
+	--{ "P", function()
+	--	awful.util.spawn_with_shell("shutdown -P -h now")
+	--end, "shutdown" },
+	--{ "R", function()
+	--	os.execute("reboot")
+	--end, "reboot" },
 }
 
 imodal_screenshot         = {
-	{ "s", icky_fns.screenshot.selection, "selection" },
-	{ "w", icky_fns.screenshot.window, "window" },
+	--{ "s", icky_fns.screenshot.selection, "selection" },
+	--{ "w", icky_fns.screenshot.window, "window" },
 }
 
 imodal_volume             = {
-	{ "p", function()
-		os.execute("amixer -q set Capture toggle")
-		beautiful.mic.update()
-	end, "microphone toggle" },
-	{ "m", function()
-		os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
-		beautiful.volume.update()
-	end, "mute toggle" },
-	{ "Up", function()
-		os.execute(string.format("amixer -q set %s 1%%+", beautiful.volume.channel))
-		beautiful.volume.update()
-	end, "up" },
-	{ "Down", function()
-		os.execute(string.format("amixer -q set %s 1%%-", beautiful.volume.channel))
-		beautiful.volume.update()
-	end, "down" },
+	--{ "p", function()
+	--	os.execute("amixer -q set Capture toggle")
+	--	beautiful.mic.update()
+	--end, "microphone toggle" },
+	--{ "m", function()
+	--	os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
+	--	beautiful.volume.update()
+	--end, "mute toggle" },
+	--{ "Up", function()
+	--	os.execute(string.format("amixer -q set %s 1%%+", beautiful.volume.channel))
+	--	beautiful.volume.update()
+	--end, "up" },
+	--{ "Down", function()
+	--	os.execute(string.format("amixer -q set %s 1%%-", beautiful.volume.channel))
+	--	beautiful.volume.update()
+	--end, "down" },
 }
 
 imodal_tag                = {
@@ -816,152 +746,152 @@ imodal_tag                = {
 		end
 	end, awful.util.tagnames[5] },
 	imodal_separator,
-	{ "a", function()
-		awful                                     .tag.add("NewTag", {
-			screen = awful.screen.focused(),
-			layout = awful.layout.suit.floating }):view_only()
-	end, "add tag" },
-	{ "d", function()
-		local t = awful.screen.focused().selected_tag
-		if not t then
-			return
-		end
-		t:delete()
-	end, "delete tag" },
-	{ "n", awful.tag.viewnext, "next tag" },
-	{ "p", awful.tag.viewprev, "previous tag" },
-	{ "r", function()
-		awful.prompt.run {
-			prompt       = "New tag name: ",
-			textbox      = awful.screen.focused().mypromptbox.widget,
-			exe_callback = function(new_name)
-				if not new_name or #new_name == 0 then
-					return
-				end
-
-				local t = awful.screen.focused().selected_tag
-				if t then
-					t.name = new_name
-				end
-			end
-		}
-	end, "rename tag" },
-	{ "N", function()
-		local c = client.focus
-		if not c then
-			return
-		end
-
-		local t = awful.tag.add(c.class, { screen = c.screen })
-		c:tags({ t })
-		t:view_only()
-	end, "move client to new tag" },
+	--{ "a", function()
+	--	awful                                     .tag.add("NewTag", {
+	--		screen = awful.screen.focused(),
+	--		layout = awful.layout.suit.floating }):view_only()
+	--end, "add tag" },
+	--{ "d", function()
+	--	local t = awful.screen.focused().selected_tag
+	--	if not t then
+	--		return
+	--	end
+	--	t:delete()
+	--end, "delete tag" },
+	--{ "n", awful.tag.viewnext, "next tag" },
+	--{ "p", awful.tag.viewprev, "previous tag" },
+	--{ "r", function()
+	--	awful.prompt.run {
+	--		prompt       = "New tag name: ",
+	--		textbox      = awful.screen.focused().mypromptbox.widget,
+	--		exe_callback = function(new_name)
+	--			if not new_name or #new_name == 0 then
+	--				return
+	--			end
+	--
+	--			local t = awful.screen.focused().selected_tag
+	--			if t then
+	--				t.name = new_name
+	--			end
+	--		end
+	--	}
+	--end, "rename tag" },
+	--{ "N", function()
+	--	local c = client.focus
+	--	if not c then
+	--		return
+	--	end
+	--
+	--	local t = awful.tag.add(c.class, { screen = c.screen })
+	--	c:tags({ t })
+	--	t:view_only()
+	--end, "move client to new tag" },
 }
 
 imodal_toggle             = {
-	{ "c", function()
-		os.execute(invert_colors)
-	end, "invert colors" },
+	--{ "c", function()
+	--	os.execute(invert_colors)
+	--end, "invert colors" },
 }
 
 imodal_useless            = {
-	{ "0", function()
-		local scr            = awful.screen.focused()
-		scr.selected_tag.gap = 0
-	end, "gaps = 0" },
-	{ "b", function()
-		lain.util.useless_gaps_resize(10)
-	end, "bigger =+ 10" },
-	{ "s", function()
-		lain.util.useless_gaps_resize(-10)
-	end, "smaller =- 10" },
-	{ "B", function()
-		lain.util.useless_gaps_resize(50)
-	end, "bigger =+ 50" },
-	{ "S", function()
-		lain.util.useless_gaps_resize(-50)
-	end, "smaller =- 50" },
+	--{ "0", function()
+	--	local scr            = awful.screen.focused()
+	--	scr.selected_tag.gap = 0
+	--end, "gaps = 0" },
+	--{ "b", function()
+	--	lain.util.useless_gaps_resize(10)
+	--end, "bigger =+ 10" },
+	--{ "s", function()
+	--	lain.util.useless_gaps_resize(-10)
+	--end, "smaller =- 10" },
+	--{ "B", function()
+	--	lain.util.useless_gaps_resize(50)
+	--end, "bigger =+ 50" },
+	--{ "S", function()
+	--	lain.util.useless_gaps_resize(-50)
+	--end, "smaller =- 50" },
 }
 
 imodal_widgets            = {
-	{ "d", function()
-		my_calendar_widget.toggle()
-	end, "calendar" },
-	{ "t", toggle_worldtimes_fn, "world times" },
-	{ "w", function()
-		my_weather.toggle()
-	end, "weather" },
+	--{ "d", function()
+	--	awful.screen.focused().my_calendar_widget.toggle()
+	--end, "calendar" },
+	----{ "t", toggle_worldtimes_fn, "world times" },
+	--{ "w", function()
+	--	awful.screen.focused().my_weather.toggle()
+	--end, "weather" },
 }
 
 imodal_bars               = {
-	{ "b", toggle_wibar_slim_fn, "wibar/slim" },
+	--{ "b", toggle_wibar_slim_fn, "wibar/slim" },
 }
 
 imodal_main               = {
-	{ "Return", icky_fns.apps.rofi, "rofi" },
+	--{ "Return", icky_fns.apps.rofi, "rofi" },
 
-	{ "Tab", special.focus_previous_client_global, "focus last" },
+	--{ "Tab", special.focus_previous_client_global, "focus last" },
 
-	{ "!", function()
-		local c = client.focus
-		if not c then
-			return
-		end
-		fancy_float_toggle(c)
-	end, "fancy float" },
+	--{ "!", function()
+	--	local c = client.focus
+	--	if not c then
+	--		return
+	--	end
+	--	fancy_float_toggle(c)
+	--end, "fancy float" },
 
-	{ "-", function(c)
-		-- The client currently has the input focus, so it cannot be
-		-- minimized, since minimized clients can't have the focus.
-		local cc = c or client.focus
-		if not cc then
-			return
-		end
-		cc.focus = false
-		cc:lower()
-		cc.minimized = true
-		awful.client.focus.history.previous()
-	end, "minimize" },
-	{ "+", function()
-		local c = awful.client.restore()
-		-- Focus restored client
-		if c then
-			client.focus = c
-			c:raise()
-		end
-	end, "restore" },
+	--{ "-", function(c)
+	--	-- The client currently has the input focus, so it cannot be
+	--	-- minimized, since minimized clients can't have the focus.
+	--	local cc = c or client.focus
+	--	if not cc then
+	--		return
+	--	end
+	--	cc.focus = false
+	--	cc:lower()
+	--	cc.minimized = true
+	--	awful.client.focus.history.previous()
+	--end, "minimize" },
+	--{ "+", function()
+	--	local c = awful.client.restore()
+	--	-- Focus restored client
+	--	if c then
+	--		client.focus = c
+	--		c:raise()
+	--	end
+	--end, "restore" },
 
-	{ "*", function()
-		if not client.focus then
-			return
-		end
-		client.focus:swap(awful.client.getmaster())
-	end, "move client to master" },
+	--{ "*", function()
+	--	if not client.focus then
+	--		return
+	--	end
+	--	client.focus:swap(awful.client.getmaster())
+	--end, "move client to master" },
 
 	{ "a", modalbind.grabf { keymap = imodal_awesomewm, name = "Awesome", stay_in_mode = false, hide_default_options = true }, "+awesome" },
 	{ "b", modalbind.grabf { keymap = imodal_bars, name = "Bars", stay_in_mode = false, hide_default_options = true }, "+bars" },
-	{ "e", revelation, "revelation" },
+	--{ "e", revelation, "revelation" },
 	{ "f", modalbind.grabf { keymap = imodal_client_focus, name = "Client (focus)", stay_in_mode = false, hide_default_options = true }, "+focus (client)" },
 	{ "g", modalbind.grabf { keymap = imodal_widgets, name = "Widgets", stay_in_mode = false, hide_default_options = true }, "+widgets" },
-	{ "i", icky_fns.client.hints, "hints" },
+	--{ "i", icky_fns.client.hints, "hints" },
 	{ "l", modalbind.grabf { keymap = imodal_layout, name = "Layout", stay_in_mode = false, hide_default_options = true }, "+layout" },
 	{ "p", modalbind.grabf { keymap = imodal_client_move_resize, name = "Client", stay_in_mode = true, hide_default_options = true }, "+position (client)" },
-	{ "r", revelation, "revelation" },
-	{ "s", function()
-		awful.screen.focus_relative(1)
-	end, "switch screen" },
+	--{ "r", revelation, "revelation" },
+	--{ "s", function()
+	--	awful.screen.focus_relative(1)
+	--end, "switch screen" },
 	{ "t", modalbind.grabf { keymap = imodal_tag, name = "Tag", stay_in_mode = false, hide_default_options = true }, "+tag" },
 	{ "u", modalbind.grabf { keymap = imodal_useless, name = "Useless gaps", stay_in_mode = true, hide_default_options = true }, "+useless gaps" },
 	{ "v", modalbind.grabf { keymap = imodal_volume, name = "Useless gaps", stay_in_mode = true, hide_default_options = true }, "+volume" },
 	{ "x", modalbind.grabf { keymap = imodal_toggle, name = "Toggle Settings", stay_in_mode = false, hide_default_options = true }, "+toggle" },
 	{ "w", modalbind.grabf { keymap = imodal_client_toggle, name = "Client window", stay_in_mode = false, hide_default_options = true }, "+window (client)" },
-	{ "z", function()
-		awful.screen.focused().quake:toggle()
-	end, "quake" },
+	--{ "z", function()
+	--	awful.screen.focused().quake:toggle()
+	--end, "quake" },
 	{ "P", modalbind.grabf { keymap = imodal_power, name = "Power/User", stay_in_mode = false, hide_default_options = true }, "+power/user" },
-	{ "R", function()
-		special.popup_launcher.launch()
-	end, "run launcher" },
+	--{ "R", function()
+	--	special.popup_launcher.launch()
+	--end, "run launcher" },
 	{ "S", modalbind.grabf { keymap = imodal_screenshot, name = "Screenshot", stay_in_mode = false, hide_default_options = true }, "+screenshot" },
 }
 
@@ -1021,8 +951,6 @@ imodal_main               = {
 --    dont_focus_before_close  = false,                 -- When set to true, the scratchpad will be closed by the toggle function regardless of whether its focused or not. When set to false, the toggle function will first bring the scratchpad into focus and only close it on a second call
 --    rubato = {x = anim_x, y = anim_y}                 -- Optional. This is how you can pass in the rubato tables for animations. If you don't want animations, you can ignore this option.
 --}
-
-local handy               = require("handy")
 
 -- {{{ Menwesomeu
 local myawesomemenu       = {
@@ -1135,11 +1063,11 @@ end)
 icky_keys()
 
 -- {{{ Key bindings
-awful.keyboard.append_global_keybindings({
-											 awful.key({ modkey }, ",", function()
-												 modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
-											 end),
-										 })
+--awful.keyboard.append_global_keybindings({
+--											 --awful.key({ modkey }, ",", function()
+--												-- modalbind.grab { keymap = imodal_main, name = "", stay_in_mode = false }
+--											 --end),
+--										 })
 
 
 -- Set up client management buttons FOR THE MOUSE.

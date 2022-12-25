@@ -13,12 +13,24 @@
 -- @coreclassmod modality
 ---------------------------------------------------------------------------
 
-local string, table, ipairs     = string, table, ipairs
-local awful                     = require("awful")
-local gears                     = require("gears")
-local naughty                   = require("naughty")
-local modality_util             = require("modality.util")
-local modality_widget           = require("modality.widget")
+local string, table, ipairs = string, table, ipairs
+local awful                 = require("awful")
+local gears                 = require("gears")
+local naughty               = require("naughty")
+local modality_util         = require("modality.util")
+local modality_widget       = require("modality.widget")
+
+-- set to true to turn lots of prints on
+local debug                 = false
+
+-- toggles whether to print the list of all modality bindings for development reference
+local develop_modality_list = true
+
+local function debug_print(args)
+	if debug then
+		print(args)
+	end
+end
 
 ---------------------------------------------------------------------------
 
@@ -29,7 +41,7 @@ local modality_widget           = require("modality.widget")
 --  split_string("a::c", ":")  == {"a", "", "c"}
 --  split_string("a", ":")     == {"a"}
 -- https://stackoverflow.com/a/7615129
-local split_string              = function(inputstr, sep)
+local split_string                  = function(inputstr, sep)
 	sep     = sep or '%s'
 	local t = {}
 	for field, s in string.gmatch(inputstr, "([^" .. sep .. "]*)(" .. sep .. "?)") do
@@ -43,17 +55,19 @@ end
 ---------------------------------------------------------------------------
 
 -- modality is the returned object.
-local modality                  = {}
-modality.widget                 = modality_widget
+local modality                      = {}
+modality.widget                     = modality_widget
 
-local get_rofi_cmd              = function(s)
+local get_rofi_cmd                  = function(s)
 	local tv_prompt     = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 100 -no-plugins -no-config"
 	local laptop_prompt = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 100 -no-plugins -no-config"
 	return s.is_tv and tv_prompt or laptop_prompt
 end
 
 -- search uses Rofi to search for a keybinding/command.
-modality.search                 = function()
+modality.search                     = function()
+	modality.exit()
+
 	-- Get all searchable keypaths and their functions.
 	local text_lines = {}
 	local fns        = {}
@@ -69,7 +83,7 @@ modality.search                 = function()
 
 	awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
 		local function error(title, text)
-			print("[modality] rofi error", "title=", title, "text=", text)
+			debug_print("[modality] rofi error", "title=", title, "text=", text)
 			naughty.notify {
 				preset  = naughty.config.presets.critical,
 				title   = message,
@@ -79,7 +93,7 @@ modality.search                 = function()
 		end
 		if exit_code == 0 then
 			local choice = stdout:gsub("\n", "")
-			print("[modality] rofi choice=", choice)
+			debug_print("[modality] rofi choice=", choice)
 			if choice ~= "" then
 				-- Get the index of the text line.
 				local item_key = gears.table.hasitem(text_lines, choice)
@@ -140,42 +154,64 @@ paths = {
 }
 ]]
 --]]
-modality.path_tree              = {
+modality.path_tree                  = {
 	label    = "Modality",
 	bindings = {
-		["Escape"] = {
+		["Escape"]  = {
 			label    = "exit",
 			fn       = function()
 				return true
 			end,
 			bindings = nil,
 		},
-		["?"]      = {
+		["?"]       = {
+			label    = "search",
+			fn       = modality.search,
+			bindings = nil,
+			stay     = false,
+		},
+		-- FIXME This is my very special hacky hack that lets me tap my key
+		-- twice and jump right into the rofi help.
+		["Super_L"] = {
 			label    = "search",
 			fn       = modality.search,
 			bindings = nil,
 			stay     = false,
 		}
+
 	},
 }
 
 -- all_keypaths gets filled with the raw (decorate) keypaths from registered modality paths.
 -- This provides a nice list paths:functions that can be used for searching more
 -- easily than the tree.
-modality.all_keypaths           = {
+modality.all_keypaths               = {
 	-- { keypath, fn },
 	-- { keypath, fn },
 }
 
+modality.develop_print_all_keypaths = function()
+	if not develop_modality_list then
+		return
+	end
+	debug_print("[modality] all_keypaths:")
+	for _, keypath_fn in ipairs(modality.all_keypaths) do
+		local keypath = keypath_fn[1]
+		local fn      = keypath_fn[2]
+		local text    = modality.keypath_readable(keypath, true)
+		print("[modality]\t", text)
+	end
+end
+
 -- Assign separator fields as non-local so they can be reassigned by the user.
-modality.KEYPATH_SEPARATOR      = "," -- the separator between keypaths
-modality.LABEL_SEPARATOR        = ":" -- the separator between keypath code:label
-modality.STAY_IN_MODE_CHARACTER = "~" -- the character that will keep you in the mode, use as suffix to character
+modality.KEYPATH_SEPARATOR          = "," -- the separator between keypaths
+modality.LABEL_SEPARATOR            = ":" -- the separator between keypath code:label
+modality.STAY_IN_MODE_CHARACTER     = "~" -- the character that will keep you in the mode, use as suffix to character
 
 -- keypath_target_label returns the label (of some function)
 -- that a keypath binding ultimately describes (the "target").
 -- If no label is provided (eg. "a:awesome,h:help,k"), then an empty string is returned.
-modality.keypath_target_label   = function(keypath)
+modality.keypath_target_label       = function(keypath)
 	-- Split keypath to get last element.
 	local steps = split_string(keypath, modality.KEYPATH_SEPARATOR)
 	if #steps == 0 then
@@ -188,17 +224,21 @@ modality.keypath_target_label   = function(keypath)
 end
 
 -- keypath_step_codes takes a raw keypath (eg. "a:awesome,h:help,k") and returns a table of step codes (eg. {"a", "h", "k"}).
-modality.keypath_step_codes     = function(keypath)
+modality.keypath_step_codes         = function(keypath)
 	local decorated_steps = split_string(keypath, modality.KEYPATH_SEPARATOR)
 	local steps           = {}
 	for _, step in ipairs(decorated_steps) do
-		local c = split_string(step, modality.LABEL_SEPARATOR)[1]:sub(1, 1)
+		-- This logic needs to be mindful that not all keys (codes) are single-character, eg. Return, Tab, Escape, etc.
+		local c = split_string(step, modality.LABEL_SEPARATOR)[1]
+		if #c > 1 and string.find(c, "~") then
+			c = c:sub(1, #c - 1)
+		end
 		table.insert(steps, c)
 	end
 	return steps
 end
 
-modality.keypath_step_labels    = function(keypath)
+modality.keypath_step_labels        = function(keypath)
 	local decorated_steps = split_string(keypath, modality.KEYPATH_SEPARATOR)
 	local steps           = {}
 	for _, step in ipairs(decorated_steps) do
@@ -213,17 +253,17 @@ modality.keypath_step_labels    = function(keypath)
 end
 
 -- format_step_codes formats the step codes (eg. a, b ,c) into a human-readable string (eg. [ a b c ]).
-local format_step_codes         = function(codes)
+local format_step_codes             = function(codes)
 	return string.format("[ %s ]", table.concat(codes, " → "))
 end
 
 -- format_step_labels formats the step labels (eg. awesome, help, keybindings) into a human-readable string (eg. '( awesome help keybindings )').
-local format_step_labels        = function(step_labels)
+local format_step_labels            = function(step_labels)
 	return string.format("( %s )", table.concat(step_labels, " | "))
 end
 
 -- format_target_label formats the target label (eg. awesome) into a human-readable string (eg. 'awesome').
-local format_target_label       = function(target_label)
+local format_target_label           = function(target_label)
 	return string.format("%s", target_label)
 end
 
@@ -233,7 +273,7 @@ end
 -- fields nicely (based on longest values).
 -- FIXME This function implicitly references the module registry "modality.all_keypaths" if align=true.
 -- It has to do this to get the longest values as a reference maximum.
-modality.keypath_readable       = function(keypath, aligned)
+modality.keypath_readable           = function(keypath, aligned)
 	if not aligned then
 		local target_label = modality.keypath_target_label(keypath)
 		local steps_labels = modality.keypath_step_labels(keypath)
@@ -289,9 +329,9 @@ end
 -- object, eg. modality.paths.bindings["a"].bindings["h"].bindings["k"] = { fn = fn, label = "label" }
 local function register_keypath(parent, steps, fn)
 
-	assert(type(parent) == "table", "parent must be a table")
-	assert(type(steps) == "string", "steps must be a string")
-	assert(type(fn) == "function", "fn must be a function")
+	assert(type(parent) == "table", "[modality] parent must be a table")
+	assert(type(steps) == "string", "[modality] steps must be a string")
+	--assert(type(fn) == "function", "[modality] fn must be a function, steps=" .. steps) -- FIXME Revelation fails this.
 
 	-- Split the keypath into a table of steps.
 	-- eg.
@@ -299,7 +339,7 @@ local function register_keypath(parent, steps, fn)
 	-- flat: "i:hints"
 	local steps_list = split_string(steps, modality.KEYPATH_SEPARATOR)
 
-	assert(#steps_list > 0, "keypath must have at least one step")
+	assert(#steps_list > 0, "[modality] keypath must have at least one step")
 
 	-- Parse the keypath:obj into our bindings tree.
 
@@ -324,14 +364,20 @@ local function register_keypath(parent, steps, fn)
 	if stay_i ~= nil and stay_i == 2 then
 		stay = true
 		-- Clean up the dangling '~' character.
-		code = string.sub(code, 1, 1)
+		code = string.sub(code, 1, #code - 1)
 	end
 
 	-- eg. "a~"
 
 	if not parent.bindings then
-		parent.bindings = {}
+		parent.bindings   = {}
+		parent.n_bindings = 0
 	end
+
+	--assert(((is_action) and (not parent.bindings[code]) or (not is_action)),
+	--	   "[modality] keypath already exists: " ..
+	--			   "code=" .. code .. " label=" .. label ..
+	--			   "existing.label=" .. parent.bindings[code].label or "???")
 
 	-- The parent bindings table does not have an entry at this key.
 	-- Initialize it as a table.
@@ -340,15 +386,12 @@ local function register_keypath(parent, steps, fn)
 		parent.bindings[code] = {
 			label    = label,
 			stay     = stay,
-			bindings = {},
-			fn       = is_last and fn,
+			bindings = is_action and nil or {},
+			fn       = is_action and fn,
 		}
-		--parent.bindings[code].bindings = {}
 	end
 
-	-- Overwrite any label and function with the new one.
-	parent.bindings[code].label = label
-	parent.bindings[code].fn    = is_action and fn
+	parent.n_bindings = #gears.table.keys(parent.bindings)
 
 	if not is_action then
 		-- Recurse.
@@ -363,7 +406,7 @@ end
 -- @fn: the function to execute when the keypath is completed
 -- @stay: boolean: whether the keygrabber should exit/exist after the first use.
 modality.register = function(keypath, fn)
-	print("[modality] register", keypath, fn)
+	debug_print("[modality] register", keypath, fn)
 	register_keypath(modality.path_tree, keypath, fn)
 
 	table.insert(modality.all_keypaths, { keypath, fn })
@@ -375,13 +418,15 @@ end
 
 -- Docs: https://awesomewm.org/apidoc/core_components/awful.keygrabber.html
 local function keypressed_callback(bindings_parent)
+	--local sequence = ""
 	return function(self, mods, key, event)
-		print("[modality] keypressed", "event=", event, "key=", key, "mods=", mods, "sequence=", sequence)
+		--sequence = sequence .. key
+		print("[modality] keypressed", "event=", event, "key=", key, "mods=", mods)
 
 		-- exit provides a handy exit function that
 		-- stop the keygrabber and hides the widget.
 		local function exit(reason)
-			print("[modality] keypressed exiting: " .. reason)
+			debug_print("[modality] keypressed exiting: " .. reason)
 
 			self:stop()
 			modality.widget.hide(awful.screen.focused())
@@ -406,8 +451,10 @@ local function keypressed_callback(bindings_parent)
 			return true
 		end
 
-		print "[modality] keypressed bindings_parent:"
-		modality_util.debug_print_paths("[modality]", bindings_parent)
+		debug_print("[modality] keypressed bindings_parent:")
+		if debug then
+			modality_util.debug_print_paths("[modality]", bindings_parent)
+		end
 
 		local bound = bindings_parent.bindings[key]
 		if not bound then
@@ -416,11 +463,13 @@ local function keypressed_callback(bindings_parent)
 			return exit("unmatched binding")
 		end
 
-		print("[modality] matched binding", "key=", key, "binding.label=", bound.label)
-		modality_util.debug_print_paths("[modality]", bound)
+		debug_print("[modality] matched binding", "key=", key, "binding.label=", bound.label)
+		if debug then
+			modality_util.debug_print_paths("[modality]", bound)
+		end
 
 		if bound.fn then
-			print("[modality] matched binding has function, executing")
+			debug_print("[modality] matched binding has function, executing")
 
 			if bindings_parent.stay or bound.stay then
 				bound.fn()
@@ -433,7 +482,7 @@ local function keypressed_callback(bindings_parent)
 			end
 
 		elseif bound.bindings then
-			print("[modality] entering submenu", "label=", bound.label, "#bindings=", #bound.bindings)
+			debug_print("[modality] entering submenu", "label=", bound.label, "#bindings=", #bound.bindings)
 
 			self:stop()
 			modality.enter(bound)
@@ -453,7 +502,7 @@ modality.enter = function(bindings_parent)
 	local s = awful.screen.focused()
 
 	if modality.kg and modality.kg.is_running then
-		print("[modality] already running, stopping")
+		debug_print("[modality] already running, stopping")
 		modality.widget.hide(s)
 		modality.kg:stop()
 		modality.kg = nil

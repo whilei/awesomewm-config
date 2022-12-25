@@ -11,8 +11,7 @@
 
 local client, screen               = client, screen
 local awful                        = require("awful")
-local lain                         = require("lain")
-local gears                        = require("gears")
+local wibox                        = require("wibox")
 
 -- focus_previous_client_global is a function that returns the last
 -- focused client _anywhere_.
@@ -27,6 +26,9 @@ local gears                        = require("gears")
 -- Copy-pasta from https://unix.stackexchange.com/questions/623337/how-to-jump-to-previous-window-in-history-in-awesome-wm
 local focus_previous_client_global = function()
 	local c = awful.client.focus.history.list[2]
+	if not c then
+		return
+	end
 	local t = c and c.first_tag or nil
 	if t then
 		t:view_only()
@@ -35,34 +37,6 @@ local focus_previous_client_global = function()
 	c.visible    = true -- Except this, I added this.
 	c:raise()
 end
-
-local quake                        = lain.util.quake({
-														 app             = "konsole",
-														 name            = "xterm-konsole",
-														 extra           = "--hide-menubar --hide-tabbar",
-														 followtag       = true,
-														 vert            = "bottom",
-														 horiz           = "center",
-														 height          = 0.3,
-														 width           = 0.5,
-														 keepclientattrs = true,
-														 border          = 0,
-														 screen          = awful.screen.focused() or screen[1],
-
-														 settings        = function(c)
-
-															 c.opacity           = 0.7
-															 c.border_width      = 2
-															 c.border_color      = "#000000"
-															 c.titlebars_enabled = false
-															 c.skip_taskbar      = true
-															 c.shape             = function(cc, w, h)
-																 return gears.shape.partially_rounded_rect(
-																		 cc, w, h, true, true, false, false, 10
-																 )
-															 end
-														 end
-													 })
 
 local toggle_wibar_slim            = function()
 	local s = awful.screen.focused()
@@ -84,7 +58,9 @@ end
 -- reader_view_tall is client function that positions the client
 -- in a tall way, not taking up all the width though, especially
 -- so that websites can be nice and skinny but use the height of the tv.
-local reader_view_tall             = function(c)
+local reader_view_tall             = function(cc)
+	local c = cc or client.focus
+
 	awful.client.floating.toggle()
 	awful.client.maximized = false
 
@@ -105,7 +81,12 @@ local reader_view_tall             = function(c)
 	c:raise()
 end
 
-local fancy_float_toggle           = function(c)
+-- fancy_float_toggle places the currently focused client nicely in front of me.
+local fancy_float_toggle           = function(cc)
+	local c = client.focus
+	if not c then
+		return
+	end
 
 	local turning_off = c.fancy_floating ~= nil
 
@@ -117,7 +98,6 @@ local fancy_float_toggle           = function(c)
 
 		c.floating        = c.was_floating or false
 		c.was_floating    = nil
-
 		c.maximized       = c.was_maximized or false
 		c.was_maximized   = nil
 
@@ -128,9 +108,9 @@ local fancy_float_toggle           = function(c)
 
 	-- Else: turning ona
 	c.fancy_floating  = true
-	c.original_screen = c.screen or awful.screen.focused()
 	c.was_floating    = c.floating
 	c.was_maximized   = c.maximized
+	c.original_screen = c.screen or awful.screen.focused()
 
 	-- Move to TV screen.
 	if not c.screen.is_tv then
@@ -160,12 +140,71 @@ local fancy_float_toggle           = function(c)
 	end
 end
 
+local inspect_client               = function()
+	if not client.focus then
+		return
+	end
+	local c = client.focus
+	local p = awful.popup {
+		widget              = {
+			{
+				{
+					text   = 'instance: ' .. c.instance,
+					widget = wibox.widget.textbox,
+				},
+				{
+					text   = 'class: ' .. c.class,
+					widget = wibox.widget.textbox,
+				},
+				{
+					text   = 'name: ' .. c.name,
+					widget = wibox.widget.textbox,
+				},
+				{
+					text   = 'window: ' .. c.window,
+					widget = wibox.widget.textbox,
+				},
+				{
+					text   = 'pid: ' .. (c.pid or 'n/a'),
+					widget = wibox.widget.textbox,
+				},
+				{
+					text   = 'role: ' .. (c.role or 'n/a'),
+					widget = wibox.widget.textbox,
+				},
+				layout = wibox.layout.fixed.vertical,
+			},
+			margins = 10,
+			widget  = wibox.container.margin,
+		},
+		screen              = client.focus.screen,
+		placement           = awful.placement.bottom,
+		visible             = true,
+		ontop               = true,
+		hide_on_right_click = true,
+
+		border_color        = '#FF0000',
+		border_width        = 10,
+	}
+	awful.keygrabber {
+		autostart     = true,
+		stop_key      = "Escape",
+		stop_event    = "press",
+		stop_callback = function()
+			p.visible = false
+			p         = nil
+		end,
+	}
+end
+
 return {
 	popup_launcher               = require("special.popup-launcher"),
 	focus_previous_client_global = focus_previous_client_global,
-	quake                        = quake,
+	quake                        = require("special.widgets").quake,
+	weather                      = require("special.widgets").weather,
 	toggle_wibar_slim            = toggle_wibar_slim,
 	toggle_wibar_worldtimes      = toggle_wibar_worldtimes,
 	reader_view_tall             = reader_view_tall,
-	fancy_float_toggle           = fancy_float_toggle,
+	fancy_float                  = fancy_float_toggle,
+	inspect_client               = inspect_client,
 }

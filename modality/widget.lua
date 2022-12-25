@@ -18,12 +18,15 @@ local config                      = {
 -- lib is our returned object.
 local lib                         = {}
 
-lib.init                          = function(modality)
-	lib.modality = modality
+lib.init                          = function()
+	-- NOTE
+	-- Can pass the modality lib in here for use in case need be.
+	-- Probably a terrible idea/code style.
+	--lib.modality = modality
 
-	local w      = wibox {
+	local w = wibox {
 		ontop   = true,
-		visible = false,
+		visible = true, -- does this help first-time startup speed?
 		x       = 0,
 		y       = 0,
 		width   = 1,
@@ -80,8 +83,35 @@ lib.hide                          = function(s)
 	mbox.visible = false
 end
 
+lib.keycode_ui_aliases            = {
+	["return"] = "RET",
+	["space"]  = "SPC",
+	["tab"]    = "TAB",
+	["escape"] = "ESC",
+}
+
+-- keycode_ui_aliases takes a keycode and returns
+-- a UI-oriented alias if any.
+-- Codes without defined aliases get returned as-is.
+local keycode_ui_alias            = function(code)
+	if lib.keycode_ui_aliases[code:lower()] then
+		return lib.keycode_ui_aliases[code:lower()]
+	end
+	return code
+end
+
 -- get_keypath_markup returns the pango-styled markup for some modality entry (a keypath->function binding).
-local function get_keypath_markup(code, label, bindings, fn)
+local function get_keypath_markup(bound)
+	--print("[modality] get_keypath_markup", "bound")
+	--modality_util.debug_print_paths("", bound)
+	--print("")
+	--print("")
+
+	-- This (default) should never happen because the 'bound' object is indexed on code.
+	local code       = bound.code or ""
+	local label      = bound.label or "???"
+	local n_bindings = bound.n_bindings or 0
+
 	if code == "separator" then
 		--return "\n"
 		return ""
@@ -90,25 +120,15 @@ local function get_keypath_markup(code, label, bindings, fn)
 		return ""
 	end
 
-	-- Abbreviate the key name so it looks like Spacemacs.
-	code = string.gsub(code, "Return", "RET")
-	code = string.gsub(code, "Space", "SPC")
-	code = string.gsub(code, "Tab", "TAB")
-	code = string.gsub(code, "Escape", "ESC")
-
-	-- Handle configuration problems gracefully.
-	if not label or label == "" then
-		label = "???"
-	end
+	-- Abbreviate the key name so it looks like Spacemacs (see aliases table above).
+	code                  = keycode_ui_alias(code)
 
 	-- Assign the default markup value.
-	local action_markup = "<span>" .. label .. "</span>"
+	local action_markup   = "<span>" .. label .. "</span>"
 
-	if label then
-		local is_submenu_name = fn == nil
-		if is_submenu_name then
-			action_markup = "<span foreground='" .. config.submenu_color .. "'>" .. "+" .. label .. "</span>"
-		end
+	local is_submenu_name = n_bindings > 0
+	if is_submenu_name then
+		action_markup = "<span foreground='" .. config.submenu_color .. "'>" .. "+" .. label .. "</span>"
 	end
 
 	local underline_matches = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -143,10 +163,10 @@ lib.show = function(s, parent)
 	assert(parent, "parent is nil")
 	assert(type(parent) == "table", "parent must be a table")
 
-	local mbox  = s.modality_box
-	mbox.screen = s
+	local mbox     = s.modality_box
+	mbox.screen    = s
 
-	modality_util.debug_print_paths("[modality] show", parent)
+	-- modality_util.debug_print_paths("[modality] show", parent)
 
 	local name     = parent.label or "???"
 
@@ -180,13 +200,16 @@ lib.show = function(s, parent)
 	-- Add bindings textboxes for this binding table.
 	-- Docs: https://awesomewm.org/apidoc/widget_layouts/wibox.layout.grid.html
 	if parent.bindings then
+		-- Sort alphabetically.
 		local sorted_binding_codes = gears.table.keys(parent.bindings)
+
 		for _, code in ipairs(sorted_binding_codes) do
 			local bound = parent.bindings[code]
+			bound.code  = code
 
-			local m     = get_keypath_markup(code, bound.label, bound.bindings, bound.fn)
+			local m     = get_keypath_markup(bound)
 
-			if string.lower(code) ~= "escape" and m ~= "" then
+			if code:lower() ~= "escape" and m ~= "" then
 				local txtbx = wibox.widget.textbox()
 				txtbx:set_markup_silently(m)
 

@@ -11,11 +11,11 @@ inotifywait --quiet --monitor --recursive \
   do
     echo ":: changed: $path"
     if [[ ! $path =~ lua ]]; then
-        echo '  skipping non-lua file'
+        echo '    skipping (not a .lua file)'
         continue
     fi
 
-    echo "  skipping $(timeout 3 cat | wc -l) further changes"
+    echo "    ... skipping $(timeout 3 cat | wc -l) further changes"
 
     [[ $firing -ge 0 ]] && { echo '  d-duping restart'; continue ; }
 
