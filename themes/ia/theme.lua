@@ -1325,12 +1325,12 @@ function theme.at_screen_connect(s)
 								bottom = dpi(4),
 							})
 
-			bgb.shape = args.shape or function(c, w, h)
-				gears.shape.rounded_rect(c, w, h, h / 2)
+			bgb.shape = args.shape or function(cc, ww, hh)
+				gears.shape.rounded_rect(cc, ww, hh, hh / 2)
 			end
 			if not o.floating then
-				bgb.shape = function(c, w, h)
-					gears.shape.rounded_rect(c, w, h, h / 10)
+				bgb.shape = function(cc, ww, hh)
+					gears.shape.rounded_rect(cc, ww, hh, hh / 10)
 				end
 			end
 			bgb.shape_border_width = args.shape_border_width
