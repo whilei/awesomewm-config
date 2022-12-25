@@ -78,13 +78,69 @@ lib.hide                          = function(s)
 	mbox.visible = false
 end
 
+-- get_markup_for_entry returns the pango-styled markup for some modality entry (a keypath->function binding).
+local function get_markup_for_entry(code, label, bindings, fn)
+	if code == "separator" then
+		--return "\n"
+		return ""
+	end
+	if code == "onClose" then
+		return ""
+	end
+
+	-- Abbreviate the key name so it looks like Spacemacs.
+	code = string.gsub(code, "Return", "RET")
+	code = string.gsub(code, "Space", "SPC")
+	code = string.gsub(code, "Tab", "TAB")
+	code = string.gsub(code, "Escape", "ESC")
+
+	-- Handle configuration problems gracefully.
+	if not label or label == "" then
+		label = "???"
+	end
+
+	-- Assign the default markup value.
+	local action_markup = "<span>" .. label .. "</span>"
+
+	if label then
+		local is_submenu_name = fn == nil
+		if is_submenu_name then
+			action_markup = "<span foreground='" .. config.submenu_color .. "'>" .. "+" .. label .. "</span>"
+		end
+	end
+
+	local underline_matches = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	local underline         = "none"
+	if string.find(underline_matches, code, 1, true) then
+		underline = "single"
+	end
+
+	return "<b><span> " ..
+			'<span underline="' .. underline .. '" foreground="' .. config.hotkey_color .. '">' ..
+			gears.string.xml_escape(code) ..
+			'</span>' ..
+			'</span>' ..
+			"</b>" ..
+			"<span foreground='" .. config.arrow_color .. "'> ➞ </span>" ..
+			action_markup
+end
+
 -- lib.show shows the modality box.
 -- @s: screen
--- @map: the map of available bindings to show
---
--- The map should be of the form defined in modality paths.
+-- @parent: is the parent schema, expected to include
+--   - label
+--   - bindings
+--   - fn
+--   - stay
+-- The parent's data type is defined in modality paths.
 --]]
-lib.show                          = function(s, parent)
+lib.show = function(s, parent)
+	if s == nil then
+		s = awful.screen.focused()
+	end
+	assert(parent, "parent is nil")
+	assert(type(parent) == "table", "parent must be a table")
+
 	local mbox  = s.modality_box
 	mbox.screen = s
 
@@ -115,65 +171,19 @@ lib.show                          = function(s, parent)
 		titlebox.visible = false
 	end
 
-	local function get_markup_for_entry(code, label, bindings, fn)
-		if code == "separator" then
-			--return "\n"
-			return ""
-		end
-		if code == "onClose" then
-			return ""
-		end
-
-		-- Abbreviate the key name so it looks like Spacemacs.
-		code = string.gsub(code, "Return", "RET")
-		code = string.gsub(code, "Space", "SPC")
-		code = string.gsub(code, "Tab", "TAB")
-		code = string.gsub(code, "Escape", "ESC")
-
-		-- Handle configuration problems gracefully.
-		if not label or label == "" then
-			label = "???"
-		end
-
-		-- Assign the default markup value.
-		local action_markup = "<span>" .. label .. "</span>"
-
-		if label then
-			local is_submenu_name = bindings ~= nil
-			if is_submenu_name then
-				action_markup = "<span foreground='" .. config.submenu_color .. "'>" .. "+" .. label .. "</span>"
-			end
-		end
-
-		local underline_matches = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		local underline         = "none"
-		if string.find(underline_matches, code, 1, true) then
-			underline = "single"
-		end
-
-		return "<b><span> " ..
-				'<span underline="' .. underline .. '" foreground="' .. config.hotkey_color .. '">' ..
-				gears.string.xml_escape(code) ..
-				'</span>' ..
-				'</span>' ..
-				"</b>" ..
-				"<span foreground='" .. config.arrow_color .. "'> ➞ </span>" ..
-				action_markup
-	end
-
 	-- Show options
 	local _pc      = 0
-	--local _last_row, _last_col = 1, 1
 	local _largest = { width = 24, height = 8 }
 
 	-- Add bindings textboxes for this binding table.
-
+	-- Docs: https://awesomewm.org/apidoc/widget_layouts/wibox.layout.grid.html
 	if parent.bindings then
 		local sorted_binding_codes = gears.table.keys(parent.bindings)
 		for _, code in ipairs(sorted_binding_codes) do
 			local bound = parent.bindings[code]
 
 			local m     = get_markup_for_entry(code, bound.label, bound.bindings, bound.fn)
+
 			if string.lower(code) ~= "escape" and m ~= "" then
 				local txtbx = wibox.widget.textbox()
 				txtbx:set_markup_silently(m)
@@ -182,23 +192,11 @@ lib.show                          = function(s, parent)
 				_largest.width  = math.max(_largest.width, math.max(config.min_entry_width, _w))
 				_largest.height = math.max(_largest.height, math.max(config.min_entry_height, _h))
 
-				--local _r, _c    = tbc:get_next_empty(_last_row, _last_col)
-				--if _r > config.max_rows then
-				--	-- Reset the row, increment the column.
-				--	_r, _c = 1, _c + 1
-				--end
-
 				local _r        = _pc % config.max_rows + 1
 				local _c        = math.floor(_pc / config.max_rows) + 1
 
-				--tbc:add_widget_at(txtbx, _r, _c, 1, 1) -- child, row, col, ~row_span, ~col_span
 				tbc:add_widget_at(txtbx, _r, _c, 1, 1) -- child, row, col, ~row_span, ~col_span
-				-- tbc:add(txtbx)
-				-- https://awesomewm.org/apidoc/widget_layouts/wibox.layout.grid.html
-
 				_pc = _pc + 1
-				--_last_row = _r
-				--_last_col = _c
 			end
 		end
 	end

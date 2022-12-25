@@ -7,37 +7,38 @@
 
 
 -- {{{ Required libraries
-local awesome, screen, client, mouse, screen, tag, titlebar                 = awesome, screen, client, mouse, screen, tag, titlebar
-local ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type = ipairs, pairs, string, os, table, tostring, tonumber, tointeger, type
-local gears                                                                 = require("gears")
+local awesome, screen, client, mouse, screen, tag, titlebar = awesome, screen, client, mouse, screen, tag, titlebar
+local ipairs, pairs, string, os, table                      = ipairs, pairs, string, os, table
+local tostring, tonumber, tointeger, type, math             = tostring, tonumber, tointeger, type, math
+local gears                                                 = require("gears")
 
 -- This chunk adds this path (of the current configuration)
 -- to the Lua packages search path, enabling the loading of local libs.
-local prefix                                                                = gears.filesystem.get_configuration_dir() .. ""
-package.path                                                                = package.path .. ";" .. prefix .. "?.lua;" .. prefix .. "?/init.lua"
+local prefix                                                = gears.filesystem.get_configuration_dir() .. ""
+package.path                                                = package.path .. ";" .. prefix .. "?.lua;" .. prefix .. "?/init.lua"
 
-local awful                                                                 = require("awful")
-local a_util_table                                                          = awful.util.table or gears.table -- 4.{0,1} compatibility
-local _                                                                     = require("awful.autofocus")
-local wibox                                                                 = require("wibox")
-local beautiful                                                             = require("beautiful")
-local naughty                                                               = require("naughty")
-local lain                                                                  = require("lain")
-local freedesktop                                                           = require("freedesktop")
-local hotkeys_popup                                                         = require("awful.hotkeys_popup").widget
-local revelation                                                            = require("revelation")
-local hints                                                                 = require("hints")
-local cairo                                                                 = require("lgi").cairo
+local awful                                                 = require("awful")
+local a_util_table                                          = awful.util.table or gears.table -- 4.{0,1} compatibility
+local _                                                     = require("awful.autofocus")
+local wibox                                                 = require("wibox")
+local beautiful                                             = require("beautiful")
+local naughty                                               = require("naughty")
+local lain                                                  = require("lain")
+local freedesktop                                           = require("freedesktop")
+local hotkeys_popup                                         = require("awful.hotkeys_popup").widget
+local revelation                                            = require("revelation")
+local hints                                                 = require("hints")
+local cairo                                                 = require("lgi").cairo
 
-local ia_layout_swen                                                        = require("layout-swen")
-local ia_layout_vcolumns                                                    = require("columns-layout")
-local layout_titlebars_conditional                                          = require("layout-titlebars-conditional")
-local special                                                               = require("special")
+local ia_layout_swen                                        = require("layout-swen")
+local ia_layout_vcolumns                                    = require("columns-layout")
+local layout_titlebars_conditional                          = require("layout-titlebars-conditional")
+local special                                               = require("special")
 
-local icky_keys                                                             = require("icky.keys")
-local icky_fns                                                              = require("icky.fns").global
+local icky_keys                                             = require("icky.keys")
+local icky_fns                                              = require("icky.fns").global
 
-local modality                                                              = require("modality")
+local modality                                              = require("modality")
 -- }}}
 
 -- {{{ Error handling
@@ -1271,7 +1272,7 @@ awful.rules.rules = {
 			shape = function(cc, w, h)
 				-- Round only the top corners.
 				--gears.shape.rounded_rect(c, w, h,)
-				local tl, tr, br, bl, rad = true, true, false, false, h / 10
+				local tl, tr, br, bl, rad = true, true, false, false, math.min(10, h / 10)
 				return gears.shape.partially_rounded_rect(cc, w, h, tl, tr, br, bl, rad)
 			end,
 		}

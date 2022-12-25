@@ -166,26 +166,19 @@ local function register_keypath(parent, steps, fn)
 			label    = label,
 			stay     = stay,
 			bindings = {},
-			fn       = fn,
+			fn       = is_last and fn,
 		}
 		--parent.bindings[code].bindings = {}
 	end
 
 	-- Overwrite any label and function with the new one.
 	parent.bindings[code].label = label
+	parent.bindings[code].fn    = is_last and fn
 
 	if not is_last then
-		-- All last elements in keypaths are required to have functions, for now.
-		-- Likewise, all non-last elements are required NOT to have functions.
-		-- This is also important because of how the code is structured.
-		-- We assign fn = fn in the initialization scope for each step,
-		-- so we need to delete that assignment if we're not at the last step.
-		-- I know, it kind of seems upside-down.
-		parent.bindings[code].fn = nil
-
 		-- Recurse.
 		-- We remove the first element from the steps list because we've already processed it.
-		local remaining_steps    = table.concat(steps_list, modality.keypath_separator, 2)
+		local remaining_steps = table.concat(steps_list, modality.keypath_separator, 2)
 		register_keypath(parent.bindings[code], remaining_steps, fn)
 	end
 end
