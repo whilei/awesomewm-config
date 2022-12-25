@@ -1268,11 +1268,11 @@ awful.rules.rules = {
 			floating = true,
 		},
 		properties = {
-			shape = function(c, w, h)
+			shape = function(cc, w, h)
 				-- Round only the top corners.
-				gears.shape.rounded_rect(c, w, h, 10)
+				--gears.shape.rounded_rect(c, w, h,)
 				local tl, tr, br, bl, rad = true, true, false, false, h / 10
-				return gears.shape.rounded_rect(c, w, h, tl, tr, br, bl, rad)
+				return gears.shape.partially_rounded_rect(cc, w, h, tl, tr, br, bl, rad)
 			end,
 		}
 	},
