@@ -59,36 +59,6 @@ lib.init                          = function(modality)
 				--min_cols_size = 10,
 				--min_rows_size = 10,
 			},
-			{
-				id     = "search_mode",
-				layout = wibox.layout.align.vertical,
-				{
-					id     = "search_prompt",
-					widget = awful.widget.prompt {
-						prompt           = "Search: ",
-						history_path     = gears.filesystem.get_cache_dir() .. "/history_modality",
-						history_max      = 50,
-						changed_callback = lib.search_changed_callback,
-						exe_callback     = lib.search_exe_callback,
-						done_callback    = function()
-							lib.modality.search_mode = false
-						end
-					},
-				},
-				{
-					id            = "search_results",
-					widget        = wibox.container.margin,
-					margins       = 10,
-					forced_height = 128,
-					visible       = false,
-					--{
-					--	-- SITE OF FUTURE SEARCH RESULTS (TEXTBOX)
-					--},
-					--{
-					--	-- SITE OF FUTURE SEARCH RESULTS (TEXTBOX)
-					--},
-				}
-			},
 			id     = "valigner",
 			layout = wibox.layout.align.vertical,
 		},
@@ -106,37 +76,8 @@ lib.init                          = function(modality)
 end
 
 lib.hide                          = function(s)
-	lib.stop_search(s)
 	local mbox   = s.modality_box
 	mbox.visible = false
-end
-
-lib.show_search                   = function(s)
-	local mbox                                     = s.modality_box
-	mbox.visible                                   = true -- Probably not necessary, but harmless.
-	mbox.margin.valigner.search_mode.visible       = true
-	mbox.margin.valigner.textbox_container.visible = false
-end
-
-lib.search_changed_callback       = function(query)
-	local mbox    = s.modality_box
-	local results = lib.modality.keypaths_textfn_lines(query)
-	mbox.margin.valigner.search_mode.search_results:reset()
-	for _, matched in ipairs(results) do
-		local w = wibox.widget.textbox(matched[1])
-		mbox.margin.valigner.search_mode.search_results:add(w)
-	end
-end
-
-lib.search_exe_callback           = function(query)
-	print("[modality] EXECUTING SEARCH QUERY: " .. query)
-end
-
-lib.stop_search                   = function(s)
-	lib.modality.search_mode                       = false
-	local mbox                                     = s.modality_box
-	mbox.margin.valigner.search_mode.visible       = false
-	mbox.margin.valigner.textbox_container.visible = true
 end
 
 -- get_keypath_markup returns the pango-styled markup for some modality entry (a keypath->function binding).

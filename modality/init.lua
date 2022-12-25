@@ -16,6 +16,7 @@
 local string, table, ipairs     = string, table, ipairs
 local awful                     = require("awful")
 local gears                     = require("gears")
+local naughty                   = require("naughty")
 local modality_util             = require("modality.util")
 local modality_widget           = require("modality.widget")
 
@@ -44,6 +45,63 @@ end
 -- modality is the returned object.
 local modality                  = {}
 modality.widget                 = modality_widget
+
+local get_rofi_cmd              = function(s)
+	local tv_prompt     = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 100 -no-plugins -no-config"
+	local laptop_prompt = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 100 -no-plugins -no-config"
+	return s.is_tv and tv_prompt or laptop_prompt
+end
+
+-- search uses Rofi to search for a keybinding/command.
+modality.search                 = function()
+	-- Get all searchable keypaths and their functions.
+	local text_lines = {}
+	local fns        = {}
+	for _, keypath_fn in ipairs(modality.all_keypaths) do
+		local keypath = keypath_fn[1]
+		local fn      = keypath_fn[2]
+		local text    = modality.keypath_readable(keypath, true)
+		table.insert(text_lines, text)
+		table.insert(fns, fn)
+	end
+
+	local cmd = "echo '" .. table.concat(text_lines, "\n") .. "' | " .. get_rofi_cmd(awful.screen.focused())
+
+	awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
+		local function error(title, text)
+			print("[modality] rofi error", "title=", title, "text=", text)
+			naughty.notify {
+				preset  = naughty.config.presets.critical,
+				title   = message,
+				text    = stderr,
+				timeout = 5,
+			}
+		end
+		if exit_code == 0 then
+			local choice = stdout:gsub("\n", "")
+			print("[modality] rofi choice=", choice)
+			if choice ~= "" then
+				-- Get the index of the text line.
+				local item_key = gears.table.hasitem(text_lines, choice)
+				if item_key then
+					-- Get the function associated with the text line.
+					local fn = fns[item_key]
+					if fn then
+						fn()
+					else
+						error("[modality] search", "keypath function was nil: " .. choice)
+					end
+				else
+					return error("[modality] search", "Could not find function in table for choice: " .. choice)
+				end
+			else
+				return error("[modality] search", "no choice selected")
+			end
+		else
+			return error("[modality] search failed: " .. reason, stderr)
+		end
+	end)
+end
 
 -- modality.paths establishes the paths table that modality will use.
 -- It implicitly (for now) assigns defaults (coded below).
@@ -94,24 +152,20 @@ modality.path_tree              = {
 		},
 		["?"]      = {
 			label    = "search",
-			fn       = function()
-				modality.search_mode = true
-				modality.widget.show_search(awful.screen.focused())
-			end,
+			fn       = modality.search,
 			bindings = nil,
-			stay     = true,
+			stay     = false,
 		}
 	},
 }
 
+-- all_keypaths gets filled with the raw (decorate) keypaths from registered modality paths.
+-- This provides a nice list paths:functions that can be used for searching more
+-- easily than the tree.
 modality.all_keypaths           = {
 	-- { keypath, fn },
 	-- { keypath, fn },
 }
-
-modality.search                 = function(query)
-	modality.widget.search_mode(query)
-end
 
 -- Assign separator fields as non-local so they can be reassigned by the user.
 modality.KEYPATH_SEPARATOR      = "," -- the separator between keypaths
@@ -152,33 +206,64 @@ modality.keypath_step_labels    = function(keypath)
 		-- We cannot assume that all keypaths registered use labels for all steps
 		-- because modality has soft, implicit defaults for labels;
 		-- so keypaths using implicit labels will not have them in this returned data.
-		local c = split_string(step, modality.LABEL_SEPARATOR)[2]
+		local c = split_string(step, modality.LABEL_SEPARATOR)[2] or "???"
 		table.insert(steps, c)
 	end
 	return steps
 end
 
--- keypaths_textfn_lines takes a query string and returns a list
--- of all matching keypaths and their functions in the form { txt, fn },
--- where txt is a formatted string describing the keypath in a human readable way.
-modality.keypaths_textfn_lines  = function(matching)
-	local lines = {}
-	for _, keypath_fn in ipairs(modality.all_keypaths) do
-		local keypath      = keypath_fn[1]
-		local fn           = keypath_fn[2]
+-- format_step_codes formats the step codes (eg. a, b ,c) into a human-readable string (eg. [ a b c ]).
+local format_step_codes         = function(codes)
+	return string.format("[ %s ]", table.concat(codes, " → "))
+end
+
+-- format_step_labels formats the step labels (eg. awesome, help, keybindings) into a human-readable string (eg. '( awesome help keybindings )').
+local format_step_labels        = function(step_labels)
+	return string.format("( %s )", table.concat(step_labels, " | "))
+end
+
+-- format_target_label formats the target label (eg. awesome) into a human-readable string (eg. 'awesome').
+local format_target_label       = function(target_label)
+	return string.format("%s", target_label)
+end
+
+-- keypath_readable takes a raw keypath (eg. "t:tag,m:move,l:left")
+-- and returns a readable keypath (eg. "left [ t m l ] ( tag move left ) ").
+-- @aligned: a boolean whether to reference the global dictionary and try to align
+-- fields nicely (based on longest values).
+-- FIXME This function implicitly references the module registry "modality.all_keypaths" if align=true.
+-- It has to do this to get the longest values as a reference maximum.
+modality.keypath_readable       = function(keypath, aligned)
+	if not aligned then
 		local target_label = modality.keypath_target_label(keypath)
 		local steps_labels = modality.keypath_step_labels(keypath)
 		local codes        = modality.keypath_step_codes(keypath)
-		local txt          = string.format("%s  [ %s ] ( %s )",
-										   target_label,
-										   table.join(codes, " "),
-										   table.join(steps_labels, " "))
-
-		if matching == nil or matching == "" or string.gfind(txt, matching) then
-			table.insert(lines, txt)
-		end
+		return string.format("%s %s %s",
+							 format_target_label(target_label),
+							 format_step_codes(codes),
+							 format_step_labels(steps_labels))
 	end
-	return lines
+	-- else: aligned
+	local _longest_target_label, _longest_steps_label, _longest_steps_codes = 0, 0, 0
+
+	for _, keypath_fn in ipairs(modality.all_keypaths) do
+		local target_label    = format_target_label(modality.keypath_target_label(keypath_fn[1]))
+		local step_labels     = format_step_labels(modality.keypath_step_labels(keypath_fn[1]))
+		local step_codes      = format_step_codes(modality.keypath_step_codes(keypath_fn[1]))
+		_longest_target_label = math.max(_longest_target_label, #target_label)
+		_longest_steps_label  = math.max(_longest_steps_label, #step_labels)
+		_longest_steps_codes  = math.max(_longest_steps_codes, #step_codes)
+	end
+
+	local target_label = format_target_label(modality.keypath_target_label(keypath))
+	local step_labels  = format_step_labels(modality.keypath_step_labels(keypath))
+	local step_codes   = format_step_codes(modality.keypath_step_codes(keypath))
+
+	return string.format("%s %s %s",
+						 target_label .. string.rep(" ", _longest_target_label - #target_label),
+						 step_codes .. string.rep(" ", _longest_steps_codes - #step_codes),
+						 step_labels .. string.rep(" ", _longest_steps_label - #step_labels))
+
 end
 
 ---- get_all_keypaths returns a table of all keypaths.
@@ -304,13 +389,6 @@ local function keypressed_callback(bindings_parent)
 		end
 
 		if event ~= "press" then
-			return true
-		end
-
-		-- HACK: This is a hack to get around the fact that the keygrabber
-		-- is still running, but I want the user input to go to the prompt box widget
-		-- to execute the search.
-		if modality.search_mode and key:lower() ~= "escape" then
 			return true
 		end
 
