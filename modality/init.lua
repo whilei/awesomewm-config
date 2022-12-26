@@ -105,7 +105,10 @@ modality.search                     = function()
 
 	end
 
-	local cmd = "echo '" .. table.concat(text_lines, "\n") .. "' | " .. get_rofi_cmd(awful.screen.focused())
+	local cmd = "echo '" ..
+			table.concat(text_lines, "\n") ..
+			"' | " ..
+			get_rofi_cmd(awful.screen.focused())
 
 	awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
 		local function error(title, text)

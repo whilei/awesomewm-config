@@ -415,7 +415,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "screen", description = "invert colors with xrandr", name = "invert colors" },
-		hotkeys    = { { mods = { _keys.MOD }, code = "u" } },
+		hotkeys    = { { mods = { _keys.MOD }, code = "X" } },
 		modalities = { m.SCREEN .. "x" },
 		on_press   = global_fns.screen.invert_colors,
 	},
@@ -442,7 +442,7 @@ lib.global_bindings           = {
 		on_press   = global_fns.power_user.logout,
 	},
 	{
-		h          = { group = "power_user", description = "suspend session (sleep)l", name = "suspend" },
+		h          = { group = "power_user", description = "suspend session (sleep)", name = "suspend/sleep" },
 		modalities = { m.POWER_USER .. "s" },
 		on_press   = global_fns.power_user.suspend,
 	},

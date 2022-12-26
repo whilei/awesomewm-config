@@ -179,6 +179,7 @@ local global_fns           = {
 		mic_toggle = function()
 			os.execute("amixer -q set Capture toggle")
 			beautiful.mic.update()
+			naughty.notify { position = "bottom_middle", text = "Mic toggled" }
 		end,
 		volume     = {
 			up   = function()
