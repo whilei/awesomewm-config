@@ -1157,7 +1157,7 @@ function theme.at_screen_connect(s)
 		type         = "dock",
 		placement    = awful.placement.bottom,
 		shape        = function(c, w, h)
-			local tl, tr, br, bl = true, true, false, false
+			local tl, tr, br, bl = false, true, false, false
 			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
 		end,
 		visible      = false,
