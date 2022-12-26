@@ -11,7 +11,7 @@
 
 -- c api libs
 local awesome, client              = awesome, client
-local os, string                   = os, string
+local os, string, tostring         = os, string, tostring
 
 -- awesome libs
 local awful                        = require("awful")
@@ -226,7 +226,45 @@ local global_fns           = {
 		end
 	},
 	screenshot = {
-		-- Functions here are assigned imperatively below.
+		selection = function()
+			special.saved_screenshot {
+				interactive     = true,
+				directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
+				prefix          = "screenshot",
+				date_format     = "%Y-%m-%d-%H%M%S",
+				auto_save_delay = 0.1,
+				--exec            = screenshot_notifier { label = "selection" },
+			}
+		end,
+		window    = function()
+			special.saved_screenshot {
+				directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
+				prefix          = "screenshot",
+				date_format     = "%Y-%m-%d-%H%M%S",
+				auto_save_delay = 0.1,
+				--exec            = screenshot_notifier { label = "selection" },
+			}
+		end,
+		screen    = function()
+			special.saved_screenshot {
+				directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
+				prefix          = "screenshot",
+				date_format     = "%Y-%m-%d-%H%M%S",
+				auto_save_delay = 0.1,
+				screen          = awful.screen.focused(),
+				--exec            = screenshot_notifier { label = "selection" },
+			}
+		end,
+		client    = function()
+			special.saved_screenshot {
+				directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
+				prefix          = "screenshot_" .. client.focus.class:gsub("%s+", "_"),
+				date_format     = "%Y-%m-%d-%H%M%S",
+				auto_save_delay = 0.1,
+				client          = client.focus,
+				--exec            = screenshot_notifier { label = "selection" },
+			}
+		end
 	},
 	tag        = {
 		add     = function()
@@ -500,40 +538,6 @@ local client_fns           = {
 		reader_view_tall = special.reader_view_tall,
 		fancy_float      = special.fancy_float,
 	}
-}
-
--- {{{ SCREENSHOT
-local screenshot_selection = "sleep 0.5 && scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' --quality 100 --silent --select --freeze --exec 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
-local screenshot_window    = "sleep 0.5 && scrot '%Y-%m-%d-%H%M%S_$wx$h_screenshot.png' --quality 100 --silent --focused --exec 'xclip -selection clipboard -t image/png -i $f;mv $f ~/Pictures/screenshots/'"
-
--- FIXME:The notifier doesnt work quite right when having done multiple screenshots in a row.
-local screenshot_notifier  = function(args)
-	return function()
-		naughty.notify {
-			text     = "Screenshot of " .. (args.label or "???") .. " OK",
-			timeout  = 2,
-			bg       = "#058B04",
-			fg       = "#ffffff",
-			position = "bottom_middle",
-		}
-	end
-end
-
-global_fns.screenshot      = {
-	selection = function()
-		awful.util.mymainmenu:hide()
-		awful.spawn.easy_async_with_shell(
-				screenshot_selection,
-				screenshot_notifier { label = "selection" }
-		)
-	end,
-	window    = function()
-		awful.util.mymainmenu:hide()
-		awful.spawn.easy_async_with_shell(
-				screenshot_window,
-				screenshot_notifier { label = "window" }
-		)
-	end
 }
 -- }}}
 

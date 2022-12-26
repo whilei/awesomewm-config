@@ -77,7 +77,7 @@ local m                       = {
 	MEDIA             = "m:media,",
 	MEDIA_VOLUME      = "m:media,v~:volume,", -- stays
 
-	SWAP              = "p:swap,",
+	SWAP              = "p~:swap,",
 	POWER_USER        = "P:power-user,",
 
 	SCREEN            = "s:screen,",
@@ -421,17 +421,28 @@ lib.global_bindings           = {
 	},
 	-- SCREEN:SHOT
 	{
-		h          = { group = "screen/shot", description = "take a screenshot of the window", name = "screenshot window" },
+		h          = { group = "screen/shot", description = "take a screenshot of a screen", name = "screenshot screen" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "s" }, },
+		modalities = { m.SCREEN_SHOT .. "s" },
+		on_press   = global_fns.screenshot.screen,
+	},
+	{
+		h          = { group = "screen/shot", description = "take a screenshot of a selection (interactive)", name = "screenshot selection (interactive)" },
+		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "s" }, },
+		modalities = { m.SCREEN_SHOT .. "i" },
+		on_press   = global_fns.screenshot.selection,
+	},
+	{
+		h          = { group = "screen/shot", description = "take a screenshot of the window (all screens)", name = "screenshot window" },
 		modalities = { m.SCREEN_SHOT .. "w" },
 		on_press   = global_fns.screenshot.window,
 	},
 	{
-		h          = { group = "screen/shot", description = "take a screenshot of a selection", name = "screenshot selection" },
-		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "s" }, },
-		modalities = { m.SCREEN_SHOT .. "s" },
-		on_press   = global_fns.screenshot.selection,
+		h          = { group = "screen/shot", description = "take a screenshot of a client", name = "screenshot client" },
+		modalities = { m.SCREEN_SHOT .. "c" },
+		on_press   = global_fns.screenshot.client,
 	},
+
 	-- }}} SCREEN
 
 
