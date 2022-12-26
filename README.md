@@ -1,8 +1,4 @@
 
-
-
-## TODO
-
 - [ ] `very` : aka very special
 - [ ] `better`: a pro pro `beautiful`
 - [ ] `special`: custom functions and widgets that i like and you maybe wont
@@ -17,3 +13,9 @@
 
 - [ ] `shitty` handle errors better (a pro pro naughty)
 - [ ] `better` improve beautiful
+
+---
+
+fixmes
+
+- [ ] mic widget (and functionality?). frustrated with lain.
