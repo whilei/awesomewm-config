@@ -2,8 +2,8 @@ local awful     = require("awful")
 local beautiful = require("beautiful")
 local gears     = require("gears")
 local quake     = require("lain").util.quake
+local markup    = require("lain").util.markup
 local weather   = require("special.weather")
-local markup    = lain.util.markup
 
 local tonumber  = tonumber
 local os        = os
@@ -103,7 +103,6 @@ x.weather = weather {
 	--        return string.format("<b>%s</b>: %s, High: %d Low: %d ", day, desc, tmax, tmin)
 	--    end,
 	settings = function()
-
 
 		--        local loc_now = os.time()
 		--        local sunrise = tonumber(weather_now["sys"]["sunrise"])

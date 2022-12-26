@@ -54,7 +54,7 @@ end
 
 local m                       = {
 	AWESOME           = "a:awesome,", -- trailing , allows for easy concatenation
-	AWESOME_BARS      = "a:awesome,b~:bars,", -- stays
+	--AWESOME_BARS      = "a:awesome,b~:bars,", -- stays
 	AWESOME_WIDGETS   = "a:awesome,w~:widgets,", -- stays
 
 	APPLICATIONS      = "A:applications,",
@@ -126,14 +126,14 @@ lib.global_bindings           = {
 	-- AWESOME:BARS
 	{
 		h          = { group = "awesome", description = "wibar style switcher", name = "toggle wibar" },
-		modalities = { "b", m.AWESOME_BARS .. "b" },
+		modalities = { "b", m.AWESOME .. "b" },
 		hotkeys    = { { _keys.MOD, "d" } },
 		on_press   = global_fns.awesome.wibar,
 
 	},
 	{
 		h          = { group = "awesome", description = "toggle world times widget", name = "world times" },
-		modalities = { m.AWESOME_BARS .. "g" },
+		modalities = { m.AWESOME_WIDGETS .. "g" },
 		hotkeys    = { { _keys.MOD, "g" } },
 		on_press   = global_fns.awesome.widgets.world_times,
 	},
@@ -462,7 +462,7 @@ lib.global_bindings           = {
 lib.client_bindings           = {
 	{
 		h          = { group = "client/properties", description = "toggle maximized", name = "maximized" },
-		modalities = { m.CLIENT .. "M" },
+		modalities = { m.CLIENT .. "z" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "m" } },
 		on_press   = client_fns.properties.maximize,
 	},

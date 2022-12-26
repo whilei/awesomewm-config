@@ -9,7 +9,7 @@
   - it should also show a preview of the color you're picking
   - and it should have a history of colors you've picked
   - and maybe a library of colors you've marked as favorites
-- [ ] `world times` : a widget that shows the time in different places
+- [ ] `world times` : a widget that shows the time in different places. This is becoming `meridian`.
 
 - [ ] `shitty` handle errors better (a pro pro naughty)
 - [ ] `farty` make art
@@ -28,3 +28,5 @@ But `bound.bindings` and `bound.hotkeys` are nil.
 
 alignment does not work properly for the formatting of the `textlines` that are used to represent functions and keybindings
 in the search menu (here, `rofi`).
+
+`develop.sh` is not live reloading anymore. wtf

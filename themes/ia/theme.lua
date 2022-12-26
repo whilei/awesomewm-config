@@ -351,19 +351,13 @@ local function BoundedRGBVal(low, high, val)
 	return val
 end
 
-local world_clock_fmt         = "%H:%M%t%z"
-
--- THIS IS __THE__ CLOCK widget in top right wibox menu thingy
--- Textclock
---local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock                   = awful.widget.watch(
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%Y-%m-%dT%H:%MZ%:z'",
 -- "date +'%-m-%d %A %H:%M %:::z'",
 -- "date +'%H:%M %a %Y-%m-%d %:::z'",
-		"date +'%Y-%m-%d %A %H:%M%-:::z'",
-		60,
+		"date +'%Y-%m-%d %A %H:%M%-:::z'", 60,
 		function(widget, stdout)
 			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
 
@@ -371,213 +365,38 @@ local clock                   = awful.widget.watch(
 			-- theme.font
 					markup.fontbg("monospace bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
-		end
-)
+		end)
 
-local clock_time_only         = awful.widget.watch(
-		"date +'%H:%M'",
-		60,
-		function(widget, stdout)
-			--stdout = string.gsub(stdout, "\n", "")
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-			widget:set_markup(markup.fontbg("monospace bold 14", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " "))
-		end
-)
+local clock_time_only         = awful.widget.watch("date +'%H:%M'", 60, function(widget, stdout)
+	widget:set_markup(markup.fontbg("monospace bold 14", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " "))
+end)
 
-local world_clock_vancouver   = awful.widget.watch(
-		"bash -c 'TZ='America/Vancouver' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_denver      = awful.widget.watch(
-		"bash -c 'TZ='America/Denver' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_chicago     = awful.widget.watch(
-		"bash -c 'TZ='America/Chicago' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_newyork     = awful.widget.watch(
-		"bash -c 'TZ='America/New_York' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local clock_utc               = awful.widget.watch(
-		"date -u +'%H:%M'",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_london      = awful.widget.watch(
-		"bash -c 'TZ='Europe/London' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_berlin      = awful.widget.watch(
-		"bash -c 'TZ='Europe/Berlin' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_athens      = awful.widget.watch(
-		"bash -c 'TZ='Europe/Athens' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_dubai       = awful.widget.watch(
-		"bash -c 'TZ='Asia/Dubai' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_shanghai    = awful.widget.watch(
-		"bash -c 'TZ='Asia/Shanghai' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_tokyo       = awful.widget.watch(
-		"bash -c 'TZ='Asia/Tokyo' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_buenosaires = awful.widget.watch(
-		"bash -c 'TZ='America/Argentina/Buenos_Aires' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_madrid      = awful.widget.watch(
-		"bash -c 'TZ='Europe/Madrid' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_anchorage   = awful.widget.watch(
-		"bash -c 'TZ='America/Anchorage' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
-
-local world_clock_moscow      = awful.widget.watch(
-		"bash -c 'TZ='Europe/Moscow' date +'" .. world_clock_fmt .. "''",
-		60,
-		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
-			widget:set_markup(
-			-- theme.font
-					markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-			)
-		end
-)
+local meridian_fmt            = "%H:%M%t%z"
+local meridian                = function(tz)
+	local watcher = "bash -c 'TZ='" .. tz .. "' date +'%H:%M''"
+	if tz == "UTC" then
+		watcher = "date -u +'" .. meridian_fmt .. "'"
+	end
+	return awful.widget.watch(watcher, 60, function(widget, stdout)
+		-- markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+		widget:set_markup(markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " "))
+	end)
+end
+local world_clock_vancouver   = meridian("America/Vancouver")
+local world_clock_denver      = meridian("America/Denver")
+local world_clock_chicago     = meridian("America/Chicago")
+local world_clock_newyork     = meridian("America/New_York")
+local clock_utc               = meridian("UTC")
+local world_clock_london      = meridian("Europe/London")
+local world_clock_berlin      = meridian("Europe/Berlin")
+local world_clock_athens      = meridian("Europe/Athens")
+local world_clock_dubai       = meridian("Asia/Dubai")
+local world_clock_shanghai    = meridian("Asia/Shanghai")
+local world_clock_tokyo       = meridian("Asia/Tokyo")
+local world_clock_buenosaires = meridian("America/Argentina")
+local world_clock_madrid      = meridian("Europe/Madrid")
+local world_clock_anchorage   = meridian("America/Anchorage")
+local world_clock_moscow      = meridian("Europe/Moscow")
 
 -- MEM
 local memicon                 = wibox.widget.imagebox(theme.widget_mem)
@@ -1365,8 +1184,7 @@ function theme.at_screen_connect(s)
 		type         = "dock",
 		placement    = awful.placement.bottom,
 		shape        = function(c, w, h)
-			--local tl, tr, br, bl = false, false, true, false
-			local tl, tr, br, bl = false, false, true, true
+			local tl, tr, br, bl = true, true, false, false
 			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
 		end,
 		visible      = false,
@@ -1402,48 +1220,48 @@ function theme.at_screen_connect(s)
 					layout = wibox.layout.flex.horizontal,
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("Roboto 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Anchorage (AKDT/AKST)'))),
+							wibox.widget.textbox(markup.fontbg("Roboto 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Anchorage'))),
 							world_clock_anchorage,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Seattle (PT)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Seattle'))),
 							world_clock_vancouver,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Denver (MT)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Denver'))),
 							world_clock_denver,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Chicago (CT)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Chicago'))),
 							world_clock_chicago,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'New York (ET)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'New York'))),
 							world_clock_newyork,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
@@ -1452,7 +1270,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
@@ -1461,25 +1279,25 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'London (BT,WET)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'London'))),
 							world_clock_london,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Berlin (CET/CEST)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Berlin'))),
 							world_clock_berlin,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					--{
 					--	{
@@ -1488,25 +1306,25 @@ function theme.at_screen_connect(s)
 					--		layout = wibox.layout.fixed.vertical,
 					--	},
 					--	widget  = wibox.container.margin,
-					--	margins = s.is_tv and 10 or 1,
+					--	margins = s.is_tv and 10 or 5,
 					--},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Athens,Kiev (EET)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Athens,Kiev'))),
 							world_clock_athens,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Moscow (MSK)'))),
+							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Moscow'))),
 							world_clock_moscow,
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
@@ -1515,7 +1333,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
@@ -1524,7 +1342,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					{
 						{
@@ -1533,7 +1351,7 @@ function theme.at_screen_connect(s)
 							layout = wibox.layout.fixed.vertical,
 						},
 						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 1,
+						margins = s.is_tv and 10 or 5,
 					},
 					--{
 					--	{
