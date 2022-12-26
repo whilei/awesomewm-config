@@ -123,13 +123,16 @@ local _layouts      = {
 	swen  = layout_titlebars_conditional { layout = ia_layout_swen },
 }
 
-awful.layout.append_default_layouts {
-	_layouts.tiler,
-	_layouts.swen,
-	lain.layout.centerwork,
-	awful.layout.suit.magnifier,
-	awful.layout.suit.floating,
-}
+tag.connect_signal("request::default_layouts",
+				   function()
+					   awful.layout.append_default_layouts {
+						   _layouts.tiler,
+						   _layouts.swen,
+						   lain.layout.centerwork,
+						   awful.layout.suit.magnifier,
+						   awful.layout.suit.floating,
+					   }
+				   end)
 
 awful.util.taglist_buttons  = a_util_table.join(
 		awful.button({}, 1, function(t)

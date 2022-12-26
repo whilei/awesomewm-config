@@ -13,18 +13,18 @@
 -- @coreclassmod modality
 ---------------------------------------------------------------------------
 
-local string, table, ipairs = string, table, ipairs
-local awful                 = require("awful")
-local gears                 = require("gears")
-local naughty               = require("naughty")
-local modality_util         = require("modality.util")
-local modality_widget       = require("modality.widget")
+local string, table, ipairs, pairs = string, table, ipairs, pairs
+local awful                        = require("awful")
+local gears                        = require("gears")
+local naughty                      = require("naughty")
+local modality_util                = require("modality.util")
+local modality_widget              = require("modality.widget")
 
 -- set to true to turn lots of prints on
-local debug                 = false
+local debug                        = false
 
 -- toggles whether to print the list of all modality bindings for development reference
-local develop_modality_list = true
+local develop_modality_list        = true
 
 local function debug_print(args)
 	if debug then
@@ -55,7 +55,14 @@ end
 ---------------------------------------------------------------------------
 
 -- modality is the returned object.
-local modality                      = {}
+local modality                      = {
+	_did_calc_longest      = false,
+	_longest_target_label  = 0,
+	_longest_steps_label   = 0,
+	_longest_steps_codes   = 0,
+	_longest_hotkeys_label = 0,
+}
+
 modality.widget                     = modality_widget
 
 local get_rofi_cmd                  = function(s)
@@ -76,9 +83,10 @@ modality.search                     = function()
 	local fns        = {}
 	for _, keypath_fn in ipairs(modality.all_keypaths) do
 		local keypath   = keypath_fn[1]
+		local hotkeys   = keypath_fn[4]
 		local fn        = keypath_fn[2]
-		local text_line = modality.keypath_readable(keypath, true)
 
+		local text_line = modality.keypath_readable(keypath, hotkeys, true)
 		-- Dedupe the text_lines.
 		item_key        = gears.table.hasitem(fns, fn)
 		if item_key ~= nil then
@@ -183,8 +191,9 @@ modality.develop_print_all_keypaths = function()
 	debug_print("[modality] all_keypaths:")
 	for _, keypath_fn in ipairs(modality.all_keypaths) do
 		local keypath = keypath_fn[1]
+		local hotkeys = keypath_fn[4]
 		local fn      = keypath_fn[2]
-		local text    = modality.keypath_readable(keypath, true)
+		local text    = modality.keypath_readable(keypath, hotkeys, true)
 		print("[modality]\t", text)
 	end
 end
@@ -250,8 +259,77 @@ local format_step_labels            = function(step_labels)
 end
 
 -- format_target_label formats the target label (eg. awesome) into a human-readable string (eg. 'awesome').
-local format_target_label           = function(target_label)
+local format_fn_label               = function(target_label)
 	return string.format("%s", target_label)
+end
+
+-- keyboard_key_labels is used for presenting the user with a human-readable version of a key stroke.
+modality.keyboard_key_labels        = {
+	["cmd"]       = "⌘ ",
+	["alt"]       = "⌥ ",
+	["ctrl"]      = "⌃ ",
+	["shift"]     = "⇧ ", -- Thank you Copilot.
+
+	["mod4"]      = "⌘ ",
+	["mod1"]      = "⌥ ",
+	["control"]   = "⌃ ",
+
+	["return"]    = "⏎ ",
+	["tab"]       = "⇥ ",
+
+	-- Thanks again Copilot.
+	--["escape"]  = "⎋ ",
+	--["space"]   = "␣ ",
+	["backspace"] = "⌫ ",
+	["delete"]    = "⌦ ",
+	--["home"]    = "↖ ",
+	--["end"]     = "↘ ",
+	--["pageup"]  = "⇞ ",
+	--["pagedown"]= "⇟ ",
+	["left"]      = "← ",
+	["right"]     = "→ ",
+	["up"]        = "↑ ",
+	["down"]      = "↓ ",
+
+	["f1"]        = "F1 ",
+	["f2"]        = "F2 ",
+	["f3"]        = "F3 ",
+	["f4"]        = "F4 ",
+	["f5"]        = "F5 ",
+	["f6"]        = "F6 ",
+	["f7"]        = "F7 ",
+	["f8"]        = "F8 ",
+	["f9"]        = "F9 ",
+	["f10"]       = "F10 ",
+	["f11"]       = "F11 ",
+	["f12"]       = "F12 ",
+}
+
+-- format_hotkeys_label returns a string of hotkeys (eg. "⌘⇧⌥⌃") for a given keypath.
+-- @hotkeys is a table
+modality.format_hotkeys_label       = function(hotkeys)
+	if not hotkeys or type(hotkeys) ~= "table" then
+		return ""
+	end
+	local hotkeys_strings = {}
+	for _, hotkey in ipairs(hotkeys) do
+		local mods = hotkey.mods or {}
+		local code = hotkey.code or ""
+		if #mods == 0 and code == "" then
+			-- no hotkey
+			-- empty
+		else
+			for i, m in ipairs(mods) do
+				mods[i] = modality.keyboard_key_labels[m:lower()] or m
+			end
+			local s = string.format("%s", table.concat(mods, "") .. "" .. (modality.keyboard_key_labels[code:lower()] or code))
+			table.insert(hotkeys_strings, s)
+		end
+	end
+	if #hotkeys_strings == 0 then
+		return ""
+	end
+	return table.concat(hotkeys_strings, ",")
 end
 
 -- keypath_readable takes a raw keypath (eg. "t:tag,m:move,l:left")
@@ -260,65 +338,57 @@ end
 -- fields nicely (based on longest values).
 -- FIXME This function implicitly references the module registry "modality.all_keypaths" if align=true.
 -- It has to do this to get the longest values as a reference maximum.
-modality.keypath_readable           = function(keypath, aligned)
+modality.keypath_readable           = function(keypath, hotkeys, aligned)
 	if not aligned then
 		local target_label = modality.keypath_target_label(keypath)
 		local steps_labels = modality.keypath_step_labels(keypath)
 		local codes        = modality.keypath_step_codes(keypath)
-		return string.format("%s %s %s",
-							 format_target_label(target_label),
+		return string.format("%s %s %s %s",
+							 format_fn_label(target_label),
 							 format_step_codes(codes),
+							 modality.format_hotkeys_label(hotkeys),
 							 format_step_labels(steps_labels))
 	end
 	-- else: aligned
-	local _longest_target_label, _longest_steps_label, _longest_steps_codes = 0, 0, 0
 
-	for _, keypath_fn in ipairs(modality.all_keypaths) do
-		local target_label    = format_target_label(modality.keypath_target_label(keypath_fn[1]))
-		local step_labels     = format_step_labels(modality.keypath_step_labels(keypath_fn[1]))
-		local step_codes      = format_step_codes(modality.keypath_step_codes(keypath_fn[1]))
-		_longest_target_label = math.max(_longest_target_label, #target_label)
-		_longest_steps_label  = math.max(_longest_steps_label, #step_labels)
-		_longest_steps_codes  = math.max(_longest_steps_codes, #step_codes)
+	if not modality._did_calc_longest then
+		for _, list_entry in ipairs(modality.all_keypaths) do
+			local target_label              = format_fn_label(modality.keypath_target_label(list_entry[1]))
+			local step_labels               = format_step_labels(modality.keypath_step_labels(list_entry[1]))
+			local step_codes                = format_step_codes(modality.keypath_step_codes(list_entry[1]))
+			local hotkeys_label             = modality.format_hotkeys_label(list_entry[4] or {}) or ""
+
+			modality._longest_target_label  = math.max(modality._longest_target_label, #target_label)
+			modality._longest_steps_label   = math.max(modality._longest_steps_label, #step_labels)
+			modality._longest_steps_codes   = math.max(modality._longest_steps_codes, #step_codes)
+			modality._longest_hotkeys_label = math.max(modality._longest_hotkeys_label, #hotkeys_label)
+		end
+		modality._did_calc_longest = true
 	end
 
-	local target_label = format_target_label(modality.keypath_target_label(keypath))
-	local step_labels  = format_step_labels(modality.keypath_step_labels(keypath))
-	local step_codes   = format_step_codes(modality.keypath_step_codes(keypath))
+	local target_label  = format_fn_label(modality.keypath_target_label(keypath))
+	local step_labels   = format_step_labels(modality.keypath_step_labels(keypath))
+	local step_codes    = format_step_codes(modality.keypath_step_codes(keypath))
+	local hotkeys_label = modality.format_hotkeys_label(hotkeys or {}) or ""
 
-	return string.format("%s %s %s",
-						 target_label .. string.rep(" ", _longest_target_label - #target_label),
-						 step_codes .. string.rep(" ", _longest_steps_codes - #step_codes),
-						 step_labels .. string.rep(" ", _longest_steps_label - #step_labels))
+	return string.format("%s %s %s %s",
+						 target_label .. string.rep(" ", modality._longest_target_label - #target_label),
+						 step_codes .. string.rep(" ", modality._longest_steps_codes - #step_codes),
+						 hotkeys_label .. string.rep(" ", modality._longest_hotkeys_label - #hotkeys_label),
+						 step_labels .. string.rep(" ", modality._longest_steps_label - #step_labels)
+	)
 
 end
-
----- get_all_keypaths returns a table of all keypaths.
---local function get_all_keypaths(paths, prefix)
---	prefix         = prefix or ""
---	local keypaths = {}
---	for key, binding in pairs(paths.bindings) do
---		local keypath = prefix .. key
---		if binding.bindings then
---			local sub_keypaths = get_all_keypaths(binding, keypath .. modality.keypath_separator)
---			for _, sub_keypath in ipairs(sub_keypaths) do
---				table.insert(keypaths, sub_keypath)
---			end
---		else
---			table.insert(keypaths, keypath)
---		end
---	end
---	return keypaths
---end
 
 -- register_keypath is a recursive function that iterates through the keypath
 -- and ultimately adds the function to the modality.paths map under the appropriately-nested
 -- object, eg. modality.paths.bindings["a"].bindings["h"].bindings["k"] = { fn = fn, label = "label" }
-local function register_keypath(parent, steps, fn)
+local function register_keypath(parent, steps, fn_press, _, hotkeys, data)
 
 	assert(type(parent) == "table", "[modality] parent must be a table")
 	assert(type(steps) == "string", "[modality] steps must be a string")
-	--assert(type(fn) == "function", "[modality] fn must be a function, steps=" .. steps) -- FIXME Revelation fails this.
+	-- Revelation is a table, not a function. I think metatables are lurking.
+	assert(type(fn_press) == "function" or type(fn_press) == "table", "[modality] fn must be a function, steps=" .. steps)
 
 	-- Split the keypath into a table of steps.
 	-- eg.
@@ -330,10 +400,8 @@ local function register_keypath(parent, steps, fn)
 
 	-- Parse the keypath:obj into our bindings tree.
 
-	local is_last    = #steps_list == 1
+	local is_fn      = #steps_list == 1
 	local first_step = steps_list[1]
-
-	local is_action  = is_last and fn ~= nil
 
 	local spl        = split_string(first_step, modality.LABEL_SEPARATOR)
 	-- "a:applications" => {"a", "applications"}
@@ -361,30 +429,28 @@ local function register_keypath(parent, steps, fn)
 		parent.n_bindings = 0
 	end
 
-	--assert(((is_action) and (not parent.bindings[code]) or (not is_action)),
-	--	   "[modality] keypath already exists: " ..
-	--			   "code=" .. code .. " label=" .. label ..
-	--			   "existing.label=" .. parent.bindings[code].label or "???")
-
 	-- The parent bindings table does not have an entry at this key.
 	-- Initialize it as a table.
 	-- eg. "a" = { label = "applications", ... }
 	if not parent.bindings[code] then
 		parent.bindings[code] = {
-			label    = label,
-			stay     = stay,
-			bindings = is_action and nil or {},
-			fn       = is_action and fn,
+			label         = label,
+			stay          = stay,
+			bindings      = is_fn and nil or {},
+			fn            = is_fn and fn_press,
+			hotkeys       = is_fn and hotkeys,
+			hotkeys_label = is_fn and modality.format_hotkeys_label(hotkeys),
+			data          = is_fn and data,
 		}
 	end
 
 	parent.n_bindings = #gears.table.keys(parent.bindings)
 
-	if not is_action then
+	if not is_fn then
 		-- Recurse.
 		-- We remove the first element from the steps list because we've already processed it.
 		local remaining_steps = table.concat(steps_list, modality.KEYPATH_SEPARATOR, 2)
-		register_keypath(parent.bindings[code], remaining_steps, fn)
+		register_keypath(parent.bindings[code], remaining_steps, fn_press, _, hotkeys, data)
 	end
 end
 
@@ -392,16 +458,33 @@ end
 -- @keypath: the keypath to register
 -- @fn: the function to execute when the keypath is completed
 -- @stay: boolean: whether the keygrabber should exit/exist after the first use.
-modality.register = function(keypath, fn)
-	debug_print("[modality] register", keypath, fn)
-	register_keypath(modality.path_tree, keypath, fn)
+modality.register = function(keypath, fn_press, fn_release, hotkeys, data)
+	debug_print("[modality] register", keypath, fn_press)
+	register_keypath(modality.path_tree, keypath, fn_press, fn_release, hotkeys, data)
 
-	table.insert(modality.all_keypaths, { keypath, fn })
+	table.insert(modality.all_keypaths, { keypath, fn_press, fn_release, hotkeys, data })
 end
 
 modality.init     = function()
 	modality.widget.init(modality)
 end
+
+--function copy(obj, seen)
+--	if type(obj) ~= 'table' then
+--		return obj
+--	end
+--	if seen and seen[obj] then
+--		return seen[obj]
+--	end
+--	local s   = seen or {}
+--	local res = setmetatable({}, getmetatable(obj))
+--	s[obj]    = res
+--	for k, v in pairs(obj) do
+--		res[copy(k, s)] = copy(v, s)
+--	end
+--	return res
+--end
+
 
 -- Docs: https://awesomewm.org/apidoc/core_components/awful.keygrabber.html
 local function keypressed_callback(bindings_parent)
@@ -422,6 +505,10 @@ local function keypressed_callback(bindings_parent)
 
 		if event ~= "press" then
 			return true
+		end
+
+		if key == "Escape" then
+			return exit("Escape")
 		end
 
 		-- Without bindings we can't do anything.
@@ -445,9 +532,19 @@ local function keypressed_callback(bindings_parent)
 
 		local bound = bindings_parent.bindings[key]
 		if not bound then
-			-- TODO Show error? (Invalid binding, no such binding.)
+			-- -- Option 1: Exit immediately if binding is unmatched.
 			-- Exiting the mode seems like a harsh punishment for a typo...
-			return exit("unmatched binding")
+			--return exit("unmatched binding")
+
+			-- Option 2: Show error (invalid binding) and keep the mode running.
+			naughty.notify {
+				text     = "Invalid binding: " .. key .. " (Use ESC to exit.)",
+				timeout  = 0.5,
+				position = "bottom_middle",
+				bg       = "#ff0000",
+				fg       = "#ffffff",
+			}
+			return true
 		end
 
 		debug_print("[modality] matched binding", "key=", key, "binding.label=", bound.label)

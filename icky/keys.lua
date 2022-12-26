@@ -72,6 +72,7 @@ local m                       = {
 	FOCUS             = "f:focus,",
 
 	TAG_LAYOUT        = "l:layout,",
+	TAG_LAYOUT_ADJUST = "l:layout,a~:adjust,", -- stays
 
 	MEDIA             = "m:media,",
 	MEDIA_VOLUME      = "m:media,v~:volume,", -- stays
@@ -85,7 +86,6 @@ local m                       = {
 	SPECIAL           = "z:special,",
 
 	TAG               = "t:tag,",
-	TAG_LAYOUT_ADJUST = "t:tag,l:layout,a~:adjust,", -- stays
 	TAG_USELESS       = "t:tag,u~:useless,", -- stays
 }
 
@@ -408,7 +408,7 @@ lib.global_bindings           = {
 
 	-- {{{ SCREEN
 	{
-		h          = { group = "screen", description = "focus next screen", name = "focus next" },
+		h          = { group = "screen", description = "focus next screen", name = "focus next screen" },
 		modalities = { "$" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "u" } },
 		on_press   = global_fns.screen.next,
@@ -714,7 +714,7 @@ function lib.init()
 			if modality.keypath_target_label(kp) == "" then
 				kp = kp .. ":" .. b.h.name
 			end
-			modality.register(kp, b.on_press)
+			modality.register(kp, b.on_press, b.on_release, b.hotkeys, b.h)
 		end
 	end
 
@@ -728,7 +728,7 @@ function lib.init()
 			if modality.keypath_target_label(kp) == "" then
 				kp = kp .. ":" .. b.h.name
 			end
-			modality.register(kp, b.on_press)
+			modality.register(kp, b.on_press, b.on_release, b.hotkeys, b.h)
 		end
 	end
 

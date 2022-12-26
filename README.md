@@ -12,10 +12,19 @@
 - [ ] `world times` : a widget that shows the time in different places
 
 - [ ] `shitty` handle errors better (a pro pro naughty)
-- [ ] `better` improve beautiful
+- [ ] `farty` make art
 
 ---
 
-fixmes
+WTF
 
-- [ ] mic widget (and functionality?). frustrated with lain.
+mic widget (and functionality?). frustrated with lain.
+
+modality popup does not show hotkeys for submenus; 
+only on the first level (ie root) are hotkeys are shown.
+The object that the widget gets (`parent`) does not have (access to?) any of the objects fields that are tables. 
+Fields that are strings or numbers are no problem, eg. `bound.n_bindings`, `bound.label`, `bound.fn`.
+But `bound.bindings` and `bound.hotkeys` are nil.
+
+alignment does not work properly for the formatting of the `textlines` that are used to represent functions and keybindings
+in the search menu (here, `rofi`).

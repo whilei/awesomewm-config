@@ -7,24 +7,26 @@ local wibox                       = require("wibox")
 local modality_util               = require("modality.util")
 
 local config                      = {
-	arrow_color      = '#47A590', -- faded teal
-	hotkey_color     = '#B162A0', -- faded pink
-	submenu_color    = '#1479B1', -- blue
-	max_rows         = 5,
-	min_entry_height = 16,
-	min_entry_width  = 16,
+	arrow_color            = '#47A590', -- faded teal
+	modality_keypath_color = '#B162A0', -- faded pink
+	submenu_color          = '#1479B1', -- blue
+	max_rows               = 5,
+	min_entry_height       = 16,
+	min_entry_width        = 16,
 }
+config.hotkey_label_color_bg      = '' -- not used
+config.hotkey_label_color_fg      = '#B162A0'
 
 -- lib is our returned object.
 local lib                         = {}
 
-lib.init                          = function()
+lib.init                          = function(modality)
 	-- NOTE
 	-- Can pass the modality lib in here for use in case need be.
 	-- Probably a terrible idea/code style.
-	--lib.modality = modality
+	lib.modality = modality
 
-	local w = wibox {
+	local w      = wibox {
 		ontop   = true,
 		visible = true, -- does this help first-time startup speed?
 		x       = 0,
@@ -109,10 +111,12 @@ local function get_keypath_markup(bound)
 	--print("")
 
 	-- This (default) should never happen because the 'bound' object is indexed on code.
-	local code       = bound.code or ""
-	local label      = bound.label or "???"
-	local n_bindings = bound.n_bindings or 0
-	local stays      = bound.stay
+	local code          = bound.code or ""
+	local label         = bound.label or "???"
+	local hotkeys_label = bound.hotkeys_label or ""
+	local n_bindings    = bound.n_bindings or 0
+	local stays         = bound.stay
+	local hks           = bound.hotkeys or {}
 
 	if code == "separator" then
 		--return "\n"
@@ -123,10 +127,21 @@ local function get_keypath_markup(bound)
 	end
 
 	-- Abbreviate the key name so it looks like Spacemacs (see aliases table above).
-	code                  = keycode_ui_alias(code)
+	code = keycode_ui_alias(code)
+
+	if hotkeys_label ~= "" then
+		hotkeys_label = "<span " ..
+				"foreground='" .. config.hotkey_label_color_fg .. "' " ..
+				--"background='" .. config.hotkey_label_color_bg .. "' " ..
+				"> " .. hotkeys_label .. " </span>"
+	end
 
 	-- Assign the default markup value.
-	local action_markup   = "<span>" .. label .. (stays and " (~)" or "") .. "</span>"
+	local action_markup   = "<span>" ..
+			label ..
+			(stays and " (~)" or "") ..
+			(hotkeys_label ~= "" and (" " .. hotkeys_label) or "") ..
+			"</span>"
 
 	local is_submenu_name = n_bindings > 0
 	if is_submenu_name then
@@ -140,13 +155,37 @@ local function get_keypath_markup(bound)
 	end
 
 	return "<b><span> " ..
-			'<span underline="' .. underline .. '" foreground="' .. config.hotkey_color .. '">' ..
+			'<span underline="' .. underline .. '" foreground="' .. config.modality_keypath_color .. '">' ..
 			gears.string.xml_escape(code) ..
 			'</span>' ..
 			'</span>' ..
 			"</b>" ..
 			"<span foreground='" .. config.arrow_color .. "'>  ➞  </span>" ..
 			action_markup
+end
+
+-- Save copied tables in `copies`, indexed by original table.
+-- http://lua-users.org/wiki/CopyTable
+function deepcopy(orig, copies)
+	copies          = copies or {}
+	local orig_type = type(orig)
+	local copy
+	if orig_type == 'table' then
+		if copies[orig] then
+			copy = copies[orig]
+		else
+			copy         = {}
+			copies[orig] = copy
+			for orig_key, orig_value in next, orig, nil do
+				copy[deepcopy(orig_key, copies)] = deepcopy(orig_value, copies)
+			end
+			setmetatable(copy, deepcopy(getmetatable(orig), copies))
+		end
+	else
+		-- number, string, boolean, etc
+		copy = orig
+	end
+	return copy
 end
 
 -- lib.show shows the modality box.
@@ -184,7 +223,7 @@ lib.show = function(s, parent)
 		--name = "Modality"
 	end
 
-	if name ~= "" then
+	if name ~= "" and name ~= lib.modality.path_tree.label then
 		titlebox:set_markup("<big><b>" .. name .. "</b></big>\n")
 		titlebox.visible = true
 		if parent.stay then
@@ -202,6 +241,10 @@ lib.show = function(s, parent)
 	-- Add bindings textboxes for this binding table.
 	-- Docs: https://awesomewm.org/apidoc/widget_layouts/wibox.layout.grid.html
 	if parent.bindings then
+
+		-- exists
+		modality_util.debug_print_paths("[modality] parent.bindings", parent.bindings)
+
 
 		-- Sort alphabetically, sort of.
 		-- I want punctuation first, then modifier and other special keys, then letters.
@@ -233,8 +276,10 @@ lib.show = function(s, parent)
 		for _, code in ipairs(sorted_binding_codes) do
 			local bound = parent.bindings[code]
 			bound.code  = code
+			-- dne
+			modality_util.debug_print_paths("[modality] bound", bound)
 
-			local m     = get_keypath_markup(bound)
+			local m = get_keypath_markup(bound)
 
 			if code:lower() ~= "escape" and m ~= "" then
 				local txtbx = wibox.widget.textbox()
