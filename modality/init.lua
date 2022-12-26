@@ -72,13 +72,37 @@ modality.search                     = function()
 
 	-- Get all searchable keypaths and their functions.
 	local text_lines = {}
+	local keypaths   = {}
 	local fns        = {}
 	for _, keypath_fn in ipairs(modality.all_keypaths) do
-		local keypath = keypath_fn[1]
-		local fn      = keypath_fn[2]
-		local text    = modality.keypath_readable(keypath, true)
-		table.insert(text_lines, text)
-		table.insert(fns, fn)
+		local keypath   = keypath_fn[1]
+		local fn        = keypath_fn[2]
+		local text_line = modality.keypath_readable(keypath, true)
+
+		-- Dedupe the text_lines.
+		item_key        = gears.table.hasitem(fns, fn)
+		if item_key ~= nil then
+			-- Replace the existing text line (keypath, etc) if the current one is SHORTER.
+			-- Shorter is preferred because it likely means that the user has configured
+			-- something like a top-level "shortcut" shorter keybinding.
+			local existing_keypath = keypaths[item_key]
+			if #keypath < #existing_keypath then
+				-- Replace all data types at that index.
+				text_lines[item_key] = text_line
+				keypaths[item_key]   = keypath
+				fns[item_key]        = fn -- ...even though the function should be the same.
+			else
+				-- The existing entry(ies) are preferred to the iterated one.
+				-- Noop.
+				-- TODO Although we eventually do want to actually MERGE the text lines
+				-- to be able to show ALL keypaths and ALL keybindings for some function.
+			end
+		else
+			table.insert(text_lines, text_line)
+			table.insert(keypaths, keypath)
+			table.insert(fns, fn)
+		end
+
 	end
 
 	local cmd = "echo '" .. table.concat(text_lines, "\n") .. "' | " .. get_rofi_cmd(awful.screen.focused())
@@ -213,7 +237,8 @@ end
 
 -- format_step_codes formats the step codes (eg. a, b ,c) into a human-readable string (eg. [ a b c ]).
 local format_step_codes             = function(codes)
-	return string.format("[ %s ]", table.concat(codes, " → "))
+	-- →
+	return string.format("[ %s ]", table.concat(codes, " "))
 end
 
 -- format_step_labels formats the step labels (eg. awesome, help, keybindings) into a human-readable string (eg. '( awesome help keybindings )').

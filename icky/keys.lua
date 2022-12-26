@@ -65,17 +65,18 @@ local m                       = {
 	CLIENT            = "c:client,",
 
 	-- These, however, ARE client commands, and they will get the client parameter.
-	CLIENT_MOVE       = "c:client,m~:move,", -- stays
+	CLIENT_MOVE       = "c:client,m:move,",
 	CLIENT_RESIZE     = "c:client,r~:resize,", -- stays
 	CLIENT_PLACEMENT  = "c:client,p~:placement,", -- stays
 
 	FOCUS             = "f:focus,",
 
-	SWAP              = "x:swap,",
+	TAG_LAYOUT        = "l:layout,",
 
 	MEDIA             = "m:media,",
 	MEDIA_VOLUME      = "m:media,v~:volume,", -- stays
 
+	SWAP              = "p:swap,",
 	POWER_USER        = "P:power-user,",
 
 	SCREEN            = "s:screen,",
@@ -84,7 +85,6 @@ local m                       = {
 	SPECIAL           = "z:special,",
 
 	TAG               = "t:tag,",
-	TAG_LAYOUT        = "t:tag,l:layout,",
 	TAG_LAYOUT_ADJUST = "t:tag,l:layout,a~:adjust,", -- stays
 	TAG_USELESS       = "t:tag,u~:useless,", -- stays
 }
@@ -126,7 +126,7 @@ lib.global_bindings           = {
 	-- AWESOME:BARS
 	{
 		h          = { group = "awesome", description = "wibar style switcher", name = "toggle wibar" },
-		modalities = { "b", m.AWESOME_BARS .. "b:wibar" },
+		modalities = { "b", m.AWESOME_BARS .. "b" },
 		hotkeys    = { { _keys.MOD, "d" } },
 		on_press   = global_fns.awesome.wibar,
 
@@ -194,13 +194,13 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "applications", description = "toggle quake popup terminal", name = "quake", },
-		modalities = { "q", m.APPLICATIONS .. "q" },
+		modalities = { "z", m.APPLICATIONS .. "q" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "z", }, },
 		on_press   = global_fns.apps.quake,
 	},
 	{
 		h          = { group = "launcher", description = "awesome launcher", name = "launcher", },
-		modalities = { "l" },
+		modalities = { "x" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "r", }, },
 		on_press   = global_fns.apps.popup_launcher,
 	},
@@ -306,13 +306,13 @@ lib.global_bindings           = {
 	-- {{{ TAGS
 	{
 		h          = { group = "tag", description = "view previous (by index)", name = "previous" },
-		modalities = { m.TAG .. "n~" }, -- stays (it is common to want to move around more than one tag)
+		modalities = { m.TAG .. "p~" }, -- stays (it is common to want to move around more than one tag)
 		hotkeys    = { { mods = { _keys.MOD }, code = "Left" } },
 		on_press   = global_fns.tag.prev,
 	},
 	{
 		h          = { group = "tag", description = "view next (by index)", name = "next" },
-		modalities = { m.TAG .. "p~" }, --stays, ditto
+		modalities = { m.TAG .. "n~" }, --stays, ditto
 		hotkeys    = { { mods = { _keys.MOD }, code = "Right" } },
 		on_press   = global_fns.tag.next,
 	},
@@ -341,7 +341,7 @@ lib.global_bindings           = {
 	{
 		h          = { group = "tag", description = "rename a tag", name = "rename" },
 		modalities = { m.TAG .. "r" }, -- stays
-		on_press   = global_fns.tag.delete,
+		on_press   = global_fns.tag.rename,
 	},
 	-- TAGS:LAYOUT:ADJUST
 	{
@@ -442,7 +442,7 @@ lib.global_bindings           = {
 		on_press   = global_fns.power_user.logout,
 	},
 	{
-		h          = { group = "power_user", description = "suspend session", name = "suspend" },
+		h          = { group = "power_user", description = "suspend session (sleep)l", name = "suspend" },
 		modalities = { m.POWER_USER .. "s" },
 		on_press   = global_fns.power_user.suspend,
 	},

@@ -62,7 +62,7 @@ local global_fns           = {
 				awful.screen.focused().my_calendar_widget.toggle()
 			end,
 			weather     = function()
-				special.weather.toggle()
+				special.weather.show()
 			end,
 		},
 	},
@@ -307,7 +307,7 @@ local global_fns           = {
 			},
 			named                = {
 				centerwork = function()
-					awful.layout.set(awful.layout.suit.centerwork)
+					awful.layout.set(lain.layout.centerwork)
 				end,
 				floating   = function()
 					awful.layout.set(awful.layout.suit.floating)
@@ -362,8 +362,10 @@ local client_fns           = {
 			if not cc then
 				return
 			end
-			cc.floating = true
-			cc.width    = cc.width + cc.screen.workarea.width / 10
+			cc.fullscreen = false
+			cc.maximized  = false
+			cc.floating   = true
+			cc.width      = cc.width + cc.screen.workarea.width / 10
 			awful.placement.no_offscreen(cc, { honor_workarea = true, margins = 0 })
 		end,
 		skinnier = function(c)
@@ -371,8 +373,10 @@ local client_fns           = {
 			if not cc then
 				return
 			end
-			cc.floating = true
-			cc.width    = cc.width - cc.screen.workarea.width / 10
+			cc.fullscreen = false
+			cc.maximized  = false
+			cc.floating   = true
+			cc.width      = cc.width - cc.screen.workarea.width / 10
 			awful.placement.no_offscreen(cc, { honor_workarea = true, margins = 0 })
 		end,
 		taller   = function(c)
@@ -380,8 +384,10 @@ local client_fns           = {
 			if not cc then
 				return
 			end
-			cc.floating = true
-			cc.height   = cc.height + cc.screen.workarea.height / 10
+			cc.fullscreen = false
+			cc.maximized  = false
+			cc.floating   = true
+			cc.height     = cc.height + cc.screen.workarea.height / 10
 			awful.placement.no_offscreen(cc, { honor_workarea = true, margins = 0 })
 		end,
 		shorter  = function(c)
@@ -389,8 +395,10 @@ local client_fns           = {
 			if not cc then
 				return
 			end
-			cc.floating = true
-			cc.height   = cc.height - cc.screen.workarea.height / 10
+			cc.fullscreen = false
+			cc.maximized  = false
+			cc.floating   = true
+			cc.height     = cc.height - cc.screen.workarea.height / 10
 			awful.placement.no_offscreen(cc, { honor_workarea = true, margins = 0 })
 		end,
 	},

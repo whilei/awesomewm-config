@@ -112,6 +112,7 @@ local function get_keypath_markup(bound)
 	local code       = bound.code or ""
 	local label      = bound.label or "???"
 	local n_bindings = bound.n_bindings or 0
+	local stays      = bound.stay
 
 	if code == "separator" then
 		--return "\n"
@@ -125,7 +126,7 @@ local function get_keypath_markup(bound)
 	code                  = keycode_ui_alias(code)
 
 	-- Assign the default markup value.
-	local action_markup   = "<span>" .. label .. "</span>"
+	local action_markup   = "<span>" .. label .. (stays and " (~)" or "") .. "</span>"
 
 	local is_submenu_name = n_bindings > 0
 	if is_submenu_name then
