@@ -646,7 +646,7 @@ local function install_global_tag_fns_by_index()
 			end
 		end
 
-		modality.register(m.CLIENT_MOVE .. "t:to tag," .. i .. ":move to tag " .. i, fn_view_tag)
+		modality.register(m.CLIENT_MOVE .. "t:to tag," .. i .. ":move to tag " .. i, fn_move_client_to_tag)
 
 		awful.keyboard.append_global_keybindings({
 													 -- View tag only.
