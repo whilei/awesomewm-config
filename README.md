@@ -14,6 +14,9 @@
 - [ ] `shitty` handle errors better (a pro pro naughty)
 - [ ] `farty` make art
 
+- [ ] Group modality keypaths when they have duplicated functions.
+  - I am realizing that I want a key/path:function system that is function-centric, rather than binding or keypath centric.
+
 ---
 
 WTF

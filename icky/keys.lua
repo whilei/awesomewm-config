@@ -77,7 +77,7 @@ local m                       = {
 	POWER_USER        = "P:power-user,",
 	SCREEN            = "s:screen,",
 	SCREEN_SHOT       = "s:screen,s:screenshot,",
-	SPECIAL           = "z:special,",
+	--SPECIAL           = "z:special,",
 	TAG               = "t:tag,",
 	TAG_USELESS       = "t:tag,u~:useless,", -- stays
 }
