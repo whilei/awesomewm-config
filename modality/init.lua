@@ -172,6 +172,12 @@ modality.path_tree                  = {
 			fn       = modality.search,
 			bindings = nil,
 			stay     = false,
+		},
+		["?"]      = {
+			label    = "search",
+			fn       = modality.search,
+			bindings = nil,
+			stay     = false,
 		}
 	},
 }
@@ -542,13 +548,19 @@ local function keypressed_callback(bindings_parent)
 			--return exit("unmatched binding")
 
 			-- Option 2: Show error (invalid binding) and keep the mode running.
-			naughty.notify {
+			local n = naughty.notification {
 				text     = "Invalid binding: " .. key .. " (Use ESC to exit.)",
-				timeout  = 0.5,
+				timeout  = 0.75,
 				position = "bottom_middle",
 				bg       = "#ff0000",
 				fg       = "#ffffff",
 			}
+			--awful.placement.next_to(n, {
+			--	mode                = "geometry_inside",
+			--	preferred_positions = { "top", "right", "left", "bottom" },
+			--	preferred_anchors   = { "middle", "front", "back" },
+			--	geometry            = modality_widget.get_widget(awful.screen.focused()):geometry(),
+			--})
 			return true
 		end
 
@@ -597,18 +609,16 @@ modality.enter = function(bindings_parent)
 		modality.kg = nil
 	end
 
-	modality.widget.show(s, bindings_parent)
-
-	local stop_keys = gears.table.keys(bindings_parent.bindings)
-
-	-- TODO: This is a hack to make the keygrabber stop when the user presses Escape according to Copilot.
-	-- Other 'special' keys could also be added here.
-	if not gears.table.hasitem(stop_keys, "Escape") then
-		table.insert(stop_keys, "Escape") -- Exit mode.
-	end
-	if not gears.table.hasitem(stop_keys, "?") then
-		table.insert(stop_keys, "?") -- Show (interactive) help mode.
-	end
+	--local stop_keys = gears.table.keys(bindings_parent.bindings)
+	--
+	---- TODO: This is a hack to make the keygrabber stop when the user presses Escape according to Copilot.
+	---- Other 'special' keys could also be added here.
+	--if not gears.table.hasitem(stop_keys, "Escape") then
+	--	table.insert(stop_keys, "Escape") -- Exit mode.
+	--end
+	--if not gears.table.hasitem(stop_keys, "?") then
+	--	table.insert(stop_keys, "?") -- Show (interactive) help mode.
+	--end
 
 	modality.kg = awful.keygrabber {
 		-- Start the grabbing immediately.
@@ -626,6 +636,8 @@ modality.enter = function(bindings_parent)
 		-- The callback when the keygrabbing stops.
 		keypressed_callback = keypressed_callback(bindings_parent),
 	}
+
+	modality.widget.show(s, bindings_parent)
 
 end
 

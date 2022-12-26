@@ -67,6 +67,14 @@ local global_fns           = {
 		},
 	},
 	apps       = {
+		run_or_raise   = function(app_by_name)
+			return function()
+				local matcher = function(c)
+					return awful.rules.match(c, { class = app_by_name })
+				end
+				awful.client.run_or_raise(app_by_name, matcher)
+			end
+		end,
 		handy          = {
 			top  = function()
 				handy("ffox --class handy-top", awful.placement.top, 0.5, 0.5)
@@ -75,20 +83,21 @@ local global_fns           = {
 				handy("ffox --class handy-left", awful.placement.left, 0.25, 0.9)
 			end,
 		},
-		rofi           = function()
+		rofi           = function(modi)
 			-- Location values:
 			-- 1   2   3
 			-- 8   0   4
 			-- 7   6   5
-
-			local tv_prompt     = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
-			local laptop_prompt = "rofi -modi window -show window -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
-			commandPrompter     = awful.screen.focused().is_tv and tv_prompt or laptop_prompt
-			awful.spawn.easy_async(commandPrompter, function()
-				if client.focus then
-					awful.screen.focus(client.focus.screen)
-				end
-			end)
+			return function()
+				local tv_prompt     = "rofi -modi " .. modi .. " -show " .. modi .. " -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
+				local laptop_prompt = "rofi -modi " .. modi .. " -show " .. modi .. " -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
+				commandPrompter     = awful.screen.focused().is_tv and tv_prompt or laptop_prompt
+				awful.spawn.easy_async(commandPrompter, function()
+					if client.focus then
+						awful.screen.focus(client.focus.screen)
+					end
+				end)
+			end
 		end,
 		quake          = function()
 			special.quake:toggle()

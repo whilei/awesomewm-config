@@ -54,10 +54,9 @@ end
 
 local m                       = {
 	AWESOME           = "a:awesome,", -- trailing , allows for easy concatenation
-	--AWESOME_BARS      = "a:awesome,b~:bars,", -- stays
 	AWESOME_WIDGETS   = "a:awesome,w~:widgets,", -- stays
-
-	APPLICATIONS      = "A:applications,",
+	AWESOME_APPS      = "a:awesome,a:apps,",
+	APPLICATIONS      = ".:applications,",
 
 	-- confusingly, this is not always (or event usually) what are considered 'client' commands
 	-- That is only because these functions do not necessarily have to have the client argument,
@@ -70,21 +69,15 @@ local m                       = {
 	CLIENT_PLACEMENT  = "c:client,p~:placement,", -- stays
 
 	FOCUS             = "f:focus,",
-
 	TAG_LAYOUT        = "l:layout,",
 	TAG_LAYOUT_ADJUST = "l:layout,a~:adjust,", -- stays
-
 	MEDIA             = "m:media,",
 	MEDIA_VOLUME      = "m:media,v~:volume,", -- stays
-
 	SWAP              = "p~:swap,",
 	POWER_USER        = "P:power-user,",
-
 	SCREEN            = "s:screen,",
 	SCREEN_SHOT       = "s:screen,s:shot,",
-
 	SPECIAL           = "z:special,",
-
 	TAG               = "t:tag,",
 	TAG_USELESS       = "t:tag,u~:useless,", -- stays
 }
@@ -108,9 +101,8 @@ lib.global_bindings           = {
 		on_press   = global_fns.awesome.restart,
 	},
 	{
-		h          = { group = "awesome", description = "show hotkeys help cheat sheet", name = "hotkeys help" },
-		modalities = { m.AWESOME .. "h" },
-		on_press   = global_fns.awesome.hotkeys_help,
+		h        = { group = "awesome", description = "show hotkeys help cheat sheet", name = "hotkeys help" },
+		on_press = global_fns.awesome.hotkeys_help,
 	},
 	{
 		h          = { group = "awesome", description = "show main menu", name = "main menu" },
@@ -132,33 +124,30 @@ lib.global_bindings           = {
 
 	},
 	{
-		h          = { group = "awesome", description = "toggle world times widget", name = "world times" },
-		modalities = { m.AWESOME_WIDGETS .. "g" },
+		h          = { group = "awesome/widgets", description = "toggle meridian widget", name = "meridian" },
+		modalities = { m.AWESOME_WIDGETS .. "m" },
 		hotkeys    = { { _keys.MOD, "g" } },
 		on_press   = global_fns.awesome.widgets.world_times,
 	},
 	-- AWESOME:WIDGETS
 	{
-		h          = { group = "awesome", description = "toggle calendar widget", name = "calendar" },
+		h          = { group = "awesome/widgets", description = "toggle calendar widget", name = "calendar" },
 		modalities = { m.AWESOME_WIDGETS .. "d" },
 		on_press   = global_fns.awesome.widgets.calendar,
 	},
 	{
-		h          = { group = "awesome", description = "toggle weather widget", name = "weather" },
+		h          = { group = "awesome/widgets", description = "toggle weather widget", name = "weather" },
 		modalities = { m.AWESOME_WIDGETS .. "w" },
 		on_press   = global_fns.awesome.widgets.weather,
 	},
-	-- }}}
-
-
-	-- {{{ APPS
+	-- AWESOME:APPS
 	{
 		h          = {
-			group       = "applications",
+			group       = "awesome/snazzy",
 			description = "handy firefox (top)",
 			name        = "handy firefox (top)",
 		},
-		modalities = { m.APPLICATIONS .. "h:handy,t" },
+		modalities = { m.AWESOME_APPS .. "h:handy,t" },
 		hotkeys    = {
 			{
 				mods      = { _keys.MOD }, code = "v",
@@ -169,42 +158,87 @@ lib.global_bindings           = {
 		on_release = nil,
 	},
 	{
-		h          = { group = "applications", description = "handy firefox (left)", name = "handy firefox (left)", },
-		modalities = { m.APPLICATIONS .. "h:handy,l" },
+		h          = { group = "awesome/snazzy", description = "handy firefox (left)", name = "handy firefox (left)", },
+		modalities = { m.AWESOME_APPS .. "h:handy,l" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "a", }, },
 		on_press   = global_fns.apps.handy.left,
 	},
 	{
-		h          = { group = "applications", description = "hints", name = "hints" },
+		h          = { group = "awesome/snazzy", description = "hints", name = "hints" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "i", }, },
-		modalities = { "i", m.APPLICATIONS .. "i" },
+		modalities = { "i", m.AWESOME_APPS .. "i" },
 		on_press   = global_fns.client.hints,
 	},
 	{
-		h          = { group = "applications", description = "rofi client picker", name = "rofi", },
-		modalities = { "r", m.APPLICATIONS .. "r" },
+		h          = { group = "awesome/snazzy", description = "rofi window", name = "rofi window", },
+		modalities = { "w", m.AWESOME_APPS .. "w" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "Return", }, },
-		on_press   = global_fns.apps.rofi,
+		on_press   = global_fns.apps.rofi("window"),
 	},
 	{
-		h          = { group = "applications", description = "revelation", name = "revelation" },
-		modalities = { "e", m.APPLICATIONS .. "e" },
+		h          = { group = "awesome/snazzy", description = "rofi runner", name = "rofi run", },
+		modalities = { "r", m.AWESOME_APPS .. "R" },
+		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Return", }, },
+		on_press   = global_fns.apps.rofi("run"),
+	},
+	{
+		h          = { group = "awesome/snazzy", description = "revelation", name = "revelation" },
+		modalities = { "e", m.AWESOME_APPS .. "e" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "e", }, },
 		on_press   = global_fns.apps.revelation,
 	},
 	{
-		h          = { group = "applications", description = "toggle quake popup terminal", name = "quake", },
-		modalities = { "z", m.APPLICATIONS .. "q" },
+		h          = { group = "awesome/snazzy", description = "toggle quake popup terminal", name = "quake", },
+		modalities = { "z", m.AWESOME_APPS .. "q" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "z", }, },
 		on_press   = global_fns.apps.quake,
 	},
 	{
-		h          = { group = "launcher", description = "awesome launcher", name = "launcher", },
+		h          = { group = "awesome/snazzy", description = "awesome launcher", name = "launcher", },
 		modalities = { "x" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "r", }, },
 		on_press   = global_fns.apps.popup_launcher,
 	},
-	-- }}} APPS
+	-- }}} AWESOME
+
+
+	-- {{{ APPLICATIONS
+	{
+		h          = { group = "awesome/applications", description = "raise or run emacs", name = "emacs", },
+		modalities = { m.APPLICATIONS .. "e" },
+		on_press   = global_fns.apps.run_or_raise("emacs"),
+	},
+	{
+		h          = { group = "awesome/applications", description = "raise or run firefox", name = "firefox", },
+		modalities = { m.APPLICATIONS .. "f" },
+		on_press   = global_fns.apps.run_or_raise("ffox"),
+	},
+	{
+		h          = { group = "awesome/applications", description = "raise or run google chrome", name = "google chrome", },
+		modalities = { m.APPLICATIONS .. "g" },
+		on_press   = global_fns.apps.run_or_raise("google-chrome"),
+	},
+	{
+		h          = { group = "awesome/applications", description = "raise or run konsole", name = "konsole", },
+		modalities = { m.APPLICATIONS .. "k" },
+		on_press   = global_fns.apps.run_or_raise("konsole"),
+	},
+	{
+		h          = { group = "awesome/applications", description = "raise or run kate", name = "kate", },
+		modalities = { m.APPLICATIONS .. "a" },
+		on_press   = global_fns.apps.run_or_raise("kate"),
+	},
+	{
+		h          = { group = "awesome/applications", description = "raise or run system settings", name = "system settings", },
+		modalities = { m.APPLICATIONS .. "s" },
+		on_press   = global_fns.apps.run_or_raise("systemsettings"),
+	},
+	{
+		h          = { group = "awesome/applications", description = "raise or run jetbrains toolbox", name = "jetbrains toolbox", },
+		modalities = { m.APPLICATIONS .. "j" },
+		on_press   = global_fns.apps.run_or_raise("jetbrains-toolbox"),
+	},
+	-- }}} APPLICATIONS
 
 
 	-- {{{ FOCUS
@@ -419,7 +453,7 @@ lib.global_bindings           = {
 	-- {{{ SCREEN
 	{
 		h          = { group = "screen", description = "focus next screen", name = "focus next screen" },
-		modalities = { "$" },
+		modalities = { "$", m.SCREEN .. "n" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "u" } },
 		on_press   = global_fns.screen.next,
 	},
@@ -559,7 +593,7 @@ lib.client_bindings           = {
 	-- CLIENT:XXX
 	{
 		h          = { group = "client", description = "kill client", name = "kill" },
-		modalities = { m.CLIENT .. "q" },
+		modalities = { "Delete", m.CLIENT .. "q" },
 		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "c" } },
 		on_press   = client_fns.kill,
 	},

@@ -10,6 +10,8 @@ local tonumber        = tonumber
 local tostring        = tostring
 local ipairs          = ipairs
 
+local client          = client
+
 local gears           = require("gears")
 local lain            = require("lain")
 local awful           = require("awful")
@@ -59,6 +61,8 @@ theme.wallpaper                                 = theme.dir .. "/walls/solidcolo
 -- $ b = require("beautiful"); local c = "#08158a"; b.titlebar_bg_focus = c; b.tasklist_bg_focus = c;
 
 theme.master_width_factor                       = 0.7
+
+theme.notification_position                     = "top_middle"
 
 --theme.font                                      = "xos4 Terminus 9"
 theme.font                                      = "monospace 9"
@@ -1074,7 +1078,7 @@ function theme.at_screen_connect(s)
 		mywibar_args.width    = s.workarea.width / 3 * 2
 	end
 
-	s.mywibox            = awful.wibar(mywibar_args)
+	s.mywibox      = awful.wibar(mywibar_args)
 
 	-- The important part to make this actually float on top of all the stuff is
 	-- that it's a WIBOX and a not a WIBAR.
@@ -1138,7 +1142,7 @@ function theme.at_screen_connect(s)
 	--	}
 	--}
 
-	s.mywibox_slim       = awful.popup {
+	s.mywibox_slim = awful.popup {
 		widget       = {
 			{
 				{
@@ -1157,7 +1161,7 @@ function theme.at_screen_connect(s)
 		type         = "dock",
 		placement    = awful.placement.bottom,
 		shape        = function(c, w, h)
-			local tl, tr, br, bl = false, true, false, false
+			local tl, tr, br, bl = false, false, false, false
 			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
 		end,
 		visible      = false,
@@ -1165,6 +1169,14 @@ function theme.at_screen_connect(s)
 		border_width = 0,
 		border_color = "#0000ff",
 	}
+
+	client.connect_signal("focus", function(c)
+		if c.screen == s then
+			s.mywibox_slim.border_width = 2
+		else
+			s.mywibox_slim.border_width = 0
+		end
+	end)
 
 	s.mywibox_worldtimes = special.meridian(s, theme)
 

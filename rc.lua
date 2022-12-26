@@ -30,20 +30,17 @@ local naughty                                               = require("naughty")
 local lain                                                  = require("lain")
 local freedesktop                                           = require("freedesktop")
 local hotkeys_popup                                         = require("awful.hotkeys_popup").widget
-local revelation                                            = require("revelation")
-local hints                                                 = require("hints")
-local cairo                                                 = require("lgi").cairo
+--local cairo                                                 = require("lgi").cairo
 
 local ia_layout_swen                                        = require("layout-swen")
-local ia_layout_vcolumns                                    = require("columns-layout")
 local layout_titlebars_conditional                          = require("layout-titlebars-conditional")
-local special                                               = require("special")
 
 local icky_keys                                             = require("icky.keys")
 local icky_fns                                              = require("icky.fns").global
-
 local modality                                              = require("modality")
 -- }}}
+
+naughty.config.presets.critical.position                    = "top_middle"
 
 -- {{{ Error handling
 if awesome.startup_errors then
@@ -235,86 +232,46 @@ modality.init()
 --}
 
 -- {{{ Menwesomeu
-local myawesomemenu    = {
-	{
-		"hotkeys",
-		function()
-			return false, hotkeys_popup.show_help
-		end
-	},
-	--{ "layouts", function() return false, layoutlist_popup.widget end },
-	-- { "manual", terminal .. " -e man awesome" },
-	-- { "edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
-	{ "restart", awesome.restart }
-	--    {
-	--        "quit",
-	--        function()
-	--            awesome.quit()
-	--        end
-	--    }
-}
 
-local myscreenshotmenu = {
-	{
-		"Selection",
-		icky_fns.screenshot.selection,
+awful.util.mymainmenu = freedesktop.menu.build {
+	icon_size = beautiful.menu_height or 18,
+	before    = {
+		{ "Screenshot", {
+			{ "Selection", icky_fns.screenshot.selection, },
+			{ "Screen", icky_fns.screenshot.screen, },
+			{ "Window (All)", icky_fns.screenshot.window, },
+			{ "Focused client", icky_fns.screenshot.client, },
+		}, nil },
+		{ " " },
 	},
-	{
-		"Window",
-		icky_fns.screenshot.window,
+	after     = {
+		{ " " },
+		{ "Awesome", {
+			{ "hotkeys",
+			  function()
+				  return false, hotkeys_popup.show_help
+			  end
+			},
+			{ "restart", awesome.restart },
+			{ "quit", awesome.quit },
+		}, beautiful.awesome_icon },
+
+		{ "Power/User Mgmt", {
+			{ "Suspend/Sleep", function()
+				awful.util.spawn_with_shell("sudo systemctl suspend")
+			end },
+			{ "Log out", function()
+				awful.util.spawn_with_shell("sudo service lightdm restart")
+			end },
+			{ "Shutdown", function()
+				os.execute("shutdown -P -h now")
+			end },
+			{ "Reboot", function()
+				os.execute("reboot")
+			end },
+		}, nil },
 	}
 }
-
---screenshot_menu        = awful.menu({
---										items = {
---											{ "Screenshot: Selection", function()
---												screenshot_menu:hide()
---												--awful.util.spawn_with_shell(scrnshotter_select)
---												awful.spawn.easy_async_with_shell(scrnshotter_select, function()
---													naughty.notify({ text = "Screenshot of selection OK", timeout = 5, bg = "#058B04", fg = "#ffffff", position = "bottom_middle })
---												end)
---											end, nil },
---											{ "Screenshot: Window", function()
---												screenshot_menu:hide()
---												awful.util.spawn_with_shell(scrnshotter_window)
---												naughty.notify({ text = "Screenshot of window OK", timeout = 5, bg = "#058B04", fg = "#ffffff", position = "bottom_middle })
---											end, nil },
---										}
---									})
-
-local mypowermenu      = {
-	{ "Suspend/Sleep", function()
-		awful.util.spawn_with_shell("sudo systemctl suspend")
-	end },
-	{ "Log out", function()
-		awful.util.spawn_with_shell("sudo service lightdm restart")
-	end },
-	{ "Shutdown", function()
-		os.execute("shutdown -P -h now")
-	end },
-	{ "Reboot", function()
-		os.execute("reboot")
-	end },
-}
-
-awful.util.mymainmenu  = freedesktop.menu.build({
-													icon_size = beautiful.menu_height or 18,
-													before    = {
-														-- other triads can be put here
-														{ "Screenshot", myscreenshotmenu, nil },
-														{ " " },
-													},
-													after     = {
-														{ " " },
-														{ "Awesome", myawesomemenu, beautiful.awesome_icon },
-														{ "Power/User Mgmt", mypowermenu, nil },
-														--{ "Log out", function() awful.util.spawn_with_shell("sudo service lightdm restart") end},
-														--{ "Shutdown", function() os.execute("shutdown -P -h now") end},
-														--{ "Reboot", function() os.execute("reboot") end},
-														--{ "Open terminal", terminal }
-														-- other triads can be put here
-													}
-												})
 
 --menubar.utils.terminal = terminal -- Set the Menubar terminal for applications that require it
 -- }}}
@@ -688,6 +645,7 @@ client.connect_signal("focus", function(c)
 		end
 	end
 end)
+
 --client.connect_signal("property::maximized", border_adjust)
 client.connect_signal("unfocus", function(c)
 	--c.border_color = beautiful.border_normal
