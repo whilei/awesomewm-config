@@ -351,7 +351,7 @@ local function BoundedRGBVal(low, high, val)
 	return val
 end
 
-local clock                   = awful.widget.watch(
+local clock           = awful.widget.watch(
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%a %d %b %R UTC%:::z'",
 -- "date +'%Y-%m-%dT%H:%MZ%:z'",
@@ -367,220 +367,193 @@ local clock                   = awful.widget.watch(
 			)
 		end)
 
-local clock_time_only         = awful.widget.watch("date +'%H:%M'", 60, function(widget, stdout)
+local clock_time_only = awful.widget.watch("date +'%H:%M'", 60, function(widget, stdout)
 	widget:set_markup(markup.fontbg("monospace bold 14", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " "))
 end)
 
-local meridian_fmt            = "%H:%M%t%z"
-local meridian                = function(tz)
-	local watcher = "bash -c 'TZ='" .. tz .. "' date +'%H:%M''"
-	if tz == "UTC" then
-		watcher = "date -u +'" .. meridian_fmt .. "'"
-	end
-	return awful.widget.watch(watcher, 60, function(widget, stdout)
-		-- markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
-		widget:set_markup(markup.fontbg("monospace bold 12", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " "))
-	end)
-end
-local world_clock_vancouver   = meridian("America/Vancouver")
-local world_clock_denver      = meridian("America/Denver")
-local world_clock_chicago     = meridian("America/Chicago")
-local world_clock_newyork     = meridian("America/New_York")
-local clock_utc               = meridian("UTC")
-local world_clock_london      = meridian("Europe/London")
-local world_clock_berlin      = meridian("Europe/Berlin")
-local world_clock_athens      = meridian("Europe/Athens")
-local world_clock_dubai       = meridian("Asia/Dubai")
-local world_clock_shanghai    = meridian("Asia/Shanghai")
-local world_clock_tokyo       = meridian("Asia/Tokyo")
-local world_clock_buenosaires = meridian("America/Argentina")
-local world_clock_madrid      = meridian("Europe/Madrid")
-local world_clock_anchorage   = meridian("America/Anchorage")
-local world_clock_moscow      = meridian("Europe/Moscow")
-
 -- MEM
-local memicon                 = wibox.widget.imagebox(theme.widget_mem)
-local mem                     = lain.widget.mem({
-													settings = function()
+local memicon         = wibox.widget.imagebox(theme.widget_mem)
+local mem             = lain.widget.mem({
+											settings = function()
 
-														-- get base
-														local r, g, b  = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
-														-- local bg_color = RGBPercToHex(r, g, b)
+												-- get base
+												local r, g, b  = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+												-- local bg_color = RGBPercToHex(r, g, b)
 
-														r, g, b        = ColorGradient(0.6, r, g, b, 1, 1, 1) -- lighten it
-														local fg_color = RGBPercToHex(r, g, b)
+												r, g, b        = ColorGradient(0.6, r, g, b, 1, 1, 1) -- lighten it
+												local fg_color = RGBPercToHex(r, g, b)
 
-														r, g, b        = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
-														-- local bg_color = RGBPercToHex(r, g, b)
+												r, g, b        = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+												-- local bg_color = RGBPercToHex(r, g, b)
 
-														r, g, b        = ColorGradient(0.8, r, g, b, 0, 0, 0)
-														local bg_color = RGBPercToHex(r, g, b)
+												r, g, b        = ColorGradient(0.8, r, g, b, 0, 0, 0)
+												local bg_color = RGBPercToHex(r, g, b)
 
-														local fmt      = string.format("%.0f GB", mem_now.used / 1024)
-														widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, fmt) .. " "))
-														-- widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
-													end
-												})
+												local fmt      = string.format("%.0f GB", mem_now.used / 1024)
+												widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, fmt) .. " "))
+												-- widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
+											end
+										})
 
 
 -- CPU
-local cpuicon                 = wibox.widget.imagebox(theme.widget_cpu)
-local cpu                     = lain.widget.cpu({
-													settings = function()
-														-- widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
-														local strf       = string.format("%3d%%", cpu_now.usage)
+local cpuicon         = wibox.widget.imagebox(theme.widget_cpu)
+local cpu             = lain.widget.cpu({
+											settings = function()
+												-- widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
+												local strf       = string.format("%3d%%", cpu_now.usage)
 
-														local rr, gg, bb = ColorGradient((cpu_now.usage / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
-														local r, g, b    = ColorGradient(0.6, rr, gg, bb, 0, 0, 0)
-														local bg_color   = RGBPercToHex(r, g, b)
+												local rr, gg, bb = ColorGradient((cpu_now.usage / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+												local r, g, b    = ColorGradient(0.6, rr, gg, bb, 0, 0, 0)
+												local bg_color   = RGBPercToHex(r, g, b)
 
-														r, g, b          = ColorGradient(0.6, rr, gg, bb, 0.8, 0.8, 0.8) -- lighten it
-														local fg_color   = RGBPercToHex(r, g, b)
-														if cpu_now.usage == 100 then
-															fg_color = '#ff0000'
-														end
+												r, g, b          = ColorGradient(0.6, rr, gg, bb, 0.8, 0.8, 0.8) -- lighten it
+												local fg_color   = RGBPercToHex(r, g, b)
+												if cpu_now.usage == 100 then
+													fg_color = '#ff0000'
+												end
 
-														widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, strf) .. " "))
-														-- widget:set_markup(markup.font(theme.font, strf))
-													end
-												})
+												widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, strf) .. " "))
+												-- widget:set_markup(markup.font(theme.font, strf))
+											end
+										})
 
 -- Coretemp
-local tempicon                = wibox.widget.imagebox(theme.widget_temp)
-local temp                    = lain.widget.temp({
-													 settings = function()
+local tempicon        = wibox.widget.imagebox(theme.widget_temp)
+local temp            = lain.widget.temp({
+											 settings = function()
 
 
-														 -- want: 0.2 (cool), 0.5 (warm), 0.92 (hot)
-														 local min          = 33
-														 local max          = 110
-														 local range        = max - min
+												 -- want: 0.2 (cool), 0.5 (warm), 0.92 (hot)
+												 local min          = 33
+												 local max          = 110
+												 local range        = max - min
 
-														 local d            = coretemp_now - min
-														 local relativeHeat = d / range
+												 local d            = coretemp_now - min
+												 local relativeHeat = d / range
 
-														 -- if relativeHeat < 0 then relativeHeat = 0 end
-														 -- if relativeHeat > 1 then relativeHeat = 1 end
+												 -- if relativeHeat < 0 then relativeHeat = 0 end
+												 -- if relativeHeat > 1 then relativeHeat = 1 end
 
-														 -- blue, green, yellow, red
-														 -- local blue, green, yellow, red = h2rgb("#3452c9"),   h2rgb("#32ab3a"),  h2rgb("#e8d031"),  h2rgb("#f01800")
-														 local r, g, b      = ColorGradient(relativeHeat, 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
-														 local bg_color     = RGBPercToHex(r, g, b)
+												 -- blue, green, yellow, red
+												 -- local blue, green, yellow, red = h2rgb("#3452c9"),   h2rgb("#32ab3a"),  h2rgb("#e8d031"),  h2rgb("#f01800")
+												 local r, g, b      = ColorGradient(relativeHeat, 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+												 local bg_color     = RGBPercToHex(r, g, b)
 
-														 r, g, b            = ColorGradient(0.7, r, g, b, 0, 0, 0)
-														 local fg_color     = RGBPercToHex(r, g, b)
+												 r, g, b            = ColorGradient(0.7, r, g, b, 0, 0, 0)
+												 local fg_color     = RGBPercToHex(r, g, b)
 
-														 -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
-														 -- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
+												 -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
+												 -- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
 
-														 widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, coretemp_now .. "°C") .. " "))
-													 end
-												 })
+												 widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, coretemp_now .. "°C") .. " "))
+											 end
+										 })
 
 -- / fs
-local fsicon                  = wibox.widget.imagebox(theme.widget_hdd)
-theme.fs                      = lain.widget.fs({
-												   notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
-												   settings            = function()
-													   widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
-												   end
-											   })
+local fsicon          = wibox.widget.imagebox(theme.widget_hdd)
+theme.fs              = lain.widget.fs({
+										   notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
+										   settings            = function()
+											   widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
+										   end
+									   })
 
 -- Battery
-local baticon                 = wibox.widget.imagebox(theme.widget_battery)
-local bat                     = lain.widget.bat({
-													settings = function()
-														if bat_now.status ~= "N/A" then
-															if bat_now.ac_status == 1 then
-																widget:set_markup(markup.font(theme.font, " AC "))
-																baticon:set_image(theme.widget_ac)
-																return
-															elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
-																baticon:set_image(theme.widget_battery_empty)
-															elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
-																baticon:set_image(theme.widget_battery_low)
-															else
-																baticon:set_image(theme.widget_battery)
-															end
-															widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
-														else
-															widget:set_markup(markup.font(theme.font, " AC "))
-															baticon:set_image(theme.widget_ac)
-														end
+local baticon         = wibox.widget.imagebox(theme.widget_battery)
+local bat             = lain.widget.bat({
+											settings = function()
+												if bat_now.status ~= "N/A" then
+													if bat_now.ac_status == 1 then
+														widget:set_markup(markup.font(theme.font, " AC "))
+														baticon:set_image(theme.widget_ac)
+														return
+													elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
+														baticon:set_image(theme.widget_battery_empty)
+													elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
+														baticon:set_image(theme.widget_battery_low)
+													else
+														baticon:set_image(theme.widget_battery)
 													end
-												})
+													widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
+												else
+													widget:set_markup(markup.font(theme.font, " AC "))
+													baticon:set_image(theme.widget_ac)
+												end
+											end
+										})
 
 -- ALSA microphone
-local micicon                 = wibox.widget.imagebox()
-theme.mic                     = lain.widget.alsa({
-													 channel  = "Capture",
-													 settings = function()
-														 -- if input_now.status == "on" then
-														 --     micicon:set_image(theme.widget_mic_on)
-														 --     -- micicon:set_image()
-														 --     widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
+local micicon         = wibox.widget.imagebox()
+theme.mic             = lain.widget.alsa({
+											 channel  = "Capture",
+											 settings = function()
+												 -- if input_now.status == "on" then
+												 --     micicon:set_image(theme.widget_mic_on)
+												 --     -- micicon:set_image()
+												 --     widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
 
-														 -- elseif input_now.status == "off" then
-														 --     micicon:set_image(theme.widget_mic_off)
-														 --     -- #2a0054
-														 --     widget:set_markup(markup.fontbg(theme.font, "#2a0054", markup("#ffffff", " ((( • On Air • ))) ")))
-														 --     widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
-														 --     -- widget:set_markup(markup.font(theme.font, " "))
-														 -- end
-														 --local words = " • On Air "
-														 local words = " • "
-														 local bg    = "#d93600" -- theme.color_red
-														 local fg    = "#fbff00"
-														 --if input_now.status == "off" then
-														 -- --words = " • Off Air " --✕
-														 -- words = " x " --✕
-														 -- bg    = "#3b383e" -- "#370e5c"
-														 -- fg    = "#887b94"
-														 --end
-														 widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
-													 end
-												 })
+												 -- elseif input_now.status == "off" then
+												 --     micicon:set_image(theme.widget_mic_off)
+												 --     -- #2a0054
+												 --     widget:set_markup(markup.fontbg(theme.font, "#2a0054", markup("#ffffff", " ((( • On Air • ))) ")))
+												 --     widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
+												 --     -- widget:set_markup(markup.font(theme.font, " "))
+												 -- end
+												 --local words = " • On Air "
+												 local words = " • "
+												 local bg    = "#d93600" -- theme.color_red
+												 local fg    = "#fbff00"
+												 --if input_now.status == "off" then
+												 -- --words = " • Off Air " --✕
+												 -- words = " x " --✕
+												 -- bg    = "#3b383e" -- "#370e5c"
+												 -- fg    = "#887b94"
+												 --end
+												 widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
+											 end
+										 })
 
 -- ALSA volume
-local volicon                 = wibox.widget.imagebox(theme.widget_vol)
-theme.volume                  = lain.widget.alsa({
-													 settings = function()
-														 if not output_now then
-															 return
-														 end
+local volicon         = wibox.widget.imagebox(theme.widget_vol)
+theme.volume          = lain.widget.alsa({
+											 settings = function()
+												 if not output_now then
+													 return
+												 end
 
-														 if output_now.status == "off" then
-															 volicon:set_image(theme.widget_vol_mute)
-														 elseif tonumber(output_now.level) == 0 then
-															 volicon:set_image(theme.widget_vol_no)
-														 elseif tonumber(output_now.level) <= 50 then
-															 volicon:set_image(theme.widget_vol_low)
-														 else
-															 volicon:set_image(theme.widget_vol)
-														 end
+												 if output_now.status == "off" then
+													 volicon:set_image(theme.widget_vol_mute)
+												 elseif tonumber(output_now.level) == 0 then
+													 volicon:set_image(theme.widget_vol_no)
+												 elseif tonumber(output_now.level) <= 50 then
+													 volicon:set_image(theme.widget_vol_low)
+												 else
+													 volicon:set_image(theme.widget_vol)
+												 end
 
-														 widget:set_markup(markup.font(theme.font, " " .. output_now.level .. "% "))
-													 end
-												 })
+												 widget:set_markup(markup.font(theme.font, " " .. output_now.level .. "% "))
+											 end
+										 })
 
 -- Net
-local neticon                 = wibox.widget.imagebox(theme.widget_net)
-local net                     = lain.widget.net({
-													settings = function()
-														-- https://www.lua.org/pil/8.3.html
-														local line = "unknown"
-														local file = io.open("/home/ia/ipinfo.io/locale", "r")
-														line       = file:read()
-														file:close()
-														widget:set_markup(markup.font(theme.font,
-																					  line .. "  " ..
-																							  markup("#fcc9ff", "🠉" .. net_now.sent)
-																							  .. "  " ..
-																							  markup("#2ECCFA", "🠋" .. net_now.received)
-																							  .. " kb"
-														))
-													end
-												})
+local neticon         = wibox.widget.imagebox(theme.widget_net)
+local net             = lain.widget.net({
+											settings = function()
+												-- https://www.lua.org/pil/8.3.html
+												local line = "unknown"
+												local file = io.open("/home/ia/ipinfo.io/locale", "r")
+												line       = file:read()
+												file:close()
+												widget:set_markup(markup.font(theme.font,
+																			  line .. "  " ..
+																					  markup("#fcc9ff", "🠉" .. net_now.sent)
+																					  .. "  " ..
+																					  markup("#2ECCFA", "🠋" .. net_now.received)
+																					  .. " kb"
+												))
+											end
+										})
 
 
 --local mygithubwidget  = lain.widget.mywidget({
@@ -607,7 +580,7 @@ local net                     = lain.widget.net({
 --screen.connect_signal("request::wallpaper", set_random_wallpaper)
 
 -- Separators
-local spr                     = wibox.widget.textbox(' ')
+local spr             = wibox.widget.textbox(' ')
 
 function theme.at_screen_connect(s)
 
@@ -1193,196 +1166,10 @@ function theme.at_screen_connect(s)
 		border_color = "#0000ff",
 	}
 
-	s.mywibox_worldtimes = awful.popup {
-		screen            = s,
-		placement         = awful.placement.bottom,
-		type              = "dock",
-		visible           = false,
-		ontop             = true,
-		input_passthrough = true,
-		shape             = function(c, w, h)
-			local tl, tr, br, bl = true, true, false, false
-			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
-		end,
-		border_width      = s.is_tv and dpi(4) or dpi(1),
-		border_color      = theme.clock_fg,
-		widget            = {
-			widget = wibox.container.margin,
-			top    = 4, left = 4, right = 4,
-			{
-				layout = wibox.layout.align.horizontal,
-				-- left
-				{
-					layout = wibox.layout.flex.horizontal,
-					spr,
-				},
-				{
-					layout = wibox.layout.flex.horizontal,
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("Roboto 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Anchorage'))),
-							world_clock_anchorage,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Seattle'))),
-							world_clock_vancouver,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Denver'))),
-							world_clock_denver,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Chicago'))),
-							world_clock_chicago,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'New York'))),
-							world_clock_newyork,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Buenos Aires'))),
-							world_clock_buenosaires,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'UTC'))),
-							clock_utc,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'London'))),
-							world_clock_london,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Berlin'))),
-							world_clock_berlin,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					--{
-					--	{
-					--		wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Madrid (CET/CEST)'))),
-					--		world_clock_madrid,
-					--		layout = wibox.layout.fixed.vertical,
-					--	},
-					--	widget  = wibox.container.margin,
-					--	margins = s.is_tv and 10 or 5,
-					--},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Athens,Kiev'))),
-							world_clock_athens,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Moscow'))),
-							world_clock_moscow,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Dubai'))),
-							world_clock_dubai,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Shanghai'))),
-							world_clock_shanghai,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					{
-						{
-							wibox.widget.textbox(markup.fontbg("monospace 8", theme.bg_normal, " " .. markup(theme.clock_fg, 'Tokyo'))),
-							world_clock_tokyo,
-							layout = wibox.layout.fixed.vertical,
-						},
-						widget  = wibox.container.margin,
-						margins = s.is_tv and 10 or 5,
-					},
-					--{
-					--	{
-					--		{
-					--			layout = wibox.layout.fixed.horizontal,
-					--			mygithubwidget.icon,
-					--			spr,
-					--			mygithubwidget.widget,
-					--		},
-					--		{
-					--			layout = wibox.layout.fixed.horizontal,
-					--			mygithubwidget2.icon,
-					--			spr,
-					--			mygithubwidget2.widget,
-					--		},
-					--		layout = wibox.layout.fixed.vertical,
-					--	},
-					--	widget  = wibox.container.margin,
-					--	margins = 10,
-					--},
-				},
-				{
-					layout = wibox.layout.flex.horizontal,
-					spr,
-				},
-			},
-		}
-	}
+	s.mywibox_worldtimes = special.meridian(s, theme)
 
 	-- Add widgets to the wibox
-	s.mywibox:setup {
+	s                             .mywibox:setup {
 		layout = wibox.layout.align.horizontal,
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,

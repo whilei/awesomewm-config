@@ -267,6 +267,7 @@ return {
 	focus_previous_client_global = focus_previous_client_global,
 	quake                        = require("special.widgets").quake,
 	weather                      = require("special.widgets").weather,
+	meridian                     = require("special.meridian"),
 	toggle_wibar_slim            = toggle_wibar_slim,
 	toggle_wibar_worldtimes      = toggle_wibar_worldtimes,
 	reader_view_tall             = reader_view_tall,

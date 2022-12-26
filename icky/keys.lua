@@ -442,7 +442,6 @@ lib.global_bindings           = {
 		modalities = { m.SCREEN_SHOT .. "c" },
 		on_press   = global_fns.screenshot.client,
 	},
-
 	-- }}} SCREEN
 
 
