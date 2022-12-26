@@ -11,7 +11,7 @@ local hints      = {
 	--charorder = "jkluiopyhnmfdsatgvcewqzx1234567890",
 	--charorder = "asetwdf0$*kgzxcvb",
 	--charorder = "asetwdfqcxz0$*niohurlyj",
-	charorder = "tesawdfbcgqkzx*niohurlyj",
+	charorder = "teaswdfbcgqkzx*niohurlyj",
 	hintbox   = {} -- Table of letter wiboxes with characters as the keys
 }
 
@@ -39,7 +39,7 @@ function hints.init()
 											   --border_color=beautiful.border_focus,
 											   --border_width=beautiful.border_width,
 											   fg           = "#ffffff",
-											   bg           = "#38761d", -- dark green, like a road sign
+											   bg           = "#08158A", -- dark green, like a road sign
 											   border_color = "#efefef",
 											   border_width = "3",
 										   })

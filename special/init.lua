@@ -213,7 +213,7 @@ local function saved_screenshot(args)
 			bg        = "#ffffff",
 			fg        = "#000000",
 			icon_size = 128,
-			position  = "bottom_left",
+			position  = "bottom_middle",
 		}
 	end
 
@@ -227,7 +227,7 @@ local function saved_screenshot(args)
 			message  = "Screenshot copied to clipboard",
 			bg       = "#058B04",
 			fg       = "#000000",
-			position = "bottom_left",
+			position = "bottom_middles",
 		}
 	end
 
