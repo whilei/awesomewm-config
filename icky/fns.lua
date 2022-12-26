@@ -99,8 +99,14 @@ local global_fns           = {
 	client     = {
 		special_inspect = special.inspect_client,
 		focus           = {
-			back      = special.focus_previous_client_global,
-			index     = {
+			back_global = special.focus_previous_client_global,
+			back_local  = function()
+				awful.client.focus.history.previous()
+				if client.focus then
+					client.focus:raise()
+				end
+			end,
+			index       = {
 				next = function()
 					awful.client.focus.byidx(1)
 				end,
@@ -108,7 +114,7 @@ local global_fns           = {
 					awful.client.focus.byidx(-1)
 				end
 			},
-			direction = {
+			direction   = {
 				up    = function()
 					awful.client.focus.global_bydirection("up")
 					raise_focused_client()

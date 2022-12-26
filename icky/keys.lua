@@ -216,10 +216,20 @@ lib.global_bindings           = {
 	},
 	-- FOCUS:SPECIAL
 	{
-		h          = { group = "client/focus", description = "back (global)", name = "back" },
+		h          = { group = "client/focus", description = "back (anywhere)", name = "back (global)" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "Tab", }, },
 		modalities = { "Tab" },
-		on_press   = global_fns.client.focus.back,
+		on_press   = global_fns.client.focus.back_global,
+	},
+	{
+		h          = { group = "client/focus", description = "back (local)", name = "back (local)" },
+		modalities = { "n" },
+		on_press   = global_fns.client.focus.back_local,
+	},
+	{
+		h          = { group = "client/focus", description = "back (to prev tag)", name = "back (tag)" },
+		modalities = { m.TAG .. "b" },
+		on_press   = global_fns.tag.restore,
 	},
 	-- FOCUS:BY_INDEX
 	{
