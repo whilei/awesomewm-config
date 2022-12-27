@@ -30,7 +30,7 @@ local naughty                                               = require("naughty")
 local lain                                                  = require("lain")
 local freedesktop                                           = require("freedesktop")
 local hotkeys_popup                                         = require("awful.hotkeys_popup").widget
---local cairo                                                 = require("lgi").cairo
+local cairo                                                 = require("lgi").cairo
 
 local ia_layout_swen                                        = require("layout-swen")
 local layout_titlebars_conditional                          = require("layout-titlebars-conditional")
@@ -305,7 +305,7 @@ icky_keys()
 
 -- Set up client management buttons FOR THE MOUSE.
 -- (1 is left, 3 is right)
-clientbuttons     = a_util_table.join(
+clientbuttons           = a_util_table.join(
 		awful.button({}, 1, function(c)
 			client.focus = c
 			c:raise()
@@ -325,8 +325,9 @@ clientbuttons     = a_util_table.join(
 
 -- }}}
 
---local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "/awesome-buttons/icons/terminal.svg"
---local konsole_icon      = gears.surface(konsole_icon_path)
+local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "awesome-buttons/icons/terminal.svg"
+--local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "terminal.png"
+local konsole_icon      = gears.surface(konsole_icon_path)
 --local konsole_img       = cairo.ImageSurface.create(cairo.Format.ARGB32, konsole_icon:get_width(), konsole_icon:get_height())
 --local konsole_cr        = cairo.Context(konsole_img)
 --konsole_cr:set_source_surface(s, 0, 0)
@@ -334,9 +335,12 @@ clientbuttons     = a_util_table.join(
 
 --awesome.set_preferred_icon_size(32, 32)
 
+--local konsole_icon      = wibox.widget.imagebox(konsole_icon_path, false)
+--konsole_icon.set_preferred_size(32, 32)
+
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
-awful.rules.rules = {
+awful.rules.rules       = {
 	--[[  ]]
 	-- All clients will match this rule.
 	{
@@ -431,14 +435,15 @@ awful.rules.rules = {
 			end,
 		}
 	},
-	--{
-	--	rule       = {
-	--		class = "konsole",
-	--	},
-	--	properties = {
-	--		icon = konsole_icon,
-	--	}
-	--}
+	{
+		rule       = {
+			class = "konsole",
+		},
+		properties = {
+			icon = konsole_icon._native, -- https://stackoverflow.com/a/30379815
+			--icon = konsole_cr,
+		}
+	},
 }
 -- }}}
 

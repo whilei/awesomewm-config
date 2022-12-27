@@ -488,7 +488,7 @@ local bat             = lain.widget.bat({
 										})
 
 -- ALSA microphone
-local micicon         = wibox.widget.imagebox()
+--local micicon         = wibox.widget.imagebox()
 theme.mic             = lain.widget.alsa({
 											 channel  = "Capture",
 											 settings = function()
@@ -508,12 +508,12 @@ theme.mic             = lain.widget.alsa({
 												 local words = " • "
 												 local bg    = "#d93600" -- theme.color_red
 												 local fg    = "#fbff00"
-												 --if input_now.status == "off" then
-												 -- --words = " • Off Air " --✕
-												 -- words = " x " --✕
-												 -- bg    = "#3b383e" -- "#370e5c"
-												 -- fg    = "#887b94"
-												 --end
+												 if volume_now.status == "off" then
+													 --words = " • Off Air " --✕
+													 words = " x " --✕
+													 bg    = "#3b383e" -- "#370e5c"
+													 fg    = "#887b94"
+												 end
 												 widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
 											 end
 										 })
@@ -522,21 +522,21 @@ theme.mic             = lain.widget.alsa({
 local volicon         = wibox.widget.imagebox(theme.widget_vol)
 theme.volume          = lain.widget.alsa({
 											 settings = function()
-												 if not output_now then
+												 if not volume_now then
 													 return
 												 end
 
-												 if output_now.status == "off" then
+												 if volume_now.status == "off" then
 													 volicon:set_image(theme.widget_vol_mute)
-												 elseif tonumber(output_now.level) == 0 then
+												 elseif tonumber(volume_now.level) == 0 then
 													 volicon:set_image(theme.widget_vol_no)
-												 elseif tonumber(output_now.level) <= 50 then
+												 elseif tonumber(volume_now.level) <= 50 then
 													 volicon:set_image(theme.widget_vol_low)
 												 else
 													 volicon:set_image(theme.widget_vol)
 												 end
 
-												 widget:set_markup(markup.font(theme.font, " " .. output_now.level .. "% "))
+												 widget:set_markup(markup.font(theme.font, " " .. volume_now.level .. "% "))
 											 end
 										 })
 
@@ -1209,6 +1209,7 @@ function theme.at_screen_connect(s)
 		-- Right widgets
 		{
 			layout = wibox.layout.fixed.horizontal,
+
 			wibox.widget.systray(),
 
 			spr,
