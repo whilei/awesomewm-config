@@ -59,16 +59,24 @@ function hints.focus()
 	local hintindex  = {} -- Table of visible clients with the hint letter as the keys
 	local clientlist = awful.client.visible()
 	for i, thisclient in pairs(clientlist) do
-		-- Move wiboxes to center of visible windows and populate hintindex
-		local char                  = hints.charorder:sub(i, i)
-		hintindex[char]             = thisclient
-		local geom                  = thisclient.geometry(thisclient)
-		hints.hintbox[char].visible = true
-		hints.hintbox[char].x       = geom.x + geom.width / 2 - hintsize / 2
-		hints.hintbox[char].y       = geom.y + geom.height / 2 - hintsize / 2
-		--hints.hintbox[char].x = geom.x + hintsize/2
-		--hints.hintbox[char].y = geom.y + hintsize/2
-		hints.hintbox[char].screen  = thisclient.screen
+		local is_handy_in_hiding = false
+		local handy_id           = thisclient:get_xproperty("handy_id")
+		is_handy_in_hiding       = handy_id ~= nil and handy_id ~= ""
+		is_handy_in_hiding       = is_handy_in_hiding and (not thisclient:get_xproperty("handy_visible"))
+		if is_handy_in_hiding then
+			-- Ignore it.
+		else
+			-- Move wiboxes to center of visible windows and populate hintindex
+			local char                  = hints.charorder:sub(i, i)
+			hintindex[char]             = thisclient
+			local geom                  = thisclient.geometry(thisclient)
+			hints.hintbox[char].visible = true
+			hints.hintbox[char].x       = geom.x + geom.width / 2 - hintsize / 2
+			hints.hintbox[char].y       = geom.y + geom.height / 2 - hintsize / 2
+			--hints.hintbox[char].x = geom.x + hintsize/2
+			--hints.hintbox[char].y = geom.y + hintsize/2
+			hints.hintbox[char].screen  = thisclient.screen
+		end
 	end
 	keygrabber.run(function(mod, key, event)
 		if event == "release" then

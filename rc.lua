@@ -14,11 +14,6 @@ pcall(require, "luarocks.loader")
 local awesome, screen, client, mouse, screen, tag, titlebar = awesome, screen, client, mouse, screen, tag, titlebar
 local ipairs, pairs, string, os, table                      = ipairs, pairs, string, os, table
 local tostring, tonumber, tointeger, type, math             = tostring, tonumber, tointeger, type, math
-local debug                                                 = debug
-
--- time to load with a start and end time ms
-local start_time                                            = os.clock()
-
 local gears                                                 = require("gears")
 
 -- This chunk adds this path (of the current configuration)
@@ -43,15 +38,16 @@ local icky_keys                                             = require("icky.keys
 local icky_fns                                              = require("icky.fns").global
 local modality                                              = require("modality")
 local special_log_load_time                                 = require("special").log_load_time
--- }}}
+local special_log_load_time_reset                           = require("special").log_load_time_reset
 
-special_log_load_time(start_time, debug.getinfo(1).currentline)
+special_log_load_time("requirements")
 
 naughty.config.presets.critical.position = "top_middle"
 naughty.config.presets.normal.position   = "top_middle"
 naughty.config.presets.low.position      = "top_middle"
 
 -- {{{ Error handling
+special_log_load_time_reset()
 if awesome.startup_errors then
 	naughty.notify({
 					   preset = naughty.config.presets.critical,
@@ -77,13 +73,14 @@ do
 							   in_error = false
 						   end)
 end
+special_log_load_time("notify of startup errors")
 -- }}}
+
 
 if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
 
-special_log_load_time(start_time, debug.getinfo(1).currentline)
 
 -- {{{ Variable definitions
 
@@ -114,6 +111,7 @@ local _layouts      = {
 	swen  = layout_titlebars_conditional { layout = ia_layout_swen },
 }
 
+special_log_load_time_reset()
 tag.connect_signal("request::default_layouts",
 				   function()
 					   awful.layout.append_default_layouts {
@@ -125,7 +123,9 @@ tag.connect_signal("request::default_layouts",
 					   }
 				   end)
 
-awful.util.taglist_buttons  = a_util_table.join(
+special_log_load_time("tag.connect_signal request::default_layouts")
+
+awful.util.taglist_buttons = a_util_table.join(
 		awful.button({}, 1, function(t)
 			t:view_only()
 		end),
@@ -147,6 +147,8 @@ awful.util.taglist_buttons  = a_util_table.join(
 			awful.tag.viewprev(t.screen)
 		end))
 
+special_log_load_time("taglist_buttons")
+
 awful.util.tasklist_buttons = a_util_table.join(
 		awful.button({}, 1, function(c)
 			if c == client.focus then
@@ -165,14 +167,16 @@ awful.util.tasklist_buttons = a_util_table.join(
 			end
 		end))
 
-special_log_load_time(start_time, debug.getinfo(1).currentline)
+special_log_load_time("tasklist_buttons")
 
 local theme_path = gears.filesystem.get_configuration_dir() .. "themes/" .. chosen_theme .. "/theme.lua"
 beautiful.init(theme_path)
-special_log_load_time(start_time, debug.getinfo(1).currentline, "beautiful.init")
+
+special_log_load_time("beautiful.init")
 
 modality.init()
-special_log_load_time(start_time, debug.getinfo(1).currentline, "modality.init")
+
+special_log_load_time("modality.init")
 
 --local bling = require("bling")
 --local rubato = require("rubato")
@@ -252,17 +256,20 @@ screen.connect_signal("property::geometry",
 							  gears.wallpaper.maximized(wallpaper, s, true)
 						  end
 					  end)
-special_log_load_time(start_time, debug.getinfo(1).currentline, "screen.connect_signal property::geometry")
+
+special_log_load_time("screen.connect_signal property::geometry")
 
 -- Create a wibox for each screen and add it
 -- HERE COMMENTED
 screen.connect_signal("request::desktop_decoration", function(s)
 	beautiful.at_screen_connect(s)
 end)
-special_log_load_time(start_time, debug.getinfo(1).currentline, "screen.connect_signal property::desktop_decoration")
+
+special_log_load_time("screen.connect_signal property::desktop_decoration")
 
 icky_keys()
-special_log_load_time(start_time, debug.getinfo(1).currentline, "icky_keys()")
+
+special_log_load_time("icky_keys()")
 
 
 -- Set up client management buttons FOR THE MOUSE.
@@ -288,17 +295,7 @@ clientbuttons           = a_util_table.join(
 -- }}}
 
 local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "awesome-buttons/icons/terminal.svg"
---local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "terminal.png"
-local konsole_icon      = gears.surface(konsole_icon_path)
---local konsole_img       = cairo.ImageSurface.create(cairo.Format.ARGB32, konsole_icon:get_width(), konsole_icon:get_height())
---local konsole_cr        = cairo.Context(konsole_img)
---konsole_cr:set_source_surface(s, 0, 0)
---konsole_cr:paint()
-
---awesome.set_preferred_icon_size(32, 32)
-
---local konsole_icon      = wibox.widget.imagebox(konsole_icon_path, false)
---konsole_icon.set_preferred_size(32, 32)
+local konsole_icon      = gears.surface(konsole_icon_path) -- This MUST be stored in a variable. No golfing allowed.
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).

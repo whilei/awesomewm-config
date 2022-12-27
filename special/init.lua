@@ -10,8 +10,10 @@
 ---------------------------------------------------------------------------
 
 local os, tostring                 = os, tostring
+local debug                        = debug
 local client, screen               = client, screen
 local awful                        = require("awful")
+local gears                        = require("gears")
 local naughty                      = require("naughty")
 local wibox                        = require("wibox")
 
@@ -263,14 +265,32 @@ local function delayed_screenshot(args)
 	return ss
 end
 
-local function log_load_time(time_instance, line, message)
-	local msg     = string.format("⏲ awesome.rc:%4d %.2fs %s",
+local time_instance = os.clock()
+
+-- log_load_time logs the time since this function was last called.
+-- An optional message may be provided for context.
+local function log_load_time(message)
+	-- '2' goes up one level in the stack (thread=2).
+	--[[
+	level 0 is the current function (getinfo itself);
+	level 1 is the function that called getinfo; and so on
+	http://www.lua.org/manual/5.1/manual.html#pdf-debug.getinfo
+	--]]
+	local d       = debug.getinfo(2)
+	local src     = string.gsub((d.short_src or d.source), gears.filesystem.get_configuration_dir(), "")
+	local line    = d.currentline
+	local msg     = string.format("⏲  %s:%4d %.2fs %s",
+								  src,
 								  line,
 								  os.clock() - time_instance,
 								  (message and "[" .. message .. "]" or "")
 	)
 	time_instance = os.clock()
 	print(msg)
+end
+
+local function log_load_time_reset()
+	time_instance = os.clock()
 end
 
 return {
@@ -287,4 +307,5 @@ return {
 	saved_screenshot             = saved_screenshot,
 	delayed_screenshot           = delayed_screenshot,
 	log_load_time                = log_load_time,
+	log_load_time_reset          = log_load_time_reset,
 }
