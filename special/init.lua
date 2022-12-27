@@ -247,7 +247,7 @@ local function delayed_screenshot(args)
 	local notif = naughty.notification {
 		title    = "Screenshot in:",
 		message  = tostring(args.auto_save_delay) .. " seconds",
-		position = "top_middle",
+		position = "bottom_right",
 	}
 
 	ss:connect_signal("timer::tick", function(_, remain)
@@ -263,6 +263,16 @@ local function delayed_screenshot(args)
 	return ss
 end
 
+local function log_load_time(time_instance, line, message)
+	local msg     = string.format("⏲ awesome.rc:%4d %.2fs %s",
+								  line,
+								  os.clock() - time_instance,
+								  (message and "[" .. message .. "]" or "")
+	)
+	time_instance = os.clock()
+	print(msg)
+end
+
 return {
 	popup_launcher               = require("special.popup-launcher"),
 	quake                        = require("special.widgets").quake,
@@ -276,4 +286,5 @@ return {
 	inspect_client               = inspect_client,
 	saved_screenshot             = saved_screenshot,
 	delayed_screenshot           = delayed_screenshot,
+	log_load_time                = log_load_time,
 }

@@ -14,6 +14,11 @@ pcall(require, "luarocks.loader")
 local awesome, screen, client, mouse, screen, tag, titlebar = awesome, screen, client, mouse, screen, tag, titlebar
 local ipairs, pairs, string, os, table                      = ipairs, pairs, string, os, table
 local tostring, tonumber, tointeger, type, math             = tostring, tonumber, tointeger, type, math
+local debug                                                 = debug
+
+-- time to load with a start and end time ms
+local start_time                                            = os.clock()
+
 local gears                                                 = require("gears")
 
 -- This chunk adds this path (of the current configuration)
@@ -37,9 +42,14 @@ local layout_titlebars_conditional                          = require("layout-ti
 local icky_keys                                             = require("icky.keys")
 local icky_fns                                              = require("icky.fns").global
 local modality                                              = require("modality")
+local special_log_load_time                                 = require("special").log_load_time
 -- }}}
 
-naughty.config.presets.critical.position                    = "top_middle"
+special_log_load_time(start_time, debug.getinfo(1).currentline)
+
+naughty.config.presets.critical.position = "top_middle"
+naughty.config.presets.normal.position   = "top_middle"
+naughty.config.presets.low.position      = "top_middle"
 
 -- {{{ Error handling
 if awesome.startup_errors then
@@ -73,34 +83,19 @@ if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
 
+special_log_load_time(start_time, debug.getinfo(1).currentline)
 
 -- {{{ Variable definitions
 
-local chosen_theme      = "ia"
-local modkey            = "Mod4"
-local altkey            = "Mod1"
-local terminal          = "xterm"
-local editor            = os.getenv("EDITOR") or "vim"
-local gui_editor        = "code"
-local browser           = "ffox"
-local guieditor         = "code"
-local scrlocker         = "xlock"
-
-local clientkeybindings = {}
--- clientkeybindings["z"] = "Konsole"
--- clientkeybindings["a"] = "Google Chrome"
--- clientkeybindings["e"] = "Emacs"
-
-for key, app in pairs(clientkeybindings) do
-	awful.key({ "Control", "Shift" },
-			  key,
-			  function()
-				  local matcher = function(c)
-					  return awful.rules.match(c, { class = app })
-				  end
-				  awful.client.run_or_raise(app, matcher)
-			  end)
-end
+local chosen_theme  = "ia"
+local modkey        = "Mod4"
+local altkey        = "Mod1"
+local terminal      = "xterm"
+local editor        = os.getenv("EDITOR") or "vim"
+local gui_editor    = "code"
+local browser       = "ffox"
+local guieditor     = "code"
+local scrlocker     = "xlock"
 
 awful.util.terminal = terminal
 
@@ -170,10 +165,14 @@ awful.util.tasklist_buttons = a_util_table.join(
 			end
 		end))
 
-local theme_path            = gears.filesystem.get_configuration_dir() .. "themes/" .. chosen_theme .. "/theme.lua"
-beautiful.init(theme_path)
-modality.init()
+special_log_load_time(start_time, debug.getinfo(1).currentline)
 
+local theme_path = gears.filesystem.get_configuration_dir() .. "themes/" .. chosen_theme .. "/theme.lua"
+beautiful.init(theme_path)
+special_log_load_time(start_time, debug.getinfo(1).currentline, "beautiful.init")
+
+modality.init()
+special_log_load_time(start_time, debug.getinfo(1).currentline, "modality.init")
 
 --local bling = require("bling")
 --local rubato = require("rubato")
@@ -253,17 +252,17 @@ screen.connect_signal("property::geometry",
 							  gears.wallpaper.maximized(wallpaper, s, true)
 						  end
 					  end)
+special_log_load_time(start_time, debug.getinfo(1).currentline, "screen.connect_signal property::geometry")
 
 -- Create a wibox for each screen and add it
 -- HERE COMMENTED
 screen.connect_signal("request::desktop_decoration", function(s)
 	beautiful.at_screen_connect(s)
 end)
---awful.screen.connect_for_each_screen(function(s)
---	beautiful.at_screen_connect(s)
---end)
+special_log_load_time(start_time, debug.getinfo(1).currentline, "screen.connect_signal property::desktop_decoration")
 
 icky_keys()
+special_log_load_time(start_time, debug.getinfo(1).currentline, "icky_keys()")
 
 
 -- Set up client management buttons FOR THE MOUSE.

@@ -445,16 +445,24 @@ local global_fns                  = {
 -- https://www.reddit.com/r/awesomewm/comments/ludsl7/comment/iukgex6/?context=3
 global_fns.awesome.show_main_menu = function()
 	if awful.util.mymainmenu == nil then
+		-- FIXME The notification does not work. Don't know why.
 		local n               = naughty.notification {
+			preset   = naughty.config.presets.normal,
 			title    = "Building main menu...",
 			message  = "This may take a few seconds...",
+			bg       = "#F9C20C",
+			fg       = "#000000",
 			position = "top_middle",
+			timeout  = 10,
 		}
 		local start_time      = os.clock()
 		awful.util.mymainmenu = freedesktop.menu.build {
 			done      = function()
 				local msg = string.format("Loaded main menu in %.2f seconds", os.clock() - start_time)
 				print(msg)
+				-- => 6.27 seconds
+				-- => 6.68 seconds
+				-- => 6.37 seconds
 				if n then
 					n:destroy()
 				end
