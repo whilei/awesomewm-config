@@ -77,6 +77,7 @@ theme.color_red                                 = "#DF0101"
 theme.color_lightblue                           = "#4070cf"
 theme.color_blue                                = "#08158a"
 theme.color_darkblue                            = "#05092a"
+theme.color_turquoise                           = "#00fcec"
 
 theme.menu_bg_normal                            = "#000000"
 theme.menu_bg_focus                             = "#000000"
@@ -84,7 +85,7 @@ theme.bg_normal                                 = "#000000" -- is Wibar bg
 theme.bg_focus                                  = "#000000"
 theme.bg_urgent                                 = "#000000"
 theme.fg_normal                                 = "#aaaaaa"
-theme.fg_focus                                  = "#00fcec"-- "#ff8c00" -- lightblue/turquoise/teal, eg. for tag list highlight
+theme.fg_focus                                  = theme.color_turquoise-- "#ff8c00" -- lightblue/turquoise/teal, eg. for tag list highlight
 theme.fg_urgent                                 = "#af1d18"
 theme.bg_minimize                               = "#2e2d2e"
 theme.fg_minimize                               = "#ffffff"
@@ -126,7 +127,7 @@ theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.p
 theme.taglist_squares_sel                       = nil
 theme.taglist_squares_unsel                     = nil
 
-theme.layout_icon_color                         = "#0B1FEA" -- a little brighter thant theme.color_blue
+theme.layout_icon_color                         = theme.color_turquoise -- "#0B1FEA" -- a little brighter thant theme.color_blue
 
 theme.layout_tile                               = gears.color.recolor_image(theme.dir .. "/icons/tile.png", theme.layout_icon_color)
 theme.layout_tileleft                           = gears.color.recolor_image(theme.dir .. "/icons/tileleft.png", theme.layout_icon_color)
@@ -559,36 +560,106 @@ theme.volume  = lain.widget.alsa({
 								 })
 special_log_load_time("widget: volume")
 
+-- IP Locale
+local locale = wibox.widget.textbox()
+local line   = "unknown"
+local file   = io.open("/home/ia/ipinfo.io/locale", "r")
+line         = file:read()
+file:close()
+locale:set_markup(markup.font(theme.font, "" .. line .. ""))
+
 -- Net
-local neticon = wibox.widget.imagebox(theme.widget_net)
-local net     = lain.widget.net({
-									settings = function()
-										-- https://www.lua.org/pil/8.3.html
-										local line = "unknown"
-										local file = io.open("/home/ia/ipinfo.io/locale", "r")
-										line       = file:read()
-										file:close()
-										widget:set_markup(markup.font(theme.font,
-																	  line .. "  " ..
-																			  markup("#fcc9ff", "🠉" .. net_now.sent)
-																			  .. "  " ..
-																			  markup("#2ECCFA", "🠋" .. net_now.received)
-																			  .. " kb"
-										))
-									end
-								})
+
+-- Credit: https://github.com/xtao/ntopng/blob/master/scripts/lua/modules/lua_utils.lua
+function round(num, idp)
+	return tonumber(string.format("%." .. (idp or 0) .. "f", num))
+end
+-- Convert bits to human readable format
+local function bitsToSize(bits)
+	if type(bits) == "string" then
+		bits = tonumber(bits)
+	end
+	precision = 2
+	kilobit   = 1024;
+	megabit   = kilobit * 1024;
+	gigabit   = megabit * 1024;
+	terabit   = gigabit * 1024;
+
+	if ((bits >= kilobit) and (bits < megabit)) then
+		return round(bits / kilobit, precision) .. ' Kbit/s';
+	elseif ((bits >= megabit) and (bits < gigabit)) then
+		return round(bits / megabit, precision) .. ' Mbit/s';
+	elseif ((bits >= gigabit) and (bits < terabit)) then
+		return round(bits / gigabit, precision) .. ' Gbit/s';
+	elseif (bits >= terabit) then
+		return round(bits / terabit, precision) .. ' Tbit/s';
+	else
+		return round(bits, precision) .. ' bps';
+	end
+end
+
+local neticon    = wibox.widget.imagebox(theme.widget_net)
+local net_widget = wibox.widget {
+	layout = wibox.layout.align.horizontal,
+	{ {
+		  id     = 'up',
+		  widget = wibox.widget.textbox,
+	  },
+	  widget = wibox.container.margin,
+	  bottom = 3,
+	},
+	{
+		widget = wibox.widget.textbox,
+		text   = " ",
+	},
+	{
+		{
+			id     = 'dn',
+			widget = wibox.widget.textbox,
+		},
+		widget = wibox.container.margin,
+		top    = 6,
+	},
+}
+local net        = lain.widget.net {
+	widget   = net_widget,
+	units    = 1, -- in bits
+	settings = function()
+		widget:get_children_by_id("up")[1]:set_markup(markup.font(theme.font, markup("#fcc9ff", "🠉 " .. bitsToSize(net_now.sent))))
+		widget:get_children_by_id("dn")[1]:set_markup(markup.font(theme.font, markup("#2ECCFA", "🠋 " .. bitsToSize(net_now.received))))
+	end
+}
 special_log_load_time("widget: net")
 
-local acalendar = calendar_widget {
-	theme                 = 'outrun',
-	--placement = 'bottom_right',
-	--start_sunday = true,
-	--radius = 8,
-	-- with customized next/previous (see table above)
-	previous_month_button = 1,
-	next_month_button     = 3,
-	placement             = 'centered',
-}
+-- acalendar is going to hold a calendar widget shared between all screens.
+local acalendar
+-- Load the calendar widget asynchronously because it takes a whopping 0.3 seconds to load,
+-- and then assign the local variable instance to all screens via the C API.
+-- FIXME If screens are added (on the fly) they wont get a calendar widget.
+awful.spawn.easy_async("sleep 1", function()
+	acalendar = calendar_widget {
+		theme                 = 'outrun',
+		--placement = 'bottom_right',
+		--start_sunday = true,
+		--radius = 8,
+		-- with customized next/previous (see table above)
+		previous_month_button = 1,
+		next_month_button     = 3,
+		placement             = 'centered',
+	}
+
+	-- Assign to all screens.
+	for s in screen do
+		s.my_calendar_widget = acalendar
+		clock:connect_signal("button::press", function(_, _, _, button)
+			if button == 1 then
+				s.my_calendar_widget.toggle()
+			end
+		end)
+	end
+
+end)
+
 special_log_load_time("widget: calendar")
 
 --local mygithubwidget  = lain.widget.mywidget({
@@ -645,13 +716,6 @@ function theme.at_screen_connect(s)
 	end
 
 	special_log_load_time("hide handy clients")
-
-	s.my_calendar_widget = acalendar
-	clock:connect_signal("button::press", function(_, _, _, button)
-		if button == 1 then
-			s.my_calendar_widget.toggle()
-		end
-	end)
 
 	-- -- Quake application
 	--s.quake         = lain.util.quake({
@@ -1310,6 +1374,9 @@ function theme.at_screen_connect(s)
 			-- Net up/down
 			spr,
 			neticon,
+			locale,
+			spr,
+			spr,
 			net.widget,
 
 			-- CPU
