@@ -437,6 +437,9 @@ local global_fns           = {
 			end,
 		},
 	},
+	special    = {
+		raise = special.raise,
+	}
 }
 
 -- fns_c are client functions.

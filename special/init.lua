@@ -15,6 +15,7 @@ local client, screen               = client, screen
 local awful                        = require("awful")
 local gears                        = require("gears")
 local naughty                      = require("naughty")
+local ruled                        = require("ruled")
 local wibox                        = require("wibox")
 
 -- focus_previous_client_global is a function that returns the last
@@ -293,6 +294,28 @@ local function log_load_time_reset()
 	time_instance = os.clock()
 end
 
+-- raise raises the client for some rules if it exists.
+-- If it does not exist, a notification is displayed.
+local function raise(client_rules)
+	return function()
+		local filter = function(c)
+			return ruled.client.match(c, client_rules)
+		end
+		for c in awful.client.iterate(filter) do
+			awful.client.jumpto(c, false)
+			return -- early because there can/should be only one
+		end
+
+		-- No client was matched.
+		naughty.notification {
+			title   = "No " .. (client_rules.name or client_rules.class or "unhandled printy sorry") .. " client found",
+			message = "Is it started? This function does not run anything, just finds and focuses stuff.",
+			preset  = naughty.config.presets.normal,
+			timeout = 3,
+		}
+	end
+end
+
 return {
 	popup_launcher               = require("special.popup-launcher"),
 	quake                        = require("special.widgets").quake,
@@ -308,4 +331,5 @@ return {
 	delayed_screenshot           = delayed_screenshot,
 	log_load_time                = log_load_time,
 	log_load_time_reset          = log_load_time_reset,
+	raise                        = raise,
 }

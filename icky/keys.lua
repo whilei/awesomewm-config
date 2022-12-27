@@ -625,6 +625,11 @@ lib.client_bindings           = {
 		modalities = { "!" },
 		on_press   = client_fns.special.fancy_float,
 	},
+	{
+		h          = { group = "special", description = "raise Discord window", name = "raise Discord" },
+		modalities = { "d" },
+		on_press   = global_fns.special.raise({ name = "Discord" }),
+	}
 }
 
 -- TODO Set these up with modality.
