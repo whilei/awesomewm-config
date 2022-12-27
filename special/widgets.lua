@@ -14,7 +14,7 @@ local x         = {}
 
 x.quake         = quake {
 	app             = "konsole",
-	name            = "xterm-konsole",
+	name            = "q-xterm-konsole",
 	extra           = "--hide-menubar --hide-tabbar",
 	followtag       = true,
 	vert            = "bottom",
@@ -26,7 +26,6 @@ x.quake         = quake {
 	screen          = awful.screen.focused() or screen[1],
 
 	settings        = function(c)
-
 		c.opacity           = 0.7
 		c.border_width      = 2
 		c.border_color      = "#000000"
@@ -36,6 +35,16 @@ x.quake         = quake {
 			return gears.shape.partially_rounded_rect(
 					cc, w, h, true, true, false, false, 10
 			)
+		end
+		-- On the laptop, stretch the window to fill the width.
+		if c.screen and not c.screen.is_tv then
+			local g = c:geometry()
+			c:geometry({
+						   x      = c.screen.workarea.x,
+						   y      = g.y,
+						   width  = c.screen.workarea.width,
+						   height = g.height - 20
+					   })
 		end
 	end
 }

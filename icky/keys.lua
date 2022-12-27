@@ -463,7 +463,7 @@ lib.global_bindings           = {
 		modalities = { m.SCREEN .. "x" },
 		on_press   = global_fns.screen.invert_colors,
 	},
-	-- SCREEN:SHOT
+	-- SCREEN:SCREENSHOT
 	{
 		h          = { group = "screen/shot", description = "take a screenshot of a screen", name = "screenshot screen" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "s" }, },
@@ -484,6 +484,22 @@ lib.global_bindings           = {
 	{
 		h          = { group = "screen/shot", description = "take a screenshot of a client", name = "screenshot client" },
 		modalities = { m.SCREEN_SHOT .. "c" },
+		on_press   = global_fns.screenshot.client,
+	},
+	-- SCREEN:SCREENSHOT:DELAYED
+	{
+		h          = { group = "screen/shot", description = "take a delayed screenshot of a screen", name = "screenshot screen" },
+		modalities = { m.SCREEN_SHOT .. "d:delayed screenshot,s" },
+		on_press   = global_fns.screenshot.screen,
+	},
+	{
+		h          = { group = "screen/shot", description = "take a delayed screenshot of the window (all screens)", name = "screenshot window" },
+		modalities = { m.SCREEN_SHOT .. "d:delayed screenshot,w" },
+		on_press   = global_fns.screenshot.window,
+	},
+	{
+		h          = { group = "screen/shot", description = "take a delayed screenshot of a client", name = "screenshot client" },
+		modalities = { m.SCREEN_SHOT .. "d:delayed screenshot,c" },
 		on_press   = global_fns.screenshot.client,
 	},
 	-- }}} SCREEN
@@ -790,7 +806,7 @@ function lib.init()
 
 	-- DEBUG
 	-- modality_util.debug_print_paths("[modality]", modality.path_tree)
-	modality.develop_print_all_keypaths()
+	--modality.develop_print_all_keypaths()
 end
 
 return setmetatable(lib, {

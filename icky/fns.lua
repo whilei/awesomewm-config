@@ -293,7 +293,38 @@ local global_fns           = {
 				client          = client.focus,
 				--exec            = screenshot_notifier { label = "selection" },
 			}
-		end
+		end,
+		delayed   = {
+			window = function()
+				special.saved_screenshot {
+					directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
+					prefix          = "screenshot",
+					date_format     = "%Y-%m-%d-%H%M%S",
+					auto_save_delay = 5,
+					--exec            = screenshot_notifier { label = "selection" },
+				}
+			end,
+			screen = function()
+				special.saved_screenshot {
+					directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
+					prefix          = "screenshot",
+					date_format     = "%Y-%m-%d-%H%M%S",
+					auto_save_delay = 5,
+					screen          = awful.screen.focused(),
+					--exec            = screenshot_notifier { label = "selection" },
+				}
+			end,
+			client = function()
+				special.saved_screenshot {
+					directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
+					prefix          = "screenshot_" .. client.focus.class:gsub("%s+", "_"),
+					date_format     = "%Y-%m-%d-%H%M%S",
+					auto_save_delay = 5,
+					client          = client.focus,
+					--exec            = screenshot_notifier { label = "selection" },
+				}
+			end,
+		},
 	},
 	tag        = {
 		add     = function()

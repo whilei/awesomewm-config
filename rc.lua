@@ -408,6 +408,15 @@ awful.rules.rules       = {
 			placement    = awful.placement.no_offscreen
 		}
 	},
+	-- This rule tries to keep quake out of the tag list and tasklist.
+	{
+		rule       = {
+			instance = "q-xterm-konsole",
+		},
+		properties = {
+			skip_taskbar = true,
+		}
+	},
 	{
 		rule       = {
 			class = "Xephyr"

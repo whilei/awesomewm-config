@@ -19,6 +19,7 @@ local wibox           = require("wibox")
 local common          = require("awful.widget.common")
 local beautiful       = require("beautiful")
 local special         = require("special")
+local awesome_buttons = require("awesome-buttons.awesome-buttons")
 local dpi             = beautiful.xresources.apply_dpi
 
 local markup          = lain.util.markup
@@ -1180,11 +1181,70 @@ function theme.at_screen_connect(s)
 
 	s.mywibox_worldtimes = special.meridian(s, theme)
 
+	s.indicators         = {
+		config    = {
+			icons  = {
+				focused   = gears.filesystem.get_configuration_dir() .. 'awesome-buttons/icons/eye.svg',
+				unfocused = gears.filesystem.get_configuration_dir() .. 'awesome-buttons/icons/eye-off.svg',
+			},
+			colors = {
+				focused   = "#1B8A23",
+				unfocused = "#000000",
+			}
+		},
+		set_state = function(self, focused)
+			if focused then
+				self.widget:get_children_by_id('icon')[1]:set_image(self.config.icons.focused)
+				self.widget:get_children_by_id('background')[1]:set_bg(self.config.colors.focused)
+			else
+				self.widget:get_children_by_id('icon')[1]:set_image(self.config.icons.unfocused)
+				self.widget:get_children_by_id('background')[1]:set_bg(self.config.colors.unfocused)
+			end
+		end,
+		widget    = wibox.widget {
+			{
+				{
+					{
+						{
+							id     = 'icon',
+							image  = gears.filesystem.get_configuration_dir() .. 'awesome-buttons/icons/eye-off.svg',
+							resize = true,
+							widget = wibox.widget.imagebox,
+						},
+						left   = 4,
+						right  = 4,
+						top    = 2,
+						bottom = 2,
+						widget = wibox.container.margin,
+					},
+					valign  = 'center',
+					halign  = 'center',
+					margins = 2,
+					widget  = wibox.container.place,
+				},
+				id     = 'background',
+				bg     = "#222222",
+				shape  = function(c, w, h)
+					return gears.shape.rounded_rect(c, w, h, 2)
+				end,
+				widget = wibox.container.background,
+			},
+			margins = 4,
+			widget  = wibox.container.margin,
+		},
+	}
+
+	client.connect_signal("focus", function(c)
+		s.indicators:set_state(c.screen and c.screen == s)
+	end)
+
 	-- Add widgets to the wibox
 	s                             .mywibox:setup {
 		layout = wibox.layout.align.horizontal,
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,
+
+			s.indicators.widget,
 
 			spr,
 			s.mylayoutbox,

@@ -9,7 +9,7 @@
 -- @coreclassmod special
 ---------------------------------------------------------------------------
 
-local os                           = require("os")
+local os, tostring                 = os, tostring
 local client, screen               = client, screen
 local awful                        = require("awful")
 local naughty                      = require("naughty")
@@ -227,7 +227,7 @@ local function saved_screenshot(args)
 			message  = "Screenshot copied to clipboard",
 			bg       = "#058B04",
 			fg       = "#000000",
-			position = "bottom_middles",
+			position = "bottom_middle",
 		}
 	end
 
@@ -242,36 +242,38 @@ local function saved_screenshot(args)
 	return ss
 end
 
---local function delayed_screenshot(args)
---	local ss    = saved_screenshot(args)
---	local notif = naughty.notification {
---		title   = "Screenshot in:",
---		message = tostring(args.auto_save_delay) .. " seconds"
---	}
---
---	ss:connect_signal("timer::tick", function(_, remain)
---		notif.message = tostring(remain) .. " seconds"
---	end)
---
---	ss:connect_signal("timer::timeout", function()
---		if notif then
---			notif:destroy()
---		end
---	end)
---
---	return ss
---end
+local function delayed_screenshot(args)
+	local ss    = saved_screenshot(args)
+	local notif = naughty.notification {
+		title    = "Screenshot in:",
+		message  = tostring(args.auto_save_delay) .. " seconds",
+		position = "top_middle",
+	}
+
+	ss:connect_signal("timer::tick", function(_, remain)
+		notif.message = tostring(remain) .. " seconds"
+	end)
+
+	ss:connect_signal("timer::timeout", function()
+		if notif then
+			notif:destroy()
+		end
+	end)
+
+	return ss
+end
 
 return {
 	popup_launcher               = require("special.popup-launcher"),
-	focus_previous_client_global = focus_previous_client_global,
 	quake                        = require("special.widgets").quake,
 	weather                      = require("special.widgets").weather,
 	meridian                     = require("special.meridian"),
+	focus_previous_client_global = focus_previous_client_global,
 	toggle_wibar_slim            = toggle_wibar_slim,
 	toggle_wibar_worldtimes      = toggle_wibar_worldtimes,
 	reader_view_tall             = reader_view_tall,
 	fancy_float                  = fancy_float_toggle,
 	inspect_client               = inspect_client,
 	saved_screenshot             = saved_screenshot,
+	delayed_screenshot           = delayed_screenshot,
 }
