@@ -43,7 +43,7 @@ local capi   = {
 }
 
 local swen   = {
-	name = "SWEN"
+	name = "swen"
 }
 
 local function arrange(p, layout)
@@ -59,7 +59,7 @@ local function arrange(p, layout)
 	if #cls == 1 then
 		main_width = math.floor(main_width * 1.5)
 	end
-	main_width = math.min(wa.width, main_width) -- do not overflow work area
+	main_width           = math.min(wa.width, main_width) -- do not overflow work area
 
 	local main_height    = (#cls < 4) and math.floor(wa.height * 3 / 4) or math.floor(wa.height / 2)
 

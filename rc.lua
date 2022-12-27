@@ -28,7 +28,6 @@ local wibox                                                 = require("wibox")
 local beautiful                                             = require("beautiful")
 local naughty                                               = require("naughty")
 local lain                                                  = require("lain")
-local freedesktop                                           = require("freedesktop")
 local hotkeys_popup                                         = require("awful.hotkeys_popup").widget
 local cairo                                                 = require("lgi").cairo
 
@@ -232,46 +231,10 @@ modality.init()
 --}
 
 -- {{{ Menwesomeu
+--
 
-awful.util.mymainmenu = freedesktop.menu.build {
-	icon_size = beautiful.menu_height or 18,
-	before    = {
-		{ "Screenshot", {
-			{ "Selection", icky_fns.screenshot.selection, },
-			{ "Screen", icky_fns.screenshot.screen, },
-			{ "Window (All)", icky_fns.screenshot.window, },
-			{ "Focused client", icky_fns.screenshot.client, },
-		}, nil },
-		{ " " },
-	},
-	after     = {
-		{ " " },
-		{ "Awesome", {
-			{ "hotkeys",
-			  function()
-				  return false, hotkeys_popup.show_help
-			  end
-			},
-			{ "restart", awesome.restart },
-			{ "quit", awesome.quit },
-		}, beautiful.awesome_icon },
 
-		{ "Power/User Mgmt", {
-			{ "Suspend/Sleep", function()
-				awful.util.spawn_with_shell("sudo systemctl suspend")
-			end },
-			{ "Log out", function()
-				awful.util.spawn_with_shell("sudo service lightdm restart")
-			end },
-			{ "Shutdown", function()
-				os.execute("shutdown -P -h now")
-			end },
-			{ "Reboot", function()
-				os.execute("reboot")
-			end },
-		}, nil },
-	}
-}
+-- who really needs a menu anyways (https://www.reddit.com/r/awesomewm/comments/ludsl7/comment/iukgex6/?context=3)
 
 --menubar.utils.terminal = terminal -- Set the Menubar terminal for applications that require it
 -- }}}
@@ -408,9 +371,19 @@ awful.rules.rules       = {
 			placement    = awful.placement.no_offscreen
 		}
 	},
+	{
+		rule       = {
+			class = "konsole",
+		},
+		properties = {
+			icon = konsole_icon._native, -- https://stackoverflow.com/a/30379815
+			--icon = konsole_cr,
+		}
+	},
 	-- This rule tries to keep quake out of the tag list and tasklist.
 	{
 		rule       = {
+			class    = "konsole",
 			instance = "q-xterm-konsole",
 		},
 		properties = {
@@ -442,15 +415,6 @@ awful.rules.rules       = {
 				local tl, tr, br, bl, rad = true, true, false, false, math.min(10, h / 10)
 				return gears.shape.partially_rounded_rect(cc, w, h, tl, tr, br, bl, rad)
 			end,
-		}
-	},
-	{
-		rule       = {
-			class = "konsole",
-		},
-		properties = {
-			icon = konsole_icon._native, -- https://stackoverflow.com/a/30379815
-			--icon = konsole_cr,
 		}
 	},
 }

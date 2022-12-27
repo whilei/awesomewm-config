@@ -1,28 +1,35 @@
 #!/usr/bin/env bash
 
 RED='\033[0;31m'
-NOCOLOR='\033[0m'
-#echo -e "I ${RED}love${NOCOLOR} Linux"
+YELLOW='\033[1;33m'
+LIGHT_BLUE='\033[1;34m'
+GREEN='\033[0;32m'
+NC='\033[0m'
 
-awmtt start -C \
-    ~/dev/awesomeWM/awesome/awesomei/rc.lua \
-    --display 1 \
-    --size 1728x972 |& while read -r line; do
-#        [[ $line =~ "error" ]] && notify-send "AwesomeWM" "$line"
-        if [[ $line =~ "error" ]]; then
-          echo -e "${RED}${$line}${NOCOLOR}"
-        else
-          echo "$line"
-        fi
-    done &
+(
+  log_file="/tmp/awesomei.log"
+  echo "Log file: $log_file"
+
+  time awmtt start -C \
+      ~/dev/awesomeWM/awesome/awesomei/rc.lua \
+      --display 1 \
+      --size 1728x972 > "${log_file}" 2>&1
+
+  tail -F "${log_file}" | while read -r line; do
+      if [[ $line =~ "error" ]] || [[ $line =~ "Failed" ]]; then
+        # notify-send "AwesomeWM" "$line"
+        echo -e "${RED}${line}${NC}"
+      elif [[ $line =~ "stack trace" ]] || [[ $line =~ ' W: awesome' ]]; then
+        echo -e "${YELLOW}${line}${NC}"
+      else
+        echo -e "${line}"
+      fi
+  done
+) &
 
 trap 'awmtt stop' EXIT
 
-#    ~/dev/awesomeWM/awesome/awesomei/themes/ia \
-#    ~/dev/awesomeWM/awesome/awesomei/modality \
-#    ~/dev/awesomeWM/awesome/awesomei/special \
-#    ~/dev/awesomeWM/awesome/awesomei/icky \
-#     -e modify -e close_write -e delete -e moved_to -e moved_from -e unmount -e create \
+echo "Starting recursive file watcher for live reload..."
 
 firing=0
 inotifywait --monitor --recursive \
@@ -31,32 +38,24 @@ inotifywait --monitor --recursive \
     ~/dev/awesomeWM/awesome/awesomei/* \
     | \
     while read -r path; do
-        echo ":: changed: $path"
+        echo ":: 🗉 $path"
         if [[ ! $path =~ lua ]]; then
-            echo '    skipping (not a .lua file)'
+            echo '     skipping (not a .lua file)'
             continue
         fi
 
-        echo "    ... skipping $(timeout 3 cat | wc -l) further changes"
+        echo "     ... skipping $(timeout 3 cat | wc -l) further changes"
 
         [[ $firing -eq 1 ]] && {
-            echo '    d-duping restart'
+            echo '     skipping (d-duping restart)'
             continue
         }
 
-        echo "----------------------------------------------------------------"
-        echo ":: restarting awmtt"
-        firing=$(awmtt restart)
-        # could do something with the exit status?
-        echo ":: restarted awmtt, code: ${firing}"
+        echo -e "${GREEN}----------------------------------------------------------------${NC}"
+        firing=1
+        time awmtt restart
+        echo
         firing=0
-        echo ":: done, waiting further changes..."
+        echo ":: Awaiting further changes..."
     done
 
-# while read -r path
-# do
-    # echo $path changed
-# done
-
-awmtt stop
-# trap 'awmtt stop' EXIT

@@ -17,6 +17,7 @@ local os, string, tostring         = os, string, tostring
 local awful                        = require("awful")
 local hotkeys_popup                = require("awful.hotkeys_popup").widget
 local beautiful                    = require("beautiful")
+local freedesktop                  = require("freedesktop")
 local naughty                      = require("naughty")
 local lain                         = require("lain")
 
@@ -35,28 +36,25 @@ revelation.init()
 ---------------------------------------------------------------------------
 -- HELPERS
 
-local raise_focused_client = function()
+local raise_focused_client        = function()
 	if client.focus then
 		client.focus:raise()
 	end
 end
 
-local _layouts             = {
+local _layouts                    = {
 	tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
 	swen  = layout_titlebars_conditional { layout = ia_layout_swen },
 }
 
 ---------------------------------------------------------------------------
 
-local global_fns           = {
+local global_fns                  = {
 	awesome    = {
-		restart        = awesome.restart,
-		hotkeys_help   = hotkeys_popup.show_help,
-		wibar          = special.toggle_wibar_slim,
-		show_main_menu = function()
-			awful.util.mymainmenu:show()
-		end,
-		widgets        = {
+		restart      = awesome.restart,
+		hotkeys_help = hotkeys_popup.show_help,
+		wibar        = special.toggle_wibar_slim,
+		widgets      = {
 			world_times = special.toggle_wibar_worldtimes,
 			calendar    = function()
 				awful.screen.focused().my_calendar_widget.toggle()
@@ -440,10 +438,73 @@ local global_fns           = {
 	},
 }
 
+
+-- show_main_menu lazily loads a freedesktop main menu (including all/most/some(?) system applications)
+-- Reports on the internet say it can be slow to use, so we only build it on demand
+-- instead of in rc.lua (where it would be built on startup).
+-- https://www.reddit.com/r/awesomewm/comments/ludsl7/comment/iukgex6/?context=3
+global_fns.awesome.show_main_menu = function()
+	if awful.util.mymainmenu == nil then
+		local n               = naughty.notification {
+			title    = "Building main menu...",
+			message  = "This may take a few seconds...",
+			position = "top_middle",
+		}
+		local start_time      = os.clock()
+		awful.util.mymainmenu = freedesktop.menu.build {
+			done      = function()
+				local msg = string.format("Loaded main menu in %.2f seconds", os.clock() - start_time)
+				print(msg)
+				if n then
+					n:destroy()
+				end
+			end,
+			icon_size = beautiful.menu_height or 18,
+			before    = {
+				{ "Screenshot", {
+					{ "Selection", global_fns.screenshot.selection, },
+					{ "Screen", global_fns.screenshot.screen, },
+					{ "Window (All)", global_fns.screenshot.window, },
+					{ "Focused client", global_fns.screenshot.client, },
+				}, nil },
+				{ " " },
+			},
+			after     = {
+				{ " " },
+				{ "Awesome", {
+					{ "hotkeys",
+					  function()
+						  return false, hotkeys_popup.show_help
+					  end
+					},
+					{ "restart", awesome.restart },
+					{ "quit", awesome.quit },
+				}, beautiful.awesome_icon },
+
+				{ "Power/User Mgmt", {
+					{ "Suspend/Sleep", function()
+						awful.util.spawn_with_shell("sudo systemctl suspend")
+					end },
+					{ "Log out", function()
+						awful.util.spawn_with_shell("sudo service lightdm restart")
+					end },
+					{ "Shutdown", function()
+						os.execute("shutdown -P -h now")
+					end },
+					{ "Reboot", function()
+						os.execute("reboot")
+					end },
+				}, nil },
+			}
+		}
+	end
+	awful.util.mymainmenu:show()
+end
+
 -- fns_c are client functions.
 -- They are/should be registered with awful.keyboard.append_client_keybindings
 -- and will be passed the current focused client as the first arg.
-local client_fns           = {
+local client_fns                  = {
 	move       = {
 		new_tag = function(c)
 			local cc = c or client.focus

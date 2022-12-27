@@ -67,12 +67,14 @@ theme.notification_position                     = "top_middle"
 
 --theme.font                                      = "xos4 Terminus 9"
 theme.font                                      = "monospace 9"
+theme.color_white                               = "#FFFFFF"
 theme.color_green                               = "#2EFE2E"
 theme.color_yellow                              = "#FFFF00"
 theme.color_orange                              = "#FF8000"
 theme.color_red                                 = "#DF0101"
 theme.color_lightblue                           = "#4070cf"
-theme.color_blue                                = "#0B1DC2"
+theme.color_blue                                = "#08158a"
+theme.color_darkblue                            = "#05092a"
 
 theme.menu_bg_normal                            = "#000000"
 theme.menu_bg_focus                             = "#000000"
@@ -95,7 +97,7 @@ theme.clock_mylocal                             = "#A51C48"
 -- theme.border_marked                             = "#3ca4d8"
 
 theme.border_color_normal                       = theme.bg_normal .. "ff"
-theme.border_color_focus                        = "#08158a" -- "#0B1DC2"
+theme.border_color_focus                        = theme.color_blue -- "#0B1DC2"
 theme.border_color_marked                       = "#f05800"
 
 theme.border_width                              = 0 -- 4
@@ -109,9 +111,9 @@ theme.tasklist_bg_focus                         = "#08158a" -- "#420f94"--purple
 theme.tasklist_fg_normal                        = "#FFFFFF"
 theme.tasklist_fg_focus                         = "#FFFFFF"
 
-theme.titlebar_bg_focus                         = "#08158a" -- theme.bg_focus
-theme.titlebar_bg_normal                        = "#05092a"
-theme.titlebar_fg_focus                         = "#FFFFFF" -- "#ffffff" -- theme.fg_focus
+theme.titlebar_bg_focus                         = theme.color_blue -- theme.bg_focus
+theme.titlebar_bg_normal                        = theme.color_darkblue
+theme.titlebar_fg_focus                         = theme.color_white -- "#ffffff" -- theme.fg_focus
 
 theme.menu_height                               = 18
 theme.menu_width                                = 140
@@ -121,18 +123,24 @@ theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.p
 --theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
 theme.taglist_squares_sel                       = nil
 theme.taglist_squares_unsel                     = nil
-theme.layout_tile                               = theme.dir .. "/icons/tile.png"
-theme.layout_tileleft                           = theme.dir .. "/icons/tileleft.png"
-theme.layout_tilebottom                         = theme.dir .. "/icons/tilebottom.png"
-theme.layout_tiletop                            = theme.dir .. "/icons/tiletop.png"
-theme.layout_fairv                              = theme.dir .. "/icons/fairv.png"
-theme.layout_fairh                              = theme.dir .. "/icons/fairh.png"
-theme.layout_spiral                             = theme.dir .. "/icons/spiral.png"
-theme.layout_dwindle                            = theme.dir .. "/icons/dwindle.png"
-theme.layout_max                                = theme.dir .. "/icons/max.png"
-theme.layout_fullscreen                         = theme.dir .. "/icons/fullscreen.png"
-theme.layout_magnifier                          = theme.dir .. "/icons/magnifier.png"
-theme.layout_floating                           = theme.dir .. "/icons/floating.png"
+
+theme.layout_icon_color                         = "#0B1FEA" -- a little brighter thant theme.color_blue
+
+theme.layout_tile                               = gears.color.recolor_image(theme.dir .. "/icons/tile.png", theme.layout_icon_color)
+theme.layout_tileleft                           = gears.color.recolor_image(theme.dir .. "/icons/tileleft.png", theme.layout_icon_color)
+theme.layout_tilebottom                         = gears.color.recolor_image(theme.dir .. "/icons/tilebottom.png", theme.layout_icon_color)
+theme.layout_tiletop                            = gears.color.recolor_image(theme.dir .. "/icons/tiletop.png", theme.layout_icon_color)
+theme.layout_fairv                              = gears.color.recolor_image(theme.dir .. "/icons/fairv.png", theme.layout_icon_color)
+theme.layout_fairh                              = gears.color.recolor_image(theme.dir .. "/icons/fairh.png", theme.layout_icon_color)
+theme.layout_spiral                             = gears.color.recolor_image(theme.dir .. "/icons/spiral.png", theme.layout_icon_color)
+theme.layout_dwindle                            = gears.color.recolor_image(theme.dir .. "/icons/dwindle.png", theme.layout_icon_color)
+theme.layout_max                                = gears.color.recolor_image(theme.dir .. "/icons/max.png", theme.layout_icon_color)
+--theme.layout_fullscreen                         = gears.color.recolor_image(theme.dir .. "/icons/fullscreen.png", theme.layout_icon_color)
+theme.layout_magnifier                          = gears.color.recolor_image(theme.dir .. "/icons/magnifier.png", theme.layout_icon_color)
+theme.layout_floating                           = gears.color.recolor_image(theme.dir .. "/icons/floating.png", theme.layout_icon_color)
+--theme.layout_centerwork                         = gears.color.recolor_image(theme.dir .. "/icons/centerwork.png", theme.layout_icon_color)
+theme.layout_centerwork                         = gears.color.recolor_image(gears.filesystem.get_configuration_dir() .. "lain/icons/layout/default/centerwork.png", theme.layout_icon_color)
+theme.layout_swen                               = gears.color.recolor_image(theme.dir .. "/icons/swen.png", theme.layout_icon_color)
 theme.widget_ac                                 = theme.dir .. "/icons/ac.png"
 theme.widget_battery                            = theme.dir .. "/icons/battery.png"
 theme.widget_battery_low                        = theme.dir .. "/icons/battery_low.png"

@@ -297,7 +297,7 @@ lib.show = function(s, parent)
 	if parent.bindings then
 
 		-- exists
-		modality_util.debug_print_paths("[modality] parent.bindings", parent.bindings)
+		--modality_util.debug_print_paths("[modality] parent.bindings", parent.bindings)
 
 
 		-- Sort alphabetically, sort of.
@@ -331,9 +331,9 @@ lib.show = function(s, parent)
 			local bound = parent.bindings[code]
 			bound.code  = code
 			-- dne
-			modality_util.debug_print_paths("[modality] bound", bound)
+			--modality_util.debug_print_paths("[modality] bound", bound)
 
-			local m = get_keypath_markup(bound)
+			local m     = get_keypath_markup(bound)
 
 			if code:lower() ~= "escape" and m ~= "" then
 				local txtbx = wibox.widget.textbox()
