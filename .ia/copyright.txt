@@ -1,0 +1,10 @@
+---------------------------------------------------------------------------
+-- Fns
+--
+-- Icky functions (for key bindings) and what to do with them.
+--
+-- @author whilei
+-- @author Isaac &lt;isaac.ardis@gmail.com&gt;
+-- @copyright 2022 Isaac
+-- @coreclassmod icky.fns
+---------------------------------------------------------------------------

@@ -25,6 +25,7 @@ local lain                         = require("lain")
 -- contrib
 local handy                        = require("handy")
 local hints                        = require("hints")
+local klack                        = require("klack")
 local revelation                   = require("revelation")
 local special                      = require("special")
 local ia_layout_swen               = require("layout-swen")
@@ -439,6 +440,7 @@ local global_fns           = {
 	},
 	special    = {
 		raise = special.raise,
+		klack = klack.start,
 	}
 }
 
