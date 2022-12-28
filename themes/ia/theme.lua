@@ -391,171 +391,171 @@ special_log_load_time("widget: clock_time_only")
 
 -- MEM
 local memicon = wibox.widget.imagebox(theme.widget_mem)
-local mem     = lain.widget.mem({
-									settings = function()
+local mem     = lain.widget.mem {
+	settings = function()
 
-										-- get base
-										local r, g, b  = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
-										-- local bg_color = RGBPercToHex(r, g, b)
+		-- get base
+		local r, g, b  = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+		-- local bg_color = RGBPercToHex(r, g, b)
 
-										r, g, b        = ColorGradient(0.6, r, g, b, 1, 1, 1) -- lighten it
-										local fg_color = RGBPercToHex(r, g, b)
+		r, g, b        = ColorGradient(0.6, r, g, b, 1, 1, 1) -- lighten it
+		local fg_color = RGBPercToHex(r, g, b)
 
-										r, g, b        = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
-										-- local bg_color = RGBPercToHex(r, g, b)
+		r, g, b        = ColorGradient((mem_now.perc / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+		-- local bg_color = RGBPercToHex(r, g, b)
 
-										r, g, b        = ColorGradient(0.8, r, g, b, 0, 0, 0)
-										local bg_color = RGBPercToHex(r, g, b)
+		r, g, b        = ColorGradient(0.8, r, g, b, 0, 0, 0)
+		local bg_color = RGBPercToHex(r, g, b)
 
-										local fmt      = string.format("%.0f GB", mem_now.used / 1024)
-										widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, fmt) .. " "))
-										-- widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
-									end
-								})
-
+		local fmt      = string.format("%.0f GB", mem_now.used / 1024)
+		widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, fmt) .. " "))
+		-- widget:set_markup(markup.font(theme.font, " " .. string.format("%.0f", mem_now.used / 1024) .. "GB "))
+	end
+}
 special_log_load_time("widget: mem")
 
 -- CPU
 local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
-local cpu     = lain.widget.cpu({
-									settings = function()
-										-- widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
-										local strf       = string.format("%3d%%", cpu_now.usage)
+local cpu     = lain.widget.cpu {
+	settings = function()
+		-- widget:set_markup(markup.font(theme.font, " " .. string.format("%3d%%", cpu_now.usage)))
+		local strf       = string.format("%3d%%", cpu_now.usage)
 
-										local rr, gg, bb = ColorGradient((cpu_now.usage / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
-										local r, g, b    = ColorGradient(0.6, rr, gg, bb, 0, 0, 0)
-										local bg_color   = RGBPercToHex(r, g, b)
+		local rr, gg, bb = ColorGradient((cpu_now.usage / 100), 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+		local r, g, b    = ColorGradient(0.6, rr, gg, bb, 0, 0, 0)
+		local bg_color   = RGBPercToHex(r, g, b)
 
-										r, g, b          = ColorGradient(0.6, rr, gg, bb, 0.8, 0.8, 0.8) -- lighten it
-										local fg_color   = RGBPercToHex(r, g, b)
-										if cpu_now.usage == 100 then
-											fg_color = '#ff0000'
-										end
+		r, g, b          = ColorGradient(0.6, rr, gg, bb, 0.8, 0.8, 0.8) -- lighten it
+		local fg_color   = RGBPercToHex(r, g, b)
+		if cpu_now.usage == 100 then
+			fg_color = '#ff0000'
+		end
 
-										widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, strf) .. " "))
-										-- widget:set_markup(markup.font(theme.font, strf))
-									end
-								})
+		widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, strf) .. " "))
+		-- widget:set_markup(markup.font(theme.font, strf))
+	end
+}
 special_log_load_time("widget: cpu")
 
 -- Coretemp
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
-local temp     = lain.widget.temp({
-									  settings = function()
+local temp     = lain.widget.temp {
+	settings = function()
+		-- want: 0.2 (cool), 0.5 (warm), 0.92 (hot)
+		local min          = 33
+		local max          = 110
+		local range        = max - min
 
+		local d            = coretemp_now - min
+		local relativeHeat = d / range
 
-										  -- want: 0.2 (cool), 0.5 (warm), 0.92 (hot)
-										  local min          = 33
-										  local max          = 110
-										  local range        = max - min
+		-- if relativeHeat < 0 then relativeHeat = 0 end
+		-- if relativeHeat > 1 then relativeHeat = 1 end
 
-										  local d            = coretemp_now - min
-										  local relativeHeat = d / range
+		-- blue, green, yellow, red
+		-- local blue, green, yellow, red = h2rgb("#3452c9"),   h2rgb("#32ab3a"),  h2rgb("#e8d031"),  h2rgb("#f01800")
+		local r, g, b      = ColorGradient(relativeHeat, 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
+		local bg_color     = RGBPercToHex(r, g, b)
 
-										  -- if relativeHeat < 0 then relativeHeat = 0 end
-										  -- if relativeHeat > 1 then relativeHeat = 1 end
+		r, g, b            = ColorGradient(0.7, r, g, b, 0, 0, 0)
+		local fg_color     = RGBPercToHex(r, g, b)
 
-										  -- blue, green, yellow, red
-										  -- local blue, green, yellow, red = h2rgb("#3452c9"),   h2rgb("#32ab3a"),  h2rgb("#e8d031"),  h2rgb("#f01800")
-										  local r, g, b      = ColorGradient(relativeHeat, 52, 82, 201, 50, 171, 58, 207, 180, 29, 240, 24, 0)
-										  local bg_color     = RGBPercToHex(r, g, b)
+		-- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
+		-- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
 
-										  r, g, b            = ColorGradient(0.7, r, g, b, 0, 0, 0)
-										  local fg_color     = RGBPercToHex(r, g, b)
-
-										  -- local bg_color = RGBPercToHex(ColorGradient(relativeHeat,    blue, green, yellow, red))
-										  -- local fg_color = RGBPercToHex(ColorGradient(relativeHeat / 2,    blue, green, yellow, red))
-
-										  widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, coretemp_now .. "°C") .. " "))
-									  end
-								  })
+		widget:set_markup(markup.fontbg(theme.font, bg_color, " " .. markup(fg_color, coretemp_now .. "°C") .. " "))
+	end
+}
 special_log_load_time("widget: temp")
--- / fs
+
+-- FS
 local fsicon = wibox.widget.imagebox(theme.widget_hdd)
-theme.fs     = lain.widget.fs({
-								  notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
-								  settings            = function()
-									  widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
-								  end
-							  })
+theme.fs     = lain.widget.fs {
+	notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
+	settings            = function()
+		widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
+	end
+}
 special_log_load_time("widget: fs")
+
 -- Battery
 local baticon = wibox.widget.imagebox(theme.widget_battery)
-local bat     = lain.widget.bat({
-									settings = function()
-										if bat_now.status ~= "N/A" then
-											if bat_now.ac_status == 1 then
-												widget:set_markup(markup.font(theme.font, " AC "))
-												baticon:set_image(theme.widget_ac)
-												return
-											elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
-												baticon:set_image(theme.widget_battery_empty)
-											elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
-												baticon:set_image(theme.widget_battery_low)
-											else
-												baticon:set_image(theme.widget_battery)
-											end
-											widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
-										else
-											widget:set_markup(markup.font(theme.font, " AC "))
-											baticon:set_image(theme.widget_ac)
-										end
-									end
-								})
+local bat     = lain.widget.bat {
+	settings = function()
+		if bat_now.status ~= "N/A" then
+			if bat_now.ac_status == 1 then
+				widget:set_markup(markup.font(theme.font, " AC "))
+				baticon:set_image(theme.widget_ac)
+				return
+			elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
+				baticon:set_image(theme.widget_battery_empty)
+			elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
+				baticon:set_image(theme.widget_battery_low)
+			else
+				baticon:set_image(theme.widget_battery)
+			end
+			widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
+		else
+			widget:set_markup(markup.font(theme.font, " AC "))
+			baticon:set_image(theme.widget_ac)
+		end
+	end
+}
 special_log_load_time("widget: bat")
+
 -- ALSA microphone
 --local micicon         = wibox.widget.imagebox()
-theme.mic = lain.widget.alsa({
-								 channel  = "Capture",
-								 settings = function()
-									 -- if input_now.status == "on" then
-									 --     micicon:set_image(theme.widget_mic_on)
-									 --     -- micicon:set_image()
-									 --     widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
+theme.mic = lain.widget.alsa {
+	channel  = "Capture",
+	settings = function()
+		-- if input_now.status == "on" then
+		--     micicon:set_image(theme.widget_mic_on)
+		--     -- micicon:set_image()
+		--     widget:set_markup(markup.fontbg(theme.font, theme.color_red, markup("#ffffff", " ((( • On Air • ))) ")))
 
-									 -- elseif input_now.status == "off" then
-									 --     micicon:set_image(theme.widget_mic_off)
-									 --     -- #2a0054
-									 --     widget:set_markup(markup.fontbg(theme.font, "#2a0054", markup("#ffffff", " ((( • On Air • ))) ")))
-									 --     widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
-									 --     -- widget:set_markup(markup.font(theme.font, " "))
-									 -- end
-									 --local words = " • On Air "
-									 local words = " • "
-									 local bg    = "#d93600" -- theme.color_red
-									 local fg    = "#fbff00"
-									 if volume_now.status == "off" then
-										 --words = " • Off Air " --✕
-										 words = " x " --✕
-										 bg    = "#3b383e" -- "#370e5c"
-										 fg    = "#887b94"
-									 end
-									 widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
-								 end
-							 })
+		-- elseif input_now.status == "off" then
+		--     micicon:set_image(theme.widget_mic_off)
+		--     -- #2a0054
+		--     widget:set_markup(markup.fontbg(theme.font, "#2a0054", markup("#ffffff", " ((( • On Air • ))) ")))
+		--     widget:set_markup(markup.font(theme.font, markup("#cfb1e0", " _ Off Air _ ")))
+		--     -- widget:set_markup(markup.font(theme.font, " "))
+		-- end
+		--local words = " • On Air "
+		local words = " • "
+		local bg    = "#d93600" -- theme.color_red
+		local fg    = "#fbff00"
+		if volume_now.status == "off" then
+			--words = " • Off Air " --✕
+			words = " x " --✕
+			bg    = "#3b383e" -- "#370e5c"
+			fg    = "#887b94"
+		end
+		widget:set_markup(markup.fontbg(theme.font, bg, markup(fg, words)))
+	end
+}
 special_log_load_time("widget: mic")
 
 -- ALSA volume
 local volicon = wibox.widget.imagebox(theme.widget_vol)
-theme.volume  = lain.widget.alsa({
-									 settings = function()
-										 if not volume_now then
-											 return
-										 end
+theme.volume  = lain.widget.alsa {
+	settings = function()
+		if not volume_now then
+			return
+		end
 
-										 if volume_now.status == "off" then
-											 volicon:set_image(theme.widget_vol_mute)
-										 elseif tonumber(volume_now.level) == 0 then
-											 volicon:set_image(theme.widget_vol_no)
-										 elseif tonumber(volume_now.level) <= 50 then
-											 volicon:set_image(theme.widget_vol_low)
-										 else
-											 volicon:set_image(theme.widget_vol)
-										 end
+		if volume_now.status == "off" then
+			volicon:set_image(theme.widget_vol_mute)
+		elseif tonumber(volume_now.level) == 0 then
+			volicon:set_image(theme.widget_vol_no)
+		elseif tonumber(volume_now.level) <= 50 then
+			volicon:set_image(theme.widget_vol_low)
+		else
+			volicon:set_image(theme.widget_vol)
+		end
 
-										 widget:set_markup(markup.font(theme.font, " " .. volume_now.level .. "% "))
-									 end
-								 })
+		widget:set_markup(markup.font(theme.font, " " .. volume_now.level .. "% "))
+	end
+}
 special_log_load_time("widget: volume")
 
 -- IP Locale
@@ -630,34 +630,16 @@ local net        = lain.widget.net {
 special_log_load_time("widget: net")
 
 -- acalendar is going to hold a calendar widget shared between all screens.
-local acalendar
--- Load the calendar widget asynchronously because it takes a whopping 0.3 seconds to load,
--- and then assign the local variable instance to all screens via the C API.
--- FIXME If screens are added (on the fly) they wont get a calendar widget.
-awful.spawn.easy_async("sleep 1", function()
-	acalendar = calendar_widget {
-		theme                 = 'outrun',
-		--placement = 'bottom_right',
-		--start_sunday = true,
-		--radius = 8,
-		-- with customized next/previous (see table above)
-		previous_month_button = 1,
-		next_month_button     = 3,
-		placement             = 'centered',
-	}
-
-	-- Assign to all screens.
-	for s in screen do
-		s.my_calendar_widget = acalendar
-		clock:connect_signal("button::press", function(_, _, _, button)
-			if button == 1 then
-				s.my_calendar_widget.toggle()
-			end
-		end)
-	end
-
-end)
-
+local acalendar = calendar_widget {
+	theme                 = 'outrun',
+	--placement = 'bottom_right',
+	--start_sunday = true,
+	--radius = 8,
+	-- with customized next/previous (see table above)
+	previous_month_button = 1,
+	next_month_button     = 3,
+	placement             = 'centered',
+}
 special_log_load_time("widget: calendar")
 
 --local mygithubwidget  = lain.widget.mywidget({
@@ -687,6 +669,13 @@ special_log_load_time("widget: calendar")
 local spr = wibox.widget.textbox(' ')
 
 function theme.at_screen_connect(s)
+
+	s.my_calendar_widget = acalendar
+	clock:connect_signal("button::press", function(_, _, _, button)
+		if button == 1 then
+			s.my_calendar_widget.toggle()
+		end
+	end)
 
 	special_log_load_time_reset()
 
