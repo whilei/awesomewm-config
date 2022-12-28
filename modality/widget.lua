@@ -307,6 +307,7 @@ lib.show = function(s, parent)
 			local bound = parent.bindings[code]
 			bound.code  = code
 
+			-- FIXME bound.bindings does not exist. Why not? Smells like a table copy/clone issue?
 			--bound.bindings = parent.bindings[code].bindings -- Hmm.... this works? No. (Make the 'bound' var actually have the bindings...?)
 			--modality_util.debug_print_paths("[modality] bound", bound)
 
