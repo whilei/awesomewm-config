@@ -171,7 +171,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "awesome/snazzy", description = "rofi window", name = "rofi (window)", },
-		modalities = { "w", m.AWESOME_APPS .. "w", m.FOCUS .. "f" },
+		modalities = { m.AWESOME_APPS .. "w", m.FOCUS .. "f" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "Return", }, },
 		on_press   = global_fns.apps.rofi("window"),
 	},
@@ -179,7 +179,7 @@ lib.global_bindings           = {
 		h          = { group = "awesome/snazzy", description = "rofi runner", name = "rofi (run)", },
 		modalities = { "r", m.AWESOME_APPS .. "R" },
 		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Return", }, },
-		on_press   = global_fns.apps.rofi("run"),
+		on_press   = global_fns.apps.rofi("drun"),
 	},
 	{
 		h          = { group = "awesome/snazzy", description = "revelation", name = "revelation" },
@@ -627,7 +627,7 @@ lib.client_bindings           = {
 	},
 	{
 		h          = { group = "special", description = "raise Discord window", name = "raise Discord" },
-		modalities = { "d" },
+		modalities = { "D" },
 		on_press   = global_fns.special.raise({ name = "Discord" }),
 	},
 	{

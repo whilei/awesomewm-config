@@ -36,7 +36,6 @@ local ia_layout_swen                                        = require("layout-sw
 local layout_titlebars_conditional                          = require("layout-titlebars-conditional")
 
 local icky_keys                                             = require("icky.keys")
-local icky_fns                                              = require("icky.fns").global
 local modality                                              = require("modality")
 local special_log_load_time                                 = require("special").log_load_time
 local special_log_load_time_reset                           = require("special").log_load_time_reset

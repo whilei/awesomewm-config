@@ -26,6 +26,7 @@ local lain                         = require("lain")
 local handy                        = require("handy")
 local hints                        = require("hints")
 local klack                        = require("klack")
+local pretty                       = require("special.pretty")
 local revelation                   = require("revelation")
 local special                      = require("special")
 local ia_layout_swen               = require("layout-swen")
@@ -89,13 +90,24 @@ local global_fns           = {
 			-- 1   2   3
 			-- 8   0   4
 			-- 7   6   5
-			local tv_prompt       = "rofi -modi " .. modi .. " -show " .. modi .. " -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
-			local laptop_prompt   = "rofi -modi " .. modi .. " -show " .. modi .. " -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
-			local commandPrompter = awful.screen.focused().is_tv and tv_prompt or laptop_prompt
+			--local tv_prompt       = "rofi -modi " .. modi .. " -show " .. modi .. " -sidebar-mode -location 6 -theme Indego -width 20 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
+			--local laptop_prompt   = "rofi -modi " .. modi .. " -show " .. modi .. " -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config -no-lazy-grab -async-pre-read 1 -show-icons"
+			--local commandPrompter = awful.screen.focused().is_tv and tv_prompt or laptop_prompt
 
-			if modi == "run" then
+			local rofi_theme = pretty.rofi_theme_path_drun
+			if modi ~= "drun" then
+				rofi_theme = pretty.rofi_theme_path_window
+			end
+
+			local cmd = "" ..
+					"rofi" ..
+					" -show " .. modi ..
+					" -theme " ..
+					rofi_theme
+
+			if modi == "drun" then
 				return function()
-					awful.spawn.easy_async(commandPrompter, function(stdout, stderr, reason, exit_code)
+					awful.spawn.easy_async(cmd, function(stdout, stderr, reason, exit_code)
 						if exit_code == 0 then
 							local matcher = function(c)
 								return awful.rules.match(c, { class = stdout })
@@ -106,7 +118,7 @@ local global_fns           = {
 				end
 			elseif modi == "window" then
 				return function()
-					awful.spawn.easy_async(commandPrompter, function()
+					awful.spawn.easy_async(cmd, function()
 						if client.focus then
 							awful.screen.focus(client.focus.screen)
 						end

@@ -222,7 +222,7 @@ local function build_keypath_widget(bound)
 
 	for i, code in ipairs(codes) do
 		local underline = "none"
-		if underline_matches:find(code) then
+		if underline_matches:find(code, 1, true) then
 			underline = "single"
 		end
 		code_spans[i] = "" ..

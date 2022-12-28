@@ -19,6 +19,7 @@ local gears                        = require("gears")
 local naughty                      = require("naughty")
 local modality_util                = require("modality.util")
 local modality_widget              = require("modality.widget")
+local pretty                       = require("special.pretty")
 
 -- set to true to turn lots of prints on
 local debug                        = false
@@ -66,9 +67,13 @@ local modality                      = {
 modality.widget                     = modality_widget
 
 local get_rofi_cmd                  = function(s)
-	local tv_prompt     = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config"
-	local laptop_prompt = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 60 -no-plugins -no-config"
-	return s.is_tv and tv_prompt or laptop_prompt
+	--local tv_prompt     = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 40 -no-plugins -no-config"
+	--local laptop_prompt = "rofi -dmenu -p 'modality search' -i -show window -sidebar-mode -location 6 -theme Indego -width 60 -no-plugins -no-config"
+
+	-- my_rofi uses a custom theme that I found on the internet.
+	-- Not sure that -dmenu and -show window are necessary or compatible (maybe -show window is getting ignored?).
+	local my_rofi = "rofi -dmenu -p 'modality search' -i -show window -theme " .. pretty.rofi_theme_path_modality
+	return my_rofi
 end
 
 -- search uses Rofi to search for a keybinding/command.
