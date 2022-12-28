@@ -107,6 +107,8 @@ local fancy_float_toggle           = function(cc)
 		c.was_maximized   = nil
 		c.ontop           = c.was_ontop
 		c.was_ontop       = nil
+		c:geometry(c.was_geometry)
+		c.was_geometry = nil
 
 		c:raise()
 		client.focus = c
@@ -115,6 +117,8 @@ local fancy_float_toggle           = function(cc)
 
 	-- Else: turning ona
 	c.fancy_floating  = true
+
+	c.was_geometry    = c:geometry()
 	c.was_floating    = c.floating
 	c.was_maximized   = c.maximized
 	c.was_ontop       = c.ontop
