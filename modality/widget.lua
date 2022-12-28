@@ -197,7 +197,8 @@ local function get_keypath_markup(bound)
 			(hotkeys_label ~= "" and (" " .. hotkeys_label) or "") ..
 			"</span>"
 
-	local is_submenu_name = n_bindings > 0
+	--local is_submenu_name = n_bindings > 0
+	local is_submenu_name = bound.bindings and #bound.bindings > 0
 	if is_submenu_name then
 		action_markup = "<span foreground='" .. config.submenu_color .. "'>" .. "+" .. label .. "</span>"
 	end
@@ -216,30 +217,6 @@ local function get_keypath_markup(bound)
 			"</b>" ..
 			"<span foreground='" .. config.arrow_color .. "'>  ➞  </span>" ..
 			action_markup
-end
-
--- Save copied tables in `copies`, indexed by original table.
--- http://lua-users.org/wiki/CopyTable
-function deepcopy(orig, copies)
-	copies          = copies or {}
-	local orig_type = type(orig)
-	local copy
-	if orig_type == 'table' then
-		if copies[orig] then
-			copy = copies[orig]
-		else
-			copy         = {}
-			copies[orig] = copy
-			for orig_key, orig_value in next, orig, nil do
-				copy[deepcopy(orig_key, copies)] = deepcopy(orig_value, copies)
-			end
-			setmetatable(copy, deepcopy(getmetatable(orig), copies))
-		end
-	else
-		-- number, string, boolean, etc
-		copy = orig
-	end
-	return copy
 end
 
 -- lib.show shows the modality box.
@@ -330,7 +307,8 @@ lib.show = function(s, parent)
 		for _, code in ipairs(sorted_binding_codes) do
 			local bound = parent.bindings[code]
 			bound.code  = code
-			-- dne
+
+			--bound.bindings = parent.bindings[code].bindings -- Hmm.... this works? No. (Make the 'bound' var actually have the bindings...?)
 			--modality_util.debug_print_paths("[modality] bound", bound)
 
 			local m     = get_keypath_markup(bound)

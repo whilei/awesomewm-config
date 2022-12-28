@@ -480,23 +480,6 @@ modality.init     = function()
 	modality.widget.init(modality)
 end
 
---function copy(obj, seen)
---	if type(obj) ~= 'table' then
---		return obj
---	end
---	if seen and seen[obj] then
---		return seen[obj]
---	end
---	local s   = seen or {}
---	local res = setmetatable({}, getmetatable(obj))
---	s[obj]    = res
---	for k, v in pairs(obj) do
---		res[copy(k, s)] = copy(v, s)
---	end
---	return res
---end
-
-
 -- Docs: https://awesomewm.org/apidoc/core_components/awful.keygrabber.html
 local function keypressed_callback(bindings_parent)
 	--local sequence = ""
@@ -515,6 +498,14 @@ local function keypressed_callback(bindings_parent)
 		end
 
 		if event ~= "press" then
+			return true
+		end
+
+		-- HACK For me. I use Super_L + Comma for my leader, where Super_L == Mod4.
+		-- I'm in the habit of hitting this key like a million times, like Escape;
+		-- so I want to hide the notification about me mashing it and it not meaning anything
+		-- because I'm already in the mode.
+		if key == "Super_L" or key == "," then
 			return true
 		end
 
@@ -548,7 +539,7 @@ local function keypressed_callback(bindings_parent)
 			--return exit("unmatched binding")
 
 			-- Option 2: Show error (invalid binding) and keep the mode running.
-			local n = naughty.notification {
+			naughty.notification {
 				text     = "Invalid binding: " .. key .. " (Use ESC to exit.)",
 				timeout  = 0.75,
 				position = "bottom_middle",

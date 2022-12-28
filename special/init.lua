@@ -105,6 +105,8 @@ local fancy_float_toggle           = function(cc)
 		c.was_floating    = nil
 		c.maximized       = c.was_maximized or false
 		c.was_maximized   = nil
+		c.ontop           = c.was_ontop
+		c.was_ontop       = nil
 
 		c:raise()
 		client.focus = c
@@ -115,10 +117,12 @@ local fancy_float_toggle           = function(cc)
 	c.fancy_floating  = true
 	c.was_floating    = c.floating
 	c.was_maximized   = c.maximized
+	c.was_ontop       = c.ontop
 	c.original_screen = c.screen or awful.screen.focused()
 
 	c.maximized       = false
 	c.floating        = true
+	c.ontop           = true
 
 	-- Move to TV screen.
 	if not c.screen.is_tv then
@@ -316,6 +320,46 @@ local function raise(client_rules)
 	end
 end
 
+--function copy(obj, seen)
+--	if type(obj) ~= 'table' then
+--		return obj
+--	end
+--	if seen and seen[obj] then
+--		return seen[obj]
+--	end
+--	local s   = seen or {}
+--	local res = setmetatable({}, getmetatable(obj))
+--	s[obj]    = res
+--	for k, v in pairs(obj) do
+--		res[copy(k, s)] = copy(v, s)
+--	end
+--	return res
+--end
+
+-- Save copied tables in `copies`, indexed by original table.
+-- http://lua-users.org/wiki/CopyTable
+local function deepcopy(orig, copies)
+	copies          = copies or {}
+	local orig_type = type(orig)
+	local copy
+	if orig_type == 'table' then
+		if copies[orig] then
+			copy = copies[orig]
+		else
+			copy         = {}
+			copies[orig] = copy
+			for orig_key, orig_value in next, orig, nil do
+				copy[deepcopy(orig_key, copies)] = deepcopy(orig_value, copies)
+			end
+			setmetatable(copy, deepcopy(getmetatable(orig), copies))
+		end
+	else
+		-- number, string, boolean, etc
+		copy = orig
+	end
+	return copy
+end
+
 return {
 	popup_launcher               = require("special.popup-launcher"),
 	quake                        = require("special.widgets").quake,
@@ -332,4 +376,5 @@ return {
 	log_load_time                = log_load_time,
 	log_load_time_reset          = log_load_time_reset,
 	raise                        = raise,
+	deepcopy                     = deepcopy,
 }
