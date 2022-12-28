@@ -628,10 +628,19 @@ client.connect_signal("request::activate",
 )
 
 client.connect_signal("focus", function(c)
+	if not c then
+		return
+	end
+
 	--border_adjust(c)
+
 	move_mouse_onto_focused_client(c)
 
 	local t = c.first_tag
+	if not t then
+		-- This can happen for clients like Handy or other on-demand only clients.
+		return
+	end
 	for _, tc in ipairs(t:clients()) do
 		if tc ~= c then
 			--awful.titlebar.show(c)

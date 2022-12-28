@@ -896,7 +896,7 @@ function theme.at_screen_connect(s)
 			self:get_children_by_id("inner_background_role")[1].bg           = "#000000"
 			self:get_children_by_id("text_background_role")[1].bg            = "#000000"
 		end
-
+		
 		if not tag_occupied then
 			self:get_children_by_id("outer_margin_role")[1].right = 0
 		else
