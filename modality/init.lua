@@ -17,9 +17,9 @@ local string, table, ipairs, pairs = string, table, ipairs, pairs
 local awful                        = require("awful")
 local gears                        = require("gears")
 local naughty                      = require("naughty")
-local modality_util                = require("modality.util")
 local modality_widget              = require("modality.widget")
 local pretty                       = require("special.pretty")
+local util                         = require("modality.util")
 
 -- set to true to turn lots of prints on
 local debug                        = false
@@ -273,54 +273,6 @@ local format_fn_label               = function(target_label)
 	return string.format("%s", target_label)
 end
 
--- keyboard_key_labels is used for presenting the user with a human-readable version of a key stroke.
-modality.keyboard_key_labels        = {
-	["cmd"]       = "⌘ ",
-	["alt"]       = "⌥ ",
-	["ctrl"]      = "⌃ ",
-	["shift"]     = "⇧ ", -- Thank you Copilot.
-
-	["mod4"]      = "⌘ ",
-	["mod1"]      = "⌥ ",
-	["control"]   = "⌃ ",
-
-	["return"]    = "⏎ ",
-	["tab"]       = "⇥ ",
-
-	-- Thanks again Copilot.
-	--["escape"]  = "⎋ ",
-	["space"]     = "␣ ",
-	[" "]         = "␣ ",
-	["backspace"] = "⌫ ",
-	["delete"]    = "⌦ ",
-	--["home"]    = "↖ ",
-	--["end"]     = "↘ ",
-	--["pageup"]  = "⇞ ",
-	--["pagedown"]= "⇟ ",
-
-	--["left"]      = "← ",
-	--["right"]     = "→ ",
-	--["up"]        = "↑ ",
-	--["down"]      = "↓ ",
-	["left"]      = "🠨 ",
-	["right"]     = "🠪 ",
-	["up"]        = "🠩 ",
-	["down"]      = "🠫 ",
-
-	["f1"]        = "F1 ",
-	["f2"]        = "F2 ",
-	["f3"]        = "F3 ",
-	["f4"]        = "F4 ",
-	["f5"]        = "F5 ",
-	["f6"]        = "F6 ",
-	["f7"]        = "F7 ",
-	["f8"]        = "F8 ",
-	["f9"]        = "F9 ",
-	["f10"]       = "F10 ",
-	["f11"]       = "F11 ",
-	["f12"]       = "F12 ",
-}
-
 -- format_hotkeys_label returns a string of hotkeys (eg. "⌘⇧⌥⌃") for a given keypath.
 -- @hotkeys is a table
 modality.format_hotkeys_label       = function(hotkeys)
@@ -336,9 +288,12 @@ modality.format_hotkeys_label       = function(hotkeys)
 			-- empty
 		else
 			for i, m in ipairs(mods) do
-				mods[i] = modality.keyboard_key_labels[m:lower()] or m
+				mods[i] = util.keycode_ui_aliases[m:lower()] or m
 			end
-			local s = string.format("%s", table.concat(mods, "") .. "" .. (modality.keyboard_key_labels[code:lower()] or code))
+			local s = string.format("%s",
+									table.concat(mods, " ") ..
+											" " ..
+											(util.keycode_ui_aliases[code:lower()] or code))
 			table.insert(hotkeys_strings, s)
 		end
 	end
@@ -534,7 +489,7 @@ local function keypressed_callback(bindings_parent)
 
 		debug_print("[modality] keypressed bindings_parent:")
 		if debug then
-			modality_util.debug_print_paths("[modality]", bindings_parent)
+			util.debug_print_paths("[modality]", bindings_parent)
 		end
 
 		local bound = bindings_parent.bindings[key]
@@ -545,7 +500,7 @@ local function keypressed_callback(bindings_parent)
 
 			-- Option 2: Show error (invalid binding) and keep the mode running.
 			naughty.notification {
-				text     = "Invalid binding: " .. key .. " (Use ESC to exit.)",
+				text     = "Invalid binding: '" .. key .. "' (Use ESC to exit.)",
 				timeout  = 0.75,
 				position = "bottom_middle",
 				bg       = "#ff0000",
@@ -562,7 +517,7 @@ local function keypressed_callback(bindings_parent)
 
 		debug_print("[modality] matched binding", "key=", key, "binding.label=", bound.label)
 		if debug then
-			modality_util.debug_print_paths("[modality]", bound)
+			util.debug_print_paths("[modality]", bound)
 		end
 
 		if bound.fn then

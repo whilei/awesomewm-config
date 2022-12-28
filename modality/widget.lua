@@ -4,7 +4,7 @@ local awful                       = require("awful")
 local beautiful                   = require("beautiful")
 local gears                       = require("gears")
 local wibox                       = require("wibox")
-local modality_util               = require("modality.util")
+local util                        = require("modality.util")
 
 local config                      = {
 	arrow_color            = '#47A590', -- faded teal
@@ -89,71 +89,12 @@ lib.get_widget                    = function(s)
 	return s.modality_box.widget
 end
 
-lib.keycode_ui_aliases            = {
-	["return"]      = "RET",
-	["space"]       = "SPC",
-	[" "]           = "SPC",
-	["tab"]         = "TAB",
-	["escape"]      = "ESC",
-	["super_l"]     = "SUPER",
-	["delete"]      = "DEL",
-
-	-- Thanks Copilot.
-	["backspace"]   = "BS",
-	["left"]        = "←",
-	["right"]       = "→",
-	["up"]          = "↑",
-	["down"]        = "↓",
-	["home"]        = "HOME",
-	["end"]         = "END",
-	["page_up"]     = "PGUP",
-	["page_down"]   = "PGDN",
-	["insert"]      = "INS",
-	["print"]       = "PRTSC",
-	["pause"]       = "PAUSE",
-	["num_lock"]    = "NUM",
-	["scroll_lock"] = "SCR",
-	["caps_lock"]   = "CAPS",
-	["f1"]          = "F1",
-	["f2"]          = "F2",
-	["f3"]          = "F3",
-	["f4"]          = "F4",
-	["f5"]          = "F5",
-	["f6"]          = "F6",
-	["f7"]          = "F7",
-	["f8"]          = "F8",
-	["f9"]          = "F9",
-	["f10"]         = "F10",
-	["f11"]         = "F11",
-	["f12"]         = "F12",
-	["f13"]         = "F13",
-	["f14"]         = "F14",
-	["f15"]         = "F15",
-	["f16"]         = "F16",
-	["f17"]         = "F17",
-	["f18"]         = "F18",
-	["f19"]         = "F19",
-	["f20"]         = "F20",
-	["f21"]         = "F21",
-	["f22"]         = "F22",
-	["f23"]         = "F23",
-	["f24"]         = "F24",
-	["f25"]         = "F25",
-	["f26"]         = "F26",
-	["f27"]         = "F27",
-	["f28"]         = "F28",
-	["f29"]         = "F29",
-	["f30"]         = "F30",
-	["f31"]         = "F31",
-	["f32"]         = "F32",
-}
-
 -- keycode_ui_aliases takes a keycode and returns
 -- a UI-oriented alias if any.
 -- Codes without defined aliases get returned as-is.
 local keycode_ui_alias            = function(code)
-	if lib.keycode_ui_aliases[code:lower()] then
-		return lib.keycode_ui_aliases[code:lower()]
+	if util.keycode_ui_aliases[code:lower()] then
+		return util.keycode_ui_aliases[code:lower()]
 	end
 	return code
 end
@@ -308,7 +249,7 @@ lib.show = function(s, parent)
 		-- I want punctuation first, then modifier and other special keys, then letters.
 		local sorted_binding_codes = gears.table.keys(parent.bindings)
 		local punctuation_chars    = "!@#$%^&*()_+{}|:<>?`~[];',./-=\""
-		local specialty_keys       = gears.table.keys(lib.keycode_ui_aliases)
+		local specialty_keys       = gears.table.keys(util.keycode_ui_aliases)
 
 		table.sort(sorted_binding_codes, function(a, b)
 			local a_reserved_first = string.find(punctuation_chars, a, 1, true)

@@ -172,15 +172,16 @@ lib.global_bindings           = {
 	{
 		h          = { group = "awesome/snazzy", description = "rofi window", name = "rofi (window)", },
 		modalities = { " ", m.AWESOME_APPS .. "w", m.FOCUS .. "f" },
-		hotkeys    = { { mods = { _keys.MOD }, code = "Return", }, },
+		hotkeys    = {
+			{ mods = { _keys.MOD, }, code = " ", },
+		},
 		on_press   = global_fns.apps.rofi("window"),
 	},
 	{
 		h          = { group = "awesome/snazzy", description = "rofi runner", name = "rofi (run)", },
 		modalities = { "r", m.AWESOME_APPS .. "R" },
 		hotkeys    = {
-			{ mods = { _keys.MOD, _keys.SHIFT }, code = "Return", },
-			{ mods = { _keys.MOD, }, code = " ", },
+			{ mods = { _keys.MOD }, code = "Return", },
 		},
 		on_press   = global_fns.apps.rofi("drun"),
 	},
