@@ -158,30 +158,31 @@ local keycode_ui_alias            = function(code)
 end
 
 -- get_keypath_markup returns the pango-styled markup for some modality entry (a keypath->function binding).
-local function get_keypath_markup(bound)
+local function build_keypath_widget(bound)
 	--print("[modality] get_keypath_markup", "bound")
 	--modality_util.debug_print_paths("", bound)
 	--print("")
 	--print("")
 
 	-- This (default) should never happen because the 'bound' object is indexed on code.
-	local code          = bound.code or ""
+	local codes         = bound.codes or {}
 	local label         = bound.label or "???"
 	local hotkeys_label = bound.hotkeys_label or ""
 	local n_bindings    = bound.n_bindings or 0
 	local stays         = bound.stay
 	local hks           = bound.hotkeys or {}
 
-	if code == "separator" then
-		--return "\n"
-		return ""
+	if codes[1] == "separator" then
+		return
 	end
-	if code == "onClose" then
-		return ""
+	if codes[1] == "onClose" then
+		return
 	end
 
 	-- Abbreviate the key name so it looks like Spacemacs (see aliases table above).
-	code = keycode_ui_alias(code)
+	for i, code in ipairs(codes) do
+		codes[i] = keycode_ui_alias(code)
+	end
 
 	if hotkeys_label ~= "" then
 		hotkeys_label = "<span " ..
@@ -197,25 +198,51 @@ local function get_keypath_markup(bound)
 			(hotkeys_label ~= "" and (" " .. hotkeys_label) or "") ..
 			"</span>"
 
+	-- FIXME This is another symptom of the issue where I cannot get the
+	-- bindings tabs from the parent.bindings[code] object.
+	-- So I have to rely on flat, simple data types to represent the data I need;
+	-- here: the number of bindings (if any).
+	-- I would rather check the actual bindings object for existence and count.
 	local is_submenu_name = n_bindings > 0
 	--local is_submenu_name = bound.bindings and #bound.bindings > 0
+
 	if is_submenu_name then
 		action_markup = "<span foreground='" .. config.submenu_color .. "'>" .. "+" .. label .. "</span>"
 	end
+
+	-- code_spans becomes the markup for the keycodes.
+	-- We use a table (a list) because there may be more than one code bound to some function.
+	-- In this case, multiple codes are joined with a comma.
+	local code_spans        = {
+		--"<span foreground='" .. config.keycode_color .. "'>$code</span>",
+	}
+
+	-- underline_matches defines a list of keycodes that should be underlined.
 	local underline_matches = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	local underline         = "none"
-	if string.find(underline_matches, code, 1, true) then
-		underline = "single"
+
+	for i, code in ipairs(codes) do
+		local underline = "none"
+		if underline_matches:find(code) then
+			underline = "single"
+		end
+		code_spans[i] = "" ..
+				"<b>" ..
+				"<span " ..
+				"foreground='" .. config.modality_keypath_color .. "' " ..
+				"underline='" .. underline .. "' " ..
+				">" .. gears.string.xml_escape(code) ..
+				"</span>" ..
+				"</b>"
 	end
 
-	return "<b><span> " ..
-			'<span underline="' .. underline .. '" foreground="' .. config.modality_keypath_color .. '">' ..
-			gears.string.xml_escape(code) ..
-			'</span>' ..
-			'</span>' ..
-			"</b>" ..
+	local m        = "" ..
+			table.concat(code_spans, ",") ..
 			"<span foreground='" .. config.arrow_color .. "'>  ➞  </span>" ..
 			action_markup
+
+	local text_box = wibox.widget.textbox()
+	text_box:set_markup(m)
+	return text_box
 end
 
 -- lib.show shows the modality box.
@@ -303,29 +330,58 @@ lib.show = function(s, parent)
 			return a:lower() < b:lower()
 		end)
 
+		-- Dedupe functions that have more than one binding associated with them at this level.
+		-- eg. [Return, ?] for search.
+
+		local fn_codes = {
+			-- fn = { code1, code2, ... }
+		}
+		for code, bound in pairs(parent.bindings) do
+			if bound.fn then
+				local fn = bound.fn
+				if not fn_codes[fn] then
+					fn_codes[fn] = {}
+				end
+				table.insert(fn_codes[fn], code)
+			end
+		end
+
+		local seen_fns = {
+			-- fn = true,
+		}
+
 		for _, code in ipairs(sorted_binding_codes) do
 			local bound = parent.bindings[code]
-			bound.code  = code
+			bound.codes = { code }
 
-			-- FIXME bound.bindings does not exist. Why not? Smells like a table copy/clone issue?
-			--bound.bindings = parent.bindings[code].bindings -- Hmm.... this works? No. (Make the 'bound' var actually have the bindings...?)
-			--modality_util.debug_print_paths("[modality] bound", bound)
+			if bound.fn and seen_fns[bound.fn] then
+				-- skip
+				-- This function has multiple key codes associated with it
+				-- and we have already handled it.
+			else
+				if bound.fn then
+					seen_fns[bound.fn] = true
+				end
+				bound.codes    = fn_codes[bound.fn] or { code } -- or case handles bindings without functions
 
-			local m     = get_keypath_markup(bound)
+				-- FIXME bound.bindings does not exist. Why not? Smells like a table copy/clone issue?
+				--bound.bindings = parent.bindings[code].bindings -- Hmm.... this works? No. (Make the 'bound' var actually have the bindings...?)
+				--modality_util.debug_print_paths("[modality] bound", bound)
 
-			if code:lower() ~= "escape" and m ~= "" then
-				local txtbx = wibox.widget.textbox()
-				txtbx:set_markup_silently(m)
+				local text_box = build_keypath_widget(bound)
 
-				local _w, _h    = txtbx:get_preferred_size()
-				_largest.width  = math.max(_largest.width, math.max(config.min_entry_width, _w))
-				_largest.height = math.max(_largest.height, math.max(config.min_entry_height, _h))
+				if code:lower() ~= "escape" and text_box ~= "" then
 
-				local _r        = _pc % config.max_rows + 1
-				local _c        = math.floor(_pc / config.max_rows) + 1
+					local _w, _h    = text_box:get_preferred_size()
+					_largest.width  = math.max(_largest.width, math.max(config.min_entry_width, _w))
+					_largest.height = math.max(_largest.height, math.max(config.min_entry_height, _h))
 
-				tbc:add_widget_at(txtbx, _r, _c, 1, 1) -- child, row, col, ~row_span, ~col_span
-				_pc = _pc + 1
+					local _r        = _pc % config.max_rows + 1
+					local _c        = math.floor(_pc / config.max_rows) + 1
+
+					tbc:add_widget_at(text_box, _r, _c, 1, 1) -- child, row, col, ~row_span, ~col_span
+					_pc = _pc + 1
+				end
 			end
 		end
 	end

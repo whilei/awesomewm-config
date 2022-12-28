@@ -189,7 +189,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "awesome/snazzy", description = "toggle quake popup terminal", name = "quake", },
-		modalities = { "z", m.AWESOME_APPS .. "q" },
+		modalities = { "q", m.AWESOME_APPS .. "q" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "z", }, },
 		on_press   = global_fns.apps.quake,
 	},
@@ -532,7 +532,7 @@ lib.global_bindings           = {
 lib.client_bindings           = {
 	{
 		h          = { group = "client/properties", description = "toggle maximized", name = "maximized" },
-		modalities = { m.CLIENT .. "z" },
+		modalities = { "z", m.CLIENT .. "z" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "m" } },
 		on_press   = client_fns.properties.maximize,
 	},

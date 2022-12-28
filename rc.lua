@@ -428,9 +428,7 @@ ruled.client.append_rules {
 		}
 	},
 	{
-		rule       = {
-			class = "kate",
-		},
+		rule       = { class = "kate", },
 		properties = {
 			floating  = true,
 			placement = awful.placement.centered,
