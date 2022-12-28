@@ -885,7 +885,7 @@ function theme.at_screen_connect(s)
 		if tag_occupied and tag.selected then
 			self:get_children_by_id("inner_background_role")[1].border_width = 1
 			self:get_children_by_id("inner_background_role")[1].border_color = theme.fg_focus
-			self:get_children_by_id("inner_background_role")[1].bg           = "#142924"
+			self:get_children_by_id("text_background_role")[1].bg            = "#142924"
 		elseif tag_occupied then
 			self:get_children_by_id("inner_background_role")[1].border_width = 1
 			self:get_children_by_id("inner_background_role")[1].border_color = "#666666"
@@ -896,7 +896,7 @@ function theme.at_screen_connect(s)
 			self:get_children_by_id("inner_background_role")[1].bg           = "#000000"
 			self:get_children_by_id("text_background_role")[1].bg            = "#000000"
 		end
-		
+
 		if not tag_occupied then
 			self:get_children_by_id("outer_margin_role")[1].right = 0
 		else
@@ -910,7 +910,7 @@ function theme.at_screen_connect(s)
 			-- These are client created via the Handy module,
 			-- which is intended to be HUD/Quake style dropdown/on-demand
 			-- application window.
-			if cl:get_xproperty("handy_id") == "" then
+			if not cl:get_xproperty("handy_id") or cl:get_xproperty("handy_id") == "" then
 				local icon = wibox.widget {
 					{
 						id     = "icon_container",
@@ -974,7 +974,7 @@ function theme.at_screen_connect(s)
 									widget = wibox.widget.textbox,
 								},
 								left   = 10,
-								right  = 5,
+								right  = 10,
 								widget = wibox.container.margin,
 							},
 							id     = "text_background_role",

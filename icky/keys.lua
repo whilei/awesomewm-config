@@ -366,13 +366,13 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "tag", description = "move left", name = "left" },
-		modalities = { m.TAG .. "L~" }, -- stays
+		modalities = { m.TAG .. "H~" }, -- stays
 		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Left" } },
 		on_press   = global_fns.tag.move.left,
 	},
 	{
 		h          = { group = "tag", description = "move right", name = "right" },
-		modalities = { m.TAG .. "H~" }, -- stays
+		modalities = { m.TAG .. "L~" }, -- stays
 		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Right" } },
 		on_press   = global_fns.tag.move.right,
 	},
@@ -586,7 +586,7 @@ lib.client_bindings           = {
 	},
 	{
 		h          = { group = "client/move", description = "move to new tag", name = "new tag" },
-		modalities = { m.CLIENT_MOVE .. "T" },
+		modalities = { m.CLIENT_MOVE .. "N" },
 		on_press   = client_fns.move.new_tag,
 	},
 	-- CLIENT:RESIZE
@@ -664,7 +664,6 @@ local function install_global_tag_fns_by_index()
 				tag:view_only()
 			end
 		end
-
 		modality.register(m.TAG .. i .. ":view tag " .. i, fn_view_tag)
 
 		local fn_move_client_to_tag = function()
@@ -672,11 +671,21 @@ local function install_global_tag_fns_by_index()
 				local tag = client.focus.screen.tags[i]
 				if tag then
 					client.focus:move_to_tag(tag)
+					return tag
 				end
 			end
 		end
-
 		modality.register(m.CLIENT_MOVE .. "t:to tag," .. i .. ":move to tag " .. i, fn_move_client_to_tag)
+
+		-- fn_move_client_to_tag_and_go moves the client to the tag
+		-- and then switches to that tag.
+		local fn_move_client_to_tag_and_go = function()
+			local t = fn_move_client_to_tag()
+			if t then
+				t:view_only()
+			end
+		end
+		modality.register(m.CLIENT_MOVE .. "T:to tag (and switch)," .. i .. ":move to tag " .. i .. " and switch to it", fn_move_client_to_tag)
 
 		awful.keyboard.append_global_keybindings({
 													 -- View tag only.

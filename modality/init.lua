@@ -72,7 +72,7 @@ local get_rofi_cmd                  = function(s)
 
 	-- my_rofi uses a custom theme that I found on the internet.
 	-- Not sure that -dmenu and -show window are necessary or compatible (maybe -show window is getting ignored?).
-	local my_rofi = "rofi -dmenu -p 'modality search' -i -show window -theme " .. pretty.rofi_theme_path_modality
+	local my_rofi = "rofi -dmenu -p 'Modality / Command Palette: ' -i -show window -theme " .. pretty.rofi_theme_path_modality
 	return my_rofi
 end
 
