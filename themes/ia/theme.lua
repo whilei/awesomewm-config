@@ -642,6 +642,10 @@ local acalendar = calendar_widget {
 }
 special_log_load_time("widget: calendar")
 
+local mysystray = wibox.widget.systray()
+special_log_load_time("widget: systray")
+
+
 --local mygithubwidget  = lain.widget.mywidget({
 --												 TOKEN       = os_getenv("GITHUB_MEOWSBITS_PERSONAL"),
 --												 name        = "Github Notifications",
@@ -1352,7 +1356,7 @@ function theme.at_screen_connect(s)
 		{
 			layout = wibox.layout.fixed.horizontal,
 
-			wibox.widget.systray(),
+			mysystray,
 
 			spr,
 			special.weather.icon,

@@ -30,6 +30,7 @@ local naughty                                               = require("naughty")
 local lain                                                  = require("lain")
 local hotkeys_popup                                         = require("awful.hotkeys_popup").widget
 local cairo                                                 = require("lgi").cairo
+local ruled                                                 = require("ruled")
 
 local ia_layout_swen                                        = require("layout-swen")
 local layout_titlebars_conditional                          = require("layout-titlebars-conditional")
@@ -42,9 +43,9 @@ local special_log_load_time_reset                           = require("special")
 
 special_log_load_time("requirements")
 
-naughty.config.presets.critical.position = "top_middle"
-naughty.config.presets.normal.position   = "top_middle"
-naughty.config.presets.low.position      = "top_middle"
+--naughty.config.presets.critical.position = "top_middle"
+--naughty.config.presets.normal.position   = "top_middle"
+--naughty.config.presets.low.position      = "top_middle"
 
 -- {{{ Error handling
 special_log_load_time_reset()
@@ -295,11 +296,14 @@ clientbuttons           = a_util_table.join(
 -- }}}
 
 local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "awesome-buttons/icons/terminal.svg"
-local konsole_icon      = gears.surface(konsole_icon_path) -- This MUST be stored in a variable. No golfing allowed.
+konsole_icon            = gears.surface(konsole_icon_path) -- This MUST be stored in a variable. No golfing allowed.
+
+--local awesome_icon_path = gears.filesystem.get_configuration_dir() .. "themes/rainbow/icons/awesome.png"
+--local awesome_icon      = gears.surface(awesome_icon_path)
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
-awful.rules.rules       = {
+ruled.client.append_rules {
 	--[[  ]]
 	-- All clients will match this rule.
 	{
@@ -388,16 +392,26 @@ awful.rules.rules       = {
 	},
 	{
 		rule       = {
-			class = "Xephyr"
+			class = "Xephyr",
 		},
 		properties = {
-			border_width = 2,
-			border_color = "#A32BCE",
-			screen       = 1,
-			placement    = awful.placement.centered,
-			floating     = true,
-			ontop        = true,
-			focus        = false,
+			border_width         = 2,
+			border_color         = "#A32BCE",
+			screen               = screen[1],
+			tag                  = screen[1].tags[5],
+			placement            = awful.placement.centered,
+			floating             = true,
+			maximized_vertical   = true,
+			maximized_horizontal = true,
+			ontop                = true,
+
+			-- Do NOT focus right away.
+			focus                = false,
+
+			-- Titlebars are important because they show whether
+			-- you've 'grabbed the mouse and keyboard'.
+			titlebars_enabled    = true,
+			--icon                 = awesome_icon._native, -- https://stackoverflow.com/a/30379815
 		}
 	},
 	{
@@ -412,6 +426,15 @@ awful.rules.rules       = {
 				return gears.shape.partially_rounded_rect(cc, w, h, tl, tr, br, bl, rad)
 			end,
 		}
+	},
+	{
+		rule       = {
+			class = "kate",
+		},
+		properties = {
+			floating  = true,
+			placement = awful.placement.centered,
+		},
 	},
 }
 -- }}}

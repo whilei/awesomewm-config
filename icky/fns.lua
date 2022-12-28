@@ -10,7 +10,7 @@
 ---------------------------------------------------------------------------
 
 -- c api libs
-local awesome, client              = awesome, client
+local awesome, client, root, mouse = awesome, client, root, mouse
 local os, string, tostring         = os, string, tostring
 
 -- awesome libs
@@ -54,6 +54,7 @@ local _layouts             = {
 local global_fns           = {
 	awesome    = {
 		restart      = awesome.restart,
+		-- show_main_menu = (see below),
 		hotkeys_help = hotkeys_popup.show_help,
 		wibar        = special.toggle_wibar_slim,
 		widgets      = {
@@ -604,8 +605,6 @@ local client_fns           = {
 	}
 }
 
--- }}}
-
 -- init_freedesktop_menu assigns the freedesktop menu to an awful utility object if it has not yet been assigned.
 -- It is safe to call multiple times.
 -- It gets called asyncronously (by awful.spawn.easy_async, see below) so that it does not block the rest of the config
@@ -614,27 +613,46 @@ local client_fns           = {
 local function init_freedesktop_menu()
 	if awful.util.mymainmenu == nil then
 		-- FIXME The notification does not work. Don't know why.
-		local n               = naughty.notification {
-			preset   = naughty.config.presets.normal,
+		print("[build freedesktop] Building freedesktop menu...")
+		print("[build freedesktop] Showing notification about how long its going to take...")
+		n       = naughty.notification {
 			title    = "Building main menu...",
-			message  = "This may take a few seconds...",
+			message  = "This might take a while...",
 			bg       = "#F9C20C",
 			fg       = "#000000",
 			position = "top_middle",
-			timeout  = 10,
+			ontop    = true,
+			timeout  = 12,
 		}
+
+		local w = mouse.current_wibox or mouse.current_client
+		if w then
+			old_cursor, old_wibox = w.cursor, w
+			w.cursor              = "watch"
+		else
+			root.cursor("watch")
+		end
+
 		local start_time      = os.clock()
+		finished              = function()
+			if old_wibox then
+				old_wibox.cursor = old_cursor
+				old_wibox        = nil
+			else
+				root.cursor("arrow")
+			end
+
+			local msg = string.format("Loaded freedesktop main menu in %.2f seconds", os.clock() - start_time)
+			print(msg)
+			-- => 6.27 seconds
+			-- => 6.68 seconds
+			-- => 6.37 seconds
+			if n then
+				n:destroy()
+			end
+		end
 		awful.util.mymainmenu = freedesktop.menu.build {
-			done      = function()
-				local msg = string.format("Loaded freedesktop main menu in %.2f seconds", os.clock() - start_time)
-				print(msg)
-				-- => 6.27 seconds
-				-- => 6.68 seconds
-				-- => 6.37 seconds
-				if n then
-					n:destroy()
-				end
-			end,
+			done      = finished,
 			icon_size = beautiful.menu_height or 18,
 			before    = {
 				{ "Screenshot", {
@@ -685,10 +703,8 @@ global_fns.awesome.show_main_menu = function()
 	awful.util.mymainmenu:show()
 end
 
-awful.spawn.easy_async("sleep 30", function()
-	print("initing freedesktop menu after 30 seconds")
-	init_freedesktop_menu()
-end)
+
+-- }}}
 
 return {
 	global = global_fns,

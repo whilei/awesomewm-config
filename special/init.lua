@@ -224,7 +224,7 @@ local function saved_screenshot(args)
 			bg        = "#ffffff",
 			fg        = "#000000",
 			icon_size = 128,
-			position  = "bottom_middle",
+			position  = "bottom_right",
 		}
 	end
 
@@ -238,7 +238,7 @@ local function saved_screenshot(args)
 			message  = "Screenshot copied to clipboard",
 			bg       = "#058B04",
 			fg       = "#000000",
-			position = "bottom_middle",
+			position = "bottom_right",
 		}
 	end
 
@@ -258,6 +258,8 @@ local function delayed_screenshot(args)
 	local notif = naughty.notification {
 		title    = "Screenshot in:",
 		message  = tostring(args.auto_save_delay) .. " seconds",
+		bg       = "#ffffff",
+		fg       = "#000000",
 		position = "bottom_right",
 	}
 

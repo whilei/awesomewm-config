@@ -197,12 +197,11 @@ local function get_keypath_markup(bound)
 			(hotkeys_label ~= "" and (" " .. hotkeys_label) or "") ..
 			"</span>"
 
-	--local is_submenu_name = n_bindings > 0
-	local is_submenu_name = bound.bindings and #bound.bindings > 0
+	local is_submenu_name = n_bindings > 0
+	--local is_submenu_name = bound.bindings and #bound.bindings > 0
 	if is_submenu_name then
 		action_markup = "<span foreground='" .. config.submenu_color .. "'>" .. "+" .. label .. "</span>"
 	end
-
 	local underline_matches = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	local underline         = "none"
 	if string.find(underline_matches, code, 1, true) then

@@ -170,13 +170,13 @@ lib.global_bindings           = {
 		on_press   = global_fns.client.hints,
 	},
 	{
-		h          = { group = "awesome/snazzy", description = "rofi window", name = "rofi window", },
-		modalities = { "w", m.AWESOME_APPS .. "w" },
+		h          = { group = "awesome/snazzy", description = "rofi window", name = "rofi (window)", },
+		modalities = { "w", m.AWESOME_APPS .. "w", m.FOCUS .. "f" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "Return", }, },
 		on_press   = global_fns.apps.rofi("window"),
 	},
 	{
-		h          = { group = "awesome/snazzy", description = "rofi runner", name = "rofi run", },
+		h          = { group = "awesome/snazzy", description = "rofi runner", name = "rofi (run)", },
 		modalities = { "r", m.AWESOME_APPS .. "R" },
 		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Return", }, },
 		on_press   = global_fns.apps.rofi("run"),
@@ -231,7 +231,7 @@ lib.global_bindings           = {
 	{
 		h          = { group = "awesome/applications", description = "raise or run system settings", name = "system settings", },
 		modalities = { m.APPLICATIONS .. "s" },
-		on_press   = global_fns.apps.run_or_raise("systemsettings"),
+		on_press   = global_fns.apps.run_or_raise("systemsettings5"),
 	},
 	{
 		h          = { group = "awesome/applications", description = "raise or run jetbrains toolbox", name = "jetbrains toolbox", },
@@ -341,7 +341,7 @@ lib.global_bindings           = {
 	{
 		h          = { group = "media", description = "mute volume", name = "volume mute" },
 		hotkeys    = { { mods = { _keys.ALT }, code = "m" } },
-		modalities = { m.MEDIA_VOLUME .. "n" },
+		modalities = { m.MEDIA_VOLUME .. "v" },
 		on_press   = global_fns.media.volume.mute,
 	},
 	-- }}}
@@ -632,7 +632,7 @@ lib.client_bindings           = {
 	},
 	{
 		h          = { group = "special", description = "turn Klack on", name = "klack" },
-		modalities = { "k" },
+		modalities = { m.AWESOME_APPS .. "k" },
 		on_press   = global_fns.special.klack,
 	},
 }

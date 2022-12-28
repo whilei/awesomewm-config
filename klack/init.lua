@@ -20,32 +20,34 @@ klack.stop         = function()
 	klack.kg:stop()
 end
 
-klack.choose_key   = function()
+klack.choose_key   = function(cb_with_choice)
 	local cmd    = "" ..
 			-- Get a list of filenames (file NAMES only).
-			"ls -l klack/sounds/mixkit.com/ | rev | cut -d' ' -f1 | rev " ..
+			"ls -l " ..
+			g_filesystem.get_configuration_dir() .. "klack/sounds/mixkit.com/ " ..
+			"| rev | cut -d' ' -f1 | rev " ..
 			-- And pipe them to Rofi for choosing.
-			"| rofi -dmenu -p 'klack search' -i -location 0" ..
+			"| rofi -dmenu -p 'klack search' -i -location 0 " ..
 			""
 
 	-- NOT asynchronous.
 	local choice = ""
-	a_spawn.with_shell(cmd, function(stdout, stderr, reason, code)
+	a_spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, code)
 		if code ~= 0 then
 			naughty.notification {
 				title   = "klack.choose_key (" .. reason .. ")",
 				text    = "Error: " .. stderr,
 				timeout = 0,
 			}
-			return -- nil
+			cb_with_choice(nil)
+			return
 		end
 		choice = stdout:gsub("\n", "")
+		cb_with_choice(choice)
 	end)
-	return choice
 end
 
 klack.start        = function()
-
 	local play_sound = function(chosen_sound)
 		return function(self, mods, key, event)
 			if event ~= "press" then
@@ -66,7 +68,6 @@ klack.start        = function()
 					"/klack/sounds/" ..
 					"mixkit.com/" ..
 					chosen_sound
-			--"mixkit-typewriter-soft-click-1125.wav"
 
 			a_spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, code)
 				if code ~= 0 then
@@ -81,16 +82,47 @@ klack.start        = function()
 						position = "top_middle",
 						bg       = "#ff0000",
 						fg       = "#ffffff",
+						position = "top_middle",
 					}
 				end
 			end)
 		end
 	end
 
-	klack.kg         = a_keygrabber {
-		autostart           = true,
-		keypressed_callback = play_sound(klack.choose_key())
-	}
+	klack.choose_key(function(choice)
+		if choice == nil then
+			naughty.notification {
+				title    = "no choice made",
+				timeout  = 2,
+				position = "top_middle",
+			}
+			return
+		end
+		naughty.notification {
+			title    = "klack",
+			message  = choice,
+			bg       = "#ffffff",
+			fg       = "#000000",
+			timeout  = 2,
+			position = "top_middle",
+		}
+		klack.kg = a_keygrabber {
+			autostart           = true,
+			keypressed_callback = play_sound(choice),
+			stop_keys           = { "Escape" },
+			stop_callback       = function()
+				naughty.notification {
+					preset   = naughty.config.presets.normal,
+					title    = "klack",
+					text     = "stopped",
+					bg       = "#ff0000",
+					fg       = "#ffffff",
+					timeout  = 2,
+					position = "top_middle",
+				}
+			end
+		}
+	end)
 end
 
 return setmetatable(klack, { __call = function(_, ...)
