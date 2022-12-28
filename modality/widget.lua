@@ -92,6 +92,7 @@ end
 lib.keycode_ui_aliases            = {
 	["return"]      = "RET",
 	["space"]       = "SPC",
+	[" "]           = "SPC",
 	["tab"]         = "TAB",
 	["escape"]      = "ESC",
 	["super_l"]     = "SUPER",

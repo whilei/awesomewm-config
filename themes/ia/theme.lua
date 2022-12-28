@@ -616,7 +616,7 @@ local net_widget = wibox.widget {
 			widget = wibox.widget.textbox,
 		},
 		widget = wibox.container.margin,
-		top    = 6,
+		top    = 3,
 	},
 }
 local net        = lain.widget.net {

@@ -115,13 +115,12 @@ modality.search                     = function()
 			table.insert(keypaths, keypath)
 			table.insert(fns, fn)
 		end
-
 	end
 
-	local cmd = "echo '" ..
-			table.concat(text_lines, "\n") ..
-			"' | " ..
-			get_rofi_cmd(awful.screen.focused())
+	local cmd = "" ..
+			"echo " ..
+			"'" .. table.concat(text_lines, "\n") .. "'" ..
+			" | " .. get_rofi_cmd(awful.screen.focused())
 
 	awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
 		local function error(title, text)
@@ -266,7 +265,7 @@ end
 
 -- format_step_labels formats the step labels (eg. awesome, help, keybindings) into a human-readable string (eg. '( awesome help keybindings )').
 local format_step_labels            = function(step_labels)
-	return string.format("( %s )", table.concat(step_labels, " | "))
+	return string.format("%s", table.concat(step_labels, ": "))
 end
 
 -- format_target_label formats the target label (eg. awesome) into a human-readable string (eg. 'awesome').
@@ -290,7 +289,8 @@ modality.keyboard_key_labels        = {
 
 	-- Thanks again Copilot.
 	--["escape"]  = "⎋ ",
-	--["space"]   = "␣ ",
+	["space"]     = "␣ ",
+	[" "]         = "␣ ",
 	["backspace"] = "⌫ ",
 	["delete"]    = "⌦ ",
 	--["home"]    = "↖ ",
