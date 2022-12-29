@@ -711,20 +711,20 @@ client.connect_signal("request::geometry", function(c, context, ...)
 		-- ignore; I want the world cup in a picture-in-picture type deal
 	else
 		awful.permissions.geometry(c, context, ...)
-		--c.sticky = true
-		--c.ontop = true
-		--local geo
-		--geo = c:geometry()
-		--local geo_scr
-		--geo_scr = c.screen.geometry
-		--
-		--geo.width = geo_scr.width / 4
-		--geo.height = geo_scr.height / 3
-		--
-		--c:geometry(geo)
-		--local f = awful.placement.right + awful.placement.bottom;
-		--f(c)
 	end
+end)
+
+-- {{{ Notifications
+
+ruled.notification.connect_signal('request::rules', function()
+	-- All notifications will match this rule.
+	ruled.notification.append_rule {
+		rule       = { },
+		properties = {
+			screen           = awful.screen.preferred,
+			implicit_timeout = 10,
+		}
+	}
 end)
 
 naughty.connect_signal("request::display", function(n)
