@@ -354,13 +354,13 @@ lib.global_bindings           = {
 	-- {{{ TAGS
 	{
 		h          = { group = "tag", description = "view previous (by index)", name = "previous" },
-		modalities = { m.TAG .. "p~" }, -- stays (it is common to want to move around more than one tag)
+		modalities = { m.TAG .. "p" }, -- stays (it is common to want to move around more than one tag)
 		hotkeys    = { { mods = { _keys.MOD }, code = "Left" } },
 		on_press   = global_fns.tag.prev,
 	},
 	{
 		h          = { group = "tag", description = "view next (by index)", name = "next" },
-		modalities = { m.TAG .. "n~" }, --stays, ditto
+		modalities = { m.TAG .. "n" }, --stays, ditto
 		hotkeys    = { { mods = { _keys.MOD }, code = "Right" } },
 		on_press   = global_fns.tag.next,
 	},
@@ -523,7 +523,7 @@ lib.global_bindings           = {
 	{
 		h          = { group = "power_user", description = "shutdown (=power off)", name = "shutdown" },
 		modalities = { m.POWER_USER .. "X" },
-		on_press   = global_fns.power_user.logout,
+		on_press   = global_fns.power_user.power_off,
 	},
 	{
 		h          = { group = "power_user", description = "reboot", name = "reboot" },

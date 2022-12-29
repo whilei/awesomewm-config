@@ -905,12 +905,17 @@ function theme.at_screen_connect(s)
 
 		self:get_children_by_id("client_icons_role")[1]:reset()
 		local icons = {}
+
 		for _, cl in ipairs(tag:clients()) do
 			-- Exclude clients with a 'handy_id'.
 			-- These are client created via the Handy module,
 			-- which is intended to be HUD/Quake style dropdown/on-demand
 			-- application window.
-			if not cl:get_xproperty("handy_id") or cl:get_xproperty("handy_id") == "" then
+			-- Update: I've now also added a condition against clients with the 'skip_taglist' property.
+			-- I just made this property up (it doesn't exist in the default AwesomeWM codebase),
+			-- and its useful for excluding clients like Quake from the taglist on (re-)startup.
+			if not cl.skip_taglist and (not cl:get_xproperty("handy_id") or cl:get_xproperty("handy_id") == "")
+			then
 				local icon = wibox.widget {
 					{
 						id     = "icon_container",
@@ -931,6 +936,20 @@ function theme.at_screen_connect(s)
 				table.insert(icons, icon)
 			end
 		end
+
+		---- An experiment in having the tag list entry show the client name (a shortened version)
+		---- when there is only one client in the tag. (Instead of the tag name, eg. B3).
+		--if #tag:clients() == 1 then
+		--	local cl          = tag:clients()[1]
+		--	local first_space = cl.name:find(" ")
+		--	if first_space then
+		--		local short_name = cmd:sub(1, first_space)
+		--		self:get_children_by_id("text_role")[1]:set_markup_silently("<span>" .. short_name .. "</span>")
+		--	end
+		--else
+		--	-- reset text_role to normal
+		--end
+
 		self:get_children_by_id("client_icons_role")[1].children = icons
 	end
 

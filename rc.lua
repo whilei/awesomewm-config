@@ -118,7 +118,6 @@ tag.connect_signal("request::default_layouts",
 						   _layouts.tiler,
 						   _layouts.swen,
 						   lain.layout.centerwork,
-						   awful.layout.suit.magnifier,
 						   awful.layout.suit.floating,
 					   }
 				   end)
@@ -382,12 +381,12 @@ ruled.client.append_rules {
 	-- This rule tries to keep quake out of the tag list and tasklist.
 	{
 		rule       = {
-			class    = "konsole",
 			instance = "q-xterm-konsole",
 		},
 		properties = {
 			skip_taskbar = true,
-		}
+			skip_taglist = true,
+		},
 	},
 	{
 		rule       = {
@@ -449,13 +448,22 @@ client.connect_signal("manage",
 							  awful.placement.no_offscreen(c)
 						  end
 
-						  -- Hide Handy clients after an awesome restart.
 						  if awesome.startup then
+							  -- Hide Handy clients after an awesome restart.
 							  local x_handy = c:get_xproperty("handy_id")
 							  if x_handy and x_handy ~= "" then
-								  c.hidden  = true
-								  c.visible = false
+								  c.hidden       = true
+								  c.visible      = false
+								  c.skip_taskbar = true
 							  end
+
+							  ---- Make sure Quake doesn't get put in the taglist entry.
+							  --if c.instance == "q-xterm-konsole" then
+							  --  c.hidden       = true
+							  --  c.visible      = false
+							  --  c.skip_taskbar = true
+							  --end
+
 						  end
 					  end)
 
@@ -691,8 +699,6 @@ client.connect_signal("request::geometry", function(c, context, ...)
 		--f(c)
 	end
 end)
-
-
 
 --
 --client.connect_signal("property::fullscreen", function(c)
