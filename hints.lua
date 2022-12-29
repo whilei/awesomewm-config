@@ -84,6 +84,7 @@ function hints.focus()
 		if hintindex[key] then
 			client.focus = hintindex[key]
 			hintindex[key]:raise()
+			awful.client.jumpto(hintindex[key])
 		end
 		for i, j in pairs(hintindex) do
 			hints.hintbox[i].visible = false

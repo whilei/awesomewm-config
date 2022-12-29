@@ -76,7 +76,7 @@ local m                       = {
 	SWAP              = "p~:swap,",
 	POWER_USER        = "P:power-user,",
 	SCREEN            = "s:screen,",
-	SCREEN_SHOT       = "s:screen,s:screenshot,",
+	SCREEN_SHOT       = "s:screen,S:screenshot,",
 	--SPECIAL           = "z:special,",
 	TAG               = "t:tag,",
 	TAG_USELESS       = "t:tag,u~:useless,", -- stays
@@ -457,9 +457,14 @@ lib.global_bindings           = {
 	-- {{{ SCREEN
 	{
 		h          = { group = "screen", description = "focus next screen", name = "focus next screen" },
-		modalities = { "$", m.SCREEN .. "n" },
+		modalities = { "$", m.SCREEN .. "n", m.SCREEN .. "s" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "u" } },
 		on_press   = global_fns.screen.next,
+	},
+	{
+		h          = { group = "screen", description = "focus prev screen", name = "focus prev screen" },
+		modalities = { m.SCREEN .. "p" },
+		on_press   = global_fns.screen.prev,
 	},
 	{
 		h          = { group = "screen", description = "invert colors with xrandr", name = "invert colors" },
@@ -641,7 +646,9 @@ lib.client_bindings           = {
 	},
 }
 
--- TODO Set these up with modality.
+-- TODO Have modality be able to handle keygroups (see awful.keygroups, awful.keygroup, awful.key).
+-- BTW
+-- FIXME
 local function install_global_tag_fns_by_index()
 
 	-- Bind all key numbers to tags.
@@ -670,8 +677,9 @@ local function install_global_tag_fns_by_index()
 			if client.focus then
 				local tag = client.focus.screen.tags[i]
 				if tag then
+					local c = client.focus
 					client.focus:move_to_tag(tag)
-					return tag
+					return c
 				end
 			end
 		end
@@ -680,51 +688,55 @@ local function install_global_tag_fns_by_index()
 		-- fn_move_client_to_tag_and_go moves the client to the tag
 		-- and then switches to that tag.
 		local fn_move_client_to_tag_and_go = function()
-			local t = fn_move_client_to_tag()
-			if t then
-				t:view_only()
+			if client.focus then
+				local tag = client.focus.screen.tags[i]
+				if tag then
+					local c = client.focus
+					client.focus:move_to_tag(tag)
+					awful.client.jumpto(c, false)
+				end
 			end
 		end
-		modality.register(m.CLIENT_MOVE .. "T:to tag (and switch)," .. i .. ":move to tag " .. i .. " and switch to it", fn_move_client_to_tag)
+		modality.register(m.CLIENT_MOVE .. "T:to tag (and switch)," .. i .. ":move to tag " .. i .. " and switch to it", fn_move_client_to_tag_and_go)
 
-		awful.keyboard.append_global_keybindings({
-													 -- View tag only.
-													 awful.key({ _keys.MOD },
-															   "#" .. i + 9,
-															   fn_view_tag,
-															   descr_view),
+		awful.keyboard.append_global_keybindings {
+			-- View tag only.
+			awful.key({ _keys.MOD },
+					  "#" .. i + 9,
+					  fn_view_tag,
+					  descr_view),
 
-													 ---- Toggle tag display.
-													 --awful.key({ _keys.MOD, _keys.CTRL },
-													 --	   "#" .. i + 9,
-													 --	   function()
-													 --		   local screen = awful.screen.focused()
-													 --		   local tag    = screen.tags[i]
-													 --		   if tag then
-													 --			   awful.tag.viewtoggle(tag)
-													 --		   end
-													 --	   end,
-													 --	   descr_toggle),
+			---- Toggle tag display.
+			--awful.key({ _keys.MOD, _keys.CTRL },
+			--	   "#" .. i + 9,
+			--	   function()
+			--		   local screen = awful.screen.focused()
+			--		   local tag    = screen.tags[i]
+			--		   if tag then
+			--			   awful.tag.viewtoggle(tag)
+			--		   end
+			--	   end,
+			--	   descr_toggle),
 
-													 -- Move client to tag.
-													 awful.key({ _keys.MOD, _keys.SHIFT },
-															   "#" .. i + 9,
-															   fn_move_client_to_tag,
-															   descr_move),
+			-- Move client to tag.
+			awful.key({ _keys.MOD, _keys.SHIFT },
+					  "#" .. i + 9,
+					  fn_move_client_to_tag,
+					  descr_move),
 
-													 -- Toggle tag on focused client.
-													 --awful.key({ _keys.MOD, _keys.CTRL, _keys.SHIFT },
-													 --	   "#" .. i + 9,
-													 --	   function()
-													 --		   if client.focus then
-													 --			   local tag = client.focus.screen.tags[i]
-													 --			   if tag then
-													 --				   client.focus:toggle_tag(tag)
-													 --			   end
-													 --		   end
-													 --	   end,
-													 --	   descr_toggle_focus),
-												 })
+			-- Toggle tag on focused client.
+			--awful.key({ _keys.MOD, _keys.CTRL, _keys.SHIFT },
+			--	   "#" .. i + 9,
+			--	   function()
+			--		   if client.focus then
+			--			   local tag = client.focus.screen.tags[i]
+			--			   if tag then
+			--				   client.focus:toggle_tag(tag)
+			--			   end
+			--		   end
+			--	   end,
+			--	   descr_toggle_focus),
+		}
 	end
 end
 

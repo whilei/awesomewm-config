@@ -291,6 +291,17 @@ clientbuttons           = a_util_table.join(
 		end
 		))
 
+---- This is an idea about setting up global mouse button bindings.
+---- Maybe something with the back/forward buttons? Scroll?
+---- https://awesomewm.org/doc/api/libraries/mouse.html
+--root.buttons(a_util_table.join(
+--		awful.button({ modkey }, 3, function()
+--			awful.util.mymainmenu:toggle()
+--		end),
+--		awful.button({ modkey }, 4, awful.tag.viewnext),
+--		awful.button({ modkey }, 5, awful.tag.viewprev)
+--		))
+
 -- }}}
 
 -- The original Konsole icon was a bell.
@@ -401,8 +412,8 @@ ruled.client.append_rules {
 			-- Do NOT focus right away.
 			focus                = false,
 
-			-- Titlebars are important because they show whether
-			-- you've 'grabbed the mouse and keyboard'.
+			-- Titlebars are important because they indicate to the user whether
+			-- you've 'grabbed the mouse and keyboard', ie. have focus on a client.
 			titlebars_enabled    = true,
 			--icon                 = awesome_icon._native, -- https://stackoverflow.com/a/30379815
 		}
@@ -425,6 +436,14 @@ ruled.client.append_rules {
 			placement = awful.placement.centered,
 		},
 	},
+	{
+		rule       = { class = "jetbrains-toolbox", },
+		properties = {
+			minimized = true,
+			floating  = false,
+			focus     = false, -- This thing never works quite right for me.
+		}
+	}
 }
 -- }}}
 

@@ -17,6 +17,37 @@
 - [ ] Group modality keypaths when they have duplicated functions.
   - I am realizing that I want a key/path:function system that is function-centric, rather than binding or keypath centric.
 
+
+- [ ] modality: run previous command (abstracts to history?)
+- [ ] jetbrains-toolbox
+
+- [ ] client:mouse stateful memory:
+
+i use the keyboard to move the mouse around because i use it to shift focus
+my mouse does not always behave like i expect it to
+i would like it to always show up where i last left it for each client
+instead of moving to the middle of it
+or not coming with me when i switch screens with hints
+or not coming with me when i cycle through client.focus history with awesome
+or not allowing me to minimize clients?
+or not allowing me to move tags on a screen once i've move to a new screen
+ because i'm actually still focused, maybe, somehow on the original screen (mouse left behind?)
+
+horizontal magnifier
+places the current client in a magnified window
+where my current mouse location in the client
+is placed in the center of the screen
+offscreen allowed
+client should remain centered and maximized vertically
+
+
+modes
+fears: debug mode
+territorial: move mouse anywhere in three moves
+
+give a visual indication if awesome is running via awmtt or not
+
+
 ---
 
 WTF
@@ -32,4 +63,10 @@ But `bound.bindings` and `bound.hotkeys` are nil.
 alignment does not work properly for the formatting of the `textlines` that are used to represent functions and keybindings
 in the search menu (here, `rofi`).
 
-`develop.sh` is not live reloading anymore. wtf
+
+opacity does not work on my computer at all
+i installed picom recently
+
+awesome watch self for reloadable, then
+load
+

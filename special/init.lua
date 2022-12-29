@@ -87,7 +87,7 @@ local reader_view_tall             = function(cc)
 end
 
 -- fancy_float_toggle places the currently focused client nicely in front of me.
-local fancy_float_toggle           = function(cc)
+local reader_view                  = function(cc)
 	local c = client.focus
 	if not c then
 		return
@@ -376,7 +376,7 @@ return {
 	toggle_wibar_slim            = toggle_wibar_slim,
 	toggle_wibar_worldtimes      = toggle_wibar_worldtimes,
 	reader_view_tall             = reader_view_tall,
-	fancy_float                  = fancy_float_toggle,
+	fancy_float                  = reader_view,
 	inspect_client               = inspect_client,
 	saved_screenshot             = saved_screenshot,
 	delayed_screenshot           = delayed_screenshot,
