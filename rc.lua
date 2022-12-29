@@ -699,12 +699,12 @@ end)
 --awful.ewmh.add_activate_filter(function() return false end, "rules")
 
 ---- https://stackoverflow.com/questions/44571965/awesome-wm-applications-fullscreen-mode-without-taking-whole-screen
-client.disconnect_signal("request::geometry", awful.ewmh.geometry)
+client.disconnect_signal("request::geometry", awful.permissions.geometry)
 client.connect_signal("request::geometry", function(c, context, ...)
 	if context == "fullscreen" and c.sticky then
 		-- ignore; I want the world cup in a picture-in-picture type deal
 	else
-		awful.ewmh.geometry(c, context, ...)
+		awful.permissions.geometry(c, context, ...)
 		--c.sticky = true
 		--c.ontop = true
 		--local geo
