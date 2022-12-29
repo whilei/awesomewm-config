@@ -1,11 +1,11 @@
 --[[
 
      Awesome WM configuration template
-     github.com/lcpz
+     github.com/whilei
 
 --]]
 
--- awesome_mode: api-level=4:screen=on
+-- awesome_mode: api-level=5:screen=on
 -- If LuaRocks is installed, make sure that packages installed through it are
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
@@ -49,11 +49,11 @@ special_log_load_time("requirements")
 -- {{{ Error handling
 special_log_load_time_reset()
 if awesome.startup_errors then
-	naughty.notify({
-					   preset = naughty.config.presets.critical,
-					   title  = "Awesome errored during startup",
-					   text   = awesome.startup_errors
-				   })
+	naughty.notification {
+		preset  = naughty.config.presets.critical,
+		title   = "Awesome errored during startup",
+		message = awesome.startup_errors
+	}
 end
 
 do
@@ -65,11 +65,11 @@ do
 							   end
 							   in_error = true
 
-							   naughty.notify({
-												  preset = naughty.config.presets.critical,
-												  title  = "Awesome error",
-												  text   = tostring(err)
-											  })
+							   naughty.notification {
+								   preset  = naughty.config.presets.critical,
+								   title   = "Awesome error",
+								   message = tostring(err)
+							   }
 							   in_error = false
 						   end)
 end
@@ -81,15 +81,15 @@ if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
 
-awful.spawn.easy_async("picom -b", function(stdout, stderr, reason, code)
-	if code ~= 0 then
-		naughty.notification {
-			preset = naughty.config.presets.critical,
-			title  = "picom errored: " .. reason,
-			text   = stderr
-		}
-	end
-end)
+--awful.spawn.easy_async("picom -b", function(stdout, stderr, reason, code)
+--	if code ~= 0 then
+--		naughty.notification {
+--			preset = naughty.config.presets.critical,
+--			title  = "picom errored: " .. reason,
+--			text   = stderr
+--		}
+--	end
+--end)
 
 special_log_load_time("started picom")
 

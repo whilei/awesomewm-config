@@ -50,12 +50,13 @@ echo ":: Tailing ${log_file} in background..."
 (
   tail -F "${log_file}" |
     while read -r line; do
-      if [[ ${line} =~ "error:" ]] ||
-        [[ ${line} =~ "Failed" ]] ||
-        [[ ${line} =~ " E: " ]]; then
+      if [[ ${line} =~ " E: " ]] ||
+        [[ ${line} =~ "error:" ]] ||
+        [[ ${line} =~ "Failed" ]]
+        then
         # notify-send "AwesomeWM" "$line"
         echo -e "${awesome_prefix} ${ERROR_COLOR}${line}${NC}"
-      elif [[ ${line} =~ "stack trace" ]] || [[ ${line} =~ ' W: ' ]]; then
+      elif [[ ${line} =~ ' W: ' ]] || [[ ${line} =~ "stack trace" ]]; then
         echo -e "${awesome_prefix} ${WARNING_COLOR}${line}${NC}"
       else
         echo -e "${awesome_prefix} ${line}"
