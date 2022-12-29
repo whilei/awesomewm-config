@@ -319,7 +319,7 @@ local function raise(client_rules)
 			return ruled.client.match(c, client_rules)
 		end
 		for c in awful.client.iterate(filter) do
-			awful.client.jumpto(c, false)
+			c:jump_to(false)
 			return -- early because there can/should be only one
 		end
 

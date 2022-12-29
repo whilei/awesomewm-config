@@ -27,10 +27,10 @@ NC='\033[0m'
 ERROR_COLOR="${RED}"
 WARNING_COLOR="${YELLOW}"
 
-# awesome_prefix is the prefix printed before each log line from the log file.
+# AWESOME_LOG_PREFIX is the prefix printed before each log LINE from the log file.
 # The tells the reader that the lines are coming from awesome,
 # and not from the (this) script itself.
-awesome_prefix="${LIGHT_BLUE}|${NC}"
+AWESOME_LOG_PREFIX="${LIGHT_BLUE}|${NC} "
 
 # ------------------------------------------------------------------------------
 
@@ -49,33 +49,33 @@ echo ":: Tailing ${log_file} in background..."
 # that make it a little easier to grok traces.
 (
   tail -F "${log_file}" |
-    while read -r line; do
-      if [[ ${line} =~ " E: " ]] ||
-        [[ ${line} =~ "error:" ]] ||
-        [[ ${line} =~ "Failed" ]]
+    while read -r LINE; do
+      if [[ ${LINE} =~ ' E: ' ]] ||
+        [[ ${LINE} =~ 'error:' ]] ||
+        [[ ${LINE} =~ 'Failed' ]]
         then
-        # notify-send "AwesomeWM" "$line"
-        echo -e "${awesome_prefix} ${ERROR_COLOR}${line}${NC}"
-      elif [[ ${line} =~ ' W: ' ]] || [[ ${line} =~ "stack trace" ]]; then
-        echo -e "${awesome_prefix} ${WARNING_COLOR}${line}${NC}"
+        # notify-send "AwesomeWM" "$LINE"
+        echo -e "${AWESOME_LOG_PREFIX}${ERROR_COLOR}${LINE}${NC}"
+      elif [[ ${LINE} =~ ' W: ' ]] || [[ ${LINE} =~ 'stack trace' ]]; then
+        echo -e "${AWESOME_LOG_PREFIX}${WARNING_COLOR}${LINE}${NC}"
       else
-        echo -e "${awesome_prefix} ${line}"
+        echo -e "${AWESOME_LOG_PREFIX}${LINE}"
       fi
     done
 ) &
-tail_pid=$!
-echo ":: Tail subshell PID: ${tail_pid}"
+TAIL_PID=$!
+echo ":: Tail subshell PID: ${TAIL_PID}"
 
 # ------------------------------------------------------------------------------
 
 echo ":: Starting awesome emulator..."
 
-size_width=$((1920 - 4))
-size_height=$((1080 - 4 - 32))
+SIZE_HEIGHT=$((1920 - 4))
+SIZE_WIDTH=$((1080 - 4 - 32))
 
 time awmtt start --notest -C /home/ia/dev/awesomeWM/awesome/awesomei/rc.lua \
   --display 1 \
-  --size ${size_width}x${size_height} >"${log_file}" 2>&1
+  --size ${SIZE_HEIGHT}x${SIZE_WIDTH} >"${log_file}" 2>&1
 
 trap 'awmtt stop' SIGINT SIGTERM EXIT
 
@@ -83,9 +83,9 @@ trap 'awmtt stop' SIGINT SIGTERM EXIT
 
 # Plan to show me the running 'awesome' procs when I exit
 # so I can confirm that only my actual current awesome session is running.
-cmd_show_awesome_procs='echo :: Remaining awesome procs:;'
-cmd_show_awesome_procs+='ps aux | grep -v grep | grep -i -e VSZ -e awesome'
-trap "${cmd_show_awesome_procs}" EXIT
+CMD_SHOW_AWESOME_PROCS='echo :: Remaining awesome procs:;'
+CMD_SHOW_AWESOME_PROCS+='ps aux | grep -v grep | grep -i -e VSZ -e awesome'
+trap "${CMD_SHOW_AWESOME_PROCS}" EXIT
 
 echo ":: Starting recursive file watcher for live reload..."
 

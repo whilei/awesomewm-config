@@ -81,15 +81,19 @@ if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
 
---awful.spawn.easy_async("picom -b", function(stdout, stderr, reason, code)
---	if code ~= 0 then
---		naughty.notification {
---			preset = naughty.config.presets.critical,
---			title  = "picom errored: " .. reason,
---			text   = stderr
---		}
---	end
---end)
+local compositor_cmd = "picom -b" -- -b makes it a daemon
+awful.spawn.easy_async(compositor_cmd, function(stdout, stderr, reason, code)
+	if code ~= 0 then
+		naughty.notification {
+			preset  = naughty.config.presets.normal,
+			title   = "'" .. compositor_cmd .. "'" .. " errored: " ..
+					"code=" .. tostring(code) .. " " ..
+					"reason=" .. tostring(reason) ..
+					"",
+			message = "stderr=\n" .. stderr,
+		}
+	end
+end)
 
 special_log_load_time("started picom")
 

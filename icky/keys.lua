@@ -625,12 +625,12 @@ lib.client_bindings           = {
 
 	-- specialty items
 	{
-		h        = { group = "special.client", description = "reader view (tall)", name = "reader (tall)" },
+		h        = { group = "special.client", description = "reader view (tall)", name = "reader view (tall)" },
 		hotkeys  = { { mods = { _keys.MOD, _keys.CTRL, _keys.SHIFT, }, code = "space" } },
 		on_press = client_fns.special.reader_view_tall,
 	},
 	{
-		h          = { group = "special.client", description = "toggle fancy float position", name = "fancy float" },
+		h          = { group = "special.client", description = "toggle reader view", name = "reader view" },
 		modalities = { "!" },
 		on_press   = client_fns.special.reader_view,
 	},
@@ -693,7 +693,7 @@ local function install_global_tag_fns_by_index()
 				if tag then
 					local c = client.focus
 					client.focus:move_to_tag(tag)
-					awful.client.jumpto(c, false)
+					c:jump_to(false)
 				end
 			end
 		end
@@ -764,32 +764,6 @@ function lib.init()
 
 		k.modalities = b.modalities
 		return k
-
-		-- Commented here is WIP from trying to handle keygroups correctly.
-		--local k = awful.key(
-		--		(hk.mods or { hk[1] }),
-		--		((hk.code or hk.key_group) or hk[2]),
-		--		b.on_press,
-		--		b.on_release,
-		--		b.h)
-
-		--local args = {
-		--	modifiers   = (hk.mods or { hk[1] }),
-		--	on_press    = b.on_press,
-		--	on_release  = b.on_release,
-		--	name        = b.h.name,
-		--	description = b.h.description,
-		--	group       = b.h.group
-		--}
-
-		--if hk.key_group ~= nil then
-		--	args.keygroup = hk.key_group
-		--else
-		--	args.key = (hk.code or hk[2])
-		--end
-
-
-		--local k = awful.key { args }
 	end
 
 	local function register_awful_binding(scope, b, hk)
