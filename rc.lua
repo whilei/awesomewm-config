@@ -23,7 +23,7 @@ package.path                                                = package.path .. ";
 
 local awful                                                 = require("awful")
 local g_table                                               = gears.table or awful.util.table -- 4.{0,1} compatibility
-local _                                                     = require("awful.autofocus")
+--local _                                                     = require("awful.autofocus")
 local wibox                                                 = require("wibox")
 local beautiful                                             = require("beautiful")
 local naughty                                               = require("naughty")
@@ -264,7 +264,19 @@ screen.connect_signal("property::geometry",
 							  if type(wallpaper) == "function" then
 								  wallpaper = wallpaper(s)
 							  end
-							  gears.wallpaper.maximized(wallpaper, s, true)
+							  awful.wallpaper {
+								  screen = s,
+								  widget = {
+									  {
+										  image  = wallpaper,
+										  resize = true,
+										  widget = wibox.widget.imagebox,
+									  },
+									  valign = "center",
+									  halign = "center",
+									  widget = wibox.container.place,
+								  },
+							  }
 						  end
 					  end)
 

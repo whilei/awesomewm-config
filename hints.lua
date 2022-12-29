@@ -50,7 +50,8 @@ function hints.init()
 		letterbox[char]            = wibox.widget.textbox()
 		letterbox[char]:set_markup("<span color=\"" .. "#ffffff" .. "\"" .. ">" .. char.upper(char) .. "</span>")
 		letterbox[char]:set_font("dejavu sans mono 40")
-		letterbox[char]:set_align("center")
+		letterbox[char]:set_halign("center")
+		letterbox[char]:set_valign("center")
 		hints.hintbox[char]:set_widget(letterbox[char])
 	end
 end

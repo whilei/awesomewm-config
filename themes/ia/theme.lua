@@ -34,7 +34,7 @@ local os                          = {
 	execute = os.execute,
 	remove  = os.remove,
 }
-local my_table                    = awful.util.table or gears.table -- 4.{0,1} compatibility
+local my_table                    = gears.table or awful.util.table -- 4.{0,1} compatibility
 
 local theme                       = {}
 theme.dir                         = gears.filesystem.get_configuration_dir() .. "themes/ia"
@@ -742,7 +742,19 @@ function theme.at_screen_connect(s)
 		wallpaper = wallpaper(s)
 	end
 	--gears.wallpaper.maximized(wallpaper, s, false)
-	gears.wallpaper.fit(wallpaper, s)
+	awful.wallpaper {
+		screen = s,
+		widget = {
+			{
+				image  = wallpaper,
+				resize = true,
+				widget = wibox.widget.imagebox,
+			},
+			valign = "center",
+			halign = "center",
+			widget = wibox.container.place,
+		},
+	}
 
 	special_log_load_time("wallpaper")
 
@@ -835,9 +847,8 @@ function theme.at_screen_connect(s)
 
 	-- Create an imagebox widget which will contains an icon indicating which layout we're using.
 	-- We need one layoutbox per screen.
-	s.mylayoutbox = awful.widget.layoutbox(s)
+	s.mylayoutbox = awful.widget.layoutbox { screen = s }
 	special_log_load_time("widget: layoutbox")
-
 
 	-- I think this is assigning buttons to keystrokes
 	-- awful.button:new (mod, _button, press, release)
@@ -1037,7 +1048,7 @@ function theme.at_screen_connect(s)
 	}
 
 	-- Create a tasklist widget
-	local function list_update(w, buttons, label, data, objects)
+	local function my_tasklist_updater(w, buttons, label, data, objects)
 		--common.list_update(w, buttons, label, data, objects)
 		my_commonlist_update(w, buttons, label, data, objects)
 		if not s.is_tv then
@@ -1156,13 +1167,15 @@ function theme.at_screen_connect(s)
 	end
 
 	-- awful.widget.tasklist()
-	s.mytasklist       = awful.widget.tasklist(
-			s, -- screen
-			awful.widget.tasklist.filter.currenttags, -- filter
-			awful.util.tasklist_buttons, -- buttons
-			nil,
-			list_update -- update function
-	)
+	s.mytasklist       = awful.widget.tasklist {
+		screen          = s, -- screen
+		filter          = awful.widget.tasklist.filter.currenttags, -- filter
+		buttons         = awful.util.tasklist_buttons, -- buttons
+		style           = nil,
+		update_function = my_tasklist_updater,
+		--create_callback = my_tasklist_updater,
+		--update_callback = my_tasklist_updater, -- update function
+	}
 
 
 	-- Create the wibox
