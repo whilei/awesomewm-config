@@ -1172,7 +1172,7 @@ function theme.at_screen_connect(s)
 		height            = 18,
 		bg                = theme.bg_normal,
 		fg                = theme.fg_normal,
-		opacity           = 0.5,
+		opacity           = 1,
 		visible           = true,
 		restrict_workarea = true, -- Allow or deny the tiled client to cover the wibar.
 		margins           = { left = 0, right = 0, top = 0, bottom = dpi(5) },
@@ -1274,6 +1274,7 @@ function theme.at_screen_connect(s)
 		ontop        = true,
 		border_width = 0,
 		border_color = "#0000ff",
+		opacity      = 0.6,
 	}
 
 	client.connect_signal("focus", function(c)

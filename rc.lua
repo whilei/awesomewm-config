@@ -81,6 +81,18 @@ if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
 
+awful.spawn.easy_async("picom -b", function(stdout, stderr, reason, code)
+	if code ~= 0 then
+		naughty.notification {
+			preset = naughty.config.presets.critical,
+			title  = "picom errored: " .. reason,
+			text   = stderr
+		}
+	end
+end)
+
+special_log_load_time("started picom")
+
 
 -- {{{ Variable definitions
 
@@ -324,16 +336,13 @@ ruled.client.append_rules {
 	{
 		rule       = {},
 		properties = {
-			--border_width     = beautiful.border_width,
-			--border_color     = beautiful.border_color_normal,
 			focus            = awful.client.focus.filter,
 			raise            = true,
 			keys             = icky_keys.get_client_awful_keys(),
 			buttons          = clientbuttons,
 			screen           = awful.screen.preferred, --.focused(),
-			-- placement = awful.placement.no_overlap + awful.placement.no_offscreen,
-			placement        = awful.placement.no_offscreen,
-			size_hints_honor = false
+			placement        = awful.placement.no_offscreen + awful.placement.no_overlap,
+			size_hints_honor = true
 		}
 	},
 	-- Titlebars

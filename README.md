@@ -47,6 +47,11 @@ territorial: move mouse anywhere in three moves
 
 give a visual indication if awesome is running via awmtt or not
 
+```
+picom [-b = daemon] [-c = shadow effects]
+```
+
+https://wiki.archlinux.org/title/Picom
 
 ---
 

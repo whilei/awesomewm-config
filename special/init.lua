@@ -114,8 +114,6 @@ local reader_view                  = function(cc)
 		c:geometry(c.was_geometry)
 		c.was_geometry = nil
 
-		c:raise()
-		client.focus = c
 		return
 	end
 
