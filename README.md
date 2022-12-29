@@ -65,6 +65,11 @@ awesome watch self for reloadable, then load
 
 ## wtf known bugs
 
+`naughty.notification` does not always show me notifications.
+see the attempt to send notification in `icky.fns.screenshot.delayed`, which does not show up at all.
+see the awful.util.mainmenu freedesktop builder function, the "your menu is loading..." notification does not show up at all either.
+the issue may be related to "blocking" by adjacent widget actions.
+
 Modality:
 The modality widget does not get the parent.bindings[code].bindings object (a tree) that I expect it to.
 The object that the widget gets (`parent`) does not have (access to?) any of the objects fields that are tables.

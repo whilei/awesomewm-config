@@ -67,9 +67,14 @@ theme.master_width_factor                       = 0.7
 
 theme.notification_position                     = "top_middle"
 
---theme.font                                      = "xos4 Terminus 9"
+theme.font_biggest                              = "monospace 16"
+theme.font_bigger                               = "monospace 12"
+theme.font_big                                  = "monospace 10"
 theme.font                                      = "monospace 9"
-theme.font_small                                = "monospace 6"
+theme.font_small                                = "monospace 8"
+theme.font_smaller                              = "monospace 7"
+theme.font_smallest                             = "monospace 6"
+
 theme.color_white                               = "#FFFFFF"
 theme.color_green                               = "#2EFE2E"
 theme.color_yellow                              = "#FFFF00"
@@ -577,22 +582,25 @@ local function bitsToSize(bits)
 	if type(bits) == "string" then
 		bits = tonumber(bits)
 	end
-	precision = 2
+	precision = 0
 	kilobit   = 1024;
 	megabit   = kilobit * 1024;
 	gigabit   = megabit * 1024;
 	terabit   = gigabit * 1024;
 
 	if ((bits >= kilobit) and (bits < megabit)) then
-		return round(bits / kilobit, precision), 'Kbit/s';
+		return round(bits / kilobit, precision), 'Kb/s';
 	elseif ((bits >= megabit) and (bits < gigabit)) then
-		return round(bits / megabit, precision), 'Mbit/s';
+		precision = 2
+		return round(bits / megabit, precision), 'Mb/s';
 	elseif ((bits >= gigabit) and (bits < terabit)) then
-		return round(bits / gigabit, precision), 'Gbit/s';
+		precision = 2
+		return round(bits / gigabit, precision), 'Gb/s';
 	elseif (bits >= terabit) then
-		return round(bits / terabit, precision), 'Tbit/s';
+		precision = 2
+		return round(bits / terabit, precision), 'Tb/s';
 	else
-		return round(bits, precision), 'bps';
+		return round(bits, precision), 'b/s';
 	end
 end
 
@@ -624,10 +632,18 @@ local net        = lain.widget.net {
 		-- 🠉 🠋 ↥ ⇅
 
 		local n_bits, units_str = bitsToSize(net_now.sent)
-		widget:get_children_by_id("up")[1]:set_markup(markup.font(theme.font, markup("#fcc9ff", "" .. tostring(n_bits) .. "" .. units_str)))
+		widget:get_children_by_id("up")[1]:set_markup(markup.font(theme.font,
+																  markup("#fcc9ff",
+																		 "" .. tostring(n_bits) ..
+																				 "" ..
+																				 markup.font(theme.font_small, units_str))))
 
 		n_bits, units_str = bitsToSize(net_now.received)
-		widget:get_children_by_id("dn")[1]:set_markup(markup.font(theme.font, markup("#2ECCFA", "" .. tostring(n_bits) .. "" .. units_str)))
+		widget:get_children_by_id("dn")[1]:set_markup(markup.font(theme.font,
+																  markup("#2ECCFA",
+																		 "" .. tostring(n_bits) ..
+																				 "" ..
+																				 markup.font(theme.font_small, units_str))))
 
 	end
 }
