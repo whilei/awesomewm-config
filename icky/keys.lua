@@ -632,7 +632,7 @@ lib.client_bindings           = {
 	{
 		h          = { group = "special.client", description = "toggle fancy float position", name = "fancy float" },
 		modalities = { "!" },
-		on_press   = client_fns.special.fancy_float,
+		on_press   = client_fns.special.reader_view,
 	},
 	{
 		h          = { group = "special", description = "raise Discord window", name = "raise Discord" },

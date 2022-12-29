@@ -86,27 +86,31 @@ local reader_view_tall             = function(cc)
 	c:raise()
 end
 
--- fancy_float_toggle places the currently focused client nicely in front of me.
+-- reader_view_toggle places the currently focused client nicely in front of me.
 local reader_view                  = function(cc)
 	local c = client.focus
 	if not c then
 		return
 	end
 
-	local turning_off = c.fancy_floating ~= nil
+	local turning_off = c.reader_viewing ~= nil
 
 	if turning_off then
-		c.fancy_floating  = nil
+		c.reader_viewing        = nil
 
-		c.screen          = c.original_screen or awful.screen.focused()
-		c.original_screen = nil
+		c.screen                = c.original_screen or awful.screen.focused()
+		c.original_screen       = nil
 
-		c.floating        = c.was_floating or false
-		c.was_floating    = nil
-		c.maximized       = c.was_maximized or false
-		c.was_maximized   = nil
-		c.ontop           = c.was_ontop
-		c.was_ontop       = nil
+		c.floating              = c.was_floating or false
+		c.was_floating          = nil
+		c.maximized             = c.was_maximized or false
+		c.was_maximized         = nil
+		c.ontop                 = c.was_ontop
+		c.was_ontop             = nil
+		c.border_color          = c.original_border_color
+		c.border_width          = c.original_border_width
+		c.original_border_color = nil
+		c.original_border_width = nil
 		c:geometry(c.was_geometry)
 		c.was_geometry = nil
 
@@ -116,17 +120,22 @@ local reader_view                  = function(cc)
 	end
 
 	-- Else: turning ona
-	c.fancy_floating  = true
+	c.reader_viewing        = true
 
-	c.was_geometry    = c:geometry()
-	c.was_floating    = c.floating
-	c.was_maximized   = c.maximized
-	c.was_ontop       = c.ontop
-	c.original_screen = c.screen or awful.screen.focused()
+	c.was_geometry          = c:geometry()
+	c.original_screen       = c.screen or awful.screen.focused()
 
-	c.maximized       = false
-	c.floating        = true
-	c.ontop           = true
+	c.was_maximized         = c.maximized
+	c.maximized             = false
+	c.was_floating          = c.floating
+	c.floating              = true
+	c.was_ontop             = c.ontop
+	c.ontop                 = true
+	c.original_border_color = c.border_color
+	c.border_color          = "#ffffff"
+	c.original_border_width = c.border_width
+	c.border_width          = 3
+
 
 	-- Move to TV screen.
 	if not c.screen.is_tv then
@@ -376,7 +385,7 @@ return {
 	toggle_wibar_slim            = toggle_wibar_slim,
 	toggle_wibar_worldtimes      = toggle_wibar_worldtimes,
 	reader_view_tall             = reader_view_tall,
-	fancy_float                  = reader_view,
+	reader_view                  = reader_view,
 	inspect_client               = inspect_client,
 	saved_screenshot             = saved_screenshot,
 	delayed_screenshot           = delayed_screenshot,

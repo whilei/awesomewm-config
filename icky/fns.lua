@@ -613,7 +613,7 @@ local client_fns           = {
 	},
 	special    = {
 		reader_view_tall = special.reader_view_tall,
-		fancy_float      = special.fancy_float,
+		reader_view      = special.reader_view,
 	}
 }
 
