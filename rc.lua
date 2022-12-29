@@ -22,7 +22,7 @@ local prefix                                                = gears.filesystem.g
 package.path                                                = package.path .. ";" .. prefix .. "?.lua;" .. prefix .. "?/init.lua"
 
 local awful                                                 = require("awful")
-local a_util_table                                          = awful.util.table or gears.table -- 4.{0,1} compatibility
+local g_table                                               = gears.table or awful.util.table -- 4.{0,1} compatibility
 local _                                                     = require("awful.autofocus")
 local wibox                                                 = require("wibox")
 local beautiful                                             = require("beautiful")
@@ -136,7 +136,7 @@ tag.connect_signal("request::default_layouts",
 
 special_log_load_time("tag.connect_signal request::default_layouts")
 
-awful.util.taglist_buttons = a_util_table.join(
+awful.util.taglist_buttons = g_table.join(
 		awful.button({}, 1, function(t)
 			t:view_only()
 		end),
@@ -160,7 +160,7 @@ awful.util.taglist_buttons = a_util_table.join(
 
 special_log_load_time("taglist_buttons")
 
-awful.util.tasklist_buttons = a_util_table.join(
+awful.util.tasklist_buttons = g_table.join(
 		awful.button({}, 1, function(c)
 			if c == client.focus then
 				c.minimized = true
@@ -285,7 +285,7 @@ special_log_load_time("icky_keys()")
 
 -- Set up client management buttons FOR THE MOUSE.
 -- (1 is left, 3 is right)
-clientbuttons           = a_util_table.join(
+clientbuttons           = g_table.join(
 		awful.button({}, 1, function(c)
 			client.focus = c
 			c:raise()
@@ -499,7 +499,7 @@ local mytitlebars = function(c)
 
 	-- Default
 	-- buttons for the titlebar
-	local buttons    = a_util_table.join(
+	local buttons    = g_table.join(
 			awful.button({},
 						 1,
 						 function()
