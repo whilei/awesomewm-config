@@ -669,6 +669,14 @@ local function install_global_tag_fns_by_index()
 			local tag    = screen.tags[i]
 			if tag then
 				tag:view_only()
+
+				for _, cl in ipairs(tag:clients()) do
+					if (not cl.hidden) and (cl.visible ~= false) and (not cl.minimized) then
+						cl:raise()
+						client.focus = cl
+						break
+					end
+				end
 			end
 		end
 		modality.register(m.TAG .. i .. ":view tag " .. i, fn_view_tag)
