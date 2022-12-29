@@ -293,8 +293,14 @@ clientbuttons           = a_util_table.join(
 
 -- }}}
 
+-- The original Konsole icon was a bell.
+-- I thought this was stupid, so I'm changing it to a terminal icon.
+-- According to the internet (see link below) konsole_icon MUST be stored in a variable; no golfing allowed.
+-- I'm also storing it in a global because it seems like a "broader" change,
+-- but I'm not sure it's the best way to do it.
+-- https://stackoverflow.com/a/30379815
 local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "awesome-buttons/icons/terminal.svg"
-konsole_icon            = gears.surface(konsole_icon_path) -- This MUST be stored in a variable. No golfing allowed.
+konsole_icon            = gears.surface(konsole_icon_path)._native
 
 --local awesome_icon_path = gears.filesystem.get_configuration_dir() .. "themes/rainbow/icons/awesome.png"
 --local awesome_icon      = gears.surface(awesome_icon_path)
@@ -361,37 +367,26 @@ ruled.client.append_rules {
 		}
 	},
 	{
-		rule       = {
-			handy_id = ".*"
-		},
+		rule       = { handy_id = ".*", },
 		properties = {
 			skip_taskbar = true,
 			placement    = awful.placement.no_offscreen
 		}
 	},
 	{
-		rule       = {
-			class = "konsole",
-		},
-		properties = {
-			icon = konsole_icon._native, -- https://stackoverflow.com/a/30379815
-			--icon = konsole_cr,
-		}
+		rule       = { class = "konsole", },
+		properties = { icon = konsole_icon, },
 	},
 	-- This rule tries to keep quake out of the tag list and tasklist.
 	{
-		rule       = {
-			instance = "q-xterm-konsole",
-		},
+		rule       = { instance = "q-xterm-konsole", },
 		properties = {
 			skip_taskbar = true,
 			skip_taglist = true,
 		},
 	},
 	{
-		rule       = {
-			class = "Xephyr",
-		},
+		rule       = { class = "Xephyr", },
 		properties = {
 			border_width         = 2,
 			border_color         = "#A32BCE",
@@ -413,9 +408,7 @@ ruled.client.append_rules {
 		}
 	},
 	{
-		rule       = {
-			floating = true,
-		},
+		rule       = { floating = true, },
 		properties = {
 			shape = function(cc, w, h)
 				-- Round only the top corners.
