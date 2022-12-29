@@ -35,7 +35,7 @@ local ruled                                                 = require("ruled")
 local ia_layout_swen                                        = require("layout-swen")
 local layout_titlebars_conditional                          = require("layout-titlebars-conditional")
 
-local icky_keys                                             = require("icky.keys")
+local icky                                                  = require("icky")
 local modality                                              = require("modality")
 local special_log_load_time                                 = require("special").log_load_time
 local special_log_load_time_reset                           = require("special").log_load_time_reset
@@ -54,6 +54,26 @@ if awesome.startup_errors then
 		title   = "Awesome errored during startup",
 		message = awesome.startup_errors
 	}
+else
+	-- Only start picom if there were no errors because
+	-- my tv is going black when I start with errors now and
+	-- it didn't used to before I added picom, so its getting the blame
+	-- until I learn otherwise.
+	local compositor_cmd = "picom -b" -- -b makes it a daemon
+	awful.spawn.easy_async(compositor_cmd, function(stdout, stderr, reason, code)
+		if code ~= 0 then
+			naughty.notification {
+				preset  = naughty.config.presets.normal,
+				title   = "'" .. compositor_cmd .. "'" .. " errored: " ..
+						"code=" .. tostring(code) .. " " ..
+						"reason=" .. tostring(reason) ..
+						"",
+				message = "stderr=\n" .. stderr,
+			}
+		end
+	end)
+
+	special_log_load_time("started picom")
 end
 
 do
@@ -80,23 +100,6 @@ special_log_load_time("notify of startup errors")
 if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
-
-local compositor_cmd = "picom -b" -- -b makes it a daemon
-awful.spawn.easy_async(compositor_cmd, function(stdout, stderr, reason, code)
-	if code ~= 0 then
-		naughty.notification {
-			preset  = naughty.config.presets.normal,
-			title   = "'" .. compositor_cmd .. "'" .. " errored: " ..
-					"code=" .. tostring(code) .. " " ..
-					"reason=" .. tostring(reason) ..
-					"",
-			message = "stderr=\n" .. stderr,
-		}
-	end
-end)
-
-special_log_load_time("started picom")
-
 
 -- {{{ Variable definitions
 
@@ -294,9 +297,9 @@ end)
 
 special_log_load_time("screen.connect_signal property::desktop_decoration")
 
-icky_keys()
+icky.keys.init()
 
-special_log_load_time("icky_keys()")
+special_log_load_time("icky.keys.init()")
 
 
 -- Set up client management buttons FOR THE MOUSE.
@@ -310,14 +313,13 @@ clientbuttons           = g_table.join(
 			c.floating  = true
 			c.maximized = false
 			awful.mouse.client.move()
-		end
-		),
+		end),
+		awful.button({}, 2, icky.fns.client.properties.fullscreen),
 		awful.button({ modkey }, 3, function(c)
 			c.floating  = true
 			c.maximized = false
 			awful.mouse.client.resize()
-		end
-		))
+		end))
 
 ---- This is an idea about setting up global mouse button bindings.
 ---- Maybe something with the back/forward buttons? Scroll?
@@ -354,7 +356,7 @@ ruled.client.append_rules {
 		properties = {
 			focus            = awful.client.focus.filter,
 			raise            = true,
-			keys             = icky_keys.get_client_awful_keys(),
+			keys             = icky.keys.get_client_awful_keys(),
 			buttons          = clientbuttons,
 			screen           = awful.screen.preferred, --.focused(),
 			placement        = awful.placement.no_offscreen + awful.placement.no_overlap,
@@ -660,7 +662,7 @@ client.connect_signal("request::activate",
 						  if c.minimized then
 							  c.minimized = false
 						  end
-						  awful.ewmh.activate(c, context, hints)
+						  awful.permissions.activate(c, context, hints)
 
 						  local t = c.first_tag
 						  if not t then

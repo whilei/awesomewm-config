@@ -378,12 +378,12 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "tag", description = "add a tag", name = "add" },
-		modalities = { m.TAG .. "a" }, -- stays
+		modalities = { m.TAG .. "A" }, -- stays
 		on_press   = global_fns.tag.add,
 	},
 	{
 		h          = { group = "tag", description = "delete a tag", name = "delete" },
-		modalities = { m.TAG .. "d" }, -- stays
+		modalities = { m.TAG .. "D" }, -- stays
 		on_press   = global_fns.tag.delete,
 	},
 	{
@@ -670,16 +670,33 @@ local function install_global_tag_fns_by_index()
 			if tag then
 				tag:view_only()
 
-				for _, cl in ipairs(tag:clients()) do
-					if (not cl.hidden) and (cl.visible ~= false) and (not cl.minimized) then
+				-- Focus the last-focused client in the tag.
+				local did_focus = false
+				for _, cl in ipairs(awful.client.focus.history.list) do
+					if cl.primary_tag == tag then
 						cl:raise()
 						client.focus = cl
+						did_focus    = true
 						break
+					end
+				end
+				-- Maybe there was no history, like after a restart,
+				-- or we don't have any previously-focused clients in this tag,
+				-- se we'll just focus the first one we come across that looks eligible for focusing.
+				if not did_focus then
+					for _, cl in ipairs(tag:clients()) do
+						if (not cl.hidden) and (cl.visible ~= false) and (not cl.minimized) then
+							cl:raise()
+							client.focus = cl
+							break
+						end
 					end
 				end
 			end
 		end
-		modality.register(m.TAG .. i .. ":view tag " .. i, fn_view_tag)
+		modality.register(m.TAG .. i ..
+								  ":view tag " .. i,
+						  fn_view_tag)
 
 		local fn_move_client_to_tag = function()
 			if client.focus then
@@ -691,7 +708,9 @@ local function install_global_tag_fns_by_index()
 				end
 			end
 		end
-		modality.register(m.CLIENT_MOVE .. "t:to tag," .. i .. ":move to tag " .. i, fn_move_client_to_tag)
+		modality.register(m.CLIENT_MOVE .. "t:to tag," .. i ..
+								  ":move to tag " .. i, fn_move_client_to_tag)
+
 
 		-- fn_move_client_to_tag_and_go moves the client to the tag
 		-- and then switches to that tag.
@@ -705,7 +724,8 @@ local function install_global_tag_fns_by_index()
 				end
 			end
 		end
-		modality.register(m.CLIENT_MOVE .. "T:to tag (and switch)," .. i .. ":move to tag " .. i .. " and switch to it", fn_move_client_to_tag_and_go)
+		modality.register(m.CLIENT_MOVE .. "T:to tag (and switch)," .. i ..
+								  ":move to tag " .. i .. " and switch to it", fn_move_client_to_tag_and_go)
 
 		awful.keyboard.append_global_keybindings {
 			-- View tag only.

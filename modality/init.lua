@@ -470,7 +470,7 @@ local function keypressed_callback(bindings_parent)
 		end
 
 		if key == "Escape" then
-			return exit("Escape")
+			return exit("did escape")
 		end
 
 		-- Without bindings we can't do anything.
@@ -560,17 +560,8 @@ modality.enter = function(bindings_parent)
 		modality.kg = nil
 	end
 
-	--local stop_keys = gears.table.keys(bindings_parent.bindings)
-	--
-	---- TODO: This is a hack to make the keygrabber stop when the user presses Escape according to Copilot.
-	---- Other 'special' keys could also be added here.
-	--if not gears.table.hasitem(stop_keys, "Escape") then
-	--	table.insert(stop_keys, "Escape") -- Exit mode.
-	--end
-	--if not gears.table.hasitem(stop_keys, "?") then
-	--	table.insert(stop_keys, "?") -- Show (interactive) help mode.
-	--end
-
+	-- Start the keygrabber ASAP (before showing the widget).
+	-- I. Want. (The feeling of) Speed.
 	modality.kg = awful.keygrabber {
 		-- Start the grabbing immediately.
 		autostart           = true,

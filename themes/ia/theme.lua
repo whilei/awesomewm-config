@@ -69,6 +69,7 @@ theme.notification_position                     = "top_middle"
 
 --theme.font                                      = "xos4 Terminus 9"
 theme.font                                      = "monospace 9"
+theme.font_small                                = "monospace 6"
 theme.color_white                               = "#FFFFFF"
 theme.color_green                               = "#2EFE2E"
 theme.color_yellow                              = "#FFFF00"
@@ -373,11 +374,10 @@ local clock = awful.widget.watch(
 -- "date +'%H:%M %a %Y-%m-%d %:::z'",
 		"date +'%Y-%m-%d %A %H:%M%-:::z'", 60,
 		function(widget, stdout)
-			-- widget:set_markup(" " .. markup.font(theme.font, stdout))
-
 			widget:set_markup(
 			-- theme.font
-					markup.fontbg("monospace bold 10", theme.clock_bg, " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
+					markup.fontbg("monospace bold 10", theme.clock_bg,
+								  " " .. markup(theme.clock_fg, stdout:gsub("\n", "")) .. " ")
 			)
 		end)
 
@@ -584,47 +584,51 @@ local function bitsToSize(bits)
 	terabit   = gigabit * 1024;
 
 	if ((bits >= kilobit) and (bits < megabit)) then
-		return round(bits / kilobit, precision) .. ' Kbit/s';
+		return round(bits / kilobit, precision), 'Kbit/s';
 	elseif ((bits >= megabit) and (bits < gigabit)) then
-		return round(bits / megabit, precision) .. ' Mbit/s';
+		return round(bits / megabit, precision), 'Mbit/s';
 	elseif ((bits >= gigabit) and (bits < terabit)) then
-		return round(bits / gigabit, precision) .. ' Gbit/s';
+		return round(bits / gigabit, precision), 'Gbit/s';
 	elseif (bits >= terabit) then
-		return round(bits / terabit, precision) .. ' Tbit/s';
+		return round(bits / terabit, precision), 'Tbit/s';
 	else
-		return round(bits, precision) .. ' bps';
+		return round(bits, precision), 'bps';
 	end
 end
 
 local neticon    = wibox.widget.imagebox(theme.widget_net)
 local net_widget = wibox.widget {
 	layout = wibox.layout.align.horizontal,
-	{ {
-		  id     = 'up',
-		  widget = wibox.widget.textbox,
-	  },
-	  widget = wibox.container.margin,
-	  bottom = 3,
-	},
 	{
-		widget = wibox.widget.textbox,
-		text   = " ",
+		{
+			id     = 'up',
+			widget = wibox.widget.textbox,
+		},
+		widget = wibox.container.background,
+		--top    = 4,
 	},
+	wibox.widget.textbox(" ⇅ "),
 	{
 		{
 			id     = 'dn',
 			widget = wibox.widget.textbox,
 		},
-		widget = wibox.container.margin,
-		top    = 3,
+		widget = wibox.container.background,
+		--top    = 4,
 	},
 }
 local net        = lain.widget.net {
 	widget   = net_widget,
 	units    = 1, -- in bits
 	settings = function()
-		widget:get_children_by_id("up")[1]:set_markup(markup.font(theme.font, markup("#fcc9ff", "🠉 " .. bitsToSize(net_now.sent))))
-		widget:get_children_by_id("dn")[1]:set_markup(markup.font(theme.font, markup("#2ECCFA", "🠋 " .. bitsToSize(net_now.received))))
+		-- 🠉 🠋 ↥ ⇅
+
+		local n_bits, units_str = bitsToSize(net_now.sent)
+		widget:get_children_by_id("up")[1]:set_markup(markup.font(theme.font, markup("#fcc9ff", "" .. tostring(n_bits) .. "" .. units_str)))
+
+		n_bits, units_str = bitsToSize(net_now.received)
+		widget:get_children_by_id("dn")[1]:set_markup(markup.font(theme.font, markup("#2ECCFA", "" .. tostring(n_bits) .. "" .. units_str)))
+
 	end
 }
 special_log_load_time("widget: net")
@@ -1047,16 +1051,6 @@ function theme.at_screen_connect(s)
 		},
 	}
 
-	-- Create a tasklist widget
-	local function my_tasklist_updater(w, buttons, label, data, objects)
-		--common.list_update(w, buttons, label, data, objects)
-		my_commonlist_update(w, buttons, label, data, objects)
-		if not s.is_tv then
-			w:set_max_widget_size(200)
-		end
-
-	end
-
 	--- Common update method.
 	-- @param w The widget.
 	-- @tab buttons
@@ -1065,7 +1059,7 @@ function theme.at_screen_connect(s)
 	--   has to return `text`, `bg`, `bg_image`, `icon`.
 	-- @tab data Current data/cache, indexed by objects.
 	-- @tab objects Objects to be displayed / updated.
-	function my_commonlist_update(w, buttons, label, data, objects)
+	local function my_common_tasklist_updater(w, buttons, label, data, objects)
 		-- update the widgets, creating them if needed
 		w:reset()
 		for i, o in ipairs(objects) do
@@ -1158,12 +1152,22 @@ function theme.at_screen_connect(s)
 					gears.shape.rounded_rect(cc, ww, hh, hh / 10)
 				end
 			end
-			bgb.shape_border_width = args.shape_border_width
-			bgb.shape_border_color = args.shape_border_color
+			bgb.border_width = args.border_width
+			bgb.border_color = args.border_color
 
-			local bgbm             = wibox.container.margin(bgb, dpi(4), dpi(0))
+			local bgbm       = wibox.container.margin(bgb, dpi(4), dpi(0))
 			w:add(bgbm)
 		end
+	end
+
+	-- Create a tasklist widget
+	local function my_tasklist_updater(w, buttons, label, data, objects)
+		--common.list_update(w, buttons, label, data, objects)
+		my_common_tasklist_updater(w, buttons, label, data, objects)
+		if not s.is_tv then
+			w:set_max_widget_size(200)
+		end
+
 	end
 
 	-- awful.widget.tasklist()
@@ -1198,6 +1202,31 @@ function theme.at_screen_connect(s)
 	end
 
 	s.mywibox      = awful.wibar(mywibar_args)
+
+	--s.mywibox_tasks = awful.wibar {
+	--	position          = "bottom",
+	--	type              = "toolbar", -- https://awesomewm.org/apidoc/core_components/client.html#type
+	--	screen            = s,
+	--	height            = 24,
+	--	bg                = "#00000000",
+	--	fg                = "#ffffff",
+	--	opacity           = 0.8,
+	--	visible           = true,
+	--	restrict_workarea = false, -- Allow or deny the tiled client to cover the wibar.
+	--	ontop             = true,
+	--	input_passthrough = true,
+	--	margins           = { left = 0, right = 0, bottom = dpi(5), top = 0 },
+	--}
+	--s.mywibox_tasks:setup {
+	--	layout = wibox.layout.align.horizontal,
+	--	expand = "outside",
+	--	wibox.widget.textbox(""),
+	--	{
+	--		layout = wibox.layout.fixed.horizontal,
+	--        s.mytasklist,
+	--	},
+	--	wibox.widget.textbox(""),
+	--}
 
 	-- The important part to make this actually float on top of all the stuff is
 	-- that it's a WIBOX and a not a WIBAR.
@@ -1287,7 +1316,6 @@ function theme.at_screen_connect(s)
 		ontop        = true,
 		border_width = 0,
 		border_color = "#0000ff",
-		opacity      = 0.6,
 	}
 
 	client.connect_signal("focus", function(c)
@@ -1358,7 +1386,7 @@ function theme.at_screen_connect(s)
 	end)
 
 	-- Add widgets to the wibox
-	s                             .mywibox:setup {
+	s.mywibox:setup {
 		layout = wibox.layout.align.horizontal,
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,

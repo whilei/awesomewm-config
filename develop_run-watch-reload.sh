@@ -27,6 +27,9 @@ NC='\033[0m'
 ERROR_COLOR="${RED}"
 WARNING_COLOR="${YELLOW}"
 
+# S_LOG_PREFIX is this script's log prefix.
+S_LOG_PREFIX=':: '
+
 # AWESOME_LOG_PREFIX is the prefix printed before each log LINE from the log file.
 # The tells the reader that the lines are coming from awesome,
 # and not from the (this) script itself.
@@ -42,7 +45,7 @@ trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 # Start tailing the log file before firing up the Xephyr emulator
 # so that we don't miss any log messages.
-echo ":: Tailing ${log_file} in background..."
+echo "${S_LOG_PREFIX}Tailing ${log_file} in background..."
 
 # Run a piped tail in the background.
 # Read the log lines, highlighting errors and warning in suggestive colors
@@ -64,11 +67,11 @@ echo ":: Tailing ${log_file} in background..."
     done
 ) &
 TAIL_PID=$!
-echo ":: Tail subshell PID: ${TAIL_PID}"
+echo "${S_LOG_PREFIX}Tail subshell PID: ${TAIL_PID}"
 
 # ------------------------------------------------------------------------------
 
-echo ":: Starting awesome emulator..."
+echo "${S_LOG_PREFIX}Starting awesome emulator..."
 
 SIZE_HEIGHT=$((1920 - 4))
 SIZE_WIDTH=$((1080 - 4 - 32))
@@ -87,7 +90,7 @@ CMD_SHOW_AWESOME_PROCS='echo :: Remaining awesome procs:;'
 CMD_SHOW_AWESOME_PROCS+='ps aux | grep -v grep | grep -i -e VSZ -e awesome'
 trap "${CMD_SHOW_AWESOME_PROCS}" EXIT
 
-echo ":: Starting recursive file watcher for live reload..."
+echo "${S_LOG_PREFIX}Starting recursive file watcher for live reload..."
 
 inotifywait --monitor --recursive \
 	--exclude '\.swp' --exclude '\.idea' --exclude '\.git' --exclude '\.ia' \
@@ -109,5 +112,5 @@ inotifywait --monitor --recursive \
 		echo -e "${GREEN}:: Firing restart...${NC}"
 		time awmtt restart
 		echo
-		echo ":: Awaiting further changes..."
+		echo "${S_LOG_PREFIX}Awaiting further changes..."
 	done

@@ -22,6 +22,8 @@ modality
 run previous command (abstracts to history?)
 sort order for widget plus table beyond just a fit
 show available keystrokes in a way that looks like a keyboard instead of a dictionary
+major mode; per client, with keypaths; make any client work like spacemacs
+
 
 anarchy
 mindful statefulness
@@ -83,6 +85,11 @@ or not coming with me when i cycle through client.focus history with awesome
 or not allowing me to minimize clients?
 or not allowing me to move tags on a screen once i've move to a new screen
  because i'm actually still focused, maybe, somehow on the original screen (mouse left behind?)
+
+
+revisit
+back
+definitely i want precisely back exactly (mouse position, etc)
 
 ---
 
