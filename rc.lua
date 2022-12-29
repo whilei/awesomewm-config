@@ -23,7 +23,7 @@ package.path                                                = package.path .. ";
 
 local awful                                                 = require("awful")
 local g_table                                               = gears.table or awful.util.table -- 4.{0,1} compatibility
---local _                                                     = require("awful.autofocus")
+local _                                                     = require("awful.autofocus")
 local wibox                                                 = require("wibox")
 local beautiful                                             = require("beautiful")
 local naughty                                               = require("naughty")
@@ -304,22 +304,23 @@ special_log_load_time("icky.keys.init()")
 
 -- Set up client management buttons FOR THE MOUSE.
 -- (1 is left, 3 is right)
-clientbuttons           = g_table.join(
-		awful.button({}, 1, function(c)
-			client.focus = c
-			c:raise()
-		end),
-		awful.button({ modkey }, 1, function(c)
-			c.floating  = true
-			c.maximized = false
-			awful.mouse.client.move()
-		end),
-		awful.button({}, 2, icky.fns.client.properties.fullscreen),
-		awful.button({ modkey }, 3, function(c)
-			c.floating  = true
-			c.maximized = false
-			awful.mouse.client.resize()
-		end))
+awful.mouse.append_client_mousebindings {
+	awful.button({}, 1, function(c)
+		client.focus = c
+		c:raise()
+	end),
+	awful.button({ modkey }, 1, function(c)
+		c.floating  = true
+		c.maximized = false
+		awful.mouse.client.move()
+	end),
+	awful.button({}, 2, icky.fns.client.properties.fullscreen),
+	awful.button({ modkey }, 3, function(c)
+		c.floating  = true
+		c.maximized = false
+		awful.mouse.client.resize()
+	end)
+}
 
 ---- This is an idea about setting up global mouse button bindings.
 ---- Maybe something with the back/forward buttons? Scroll?
@@ -348,130 +349,152 @@ konsole_icon            = gears.surface(konsole_icon_path)._native
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
-ruled.client.append_rules {
-	--[[  ]]
-	-- All clients will match this rule.
-	{
-		rule       = {},
-		properties = {
-			focus            = awful.client.focus.filter,
-			raise            = true,
-			keys             = icky.keys.get_client_awful_keys(),
-			buttons          = clientbuttons,
-			screen           = awful.screen.preferred, --.focused(),
-			placement        = awful.placement.no_offscreen + awful.placement.no_overlap,
-			size_hints_honor = true
-		}
-	},
-	-- Titlebars
-	{
-		rule       = { maximized = true },
-		properties = { titlebars_enabled = false },
-	},
-	{
-		rule_any   = { type = { "dialog", "normal" } },
-		-- properties = {titlebars_enabled = true}
-		properties = { titlebars_enabled = true }
-	},
-	--     -- Set Firefox to always map on the first tag on screen 1.
-	--     { rule = { class = "Firefox" },
-	--       properties = { screen = 1, tag = awful.util.tagnames[1] } },
+ruled.client.connect_signal("request::rules", function()
+	ruled.client.append_rules {
+		--[[  ]]
+		-- All clients will match this rule.
+		{
+			rule       = {},
+			properties = {
+				focus            = awful.client.focus.filter,
+				raise            = true,
+				keys             = icky.keys.get_client_awful_keys(),
+				buttons          = clientbuttons,
+				screen           = awful.screen.preferred, --.focused(),
+				placement        = awful.placement.no_offscreen + awful.placement.no_overlap,
+				size_hints_honor = true
+			}
+		},
+		-- @DOC_FLOATING_RULE@
+		-- Floating clients.
+		{
+			id         = "floating",
+			rule_any   = {
+				instance = { "copyq", "pinentry" },
+				class    = {
+					"Arandr", "Blueman-manager", "Gpick", "Kruler", "Sxiv",
+					"Tor Browser", "Wpa_gui", "veromix", "xtightvncviewer"
+				},
+				-- Note that the name property shown in xprop might be set slightly after creation of the client
+				-- and the name shown there might not match defined rules here.
+				name     = {
+					"Event Tester", -- xev.
+				},
+				role     = {
+					"AlarmWindow", -- Thunderbird's calendar.
+					"ConfigManager", -- Thunderbird's about:config.
+					"pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
+				}
+			},
+			properties = { floating = true }
+		},
+		-- Titlebars
+		{
+			rule       = { maximized = true },
+			properties = { titlebars_enabled = false },
+		},
+		-- Dialogs.
+		{
+			rule_any   = { type = { "dialog", "normal" } },
+			-- properties = {titlebars_enabled = true}
+			properties = { titlebars_enabled = true }
+		},
+		{
+			rule       = { class = "Gimp", role = "gimp-image-window" },
+			properties = { maximized = true }
+		},
+		-- https://youtrack.jetbrains.com/issue/IDEA-112015#focus=Comments-27-2797933.0-0
+		{
+			-- IntelliJ has dialogs, which shall not get focus, e.g. open type or open resource.
+			-- These are Java Dialogs, which are not X11 Dialog Types.
+			rule_any   = {
+				instance = { "sun-awt-X11-XWindowPeer", "sun-awt-X11-XDialogPeer", "keybase" }
+			},
+			properties = {
+				focusable = false,
+				placement = awful.placement.under_mouse + awful.placement.no_offscreen
+			}
+		},
+		{
+			-- IntelliJ has dialogs, which do not get focus, e.g. Settings Dialog or Paste Dialog.
+			rule       = {
+				type     = "dialog",
+				instance = "sun-awt-X11-XDialogPeer"
+			},
+			properties = {
+				focusable = true,
+				focus     = true
+			}
+		},
+		{
+			rule       = { handy_id = ".*", },
+			properties = {
+				skip_taskbar = true,
+				placement    = awful.placement.no_offscreen
+			}
+		},
+		{
+			rule       = { class = "konsole", },
+			properties = { icon = konsole_icon, },
+		},
+		-- This rule tries to keep quake out of the tag list and tasklist.
+		{
+			rule       = { instance = "q-xterm-konsole", },
+			properties = {
+				skip_taskbar = true,
+				skip_taglist = true,
+			},
+		},
+		{
+			rule       = { class = "Xephyr", },
+			properties = {
+				border_width         = 2,
+				border_color         = "#A32BCE",
+				screen               = screen[1],
+				tag                  = screen[1].tags[5],
+				placement            = awful.placement.centered,
+				floating             = true,
+				maximized_vertical   = true,
+				maximized_horizontal = true,
+				ontop                = true,
 
-	{
-		rule       = { class = "Gimp", role = "gimp-image-window" },
-		properties = { maximized = true }
-	},
-	-- https://youtrack.jetbrains.com/issue/IDEA-112015#focus=Comments-27-2797933.0-0
-	{
-		-- IntelliJ has dialogs, which shall not get focus, e.g. open type or open resource.
-		-- These are Java Dialogs, which are not X11 Dialog Types.
-		rule_any   = {
-			instance = { "sun-awt-X11-XWindowPeer", "sun-awt-X11-XDialogPeer", "keybase" }
-		},
-		properties = {
-			focusable = false,
-			placement = awful.placement.under_mouse + awful.placement.no_offscreen
-		}
-	},
-	{
-		-- IntelliJ has dialogs, which do not get focus, e.g. Settings Dialog or Paste Dialog.
-		rule       = {
-			type     = "dialog",
-			instance = "sun-awt-X11-XDialogPeer"
-		},
-		properties = {
-			focusable = true,
-			focus     = true
-		}
-	},
-	{
-		rule       = { handy_id = ".*", },
-		properties = {
-			skip_taskbar = true,
-			placement    = awful.placement.no_offscreen
-		}
-	},
-	{
-		rule       = { class = "konsole", },
-		properties = { icon = konsole_icon, },
-	},
-	-- This rule tries to keep quake out of the tag list and tasklist.
-	{
-		rule       = { instance = "q-xterm-konsole", },
-		properties = {
-			skip_taskbar = true,
-			skip_taglist = true,
-		},
-	},
-	{
-		rule       = { class = "Xephyr", },
-		properties = {
-			border_width         = 2,
-			border_color         = "#A32BCE",
-			screen               = screen[1],
-			tag                  = screen[1].tags[5],
-			placement            = awful.placement.centered,
-			floating             = true,
-			maximized_vertical   = true,
-			maximized_horizontal = true,
-			ontop                = true,
+				-- Do NOT focus right away.
+				focus                = false,
 
-			-- Do NOT focus right away.
-			focus                = false,
-
-			-- Titlebars are important because they indicate to the user whether
-			-- you've 'grabbed the mouse and keyboard', ie. have focus on a client.
-			titlebars_enabled    = true,
-			--icon                 = awesome_icon._native, -- https://stackoverflow.com/a/30379815
-		}
-	},
-	{
-		rule       = { floating = true, },
-		properties = {
-			shape = function(cc, w, h)
-				-- Round only the top corners.
-				--gears.shape.rounded_rect(c, w, h,)
-				local tl, tr, br, bl, rad = true, true, false, false, math.min(10, h / 10)
-				return gears.shape.partially_rounded_rect(cc, w, h, tl, tr, br, bl, rad)
-			end,
-		}
-	},
-	{
-		rule       = { class = "kate", },
-		properties = {
-			floating  = true,
-			placement = awful.placement.centered,
+				-- Titlebars are important because they indicate to the user whether
+				-- you've 'grabbed the mouse and keyboard', ie. have focus on a client.
+				titlebars_enabled    = true,
+				--icon                 = awesome_icon._native, -- https://stackoverflow.com/a/30379815
+			}
 		},
-	},
-	{
-		rule       = { class = "jetbrains-toolbox", },
-		properties = {
-			minimized = true,
-			floating  = false,
-			focus     = false, -- This thing never works quite right for me.
+		{
+			rule       = { floating = true, },
+			properties = {
+				shape = function(cc, w, h)
+					-- Round only the top corners.
+					--gears.shape.rounded_rect(c, w, h,)
+					local tl, tr, br, bl, rad = true, true, false, false, math.min(10, h / 10)
+					return gears.shape.partially_rounded_rect(cc, w, h, tl, tr, br, bl, rad)
+				end,
+			}
+		},
+		{
+			rule       = { class = "kate", },
+			properties = {
+				floating  = true,
+				placement = awful.placement.centered,
+			},
+		},
+		{
+			rule       = { class = "jetbrains-toolbox", },
+			properties = {
+				minimized = true,
+				floating  = false,
+				focus     = false, -- This thing never works quite right for me.
+			}
 		}
 	}
-}
+end)
 -- }}}
 
 -- {{{ Signals
@@ -574,29 +597,29 @@ end
 
 client.connect_signal("request::titlebars", mytitlebars)
 
+local isJavaInstance = function(instance)
+	-- xprop WM_CLASS
+	-- WM_CLASS(STRING) = "sun-awt-X11-XFramePeer", "jetbrains-studio"
+	-- THIS ONE IS THE ORIGINAL GOOD ONE:
+	return instance and instance ~= "" and string.match(instance, '^sun-awt-X11-X')
+end
+
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter",
 					  function(c)
-						  local focused        = client.focus
-						  local isJavaInstance = function(instance)
-							  -- xprop WM_CLASS
-							  -- WM_CLASS(STRING) = "sun-awt-X11-XFramePeer", "jetbrains-studio"
-
-							  -- THIS ONE IS THE ORIGINAL GOOD ONE:
-							  return instance and instance ~= "" and string.match(instance, '^sun-awt-X11-X')
-
-							  -- THIS ONE IS EXPERIMENTS:
-							  --return instance and instance ~= "" and string.match(instance, '^.*')
-							  --return true
-						  end
-						  if focused and focused.class == c.class
+						  local focused = client.focus
+						  if focused
+								  and focused.class == c.class
 								  and isJavaInstance(focused.instance)
-								  and isJavaInstance(c.instance) then
+								  and isJavaInstance(c.instance)
+						  then
 							  return -- early
 						  end
 
-						  if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier and awful.client.focus.filter(c) then
-							  client.focus = c
+						  if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+								  and awful.client.focus.filter(c)
+						  then
+							  c:activate { context = "mouse_enter", raise = false }
 						  end
 					  end)
 
@@ -663,51 +686,16 @@ client.connect_signal("request::activate",
 							  c.minimized = false
 						  end
 						  awful.permissions.activate(c, context, hints)
-
-						  local t = c.first_tag
-						  if not t then
-							  return
-						  end
-						  local cls = t:clients()
-						  for _, tc in ipairs(cls) do
-							  if tc ~= c then
-								  tc.border_color = beautiful.border_normal
-
-								  --if #cls > 1 then
-								  --  awful.titlebar.hide(tc)
-								  --else
-								  --  awful.titlebar.show(tc)
-								  --end
-							  end
-						  end
-					  end
-)
+					  end)
 
 client.connect_signal("focus", function(c)
 	if not c then
 		return
 	end
-
-	--border_adjust(c)
-
 	move_mouse_onto_focused_client(c)
-
-	local t = c.first_tag
-	if not t then
-		-- This can happen for clients like Handy or other on-demand only clients.
-		return
-	end
-	for _, tc in ipairs(t:clients()) do
-		if tc ~= c then
-			--awful.titlebar.show(c)
-			tc.border_color = beautiful.border_normal
-		end
-	end
 end)
 
---client.connect_signal("property::maximized", border_adjust)
 client.connect_signal("unfocus", function(c)
-	--c.border_color = beautiful.border_normal
 end)
 
 -- }}}
@@ -737,6 +725,10 @@ client.connect_signal("request::geometry", function(c, context, ...)
 		--local f = awful.placement.right + awful.placement.bottom;
 		--f(c)
 	end
+end)
+
+naughty.connect_signal("request::display", function(n)
+	naughty.layout.box { notification = n }
 end)
 
 --

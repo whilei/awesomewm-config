@@ -70,6 +70,10 @@ see the attempt to send notification in `icky.fns.screenshot.delayed`, which doe
 see the awful.util.mainmenu freedesktop builder function, the "your menu is loading..." notification does not show up at all either.
 the issue may be related to "blocking" by adjacent widget actions.
 
+`client:move_to_screen()` does not maintain the focus on the client.
+that is: mod+o gets the client to swap screens; but then there is no focused client.
+> this was because of I removed `require("awful.autofocus")` from rc.lua
+
 Modality:
 The modality widget does not get the parent.bindings[code].bindings object (a tree) that I expect it to.
 The object that the widget gets (`parent`) does not have (access to?) any of the objects fields that are tables.

@@ -597,18 +597,12 @@ local client_fns           = {
 	end,
 	screen     = {
 		move_next = function(c)
-			local cc = c or client.focus
-			if not cc then
-				return
-			end
-			cc:move_to_screen(cc.screen.index - 1)
+			c:move_to_screen()
+			client.focus = c
 		end,
 		move_prev = function(c)
-			local cc = c or client.focus
-			if not cc then
-				return
-			end
-			cc:move_to_screen(cc.screen.index + 1)
+			c:move_to_screen()
+			client.focus = c
 		end,
 	},
 	special    = {
