@@ -11,33 +11,31 @@
 pcall(require, "luarocks.loader")
 
 -- {{{ Required libraries
-local awesome, screen, client, mouse, screen, tag, titlebar = awesome, screen, client, mouse, screen, tag, titlebar
-local ipairs, pairs, string, os, table                      = ipairs, pairs, string, os, table
-local tostring, tonumber, tointeger, type, math             = tostring, tonumber, tointeger, type, math
-local gears                                                 = require("gears")
+local awesome, screen, client, mouse, tag = awesome, screen, client, mouse, tag
+local string, tostring, type, math        = string, tostring, type, math
 
 -- This chunk adds this path (of the current configuration)
 -- to the Lua packages search path, enabling the loading of local libs.
-local prefix                                                = gears.filesystem.get_configuration_dir() .. ""
-package.path                                                = package.path .. ";" .. prefix .. "?.lua;" .. prefix .. "?/init.lua"
+local gears                               = require("gears")
+local prefix                              = gears.filesystem.get_configuration_dir() .. ""
+package.path                              = package.path .. ";" .. prefix .. "?.lua;" .. prefix .. "?/init.lua"
 
-local awful                                                 = require("awful")
-local g_table                                               = gears.table or awful.util.table -- 4.{0,1} compatibility
-local wibox                                                 = require("wibox")
-local beautiful                                             = require("beautiful")
-local naughty                                               = require("naughty")
-local lain                                                  = require("lain")
-local hotkeys_popup                                         = require("awful.hotkeys_popup").widget
-local cairo                                                 = require("lgi").cairo
-local ruled                                                 = require("ruled")
+local awful                               = require("awful")
+local g_table                             = gears.table or awful.util.table -- 4.{0,1} compatibility
+local wibox                               = require("wibox")
+local beautiful                           = require("beautiful")
+local naughty                             = require("naughty")
+local lain                                = require("lain")
+--local cairo                                                 = require("lgi").cairo
+local ruled                               = require("ruled")
 
-local ia_layout_swen                                        = require("layout-swen")
-local layout_titlebars_conditional                          = require("layout-titlebars-conditional")
+local ia_layout_swen                      = require("layout-swen")
+local layout_titlebars_conditional        = require("layout-titlebars-conditional")
 
-local icky                                                  = require("icky")
-local modality                                              = require("modality")
-local special_log_load_time                                 = require("special").log_load_time
-local special_log_load_time_reset                           = require("special").log_load_time_reset
+local icky                                = require("icky")
+local modality                            = require("modality")
+local special_log_load_time               = require("special").log_load_time
+local special_log_load_time_reset         = require("special").log_load_time_reset
 
 special_log_load_time("requirements")
 
@@ -53,8 +51,6 @@ if awesome.startup_errors then
 		title   = "Awesome errored during startup",
 		message = awesome.startup_errors
 	}
-else
-	-- Started up without errors.
 end
 
 do
@@ -84,7 +80,7 @@ special_log_load_time("notify of startup errors")
 -- until I learn otherwise.
 if not awesome.startup_errors and not awesome.composite_manager_running then
 	local compositor_cmd = "picom -b" -- -b makes it a daemon
-	awful.spawn.easy_async(compositor_cmd, function(stdout, stderr, reason, code)
+	awful.spawn.easy_async(compositor_cmd, function(_, stderr, reason, code)
 		if code ~= 0 then
 			naughty.notification {
 				preset  = naughty.config.presets.normal,
@@ -108,12 +104,12 @@ end
 
 local chosen_theme  = "ia"
 local modkey        = "Mod4"
-local altkey        = "Mod1"
+--local altkey        = "Mod1"
 local terminal      = "xterm"
-local editor        = os.getenv("EDITOR") or "vim"
-local gui_editor    = "emacs"
-local browser       = "ffox"
-local scrlocker     = "xlock"
+--local editor        = os.getenv("EDITOR") or "vim"
+--local gui_editor    = "emacs"
+--local browser       = "ffox"
+--local scrlocker     = "xlock"
 
 awful.util.terminal = terminal
 
@@ -198,70 +194,6 @@ modality.init()
 
 special_log_load_time("modality.init")
 
---local bling = require("bling")
---local rubato = require("rubato")
-
---bling.widget.window_switcher.enable {
---    type = "thumbnail", -- set to anything other than "thumbnail" to disable client previews
---
---    -- keybindings (the examples provided are also the default if kept unset)
---    hide_window_switcher_key = "Escape", -- The key on which to close the popup
---    minimize_key = "n",                  -- The key on which to minimize the selected client
---    unminimize_key = "N",                -- The key on which to unminimize all clients
---    kill_client_key = "q",               -- The key on which to close the selected client
---    cycle_key = "Tab",                   -- The key on which to cycle through all clients
---    previous_key = "Left",               -- The key on which to select the previous client
---    next_key = "Right",                  -- The key on which to select the next client
---    vim_previous_key = "h",              -- Alternative key on which to select the previous client
---    vim_next_key = "l",                  -- Alternative key on which to select the next client
---
---    cycleClientsByIdx = awful.client.focus.byidx,               -- The function to cycle the clients
---    filterClients = awful.widget.tasklist.filter.currenttags,   -- The function to filter the viewed clients
---}
-
--- }}}
-
----- These are example rubato tables. You can use one for just y, just x, or both.
----- The duration and easing is up to you. Please check out the rubato docs to learn more.
---local anim_y = rubato.timed {
---    pos = 1090,
---    rate = 60,
---    easing = rubato.quadratic,
---    intro = 0.1,
---    duration = 0.3,
---    awestore_compat = true -- This option must be set to true.
---}
---
---local anim_x = rubato.timed {
---    pos = -970,
---    rate = 60,
---    easing = rubato.quadratic,
---    intro = 0.1,
---    duration = 0.3,
---    awestore_compat = true -- This option must be set to true.
---}
---
---local term_scratch = bling.module.scratchpad {
---    command = "firefox --no-remote --class spad",           -- How to spawn the scratchpad
---    rule = { instance = "spad" },                     -- The rule that the scratchpad will be searched by
---    sticky = true,                                    -- Whether the scratchpad should be sticky
---    autoclose = false,                                 -- Whether it should hide itself when losing focus
---    floating = true,                                  -- Whether it should be floating (MUST BE TRUE FOR ANIMATIONS)
---    geometry = {x=360, y=90, height=900, width=1200}, -- The geometry in a floating state
---    reapply = true,                                   -- Whether all those properties should be reapplied on every new opening of the scratchpad (MUST BE TRUE FOR ANIMATIONS)
---    dont_focus_before_close  = false,                 -- When set to true, the scratchpad will be closed by the toggle function regardless of whether its focused or not. When set to false, the toggle function will first bring the scratchpad into focus and only close it on a second call
---    rubato = {x = anim_x, y = anim_y}                 -- Optional. This is how you can pass in the rubato tables for animations. If you don't want animations, you can ignore this option.
---}
-
--- {{{ Menwesomeu
---
-
-
--- who really needs a menu anyways (https://www.reddit.com/r/awesomewm/comments/ludsl7/comment/iukgex6/?context=3)
-
---menubar.utils.terminal = terminal -- Set the Menubar terminal for applications that require it
--- }}}
-
 -- {{{ Screen
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry",
@@ -344,7 +276,7 @@ awful.mouse.append_client_mousebindings {
 -- but I'm not sure it's the best way to do it.
 -- https://stackoverflow.com/a/30379815
 local konsole_icon_path = gears.filesystem.get_configuration_dir() .. "awesome-buttons/icons/terminal.svg"
-konsole_icon            = gears.surface(konsole_icon_path)._native
+local konsole_icon      = gears.surface(konsole_icon_path)._native
 
 --local awesome_icon_path = gears.filesystem.get_configuration_dir() .. "themes/rainbow/icons/awesome.png"
 --local awesome_icon      = gears.surface(awesome_icon_path)
@@ -361,7 +293,6 @@ ruled.client.connect_signal("request::rules", function()
 				focus            = awful.client.focus.filter,
 				raise            = true,
 				keys             = icky.keys.get_client_awful_keys(),
-				buttons          = clientbuttons,
 				screen           = awful.screen.preferred, --.focused(),
 				placement        = awful.placement.no_offscreen + awful.placement.no_overlap,
 				size_hints_honor = true
@@ -667,19 +598,20 @@ local function move_mouse_onto_focused_client(c)
 	end
 end
 
--- No border for maximized clients
-function border_adjust(c)
-	if c.maximized then
-		-- no borders if only 1 client visible
-		c.border_width = 0
-	elseif #awful.screen.focused().clients > 1 then
-		c.border_width = beautiful.border_width
-		c.border_color = beautiful.border_focus
-	end
-	if c.focused then
-		c.border_width = 30
-	end
-end
+---- No border for maximized clients
+--function border_adjust(c)
+--	if c.maximized then
+--		-- no borders if only 1 client visible
+--		c.border_width = 0
+--	elseif #awful.screen.focused().clients > 1 then
+--		c.border_width = beautiful.border_width
+--		c.border_color = beautiful.border_focus
+--	end
+--	if c.focused then
+--		c.border_width = 30
+--	end
+--end
+
 
 -- make rofi possible to raise minimized clients
 client.connect_signal("request::activate",
@@ -703,21 +635,23 @@ client.connect_signal("focus", function(c)
 end)
 
 client.connect_signal("unfocus", function(c)
+	if not c then
+		return
+	end
+	-- Anything else?
 end)
 
 -- }}}
 
 -- https://unix.stackexchange.com/questions/401539/how-to-disallow-any-application-from-stealing-focus-in-awesome-wm
---awful.ewmh.add_activate_filter(function() return false end, "ewmh")
---awful.ewmh.add_activate_filter(function() return false end, "rules")
-
----- https://stackoverflow.com/questions/44571965/awesome-wm-applications-fullscreen-mode-without-taking-whole-screen
+-- https://stackoverflow.com/questions/44571965/awesome-wm-applications-fullscreen-mode-without-taking-whole-screen
 client.disconnect_signal("request::geometry", awful.permissions.geometry)
-client.connect_signal("request::geometry", function(c, context, ...)
+client.connect_signal("request::geometry", function(c, context, hints)
 	if context == "fullscreen" and c.sticky then
 		-- ignore; I want the world cup in a picture-in-picture type deal
+		print("WARNING Ignoring fullscreen request for sticky client")
 	else
-		awful.permissions.geometry(c, context, ...)
+		awful.permissions.geometry(c, context, hints)
 	end
 end)
 

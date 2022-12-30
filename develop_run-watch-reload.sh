@@ -96,20 +96,51 @@ inotifywait --monitor --recursive \
 	--exclude '\.swp' --exclude '\.idea' --exclude '\.git' --exclude '\.ia' \
 	-e modify -e close_write -e delete \
 	/home/ia/dev/awesomeWM/awesome/awesomei/* |
-	while read -r event_path; do
-		# Ignore all events that do not match a lua file indicator.
+	while read -r event_path
+	do
+		# Ignore all events that do not match a lua file indicator.'$event_path'
 	  if [[ ! $event_path =~ '.lua' ]]; then
-        echo -e "${LIGHT_RED}:: x${NC} '$event_path' skipping (not a .lua file)"
+        echo -e "${LIGHT_RED}${S_LOG_PREFIX}skip${NC} '$event_path' (not a .lua file)"
         continue
     else
-        echo -e "${GREEN}:: ✓${NC} '$event_path' ${GREEN}match (reload in t-3 seconds...)${NC}"
+        echo -e "${GREEN}${S_LOG_PREFIX}match${NC} '$event_path'"
     fi
+
+		echo -e "${YELLOW}${S_LOG_PREFIX}----------------------------------------------------------------${NC}"
+		echo -e "${YELLOW}${S_LOG_PREFIX}Running checks...${NC}"
+
+    # Before restarting awesome, lets see if we can short circuit if
+    # awesome --check returns an error.
+    echo -e -n "${S_LOG_PREFIX}" # This echo will prefix the log from the next command.
+    set -x
+    if ! awesome --config /home/ia/dev/awesomeWM/awesome/awesomei/rc.lua --check
+    then
+      { set +x; } 2>/dev/null
+      continue
+    else
+      { set +x; } 2>/dev/null
+    fi
+
+    # If LuaCheck is installed, use it to check the lua file.
+    EVENT_TYPE="$(echo "$event_path" | cut -d' ' -f2)"
+    if [[ ! $EVENT_TYPE =~ 'DELETE' ]] && command -v luacheck >/dev/null 2>&1
+    then
+      # event_path eg. '/home/ia/dev/awesomeWM/awesome/awesomei/develop_run-watch-reload.sh MODIFY'
+      # Note that this may be a directory.
+      CHANGED_PATH="$(echo "$event_path" | awk '{print $1}')"
+      set -x
+      luacheck --config /home/ia/dev/awesomeWM/awesome/awesomei/.luacheckrc.ia "${CHANGED_PATH}"
+      { set +x; } 2>/dev/null
+      echo
+    fi
+
+    echo "${S_LOG_PREFIX}(debounce) reload in t-3 seconds..."
 
 		# Debounce.
 		echo -e "      ${GRAY}... skipping $(timeout 3 cat | wc -l) further changes${NC}"
 
-		echo -e "${GREEN}:: ----------------------------------------------------------------${NC}"
-		echo -e "${GREEN}:: Firing restart...${NC}"
+		echo -e "${GREEN}${S_LOG_PREFIX}----------------------------------------------------------------${NC}"
+		echo -e "${GREEN}${S_LOG_PREFIX}Firing restart...${NC}"
 		time awmtt restart
 		echo
 		echo "${S_LOG_PREFIX}Awaiting further changes..."
