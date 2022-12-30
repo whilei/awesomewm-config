@@ -86,9 +86,23 @@ trap 'awmtt stop' SIGINT SIGTERM EXIT
 
 # Plan to show me the running 'awesome' procs when I exit
 # so I can confirm that only my actual current awesome session is running.
-CMD_SHOW_AWESOME_PROCS='echo :: Remaining awesome procs:;'
-CMD_SHOW_AWESOME_PROCS+='ps aux | grep -v grep | grep -i -e VSZ -e awesome'
-trap "${CMD_SHOW_AWESOME_PROCS}" EXIT
+
+on_exit()
+{
+  echo
+  echo
+  echo -ne "${RED}"
+  echo "${S_LOG_PREFIX}EXIT"
+  echo "${S_LOG_PREFIX}----------------------------------------------------------------"
+  echo "${S_LOG_PREFIX}Remaining awesome procs"
+  echo -ne "${NC}";
+  set -x
+  ps aux | grep -v grep | grep -i -e VSZ -e awesome
+}
+trap 'on_exit' EXIT
+
+
+# ------------------------------------------------------------------------------
 
 echo "${S_LOG_PREFIX}Starting recursive file watcher for live reload..."
 
@@ -128,6 +142,7 @@ inotifywait --monitor --recursive \
       # event_path eg. '/home/ia/dev/awesomeWM/awesome/awesomei/develop_run-watch-reload.sh MODIFY'
       # Note that this may be a directory.
       CHANGED_PATH="$(echo "$event_path" | awk '{print $1}')"
+      echo -e -n "${S_LOG_PREFIX}" # This echo will prefix the log from the next command.
       set -x
       luacheck --config /home/ia/dev/awesomeWM/awesome/awesomei/.luacheckrc.ia "${CHANGED_PATH}"
       { set +x; } 2>/dev/null

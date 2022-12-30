@@ -672,6 +672,24 @@ naughty.connect_signal("request::display", function(n)
 	naughty.layout.box { notification = n }
 end)
 
+local lightly = true
+if lightly
+then
+	-- AwesomeWM is about to enter the event loop.
+	-- This means all initialization has been done.
+	awesome.connect_signal("startup", function()
+		print("AwesomeWM startup: now entering event loop")
+	end)
+
+	awesome.connect_signal("exit", function(is_restart)
+		print("AwesomeWM is exiting. Is restart? " .. tostring(is_restart))
+	end)
+
+	--awesome.connect_signal("refresh", function()
+	--	--print("[cool] refresh")
+	--end)
+end
+
 --
 --client.connect_signal("property::fullscreen", function(c)
 --	c.ontop = true

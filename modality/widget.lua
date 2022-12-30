@@ -314,7 +314,7 @@ lib.show = function(s, parent)
 
 				if code:lower() ~= "escape" and text_box ~= "" then
 
-					local _w, _h    = text_box:get_preferred_size(s '$event_path')
+					local _w, _h    = text_box:get_preferred_size(s)
 					_largest.width  = math.max(_largest.width, math.max(config.min_entry_width, _w))
 					_largest.height = math.max(_largest.height, math.max(config.min_entry_height, _h))
 
@@ -339,7 +339,7 @@ lib.show = function(s, parent)
 	mbox.width               = math.max(mbox.width, 400)
 	local _height_calculated = (_drows * _largest.height) + (2 * tbc.spacing * _drows) + (mar.top + mar.bottom)
 	if name ~= "" then
-		local _, _tb_h     = titlebox:get_preferred_size()
+		local _, _tb_h     = titlebox:get_preferred_size(s)
 		_height_calculated = _height_calculated + _tb_h
 	end
 	mbox.height = math.max(22, _height_calculated)
