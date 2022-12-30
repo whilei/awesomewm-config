@@ -117,12 +117,10 @@ local reader_view                  = function(cc)
 		return
 	end
 
-	-- Else: turning ona
+	-- Else: turning on.
 	c.reader_viewing        = true
-
 	c.was_geometry          = c:geometry()
 	c.original_screen       = c.screen or awful.screen.focused()
-
 	c.was_maximized         = c.maximized
 	c.maximized             = false
 	c.was_floating          = c.floating
@@ -133,7 +131,6 @@ local reader_view                  = function(cc)
 	c.border_color          = "#ffffff"
 	c.original_border_width = c.border_width
 	c.border_width          = 3
-
 
 	-- Move to TV screen.
 	if not c.screen.is_tv then
@@ -149,18 +146,27 @@ local reader_view                  = function(cc)
 	-- On big screens (ie. the TV I use as a desktop monitor)
 	-- adjust the window size and position to make for comfortable website reading.
 	if c.screen.is_tv then
-		local geo
-		geo        = c:geometry()
-		local sgeo
-		sgeo       = c.screen.workarea
-
+		local geo  = c:geometry()
+		local sgeo = c.screen.workarea
 		geo.x      = sgeo.x + sgeo.width / 4
 		geo.y      = sgeo.y + sgeo.height / 8
 		geo.width  = sgeo.width / 2
 		geo.height = sgeo.height * 7 / 8
-
 		c:geometry(geo)
 	end
+
+	-- Disable mouse::enter or mouse::leave events that could be triggered by the pointer when moving.
+	-- Default=false.
+	-- https://awesomewm.org/apidoc/input_handling/mouse.html#coords
+	local mouse_quiet_as_a_mouse = true
+	-- Get or set the mouse coords.
+	mouse.coords({
+					 x = c.x + c.width / 2,
+					 y = c.y + c.height / 2,
+				 }, mouse_quiet_as_a_mouse)
+
+	c:raise()
+	client.focus = c
 end
 
 local inspect_client               = function()

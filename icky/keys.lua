@@ -125,7 +125,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "awesome/widgets", description = "toggle meridian widget", name = "meridian" },
-		modalities = { m.AWESOME_WIDGETS .. "m" },
+		modalities = { m.AWESOME_WIDGETS .. "m", m.AWESOME_WIDGETS .. "g" },
 		hotkeys    = { { _keys.MOD, "g" } },
 		on_press   = global_fns.awesome.widgets.world_times,
 	},
@@ -208,39 +208,44 @@ lib.global_bindings           = {
 
 	-- {{{ APPLICATIONS
 	{
-		h          = { group = "awesome/applications", description = "raise or run emacs", name = "emacs", },
+		h          = { group = "applications", description = "raise or run emacs", name = "emacs", },
 		modalities = { m.APPLICATIONS .. "e" },
 		on_press   = global_fns.apps.run_or_raise("emacs"),
 	},
 	{
-		h          = { group = "awesome/applications", description = "raise or run firefox", name = "firefox", },
+		h          = { group = "applications", description = "raise or run firefox", name = "firefox", },
 		modalities = { m.APPLICATIONS .. "f" },
 		on_press   = global_fns.apps.run_or_raise("ffox"),
 	},
 	{
-		h          = { group = "awesome/applications", description = "raise or run google chrome", name = "google chrome", },
+		h          = { group = "applications", description = "raise or run google chrome", name = "google chrome", },
 		modalities = { m.APPLICATIONS .. "g" },
 		on_press   = global_fns.apps.run_or_raise("google-chrome"),
 	},
 	{
-		h          = { group = "awesome/applications", description = "raise or run konsole", name = "konsole", },
+		h          = { group = "applications", description = "raise or run konsole", name = "konsole", },
 		modalities = { m.APPLICATIONS .. "k" },
 		on_press   = global_fns.apps.run_or_raise("konsole"),
 	},
 	{
-		h          = { group = "awesome/applications", description = "raise or run kate", name = "kate", },
+		h          = { group = "applications", description = "raise or run kate", name = "kate", },
 		modalities = { m.APPLICATIONS .. "a" },
 		on_press   = global_fns.apps.run_or_raise("kate"),
 	},
 	{
-		h          = { group = "awesome/applications", description = "raise or run system settings", name = "system settings", },
+		h          = { group = "applications", description = "raise or run system settings", name = "system settings", },
 		modalities = { m.APPLICATIONS .. "s" },
 		on_press   = global_fns.apps.run_or_raise("systemsettings5"),
 	},
 	{
-		h          = { group = "awesome/applications", description = "raise or run jetbrains toolbox", name = "jetbrains toolbox", },
+		h          = { group = "applications", description = "raise or run jetbrains toolbox", name = "jetbrains toolbox", },
 		modalities = { m.APPLICATIONS .. "j" },
 		on_press   = global_fns.apps.run_or_raise("jetbrains-toolbox"),
+	},
+	{
+		h          = { group = "applications", description = "raise or run nvidia settings", name = "nvidia-settings", },
+		modalities = { m.APPLICATIONS .. "N" },
+		on_press   = global_fns.apps.run_or_raise("nvidia-settings"),
 	},
 	-- }}} APPLICATIONS
 
@@ -517,12 +522,12 @@ lib.global_bindings           = {
 	-- {{{ POWER_USER
 	{
 		h          = { group = "power_user", description = "restart lightdm to logout", name = "logout" },
-		modalities = { m.POWER_USER .. "l" },
+		modalities = { m.POWER_USER .. "L" },
 		on_press   = global_fns.power_user.logout,
 	},
 	{
 		h          = { group = "power_user", description = "suspend session (sleep)", name = "suspend/sleep" },
-		modalities = { m.POWER_USER .. "s" },
+		modalities = { m.POWER_USER .. "S" },
 		on_press   = global_fns.power_user.suspend,
 	},
 	{

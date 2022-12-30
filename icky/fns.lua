@@ -240,10 +240,10 @@ local global_fns           = {
 	},
 	power_user = {
 		logout    = function()
-			awful.util.spawn_with_shell("sudo service lightdm restart")
+			awful.util.with_shell("sudo service lightdm restart")
 		end,
 		suspend   = function()
-			awful.util.spawn_with_shell("sudo systemctl suspend")
+			awful.util.with_shell("sudo systemctl suspend")
 		end,
 		reboot    = function()
 			os.execute("reboot")
