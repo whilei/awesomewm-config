@@ -74,7 +74,7 @@ local global_fns           = {
 				local matcher = function(c)
 					return awful.rules.match(c, { class = app_by_name })
 				end
-				awful.client.single_instance(app_by_name, matcher)
+				awful.spawn.single_instance(app_by_name, nil, matcher)
 			end
 		end,
 		handy           = {
@@ -108,11 +108,11 @@ local global_fns           = {
 			if modi == "drun" then
 				return function()
 					awful.spawn.easy_async(cmd, function(stdout, stderr, reason, exit_code)
-						if exit_code == 0 then
+						if exit_code == 0 and stdout ~= "" then
 							local matcher = function(c)
 								return awful.rules.match(c, { class = stdout })
 							end
-							awful.client.single_instance(stdout, matcher)
+							awful.spawn.single_instance(stdout, matcher)
 						end
 					end)
 				end
@@ -133,8 +133,7 @@ local global_fns           = {
 		revelation      = revelation,
 	},
 	client     = {
-		special_inspect = special.inspect_client,
-		focus           = {
+		focus   = {
 			back_global = special.focus_previous_client_global,
 			back_local  = function()
 				awful.client.focus.history.previous()
@@ -169,7 +168,7 @@ local global_fns           = {
 				end,
 			}
 		},
-		swap            = {
+		swap    = {
 			index = {
 				next = function()
 					awful.client.swap.byidx(1)
@@ -179,14 +178,14 @@ local global_fns           = {
 				end
 			},
 		},
-		restore         = function()
+		restore = function()
 			local c = awful.client.restore()
 			if c then
 				client.focus = c
 				c:raise()
 			end
 		end,
-		hints           = function()
+		hints   = function()
 			hints.focus();
 			raise_focused_client()
 		end,

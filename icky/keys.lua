@@ -15,6 +15,7 @@ local ipairs, table, tostring = ipairs, table, tostring
 local client                  = client
 
 local awful                   = require("awful")
+local hood                    = require("hood")
 local global_fns              = require("icky.fns").global
 local client_fns              = require("icky.fns").client
 local modality                = require("modality")
@@ -109,11 +110,6 @@ lib.global_bindings           = {
 		modalities = { m.AWESOME .. "m:show main menu" },
 		hotkeys    = { { _keys.MOD, "w" } },
 		on_press   = global_fns.awesome.show_main_menu,
-	},
-	{
-		h          = { group = "awesome", description = "inspect/debug client", name = "inspect client" },
-		modalities = { m.AWESOME .. "i" },
-		on_press   = global_fns.client.special_inspect,
 	},
 	-- AWESOME:BARS
 	{
@@ -653,6 +649,11 @@ lib.client_bindings           = {
 		h          = { group = "special", description = "turn Klack on", name = "klack" },
 		modalities = { m.AWESOME_APPS .. "k" },
 		on_press   = global_fns.special.klack,
+	},
+	{
+		h          = { group = "special", description = "toggle hood debugger/inspector", name = "hood (debug)" },
+		modalities = { "H" },
+		on_press   = hood.toggle,
 	},
 }
 

@@ -682,6 +682,7 @@ then
 		print("awesome::startup - Now entering event loop...")
 		print("Starting Hood...")
 		hood.init(screen[1])
+		--hood.show()
 	end)
 
 	awesome.connect_signal("exit", function(is_restart)

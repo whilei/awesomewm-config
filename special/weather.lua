@@ -63,10 +63,10 @@ local function factory(args)
 			weather.forecast_update()
 		end
 
-		weather.notification = naughty.notify {
+		weather.notification = naughty.notification {
 			preset   = notification_preset,
 			position = "top_middle",
-			text     = weather.notification_text,
+			message  = weather.notification_text,
 			icon     = weather.icon_path,
 			timeout  = type(seconds) == "number" and seconds or notification_preset.timeout
 		}
@@ -74,7 +74,7 @@ local function factory(args)
 
 	function weather.hide()
 		if weather.notification then
-			naughty.destroy(weather.notification)
+			weather.notification:destroy()
 			weather.notification = nil
 		end
 	end
