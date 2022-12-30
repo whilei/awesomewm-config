@@ -210,42 +210,47 @@ lib.global_bindings           = {
 	{
 		h          = { group = "applications", description = "raise or run emacs", name = "emacs", },
 		modalities = { m.APPLICATIONS .. "e" },
-		on_press   = global_fns.apps.run_or_raise("emacs"),
+		on_press   = global_fns.apps.single_instance("emacs"),
 	},
 	{
-		h          = { group = "applications", description = "raise or run firefox", name = "firefox", },
+		h          = { group = "applications", description = "raise or run firefox", name = "firefox (ffox)", },
 		modalities = { m.APPLICATIONS .. "f" },
-		on_press   = global_fns.apps.run_or_raise("ffox"),
+		on_press   = global_fns.apps.single_instance("ffox"),
 	},
 	{
 		h          = { group = "applications", description = "raise or run google chrome", name = "google chrome", },
 		modalities = { m.APPLICATIONS .. "g" },
-		on_press   = global_fns.apps.run_or_raise("google-chrome"),
+		on_press   = global_fns.apps.single_instance("google-chrome"),
 	},
 	{
 		h          = { group = "applications", description = "raise or run konsole", name = "konsole", },
 		modalities = { m.APPLICATIONS .. "k" },
-		on_press   = global_fns.apps.run_or_raise("konsole"),
+		on_press   = global_fns.apps.single_instance("konsole"),
 	},
 	{
 		h          = { group = "applications", description = "raise or run kate", name = "kate", },
 		modalities = { m.APPLICATIONS .. "a" },
-		on_press   = global_fns.apps.run_or_raise("kate"),
+		on_press   = global_fns.apps.single_instance("kate"),
 	},
 	{
 		h          = { group = "applications", description = "raise or run system settings", name = "system settings", },
 		modalities = { m.APPLICATIONS .. "s" },
-		on_press   = global_fns.apps.run_or_raise("systemsettings5"),
+		on_press   = global_fns.apps.single_instance("systemsettings5"),
 	},
 	{
 		h          = { group = "applications", description = "raise or run jetbrains toolbox", name = "jetbrains toolbox", },
 		modalities = { m.APPLICATIONS .. "j" },
-		on_press   = global_fns.apps.run_or_raise("jetbrains-toolbox"),
+		on_press   = global_fns.apps.single_instance("jetbrains-toolbox"),
 	},
 	{
 		h          = { group = "applications", description = "raise or run nvidia settings", name = "nvidia-settings", },
 		modalities = { m.APPLICATIONS .. "N" },
-		on_press   = global_fns.apps.run_or_raise("nvidia-settings"),
+		on_press   = global_fns.apps.single_instance("nvidia-settings"),
+	},
+	{
+		h          = { group = "applications", description = "raise or run obsidian", name = "obsidian", },
+		modalities = { m.APPLICATIONS .. "o" },
+		on_press   = global_fns.apps.single_instance("obsidian"),
 	},
 	-- }}} APPLICATIONS
 

@@ -36,6 +36,7 @@ local icky                                = require("icky")
 local modality                            = require("modality")
 local special_log_load_time               = require("special").log_load_time
 local special_log_load_time_reset         = require("special").log_load_time_reset
+local hood                                = require("hood")
 
 special_log_load_time("requirements")
 
@@ -678,7 +679,9 @@ then
 	-- AwesomeWM is about to enter the event loop.
 	-- This means all initialization has been done.
 	awesome.connect_signal("startup", function()
-		print("AwesomeWM startup: now entering event loop")
+		print("awesome::startup - Now entering event loop...")
+		print("Starting Hood...")
+		hood.init(screen[1])
 	end)
 
 	awesome.connect_signal("exit", function(is_restart)

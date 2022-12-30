@@ -125,10 +125,10 @@ modality.search                     = function()
 	awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
 		local function error(title, text)
 			debug_print("[modality] rofi error", "title=", title, "text=", text)
-			naughty.notify {
+			naughty.notification {
 				preset  = naughty.config.presets.critical,
 				title   = message,
-				text    = stderr,
+				message = stderr,
 				timeout = 5,
 			}
 		end

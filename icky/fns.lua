@@ -69,15 +69,15 @@ local global_fns           = {
 		},
 	},
 	apps       = {
-		run_or_raise   = function(app_by_name)
+		single_instance = function(app_by_name)
 			return function()
 				local matcher = function(c)
 					return awful.rules.match(c, { class = app_by_name })
 				end
-				awful.client.run_or_raise(app_by_name, matcher)
+				awful.client.single_instance(app_by_name, matcher)
 			end
 		end,
-		handy          = {
+		handy           = {
 			top  = function()
 				handy("ffox --class handy-top", awful.placement.top, 0.5, 0.5)
 			end,
@@ -85,7 +85,7 @@ local global_fns           = {
 				handy("ffox --class handy-left", awful.placement.left, 0.25, 0.9)
 			end,
 		},
-		rofi           = function(modi)
+		rofi            = function(modi)
 			-- Location values:
 			-- 1   2   3
 			-- 8   0   4
@@ -112,7 +112,7 @@ local global_fns           = {
 							local matcher = function(c)
 								return awful.rules.match(c, { class = stdout })
 							end
-							awful.client.run_or_raise(stdout, matcher)
+							awful.client.single_instance(stdout, matcher)
 						end
 					end)
 				end
@@ -126,11 +126,11 @@ local global_fns           = {
 				end
 			end
 		end,
-		quake          = function()
+		quake           = function()
 			special.quake:toggle()
 		end,
-		popup_launcher = special.popup_launcher.launch,
-		revelation     = revelation,
+		popup_launcher  = special.popup_launcher.launch,
+		revelation      = revelation,
 	},
 	client     = {
 		special_inspect = special.inspect_client,

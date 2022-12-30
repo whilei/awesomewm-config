@@ -149,10 +149,14 @@ inotifywait --monitor --recursive \
       echo
     fi
 
-    echo "${S_LOG_PREFIX}(debounce) reload in t-3 seconds..."
+    echo -n "${S_LOG_PREFIX}[Debounce] Reloading in t-3 seconds... "
+    seq 0 2 | while read -r i; do
+      echo -n "$((3 - i)) "
+      sleep 1
+    done &
 
 		# Debounce.
-		echo -e "      ${GRAY}... skipping $(timeout 3 cat | wc -l) further changes${NC}"
+		echo -e "\n      ${GRAY}... skipping $(timeout 3 cat | wc -l) further changes${NC}"
 
 		echo -e "${GREEN}${S_LOG_PREFIX}----------------------------------------------------------------${NC}"
 		echo -e "${GREEN}${S_LOG_PREFIX}Firing restart...${NC}"
