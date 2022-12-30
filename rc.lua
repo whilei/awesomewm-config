@@ -330,7 +330,6 @@ ruled.client.connect_signal("request::rules", function()
 		-- Dialogs.
 		{
 			rule_any   = { type = { "dialog", "normal" } },
-			-- properties = {titlebars_enabled = true}
 			properties = { titlebars_enabled = true }
 		},
 		{
@@ -379,6 +378,8 @@ ruled.client.connect_signal("request::rules", function()
 				skip_taglist = true,
 			},
 		},
+		-- Xephyr is the tool `awmtt` uses to emulate an awesomeWM instance for development.
+		-- AFAIK, it is not used for anything else.
 		{
 			rule       = { class = "Xephyr", },
 			properties = {
@@ -401,17 +402,17 @@ ruled.client.connect_signal("request::rules", function()
 				--icon                 = awesome_icon._native, -- https://stackoverflow.com/a/30379815
 			}
 		},
+		-- Round the top corners of floating clients to show me that they are floating.
 		{
 			rule       = { floating = true, },
 			properties = {
 				shape = function(cc, w, h)
-					-- Round only the top corners.
-					--gears.shape.rounded_rect(c, w, h,)
 					local tl, tr, br, bl, rad = true, true, false, false, math.min(10, h / 10)
 					return gears.shape.partially_rounded_rect(cc, w, h, tl, tr, br, bl, rad)
 				end,
 			}
 		},
+		-- Kate is a simple text editor and I like that about it.
 		{
 			rule       = { class = "kate", },
 			properties = {
@@ -422,9 +423,9 @@ ruled.client.connect_signal("request::rules", function()
 		{
 			rule       = { class = "jetbrains-toolbox", },
 			properties = {
-				minimized = true,
-				floating  = false,
 				focus     = false, -- This thing never works quite right for me.
+				floating  = true,
+				placement = awful.placement.centered,
 			}
 		}
 	}

@@ -853,6 +853,13 @@ function lib.init()
 
 	install_global_tag_fns_by_index()
 
+	-- Special things.
+	-- I have now, several times, accidentally logged out via some keyboard binding...
+	-- somewhat mysteriously; not sure exactly which binding.
+	-- Going to remove Mod+Z because I have a suspicion;
+	-- this would conflict w/ my Quake terminal popup binding, which I use all the time.
+	awful.keyboard.remove_global_keybinding(awful.key({ _keys.MOD }, "z"))
+
 	-- DEBUG
 	-- modality_util.debug_print_paths("[modality]", modality.path_tree)
 	--modality.develop_print_all_keypaths()
