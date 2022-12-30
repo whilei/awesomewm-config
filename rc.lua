@@ -5,7 +5,7 @@
 
 --]]
 
--- awesome_mode: api-level=5:screen=on
+-- awesome_mode: api-level=42:screen=on
 -- If LuaRocks is installed, make sure that packages installed through it are
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
@@ -23,7 +23,6 @@ package.path                                                = package.path .. ";
 
 local awful                                                 = require("awful")
 local g_table                                               = gears.table or awful.util.table -- 4.{0,1} compatibility
-local _                                                     = require("awful.autofocus")
 local wibox                                                 = require("wibox")
 local beautiful                                             = require("beautiful")
 local naughty                                               = require("naughty")
@@ -688,6 +687,11 @@ client.connect_signal("request::activate",
 						  if c.minimized then
 							  c.minimized = false
 						  end
+						  awful.permissions.activate(c, context, hints)
+					  end)
+
+client.connect_signal("request::autoactivate",
+					  function(c, context, hints)
 						  awful.permissions.activate(c, context, hints)
 					  end)
 

@@ -314,7 +314,7 @@ lib.show = function(s, parent)
 
 				if code:lower() ~= "escape" and text_box ~= "" then
 
-					local _w, _h    = text_box:get_preferred_size()
+					local _w, _h    = text_box:get_preferred_size(s)
 					_largest.width  = math.max(_largest.width, math.max(config.min_entry_width, _w))
 					_largest.height = math.max(_largest.height, math.max(config.min_entry_height, _h))
 
