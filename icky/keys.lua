@@ -69,6 +69,7 @@ local m                       = {
 	CLIENT_RESIZE     = "c:client,r~:resize,", -- stays
 	CLIENT_PLACEMENT  = "c:client,p~:placement,", -- stays
 
+	HANDY             = "h:handy,",
 	FOCUS             = "f:focus,",
 	TAG_LAYOUT        = "l:layout,",
 	TAG_LAYOUT_ADJUST = "l:layout,a~:adjust,", -- stays
@@ -77,10 +78,10 @@ local m                       = {
 	SWAP              = "p~:swap,",
 	POWER_USER        = "P:power-user,",
 	SCREEN            = "s:screen,",
-	SCREEN_SHOT       = "s:screen,S:screenshot,",
-	--SPECIAL           = "z:special,",
+	SCREEN_SHOT       = "s:screen,t:screenshot,",
 	TAG               = "t:tag,",
 	TAG_USELESS       = "t:tag,u~:useless,", -- stays
+	--SPECIAL           = "z:special,",
 }
 
 lib.global_bindings           = {
@@ -139,11 +140,11 @@ lib.global_bindings           = {
 	-- AWESOME:APPS
 	{
 		h          = {
-			group       = "awesome/snazzy",
-			description = "handy firefox (top)",
-			name        = "handy firefox (top)",
+			group       = "awesome/handy",
+			description = "firefox (top)",
+			name        = "firefox (top)",
 		},
-		modalities = { m.AWESOME_APPS .. "h:handy,t" },
+		modalities = { m.HANDY .. "k:top" },
 		hotkeys    = {
 			{
 				mods      = { _keys.MOD }, code = "v",
@@ -154,8 +155,8 @@ lib.global_bindings           = {
 		on_release = nil,
 	},
 	{
-		h          = { group = "awesome/snazzy", description = "handy firefox (left)", name = "handy firefox (left)", },
-		modalities = { m.AWESOME_APPS .. "h:handy,l" },
+		h          = { group = "awesome/handy", description = "firefox (left)", name = "firefox (left)", },
+		modalities = { m.HANDY .. "h" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "a", }, },
 		on_press   = global_fns.apps.handy.left,
 	},
@@ -167,7 +168,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "awesome/snazzy", description = "rofi window", name = "rofi (window)", },
-		modalities = { " ", m.AWESOME_APPS .. "w", m.FOCUS .. "f" },
+		modalities = { "o", " ", m.AWESOME_APPS .. "w", m.FOCUS .. "f" },
 		hotkeys    = {
 			{ mods = { _keys.MOD, }, code = " ", },
 		},
@@ -175,7 +176,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "awesome/snazzy", description = "rofi runner", name = "rofi (run)", },
-		modalities = { "r", m.AWESOME_APPS .. "R" },
+		modalities = { "r", m.AWESOME_APPS .. "r" },
 		hotkeys    = {
 			{ mods = { _keys.MOD }, code = "Return", },
 		},

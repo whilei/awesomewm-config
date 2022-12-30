@@ -23,6 +23,7 @@ run previous command (abstracts to history?)
 sort order for widget plus table beyond just a fit
 show available keystrokes in a way that looks like a keyboard instead of a dictionary
 major mode; per client, with keypaths; make any client work like spacemacs
+> I am realizing that I want a key/path:function system that is function-centric, rather than binding or keypath centric.
 
 
 anarchy
@@ -61,6 +62,11 @@ because i currently rely on the Xephyr titlebar to tell me whether I have the mo
 my awesome instance has no idea if its the real deal or a development xephyr instance
 awesome watch self for reloadable, then load
 
+revisit
+back
+definitely i want precisely back exactly (mouse position, etc)
+
+
 ---
 
 ## wtf known bugs
@@ -70,9 +76,6 @@ see the attempt to send notification in `icky.fns.screenshot.delayed`, which doe
 see the awful.util.mainmenu freedesktop builder function, the "your menu is loading..." notification does not show up at all either.
 the issue may be related to "blocking" by adjacent widget actions.
 
-`client:move_to_screen()` does not maintain the focus on the client.
-that is: mod+o gets the client to swap screens; but then there is no focused client.
-> this was because of I removed `require("awful.autofocus")` from rc.lua
 
 Modality:
 The modality widget does not get the parent.bindings[code].bindings object (a tree) that I expect it to.
@@ -96,11 +99,11 @@ or not allowing me to move tags on a screen once i've move to a new screen
  because i'm actually still focused, maybe, somehow on the original screen (mouse left behind?)
 
 
-revisit
-back
-definitely i want precisely back exactly (mouse position, etc)
-
 ---
 
+### fixed bugs
 
-I am realizing that I want a key/path:function system that is function-centric, rather than binding or keypath centric.
+`client:move_to_screen()` does not maintain the focus on the client.
+that is: mod+o gets the client to swap screens; but then there is no focused client.
+> this was because of I removed `require("awful.autofocus")` from rc.lua
+> this was fixed by implementing a default/passthru fn for the client.request::autofocus signal

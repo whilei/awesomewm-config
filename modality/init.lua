@@ -500,7 +500,7 @@ local function keypressed_callback(bindings_parent)
 
 			-- Option 2: Show error (invalid binding) and keep the mode running.
 			naughty.notification {
-				text     = "Invalid binding: '" .. key .. "' (Use ESC to exit.)",
+				message  = "Invalid binding: '" .. key .. "' (Use ESC to exit.)",
 				timeout  = 0.75,
 				position = "bottom_middle",
 				bg       = "#ff0000",
