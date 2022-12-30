@@ -55,25 +55,7 @@ if awesome.startup_errors then
 		message = awesome.startup_errors
 	}
 else
-	-- Only start picom if there were no errors because
-	-- my tv is going black when I start with errors now and
-	-- it didn't used to before I added picom, so its getting the blame
-	-- until I learn otherwise.
-	local compositor_cmd = "picom -b" -- -b makes it a daemon
-	awful.spawn.easy_async(compositor_cmd, function(stdout, stderr, reason, code)
-		if code ~= 0 then
-			naughty.notification {
-				preset  = naughty.config.presets.normal,
-				title   = "'" .. compositor_cmd .. "'" .. " errored: " ..
-						"code=" .. tostring(code) .. " " ..
-						"reason=" .. tostring(reason) ..
-						"",
-				message = "stderr=\n" .. stderr,
-			}
-		end
-	end)
-
-	special_log_load_time("started picom")
+	-- Started up without errors.
 end
 
 do
@@ -97,6 +79,28 @@ special_log_load_time("notify of startup errors")
 -- }}}
 
 
+-- Only start picom if there were no errors because
+-- my tv is going black when I start with errors now and
+-- it didn't used to before I added picom, so its getting the blame
+-- until I learn otherwise.
+if not awesome.startup_errors and not awesome.composite_manager_running then
+	local compositor_cmd = "picom -b" -- -b makes it a daemon
+	awful.spawn.easy_async(compositor_cmd, function(stdout, stderr, reason, code)
+		if code ~= 0 then
+			naughty.notification {
+				preset  = naughty.config.presets.normal,
+				title   = "'" .. compositor_cmd .. "'" .. " errored: " ..
+						"code=" .. tostring(code) .. " " ..
+						"reason=" .. tostring(reason) ..
+						"",
+				message = "stderr=\n" .. stderr,
+			}
+		end
+	end)
+
+	special_log_load_time("started picom")
+end
+
 if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
@@ -108,9 +112,8 @@ local modkey        = "Mod4"
 local altkey        = "Mod1"
 local terminal      = "xterm"
 local editor        = os.getenv("EDITOR") or "vim"
-local gui_editor    = "code"
+local gui_editor    = "emacs"
 local browser       = "ffox"
-local guieditor     = "code"
 local scrlocker     = "xlock"
 
 awful.util.terminal = terminal
