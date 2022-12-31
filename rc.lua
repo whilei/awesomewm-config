@@ -600,21 +600,6 @@ local function move_mouse_onto_focused_client(c)
 	end
 end
 
----- No border for maximized clients
---function border_adjust(c)
---	if c.maximized then
---		-- no borders if only 1 client visible
---		c.border_width = 0
---	elseif #awful.screen.focused().clients > 1 then
---		c.border_width = beautiful.border_width
---		c.border_color = beautiful.border_focus
---	end
---	if c.focused then
---		c.border_width = 30
---	end
---end
-
-
 -- make rofi possible to raise minimized clients
 client.connect_signal("request::activate",
 					  function(c, context, hints)
