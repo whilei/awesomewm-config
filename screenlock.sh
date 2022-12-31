@@ -40,7 +40,8 @@ P=0
 # base_color="282828"
 base_color="000000"
 base_color_tr="${base_color}"
-time_date_color=51B41F
+#time_date_color=51B41F
+time_date_color="888888"
 verif_color=373737FF
 wrong_color=8A2537FF
 ring_ver_color="${verif_color}"
@@ -65,14 +66,13 @@ i3lock-color \
 	--ind-pos="x+32+32:y+h-32-32" \
 	--time-color=${time_date_color}FF \
 	--time-pos='ix:y+128+r' \
-	--time-str='%H:%M' \
-	--time-font='monospace' \
+	--time-str='%_H:%M' \
+	--time-font='sans-serif' \
 	--time-align=1 \
 	--time-size=128 \
 	--date-color=${time_date_color}00 \
-	--date-pos='ix+180:iy+12' \
-	--date-pos='ix+r+50:iy+12' \
-  --date-str='%Y %B %d (%A)' \
+	--date-pos='ix:y+128*2' \
+  --date-str='%Y %B %d - %A' \
 	--date-font='monospace' \
 	--date-align=1 \
 	--date-size=32 \
@@ -86,7 +86,7 @@ i3lock-color \
   --wrong-pos='x+w/2-32:y+h/2' \
 	--modif-color=00000000 \
 	--layout-color=00000000 \
-	--noinput-text='Input was empty' \
+	--noinput-text='clear' \
 	--lock-text='Locked' \
 	--lockfailed-text='' \
 	--ignore-empty-password \
@@ -94,6 +94,9 @@ i3lock-color \
 	--pass-screen-keys \
 	--indicator \
 	--clock
+
+#	--date-pos='ix+r+50:iy+12' \
+
 
 # --special-passthrough
 
