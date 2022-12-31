@@ -611,7 +611,7 @@ client.connect_signal("request::activate",
 
 client.connect_signal("request::autoactivate",
 					  function(c, context, hints)
-						  awful.permissions.activate(c, context, hints)
+						  awful.permissions.autoactivate(c, context, hints)
 					  end)
 
 client.connect_signal("focus", function(c)
