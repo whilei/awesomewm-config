@@ -614,18 +614,57 @@ client.connect_signal("request::autoactivate",
 						  awful.permissions.autoactivate(c, context, hints)
 					  end)
 
+local function update_wibar_client_focus_widget(c)
+	if not c then return end
+	if not c.screen then return end
+	if not c.screen.client_focused_props_widget then return end
+
+	local w   = c.screen.client_focused_props_widget
+	local geo = c:geometry()
+
+	local t   = "" ..
+			(c.floating and " F " or "") ..
+			(c.ontop and " T " or "") ..
+			(c.maximized and " M " or "") ..
+			(c.sticky and " S " or "") ..
+			(c.fullscreen and " F " or "") ..
+			(c.hidden and " H " or "") ..
+			(c.minimized and " m " or "") ..
+			geo.width .. "x" .. geo.height ..
+			""
+
+	w:set_text(t)
+end
+
 client.connect_signal("focus", function(c)
 	if not c then
 		return
 	end
 	move_mouse_onto_focused_client(c)
+	update_wibar_client_focus_widget(c)
 end)
 
 client.connect_signal("unfocus", function(c)
 	if not c then
 		return
 	end
+
 	-- Anything else?
+end)
+
+client.connect_signal("request::unmanage", function(c)
+	if not c then return end
+
+	-- This fixes a bug where jetbrains-clion would show me a
+	-- line-number-picker pop-up, but then after I type in which line number I want
+	-- (and the dialog goes away), the original jetbrains-clion IDE window
+	-- would NOT regain focus.
+	-- I have not noticed the issue with any other client classes,
+	-- but this solution tries to be general enough to catch them before I do.
+	if c.transient_for ~= nil then
+		--c.transient_for.emit_signal("request::activate", "unmanage", { raise = true })
+		client.focus = c.transient_for
+	end
 end)
 
 -- }}}

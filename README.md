@@ -1,4 +1,24 @@
 
+
+20221231
+
+invert master_width_factor
+
+switch and swap client master
+-- Do not enable colors to make the CI output more readable.
+
+improve 'stays' ui view for modality; make it more obvious
+
+add client geometry to wibar
+add client props to wibar
+
+events, events, hook, connections and emits.
+this is how to decouple defaults from specialties.
+
+
+
+---
+
 done
 
 `special`: custom functions and widgets that i like and you maybe wont

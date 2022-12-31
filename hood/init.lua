@@ -278,11 +278,17 @@ end
 local function hood_hud_inspector_start()
 	client.connect_signal("mouse::enter", inspector_mouse_enter)
 	client.connect_signal("mouse::leave", inspector_mouse_leave)
+
+	--client.connect_signal("focus", inspector_mouse_enter)
+	--client.connect_signal("unfocus", inspector_mouse_leave)
 end
 
 local function hood_hud_inspector_stop()
 	client.disconnect_signal("mouse::enter", inspector_mouse_enter)
 	client.disconnect_signal("mouse::leave", inspector_mouse_leave)
+
+	--client.disconnect_signal("focus", inspector_mouse_enter)
+	--client.disconnect_signal("unfocus", inspector_mouse_leave)
 end
 
 hood.show   = function()

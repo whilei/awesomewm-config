@@ -690,9 +690,31 @@ special_log_load_time("widget: systray")
 --screen.connect_signal("request::wallpaper", set_random_wallpaper)
 
 -- Separators
-local spr = wibox.widget.textbox(' ')
+local spr = wibox.widget.textbox(" ")
+
+--local client_props_widget = wibox.widget.textbox("hello world")
+--client.connect_signal("focus", function(c)
+--	if not c then return end
+--
+--	local w   = client_props_widget
+--	local geo = c:geometry()
+--
+--	local t   = "" ..
+--			(c.floating and " floating " or "") ..
+--			(c.ontop and " ontop " or "") ..
+--			(c.maximized and " Z " or "") ..
+--			(c.sticky and " sticky " or "") ..
+--			(c.fullscreen and " fullscreen " or "") ..
+--			(c.hidden and " hidden " or "") ..
+--			geo.width .. "x" .. geo.height ..
+--			""
+--
+--	w:set_text(t)
+--end)
 
 function theme.at_screen_connect(s)
+
+	--s.client_focused_props_widget = client_props_widget
 
 	s.my_calendar_widget = acalendar
 	clock:connect_signal("button::press", function(_, _, _, button)
@@ -1217,7 +1239,7 @@ function theme.at_screen_connect(s)
 		mywibar_args.width    = s.workarea.width / 3 * 2
 	end
 
-	s.mywibox      = awful.wibar(mywibar_args)
+	s.mywibox            = awful.wibar(mywibar_args)
 
 	--s.mywibox_tasks = awful.wibar {
 	--	position          = "bottom",
@@ -1306,41 +1328,13 @@ function theme.at_screen_connect(s)
 	--	}
 	--}
 
-	s.mywibox_slim = awful.popup {
-		widget       = {
-			{
-				{
-					s.mypromptbox,
-					s.mytaglist,
-					clock_time_only,
-					layout = wibox.layout.fixed.horizontal,
-				},
-				margins = 0,
-				widget  = wibox.container.margin,
-			},
-			forced_height = 24,
-			widget        = wibox.container.constraint
-		},
-		screen       = s,
-		type         = "dock",
-		placement    = awful.placement.bottom,
-		shape        = function(c, w, h)
-			local tl, tr, br, bl = false, false, false, false
-			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
-		end,
-		visible      = false,
-		ontop        = true,
-		border_width = 0,
-		border_color = "#0000ff",
-	}
-
-	client.connect_signal("focus", function(c)
-		if c.screen == s then
-			s.mywibox_slim.border_width = 2
-		else
-			s.mywibox_slim.border_width = 0
-		end
-	end)
+	--client.connect_signal("focus", function(c)
+	--	if c.screen == s then
+	--		s.mywibox_slim.border_width = 2
+	--	else
+	--		s.mywibox_slim.border_width = 0
+	--	end
+	--end)
 
 	s.mywibox_worldtimes = special.meridian(s, theme)
 
@@ -1401,6 +1395,35 @@ function theme.at_screen_connect(s)
 		s.indicators:set_state(c.screen and c.screen == s)
 	end)
 
+	s.mywibox_slim = awful.popup {
+		widget       = {
+			{
+				{
+					--s.indicators.widget,
+					s.mypromptbox,
+					s.mytaglist,
+					clock_time_only,
+					layout = wibox.layout.fixed.horizontal,
+				},
+				margins = 0,
+				widget  = wibox.container.margin,
+			},
+			forced_height = 24,
+			widget        = wibox.container.constraint
+		},
+		screen       = s,
+		type         = "dock",
+		placement    = awful.placement.bottom,
+		shape        = function(c, w, h)
+			local tl, tr, br, bl = true, true, false, false
+			return gears.shape.partially_rounded_rect(c, w, h, tl, tr, br, bl, h / 3)
+		end,
+		visible      = false,
+		ontop        = true,
+		border_width = 0,
+		border_color = "#0000ff",
+	}
+
 	-- Add widgets to the wibox
 	s.mywibox:setup {
 		layout = wibox.layout.align.horizontal,
@@ -1432,6 +1455,8 @@ function theme.at_screen_connect(s)
 		-- Right widgets
 		{
 			layout = wibox.layout.fixed.horizontal,
+
+			s.client_focused_props_widget,
 
 			mysystray,
 

@@ -88,7 +88,7 @@ lib.global_bindings           = {
 	-- {{{ MODALITY
 	{
 		h        = { group = "awesome", description = "enter modality mode", name = "modality" },
-		hotkeys  = { { _keys.MOD, "," } },
+		hotkeys  = { { _keys.MOD, "," }, { _keys.MOD, "Escape" } },
 		on_press = function()
 			modality.enter(modality.path_tree)
 		end,
@@ -372,13 +372,13 @@ lib.global_bindings           = {
 		on_press   = global_fns.tag.next,
 	},
 	{
-		h          = { group = "tag", description = "move left", name = "left" },
+		h          = { group = "tag", description = "move tag left", name = "move left" },
 		modalities = { m.TAG .. "H~" }, -- stays
 		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Left" } },
 		on_press   = global_fns.tag.move.left,
 	},
 	{
-		h          = { group = "tag", description = "move right", name = "right" },
+		h          = { group = "tag", description = "move tag right", name = "move right" },
 		modalities = { m.TAG .. "L~" }, -- stays
 		hotkeys    = { { mods = { _keys.MOD, _keys.SHIFT }, code = "Right" } },
 		on_press   = global_fns.tag.move.right,
@@ -523,8 +523,13 @@ lib.global_bindings           = {
 
 	-- {{{ POWER_USER
 	{
+		h          = { group = "power_user", description = "screen lock", name = "lock screen" },
+		modalities = { "L", m.POWER_USER .. "L" },
+		on_press   = global_fns.power_user.lock,
+	},
+	{
 		h          = { group = "power_user", description = "restart lightdm to logout", name = "logout" },
-		modalities = { m.POWER_USER .. "L" },
+		modalities = { m.POWER_USER .. "O" },
 		on_press   = global_fns.power_user.logout,
 	},
 	{

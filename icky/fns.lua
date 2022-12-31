@@ -99,8 +99,15 @@ local global_fns           = {
 				rofi_theme = pretty.rofi_theme_path_window
 			end
 
-			local cmd = "" ..
-					"rofi" ..
+			local rofi_prompt = "All apps: "
+			if modi == "window" then
+				rofi_prompt = "Find clients: "
+			end
+			rofi_prompt = "-p '" .. rofi_prompt .. "' "
+
+			local cmd   = "" ..
+					"rofi " ..
+					rofi_prompt ..
 					" -show " .. modi ..
 					" -theme " ..
 					rofi_theme
@@ -238,6 +245,9 @@ local global_fns           = {
 		},
 	},
 	power_user = {
+		lock      = function()
+			os.execute(gears.filesystem.get_configuration_dir() .. "screenlock.sh")
+		end,
 		logout    = function()
 			awful.spawn.with_shell("sudo service lightdm restart")
 		end,

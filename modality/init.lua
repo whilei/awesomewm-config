@@ -530,7 +530,7 @@ local function keypressed_callback(bindings_parent)
 				self:stop()
 				modality.widget.hide(awful.screen.focused())
 				bound.fn()
-				return false -- call the function and return its result
+				return false -- call the function and quit the grabber
 			end
 
 		elseif bound.bindings then
