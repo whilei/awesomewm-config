@@ -103,6 +103,7 @@ end
 
 -- {{{ Variable definitions
 
+--local chosen_theme  = "powerarrow-dark"
 local chosen_theme  = "ia"
 local modkey        = "Mod4"
 --local altkey        = "Mod1"
@@ -619,7 +620,6 @@ client.connect_signal("focus", function(c)
 		return
 	end
 	move_mouse_onto_focused_client(c)
-	update_wibar_client_focus_widget(c)
 end)
 
 client.connect_signal("unfocus", function(c)

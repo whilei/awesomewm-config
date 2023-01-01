@@ -76,7 +76,7 @@ echo "${S_LOG_PREFIX}Starting awesome emulator..."
 SIZE_HEIGHT=$((1920 - 4))
 SIZE_WIDTH=$((1080 - 4 - 32))
 
-time awmtt start --notest -C /home/ia/dev/awesomeWM/awesome/awesomei/rc.lua \
+time awmtt start --binary /home/ia/dev/awesomeWM/awesome/build/awesome --notest -C /home/ia/dev/awesomeWM/awesome/awesomei/rc.lua \
   --display 1 \
   --size ${SIZE_HEIGHT}x${SIZE_WIDTH} >"${log_file}" 2>&1
 
