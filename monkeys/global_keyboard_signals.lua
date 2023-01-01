@@ -1,23 +1,17 @@
-local awesome                                  = awesome
-local awful_keyboard                           = require("awful.keyboard")
+local awesome = awesome
 
-local awful_keyboard_append_global_keybindings = awful_keyboard.append_global_keybindings
-awful_keyboard.append_global_keybindings       = function(keybindings)
-	awful_keyboard_append_global_keybindings(keybindings)
-	awesome.emit_signal("monkey::global_keybindings::added", keybindings)
+local function wrap(mod, fn, signal)
+	local m        = require(mod)
+	local original = m[fn]
+	m[fn]          = function(...)
+		local ret = original(...)
+		awesome.emit_signal(signal, ...)
+		return ret
+	end
+	print("[monkey] wrapping", mod, fn, signal)
 end
-print("[monkey] +signal awful.keyboard.append_global_keybindings -> monkey::global_keybindings::add")
 
-local awful_keyboard_append_global_keybinding = awful_keyboard.append_global_keybinding
-awful_keyboard.append_global_keybinding       = function(keybinding)
-	awful_keyboard_append_global_keybinding(keybinding)
-	awesome.emit_signal("monkey::global_keybinding::added", keybinding)
-end
-print("[monkey] +signal awful.keyboard.append_global_keybinding -> monkey::global_keybinding::add")
-
-local awful_keyboard_remove_global_keybinding = awful_keyboard.remove_global_keybinding
-awful_keyboard.remove_global_keybinding       = function(keybinding)
-	awful_keyboard_remove_global_keybinding(keybinding)
-	awesome.emit_signal("monkey::global_keybinding::removed", keybinding)
-end
-print("[monkey] +signal awful.keyboard.remove_global_keybinding -> monkey::global_keybinding::remove")
+wrap("awful.keyboard", "append_global_keybindings", "monkey::global_keybindings::added")
+wrap("awful.keyboard", "append_global_keybinding", "monkey::global_keybinding::added")
+wrap("awful.keyboard", "remove_global_keybinding", "monkey::global_keybinding::removed")
+wrap("awful.keyboard", "remove_client_keybinding", "monkey::client_keybinding::removed")
