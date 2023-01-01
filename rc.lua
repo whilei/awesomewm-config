@@ -37,6 +37,7 @@ local modality                            = require("modality")
 local special_log_load_time               = require("special").log_load_time
 local special_log_load_time_reset         = require("special").log_load_time_reset
 local hood                                = require("hood")
+dofile("monkeys/global_keyboard_signals.lua")
 
 special_log_load_time("requirements")
 
@@ -192,17 +193,24 @@ beautiful.init(theme_path)
 
 special_log_load_time("beautiful.init")
 
-local awful_keyboard_append_global_keybindings = awful.keyboard.append_global_keybindings
-awful.keyboard.append_global_keybindings       = function(keybindings)
-	awful_keyboard_append_global_keybindings(keybindings)
-	awesome.emit_signal("ia::keybindings::global::append", keybindings)
-end
+awesome.connect_signal("monkey::global_keybindings::added", function(keys)
+	for _, k in ipairs(keys) do
+		print("<- monkey::global_keybindings::added: " .. tostring(k.modalities))
+	end
+end)
 
-local awful_keyboard_append_global_keybinding  = awful.keyboard.append_global_keybinding
-awful.keyboard.append_global_keybinding        = function(keybinding)
-	awful_keyboard_append_global_keybinding(keybinding)
-	awesome.emit_signal("ia::keybinding::global::append", keybinding)
-end
+awesome.connect_signal("monkey::global_keybinding::added", function(key)
+	print("<- monkey::global_keybinding::added: " .. tostring(key.modalities[1] or "-"))
+end)
+
+awesome.connect_signal("monkey::global_keybinding::removed", function(key)
+	print("<- monkey::global_keybinding::removed: " .. tostring(key))
+end)
+
+-- This signal is undocumented in the docs.
+client.connect_signal("client_keybinding::added", function(key)
+	print("<- client_keybinding::added: " .. tostring(key))
+end)
 
 modality.init()
 

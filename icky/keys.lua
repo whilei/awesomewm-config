@@ -800,14 +800,15 @@ function lib.init()
 	local function build_awful_key(b, hk)
 		assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
 
-		local k      = awful.key(
+		b.h.modalities = b.modalities or {}
+
+		local k        = awful.key(
 				(hk.mods or { hk[1] }),
 				((hk.code or hk.key_group) or hk[2]),
 				b.on_press,
 				b.on_release,
 				b.h)
 
-		k.modalities = b.modalities
 		return k
 	end
 
