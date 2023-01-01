@@ -20,14 +20,42 @@ local tonumber = tonumber
 -- current weather and X-days forecast
 -- lain.widget.weather
 
+--- Return wind direction as a string.
+function to_direction(degrees)
+	-- Ref: https://www.campbellsci.eu/blog/convert-wind-directions
+	if degrees == nil then
+		return "Unknown dir"
+	end
+	local directions = {
+		"N",
+		"NNE",
+		"NE",
+		"ENE",
+		"E",
+		"ESE",
+		"SE",
+		"SSE",
+		"S",
+		"SSW",
+		"SW",
+		"WSW",
+		"W",
+		"WNW",
+		"NW",
+		"NNW",
+		"N",
+	}
+	return directions[math.floor((degrees % 360) / 22.5) + 1]
+end
+
 local function factory(args)
 	args                        = args or {}
 
 	local weather               = { widget = args.widget or wibox.widget.textbox() }
-	local APPID                 = args.APPID -- mandatory
+	local APPID                 = args.APPID or "3e321f9414eaedbfab34983bda77a66e" -- lain's default
 	local timeout               = args.timeout or 60 * 15 -- 15 min
-	local current_call          = args.current_call or "curl -s 'https://api.openweathermap.org/data/2.5/weather?id=%s&units=%s&lang=%s&APPID=%s'"
-	local forecast_call         = args.forecast_call or "curl -s 'https://api.openweathermap.org/data/2.5/forecast?id=%s&units=%s&lang=%s&APPID=%s'"
+	local current_call          = args.current_call or "curl -s 'https://api.openweathermap.org/data/2.5/weather?id=%s&units=%s&lang=%s&appid=%s'"
+	local forecast_call         = args.forecast_call or "curl -s 'https://api.openweathermap.org/data/2.5/forecast/daily?id=%s&units=%s&lang=%s&cnt=%s&appid=%s'"
 	local city_id               = args.city_id or 0 -- placeholder
 	local units                 = args.units or "metric"
 	local lang                  = args.lang or "en"
@@ -36,20 +64,51 @@ local function factory(args)
 	local notification_preset   = args.notification_preset or {}
 	local notification_text_fun = args.notification_text_fun or
 			function(wn)
-				local day  = os.date("%a %d", wn["dt"])
-				local temp = math.floor(wn["main"]["temp"])
-				local desc = wn["weather"][1]["description"]
-				return string.format("<b>%s</b>: %s, %d ", day, desc, temp)
+				local day       = os.date("%a %d", wn["dt"])
+				local sunrise   = os.date("%H:%M", wn["sunrise"])
+				local sunset    = os.date("%H:%M", wn["sunset"])
+				local tmin      = math.floor(wn["temp"]["min"])
+				local tmax      = math.floor(wn["temp"]["max"])
+				local desc      = wn["weather"][1]["description"]
+				local winddir   = to_direction(wn["deg"])
+				local windspeed = math.floor(wn["speed"])
+				return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s%d | 🌣 %s 🌜 %s | %s", day, tmin, tmax, winddir, windspeed, sunrise, sunset, desc)
+				--                                        local winddir = to_direction(wn["wind"]["deg"])
+				--                                      return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s | %s", day, tmin, tmax, winddir, desc)
+				--                                  local windspeed = math.floor(wn["wind"]["speed"])
+				--                                      return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s | %s", day, tmin, tmax, winddir, desc)
+				--                                      return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %d%s | %s", day, tmin, tmax, desc, windspeed, winddir)
 			end
 	local weather_na_markup     = args.weather_na_markup or " N/A "
 	local followtag             = args.followtag or false
 	local showpopup             = args.showpopup or "on"
-	local settings              = args.settings or function()
-	end
+	local settings              = args.settings or function() end
 
 	weather.widget:set_markup(weather_na_markup)
 	weather.icon_path = icons_path .. "na.png"
 	weather.icon      = wibox.widget.imagebox(weather.icon_path)
+
+	local function error_display(resp_json)
+		--local err_resp = json.decode(resp_json)
+		naughty.notification {
+			title   = 'Weather Widget Error',
+			message = "Failed to get weather.",
+			preset  = naughty.config.presets.low,
+		}
+		--if err_resp.message then
+		--    naughty.notify{
+		--        title = 'Weather Widget Error',
+		--        text = err_resp.message,
+		--        preset = naughty.config.presets.critical,
+		--    }
+		--else
+		--    naughty.notify{
+		--        title = 'Weather Widget Error',
+		--        text = err_resp,
+		--        preset = naughty.config.presets.critical,
+		--    }
+		--end
+	end
 
 	function weather.show(seconds)
 		weather.hide()
@@ -64,11 +123,11 @@ local function factory(args)
 		end
 
 		weather.notification = naughty.notification {
-			preset   = notification_preset,
-			position = "top_middle",
-			message  = weather.notification_text,
-			icon     = weather.icon_path,
-			timeout  = type(seconds) == "number" and seconds or notification_preset.timeout
+			preset    = notification_preset,
+			message   = weather.notification_text,
+			timeout   = type(seconds) == "number" and seconds or notification_preset.timeout,
+			position  = "top_middle",
+			max_width = 800,
 		}
 	end
 
@@ -89,14 +148,14 @@ local function factory(args)
 	end
 
 	function weather.forecast_update()
-		local cmd = string.format(forecast_call, city_id, units, lang, APPID)
+		local cmd = string.format(forecast_call, city_id, units, lang, cnt, APPID)
 		helpers.async(cmd, function(f)
 			local err
 			weather_now, _, err = json.decode(f, 1, nil)
 
 			if not err and type(weather_now) == "table" and tonumber(weather_now["cod"]) == 200 then
 				weather.notification_text = ""
-				for i = 1, weather_now["cnt"], math.floor(weather_now["cnt"] / cnt) do
+				for i = 1, weather_now["cnt"] do
 					weather.notification_text = weather.notification_text ..
 							notification_text_fun(weather_now["list"][i])
 					if i < weather_now["cnt"] then
@@ -129,6 +188,7 @@ local function factory(args)
 				widget            = weather.widget
 				settings()
 			else
+				error_display(f)
 				weather.icon_path = icons_path .. "na.png"
 				weather.widget:set_markup(weather_na_markup)
 			end
@@ -137,9 +197,7 @@ local function factory(args)
 		end)
 	end
 
-	if showpopup == "on" then
-		weather.attach(weather.widget)
-	end
+	if showpopup == "on" then weather.attach(weather.widget) end
 
 	weather.timer          = helpers.newtimer("weather-" .. city_id, timeout, weather.update, false, true)
 	weather.timer_forecast = helpers.newtimer("weather_forecast-" .. city_id, timeout, weather.forecast_update, false, true)
