@@ -224,9 +224,7 @@ local function delayed_screenshot(args)
 	end)
 
 	ss:connect_signal("timer::timeout", function()
-		if notif then
-			notif:destroy()
-		end
+		if notif then notif:destroy() end
 	end)
 
 	return ss

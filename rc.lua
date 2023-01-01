@@ -614,28 +614,6 @@ client.connect_signal("request::autoactivate",
 						  awful.permissions.autoactivate(c, context, hints)
 					  end)
 
-local function update_wibar_client_focus_widget(c)
-	if not c then return end
-	if not c.screen then return end
-	if not c.screen.client_focused_props_widget then return end
-
-	local w   = c.screen.client_focused_props_widget
-	local geo = c:geometry()
-
-	local t   = "" ..
-			(c.floating and " F " or "") ..
-			(c.ontop and " T " or "") ..
-			(c.maximized and " M " or "") ..
-			(c.sticky and " S " or "") ..
-			(c.fullscreen and " F " or "") ..
-			(c.hidden and " H " or "") ..
-			(c.minimized and " m " or "") ..
-			geo.width .. "x" .. geo.height ..
-			""
-
-	w:set_text(t)
-end
-
 client.connect_signal("focus", function(c)
 	if not c then
 		return
