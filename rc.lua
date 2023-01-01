@@ -192,6 +192,18 @@ beautiful.init(theme_path)
 
 special_log_load_time("beautiful.init")
 
+local awful_keyboard_append_global_keybindings = awful.keyboard.append_global_keybindings
+awful.keyboard.append_global_keybindings       = function(keybindings)
+	awful_keyboard_append_global_keybindings(keybindings)
+	awesome.emit_signal("ia::keybindings::global::append", keybindings)
+end
+
+local awful_keyboard_append_global_keybinding  = awful.keyboard.append_global_keybinding
+awful.keyboard.append_global_keybinding        = function(keybinding)
+	awful_keyboard_append_global_keybinding(keybinding)
+	awesome.emit_signal("ia::keybinding::global::append", keybinding)
+end
+
 modality.init()
 
 special_log_load_time("modality.init")
