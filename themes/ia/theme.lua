@@ -750,33 +750,6 @@ function theme.at_screen_connect(s)
 
 	special_log_load_time("hide handy clients")
 
-	-- -- Quake application
-	--s.quake         = lain.util.quake({
-	--									  app             = "konsole",
-	--									  name            = "xterm-konsole",
-	--									  extra           = "--hide-menubar --hide-tabbar",
-	--									  followtag       = true,
-	--									  vert            = "bottom",
-	--									  keepclientattrs = true,
-	--									  border          = 0,
-	--									  settings        = function(client)
-	--										  -- these don't work. don't know why.
-	--										  client.opacity           = 0.7
-	--										  client.border_color      = gears.color.parse_color("#ff0000ff")
-	--										  client.titlebars_enabled = false
-	--										  client.skip_taskbar      = true
-	--
-	--										  local geo
-	--										  geo                      = client:geometry()
-	--										  if geo.width > 2000 then
-	--											  geo.x     = geo.x + (geo.width / 4)
-	--											  geo.width = geo.width / 2
-	--											  client:geometry(geo)
-	--										  end
-	--									  end
-	--								  })
-
-
 	-- If wallpaper is a function, call it with the screen
 	special_log_load_time_reset()
 	local wallpaper = theme.wallpaper
@@ -811,8 +784,8 @@ function theme.at_screen_connect(s)
 	local my_tags      = {
 		tags = {
 			{
-				names  = { "A1", "A2", "A3", "A4", "A5" },
-				layout = {
+				names   = { "A1", "A2", "A3", "A4", "A5" },
+				layouts = {
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
@@ -821,8 +794,8 @@ function theme.at_screen_connect(s)
 				},
 			},
 			{
-				names  = { "B1", "B2", "B3", "B4", "B5" },
-				layout = {
+				names   = { "B1", "B2", "B3", "B4", "B5" },
+				layouts = {
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
@@ -831,8 +804,8 @@ function theme.at_screen_connect(s)
 				},
 			},
 			{
-				names  = { "C1", "C2", "C3", "C4", "C5" },
-				layout = {
+				names   = { "C1", "C2", "C3", "C4", "C5" },
+				layouts = {
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
@@ -841,8 +814,8 @@ function theme.at_screen_connect(s)
 				},
 			},
 			{
-				names  = { "D1", "D2", "D3", "D4", "D5" },
-				layout = {
+				names   = { "D1", "D2", "D3", "D4", "D5" },
+				layouts = {
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
@@ -851,8 +824,8 @@ function theme.at_screen_connect(s)
 				},
 			},
 			{
-				names  = { "E1", "E2", "E3", "E4", "E5" },
-				layout = {
+				names   = { "E1", "E2", "E3", "E4", "E5" },
+				layouts = {
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
@@ -864,7 +837,7 @@ function theme.at_screen_connect(s)
 		}
 	}
 	local screen_index = s.index
-	awful.tag(my_tags.tags[screen_index].names, s, my_tags.tags[screen_index].layout)
+	awful.tag(my_tags.tags[screen_index].names, s, my_tags.tags[screen_index].layouts)
 
 	special_log_load_time("tags")
 

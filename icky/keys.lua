@@ -785,45 +785,61 @@ local function install_global_tag_fns_by_index()
 	end
 end
 
-function lib.init()
-	-- build_awful_key builds an awful.key object.
-	-- it takes an entry from the lib (1) and a hotkey definition (2)
-	-- it returns an awful.key
-	-- FIXME: Handle key groups.. they are currently not handled well at all.
-	-- Notes
-	-- key groups are tables
-	-- 	 where keys for num row numbers are #1, #2, #3, etc
-	--   where values for num row numbers are +9, maybe because that's the underlying keycode representation?
-	--   eg. {{ '#1', 10 }, { '#2', 11 }, { '#3', 12 }}
-	-- I'm not sure if you have to install a custom one at awful.key.keygroups (eg. awful.key.keygroup.NUMROW),
-	-- or if you can just use it literally.
-	local function build_awful_key(b, hk)
-		assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
+-- build_awful_key builds an awful.key object.
+-- it takes an entry from the lib (1) and a hotkey definition (2)
+-- it returns an awful.key
+-- FIXME: Handle key groups.. they are currently not handled well at all.
+-- Notes
+-- key groups are tables
+-- 	 where keys for num row numbers are #1, #2, #3, etc
+--   where values for num row numbers are +9, maybe because that's the underlying keycode representation?
+--   eg. {{ '#1', 10 }, { '#2', 11 }, { '#3', 12 }}
+-- I'm not sure if you have to install a custom one at awful.key.keygroups (eg. awful.key.keygroup.NUMROW),
+-- or if you can just use it literally.
+local function build_awful_key(b, hk)
+	assert(not (hk.key_group and hk.code), "cannot use both key_group and keycode")
 
-		b.h.modalities = b.modalities or {}
+	b.h.modalities = b.modalities or {}
 
-		local k        = awful.key(
-				(hk.mods or { hk[1] }),
-				((hk.code or hk.key_group) or hk[2]),
-				b.on_press,
-				b.on_release,
-				b.h)
+	local k        = awful.key(
+			(hk.mods or { hk[1] }),
+			((hk.code or hk.key_group) or hk[2]),
+			b.on_press,
+			b.on_release,
+			b.h)
 
-		return k
+	return k
+end
+
+local function register_awful_binding(scope, b, hk)
+	local k = build_awful_key(b, hk)
+
+	if scope == "global" then
+		table.insert(lib.global_awful_keys, k)
+		awful.keyboard.append_global_keybinding(k)
+	elseif scope == "client" then
+		table.insert(lib.client_awful_keys, k)
+		awful.keyboard.append_client_keybinding(k)
 	end
+end
 
-	local function register_awful_binding(scope, b, hk)
-		local k = build_awful_key(b, hk)
+function lib.register_client_keybindings()
+	for _, b in ipairs(lib.client_bindings) do
+		for _, hk in ipairs(b.hotkeys or {}) do
+			register_awful_binding("client", b, hk)
+		end
 
-		if scope == "global" then
-			table.insert(lib.global_awful_keys, k)
-			awful.keyboard.append_global_keybinding(k)
-		elseif scope == "client" then
-			table.insert(lib.client_awful_keys, k)
-			awful.keyboard.append_client_keybinding(k)
+		for _, keypath in ipairs(b.modalities or {}) do
+			local kp = keypath
+			if modality.keypath_target_label(kp) == "" then
+				kp = kp .. ":" .. b.h.name
+			end
+			modality.register(kp, b.on_press, b.on_release, b.hotkeys, b.h)
 		end
 	end
+end
 
+function lib.register_global_keybindings()
 	-- Iterate and install all hotkeys through awful.
 	for _, b in ipairs(lib.global_bindings) do
 		for _, hk in ipairs(b.hotkeys or {}) do
@@ -843,20 +859,6 @@ function lib.init()
 		end
 	end
 
-	for _, b in ipairs(lib.client_bindings) do
-		for _, hk in ipairs(b.hotkeys or {}) do
-			register_awful_binding("client", b, hk)
-		end
-
-		for _, keypath in ipairs(b.modalities or {}) do
-			local kp = keypath
-			if modality.keypath_target_label(kp) == "" then
-				kp = kp .. ":" .. b.h.name
-			end
-			modality.register(kp, b.on_press, b.on_release, b.hotkeys, b.h)
-		end
-	end
-
 	install_global_tag_fns_by_index()
 
 	-- Special things.
@@ -865,16 +867,10 @@ function lib.init()
 	-- Going to remove Mod+Z because I have a suspicion;
 	-- this would conflict w/ my Quake terminal popup binding, which I use all the time.
 	awful.keyboard.remove_global_keybinding(awful.key({ _keys.MOD }, "z"))
-
-	-- DEBUG
-	-- modality_util.debug_print_paths("[modality]", modality.path_tree)
-	--modality.develop_print_all_keypaths()
 end
 
 return setmetatable(lib, {
-	__call = function(_, args)
-		return lib.init()
-	end
+	__call = function(_, args) end
 })
 
 --[[

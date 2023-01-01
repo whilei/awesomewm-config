@@ -26,7 +26,7 @@ x.quake         = quake {
 	screen          = awful.screen.focused() or screen[1],
 
 	settings        = function(c)
-		c.opacity           = 0.7
+		c.opacity           = 0.8
 		c.border_width      = 2
 		c.border_color      = "#000000"
 		c.titlebars_enabled = false

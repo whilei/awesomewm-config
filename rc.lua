@@ -37,7 +37,7 @@ local modality                            = require("modality")
 local special_log_load_time               = require("special").log_load_time
 local special_log_load_time_reset         = require("special").log_load_time_reset
 local hood                                = require("hood")
-dofile("monkeys/global_keyboard_signals.lua")
+dofile(gears.filesystem.get_configuration_dir() .. "/monkeys/global_keyboard_signals.lua")
 
 special_log_load_time("requirements")
 
@@ -193,24 +193,57 @@ beautiful.init(theme_path)
 
 special_log_load_time("beautiful.init")
 
-awesome.connect_signal("monkey::global_keybindings::added", function(keys)
-	for _, k in ipairs(keys) do
-		print("<- monkey::global_keybindings::added: " .. tostring(k.modalities))
-	end
+
+---- --------------------------------------------------------------------
+---- EXPERIMENTAL
+---- This commented code chunk logs events that the 'monkey' experiment adds to awesome.
+---- See the 'dofile' command near the requirements chunk of this file.
+---- It is fully functional, but spits logs that I don't care about right now.
+--awesome.connect_signal("monkey::global_keybindings::added", function(keys)
+--	for _, k in ipairs(keys) do
+--		print("<- monkey::global_keybindings::added: " .. tostring(k.modalities))
+--	end
+--end)
+--
+--awesome.connect_signal("monkey::global_keybinding::added", function(key)
+--	print("<- monkey::global_keybinding::added: " .. tostring(key.modalities[1] or "-"))
+--end)
+--
+--awesome.connect_signal("monkey::global_keybinding::removed", function(key)
+--	print("<- monkey::global_keybinding::removed: " .. tostring(key))
+--end)
+--
+---- PTAL This signal is undocumented.
+--client.connect_signal("client_keybinding::added", function(key)
+--	print("<- client_keybinding::added: " .. tostring(key))
+--end)
+---- --------------------------------------------------------------------
+
+icky.keys.register_global_keybindings()
+client.connect_signal("request::default_keybindings", icky.keys.register_client_keybindings)
+client.connect_signal("request::default_mousebindings", function()
+	-- Set up client management buttons FOR THE MOUSE.
+	-- (1 is left, 3 is right)
+	awful.mouse.append_client_mousebindings {
+		awful.button({}, 1, function(c)
+			client.focus = c
+			c:raise()
+		end),
+		awful.button({ modkey }, 1, function(c)
+			c.floating  = true
+			c.maximized = false
+			awful.mouse.client.move()
+		end),
+		awful.button({}, 2, icky.fns.client.properties.fullscreen),
+		awful.button({ modkey }, 3, function(c)
+			c.floating  = true
+			c.maximized = false
+			awful.mouse.client.resize()
+		end)
+	}
 end)
 
-awesome.connect_signal("monkey::global_keybinding::added", function(key)
-	print("<- monkey::global_keybinding::added: " .. tostring(key.modalities[1] or "-"))
-end)
-
-awesome.connect_signal("monkey::global_keybinding::removed", function(key)
-	print("<- monkey::global_keybinding::removed: " .. tostring(key))
-end)
-
--- This signal is undocumented in the docs.
-client.connect_signal("client_keybinding::added", function(key)
-	print("<- client_keybinding::added: " .. tostring(key))
-end)
+special_log_load_time("keybindings and mousebindings registered")
 
 modality.init()
 
@@ -253,30 +286,6 @@ end)
 
 special_log_load_time("screen.connect_signal property::desktop_decoration")
 
-icky.keys.init()
-
-special_log_load_time("icky.keys.init()")
-
-
--- Set up client management buttons FOR THE MOUSE.
--- (1 is left, 3 is right)
-awful.mouse.append_client_mousebindings {
-	awful.button({}, 1, function(c)
-		client.focus = c
-		c:raise()
-	end),
-	awful.button({ modkey }, 1, function(c)
-		c.floating  = true
-		c.maximized = false
-		awful.mouse.client.move()
-	end),
-	awful.button({}, 2, icky.fns.client.properties.fullscreen),
-	awful.button({ modkey }, 3, function(c)
-		c.floating  = true
-		c.maximized = false
-		awful.mouse.client.resize()
-	end)
-}
 
 ---- This is an idea about setting up global mouse button bindings.
 ---- Maybe something with the back/forward buttons? Scroll?
@@ -617,7 +626,7 @@ local function move_mouse_onto_focused_client(c)
 		local geometry = c:geometry()
 		local x        = geometry.x + geometry.width / 2
 		local y        = geometry.y + geometry.height / 2 - 30
-		mouse.coords({ x = x, y = y }, true)
+		mouse.coords({ x = x, y = y }, false)
 	end
 end
 
@@ -630,23 +639,25 @@ client.connect_signal("request::activate",
 						  awful.permissions.activate(c, context, hints)
 					  end)
 
-client.connect_signal("request::autoactivate",
-					  function(c, context, hints)
-						  awful.permissions.autoactivate(c, context, hints)
-					  end)
+-- FIXME
+-- Using 'activate' callback here instead of 'autoactivate', which should be preferred.
+-- The bug at issue here is that when I toggle = hide a Handy client,
+-- the previous client's focus is not always regained; especially when the toggle happens... fast?
+client.connect_signal("request::autoactivate", function(c, context, hints)
+	awful.permissions.activate(c, context, hints)
+
+	--- This chunk does not work well.
+	--awful.permissions.autoactivate(c, context, hints)
+	--if client.focus == nil then awful.permissions.activate(c, context, hints) end
+end)
 
 client.connect_signal("focus", function(c)
-	if not c then
-		return
-	end
+	if not c then return end
 	move_mouse_onto_focused_client(c)
 end)
 
 client.connect_signal("unfocus", function(c)
-	if not c then
-		return
-	end
-
+	if not c then return end
 	-- Anything else?
 end)
 
