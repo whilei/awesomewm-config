@@ -1,31 +1,36 @@
-local io        = io
+local io                    = io
 
-local awful     = require("awful")
-local beautiful = require("beautiful")
-local lain      = require("lain")
-local special   = require("special")
-local wibox     = require("wibox")
-local markup    = lain.util.markup
+local awful                 = require("awful")
+local beautiful             = require("beautiful")
+local gears                 = require("gears")
+local lain                  = require("lain")
+local special               = require("special")
+local wibox                 = require("wibox")
+local markup                = lain.util.markup
+local special_log_load_time = require("special").log_load_time
 
-local m         = {}
+local m                     = {}
 
-local spr       = wibox.widget.textbox(" ")
+local spr                   = wibox.widget.textbox(" ")
 
 
 -- IP Locale
-local locale    = wibox.widget.textbox()
-local line      = "unknown"
-local file      = io.open("/home/ia/ipinfo.io/locale", "r")
-line            = file:read()
+local locale                = wibox.widget.textbox()
+local line                  = "unknown"
+local file                  = io.open("/home/ia/ipinfo.io/locale", "r")
+line                        = file:read()
 file:close()
 locale:set_markup(markup.font(beautiful.font, "" .. line .. ""))
 
+special_log_load_time("widget: ip locale")
 
 -- Net Up/Down
 
 -- Net
 local net_widget = wibox.widget {
-	layout = wibox.layout.align.horizontal,
+	layout  = wibox.layout.fixed.horizontal,
+	expand  = "none",
+	spacing = 10,
 	{
 		{
 			id     = 'up',
@@ -99,25 +104,129 @@ local net = lain.widget.net {
 	end
 }
 
-m.init    = function(s)
+special_log_load_time("widget: net")
+
+
+-- FS
+local fsicon = wibox.widget.imagebox(beautiful.widget_hdd)
+local fs     = lain.widget.fs {
+	notification_preset = { fg = beautiful.fg_normal, bg = beautiful.bg_normal, font = "xos4 Terminus 10" },
+	settings            = function()
+		widget:set_markup(markup.font(beautiful.font, " " .. fs_now["/"].percentage .. "% "))
+	end
+}
+
+special_log_load_time("widget: fs")
+
+m.init = function(s)
 	m.bar = awful.popup {
 		screen       = s,
 		placement    = awful.placement.centered,
-		visible      = true,
+		--placement    = function(c)
+		--	return awful.placement.top_right(c, {
+		--		honor_workarea = true,
+		--		honor_padding  = false,
+		--		margins        = {
+		--			top   = 20,
+		--			right = 20,
+		--		}
+		--	})
+		--end,
+		visible      = false,
 		ontop        = true,
-		border_width = 1,
-		border_color = "#ff0000",
+		border_width = 0,
+		border_color = "#B8BFD6",
+		shape        = gears.shape.rounded_rect,
+		bg           = "#00000099",
 		widget       = {
-			widget  = wibox.container.margin,
-			margins = 10,
+			widget = wibox.container.background,
+			bg     = "#00000099",
 			{
-				layout = wibox.layout.fixed.vertical,
-				--expand = "outside",
-				special.weather.dash_forecast,
-				locale,
-				net.widget,
+				widget  = wibox.container.margin,
+				margins = 20,
+				{
+					layout                 = wibox.layout.grid,
+					--forced_num_rows        = 5,
+					forced_num_cols        = 1,
+					--homogeneous     = true,
+					horizontal_homogeneous = true,
+					vertical_homogeneous   = false,
+					--expand          = true,
+					spacing                = 10,
+
+					{
+						layout = wibox.layout.align.horizontal,
+						expand = "outside",
+						nil,
+						{
+							layout = wibox.layout.fixed.horizontal,
+							{
+								widget = wibox.container.constraint,
+								width  = 64,
+								special.weather.icon,
+							},
+							special.weather.widget,
+							nil,
+						},
+						nil,
+					},
+					special.weather.dash_forecast,
+					{
+						layout = wibox.layout.align.horizontal,
+						expand = "outside",
+						nil,
+						{
+							layout     = wibox.layout.fixed.horizontal,
+							fill_space = true,
+							{
+								widget = wibox.container.constraint,
+								width  = 32,
+								wibox.widget.imagebox(beautiful.widget_net),
+							},
+							wibox.widget.textbox("IP Location: "),
+							locale,
+						},
+						nil,
+					},
+					{
+						widget   = wibox.container.place,
+						valign   = "center",
+						halign   = "center",
+						children = { net.widget, },
+					},
+					{
+						layout = wibox.layout.align.horizontal,
+						expand = "outside",
+						nil,
+						{
+							layout = wibox.layout.fixed.horizontal,
+							{
+								widget = wibox.container.constraint,
+								width  = 32,
+								wibox.widget.imagebox(beautiful.widget_hdd),
+							},
+							fs.widget,
+							nil,
+						},
+						nil,
+					},
+					{
+						widget = wibox.container.place,
+						valign = "center",
+						halign = "center",
+						{
+							widget = wibox.container.constraint,
+							width  = 512,
+							wibox.widget {
+								widget     = wibox.widget.imagebox,
+								image      = "/tmp/gcdw1_hg.png",
+								clip_shape = gears.shape.rounded_rect,
+							},
+						},
+					},
+				},
 			},
-		},
+		}
 
 	}
 end

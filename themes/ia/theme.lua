@@ -419,16 +419,6 @@ local temp     = lain.widget.temp {
 }
 special_log_load_time("widget: temp")
 
--- FS
-local fsicon = wibox.widget.imagebox(theme.widget_hdd)
-theme.fs     = lain.widget.fs {
-	notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
-	settings            = function()
-		widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
-	end
-}
-special_log_load_time("widget: fs")
-
 -- Battery
 local baticon = wibox.widget.imagebox(theme.widget_battery)
 --local bat     = lain.widget.bat {
@@ -1310,17 +1300,8 @@ function theme.at_screen_connect(s)
 
 			mysystray,
 
-			--spr,
-			--special.weather.icon,
-			--special.weather.widget,
-
 			-- Net up/down
 			spr,
-			--neticon,
-			--locale,
-			--spr,
-			--spr,
-			--net.widget,
 
 			-- CPU
 			spr,
@@ -1337,9 +1318,9 @@ function theme.at_screen_connect(s)
 			bat,
 
 			-- Filesytem
-			spr,
-			fsicon,
-			theme.fs.widget,
+			--spr,
+			--fsicon,
+			--theme.fs.widget,
 
 			-- Volume
 			spr,

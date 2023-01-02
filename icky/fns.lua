@@ -584,14 +584,7 @@ local client_fns           = {
 			cc:raise()
 		end,
 		minimize          = function(c)
-			local cc = c or client.focus
-			if not cc then
-				return
-			end
-			cc.focus = false
-			cc:lower()
-			cc.minimized = true
-			awful.client.focus.history.previous()
+			(c or client.focus).minimized = true
 		end,
 		floating          = function(c)
 			local cc = c or client.focus

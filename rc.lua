@@ -98,6 +98,14 @@ if not awesome.startup_errors and not awesome.composite_manager_running then
 	special_log_load_time("started picom")
 end
 
+if awesome.startup then
+	awful.spawn.easy_async_with_shell(
+			"wget --directory-prefix /tmp 'https://water.weather.gov/resources/hydrographs/gcdw1_hg.png'", function(stdout, stderr)
+				print(stdout)
+				print(stderr)
+			end)
+end
+
 if not awful.client.focus.history.is_enabled() then
 	awful.client.focus.history.enable_tracking()
 end
