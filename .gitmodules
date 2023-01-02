@@ -50,3 +50,6 @@
 [submodule "lain"]
 	path = lain
 	url = https://github.com/whilei/lain.git
+[submodule "battery_widget"]
+	path = battery_widget
+	url = https://github.com/Aire-One/awesome-battery_widget.git
