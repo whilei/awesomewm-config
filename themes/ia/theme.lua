@@ -669,7 +669,7 @@ function theme.at_screen_connect(s)
 		widget_template    = wibox.widget.textbox,
 	}
 	bat:connect_signal("upower::update", function(widget, device)
-		widget.text = string.format('bat=%3d', device.percentage) .. '%'
+		widget.text = string.format('%3d', device.percentage) .. '%'
 	end)
 
 	s.my_calendar_widget = acalendar
@@ -1389,17 +1389,17 @@ function theme.at_screen_connect(s)
 
 			mysystray,
 
-			spr,
-			special.weather.icon,
-			special.weather.widget,
+			--spr,
+			--special.weather.icon,
+			--special.weather.widget,
 
 			-- Net up/down
 			spr,
-			neticon,
-			locale,
-			spr,
-			spr,
-			net.widget,
+			--neticon,
+			--locale,
+			--spr,
+			--spr,
+			--net.widget,
 
 			-- CPU
 			spr,
@@ -1407,7 +1407,7 @@ function theme.at_screen_connect(s)
 			cpu.widget,
 
 			-- Memory
-			-- memicon,
+			memicon,
 			mem.widget,
 
 			-- Battery

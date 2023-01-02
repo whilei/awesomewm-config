@@ -597,9 +597,9 @@ local function move_mouse_onto_focused_client(c)
 		return
 	end
 
-	---- Prevent mouse snapping to client when...
-	---- The mouse is already in the focused client's screen.
-	--if mouse.screen == c.screen then return end
+	-- Prevent mouse snapping to client when...
+	-- The mouse is already in the focused client's screen.
+	if mouse.screen == c.screen then return end
 
 	-- The mouse is up in the wibar, when
 	-- selecting a tag is selected from the taglist in the menubar wibox.
@@ -607,10 +607,10 @@ local function move_mouse_onto_focused_client(c)
 		return
 	end
 
-	-- The focused client is floating or on-top.
-	if c.floating or c.ontop then
-		return
-	end
+	---- The focused client is floating or on-top.
+	--if c.floating or c.ontop then
+	--	return
+	--end
 
 	-- Only reposition the mouse if the new client is on the other screen.
 	if mouse.object_under_pointer().screen == c.screen then
@@ -622,7 +622,7 @@ local function move_mouse_onto_focused_client(c)
 		local geometry = c:geometry()
 		local x        = geometry.x + geometry.width / 2
 		local y        = geometry.y + geometry.height / 2 - 30
-		mouse.coords({ x = x, y = y }, false)
+		mouse.coords({ x = x, y = y }, true)
 	end
 end
 
@@ -654,6 +654,9 @@ end)
 
 client.connect_signal("unfocus", function(c)
 	if not c then return end
+	if c.class:lower() == "firefox" and c:get_xproperty("handy_id") ~= nil then
+		--awful.client.focus.history.restore()
+	end
 	-- Anything else?
 end)
 
