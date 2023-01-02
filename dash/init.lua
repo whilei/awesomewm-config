@@ -8,6 +8,7 @@ local special               = require("special")
 local wibox                 = require("wibox")
 local markup                = lain.util.markup
 local special_log_load_time = require("special").log_load_time
+local calendar_widget       = require("awesome-wm-widgets.calendar-widget.calendar")
 
 local m                     = {}
 
@@ -118,6 +119,21 @@ local fs     = lain.widget.fs {
 
 special_log_load_time("widget: fs")
 
+-- acalendar is going to hold a calendar widget shared between all screens.
+local calendar = calendar_widget {
+	theme                 = "dark",
+	--placement = 'bottom_right',
+	--start_sunday = true,
+	--radius = 8,
+	-- with customized next/previous (see table above)
+	previous_month_button = 1,
+	next_month_button     = 3,
+	placement             = "centered",
+	shape                 = gears.shape.rounded_rect,
+}
+
+special_log_load_time("widget: calendar")
+
 m.init = function(s)
 	m.bar = awful.popup {
 		screen       = s,
@@ -172,6 +188,26 @@ m.init = function(s)
 					},
 					special.weather.dash_forecast,
 					{
+						widget = wibox.container.place,
+						valign = "center",
+						halign = "center",
+						calendar,
+					},
+					{
+						widget = wibox.container.place,
+						valign = "center",
+						halign = "center",
+						{
+							widget = wibox.container.constraint,
+							width  = 512,
+							wibox.widget {
+								widget     = wibox.widget.imagebox,
+								image      = "/tmp/gcdw1_hg.png",
+								clip_shape = gears.shape.rounded_rect,
+							},
+						},
+					},
+					{
 						layout = wibox.layout.align.horizontal,
 						expand = "outside",
 						nil,
@@ -209,20 +245,6 @@ m.init = function(s)
 							nil,
 						},
 						nil,
-					},
-					{
-						widget = wibox.container.place,
-						valign = "center",
-						halign = "center",
-						{
-							widget = wibox.container.constraint,
-							width  = 512,
-							wibox.widget {
-								widget     = wibox.widget.imagebox,
-								image      = "/tmp/gcdw1_hg.png",
-								clip_shape = gears.shape.rounded_rect,
-							},
-						},
 					},
 				},
 			},

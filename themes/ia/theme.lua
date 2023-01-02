@@ -502,19 +502,6 @@ special_log_load_time("widget: volume")
 
 special_log_load_time("widget: net")
 
--- acalendar is going to hold a calendar widget shared between all screens.
-local acalendar = calendar_widget {
-	theme                 = 'outrun',
-	--placement = 'bottom_right',
-	--start_sunday = true,
-	--radius = 8,
-	-- with customized next/previous (see table above)
-	previous_month_button = 1,
-	next_month_button     = 3,
-	placement             = 'centered',
-}
-special_log_load_time("widget: calendar")
-
 local mysystray = wibox.widget.systray()
 special_log_load_time("widget: systray")
 
@@ -578,13 +565,6 @@ function theme.at_screen_connect(s)
 	}
 	bat:connect_signal("upower::update", function(widget, device)
 		widget.text = string.format('%3d', device.percentage) .. '%'
-	end)
-
-	s.my_calendar_widget = acalendar
-	clock:connect_signal("button::press", function(_, _, _, button)
-		if button == 1 then
-			s.my_calendar_widget.toggle()
-		end
 	end)
 
 	special_log_load_time_reset()
