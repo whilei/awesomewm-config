@@ -708,26 +708,26 @@ function theme.at_screen_connect(s)
 
 	-- If wallpaper is a function, call it with the screen
 	special_log_load_time_reset()
-	local wallpaper = theme.wallpaper
-	if type(wallpaper) == "function" then
-		wallpaper = wallpaper(s)
-	end
+	--local wallpaper = theme.wallpaper
+	--if type(wallpaper) == "function" then
+	--	wallpaper = wallpaper(s)
+	--end
 	--gears.wallpaper.maximized(wallpaper, s, false)
-	awful.wallpaper {
-		screen = s,
-		widget = {
-			{
-				image  = wallpaper,
-				resize = true,
-				widget = wibox.widget.imagebox,
-			},
-			valign = "center",
-			halign = "center",
-			widget = wibox.container.place,
-		},
-	}
+	--awful.wallpaper {
+	--	screen = s,
+	--	widget = {
+	--		{
+	--			image  = wallpaper,
+	--			resize = true,
+	--			widget = wibox.widget.imagebox,
+	--		},
+	--		valign = "center",
+	--		halign = "center",
+	--		widget = wibox.container.place,
+	--	},
+	--}
 
-	special_log_load_time("wallpaper")
+	--special_log_load_time("wallpaper")
 
 	-- Tags
 	-- I want to define names for the tags that differ by screen, eg.
@@ -1154,7 +1154,7 @@ function theme.at_screen_connect(s)
 		position          = "top", -- top, bottom
 		screen            = s,
 		height            = 18,
-		bg                = theme.bg_normal,
+		bg                = theme.bg_normal .. "00",
 		fg                = theme.fg_normal,
 		opacity           = 1,
 		visible           = true,

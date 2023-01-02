@@ -280,6 +280,44 @@ screen.connect_signal("property::geometry",
 
 special_log_load_time("screen.connect_signal property::geometry")
 
+screen.connect_signal("request::wallpaper", function(s)
+	awful.wallpaper {
+		screen = s,
+		bg     = "#000000",
+	}
+
+	--awful.wallpaper {
+	--	screen = s,
+	--	widget = {
+	--		{
+	--			image  = type(beautiful.wallpaper) == "string"
+	--					and beautiful.wallpaper
+	--					or beautiful.wallpaper(s),
+	--			resize = true,
+	--			widget = wibox.widget.imagebox,
+	--		},
+	--		valign = "center",
+	--		halign = "center",
+	--		widget = wibox.container.place,
+	--	},
+	--}
+
+	--awful.wallpaper {
+	--	screen = s,
+	--	bg     = {
+	--		type  = "linear",
+	--		from  = { 0, 0 },
+	--		to    = { 0, s.geometry.height },
+	--		stops = {
+	--			{ 0, "#0000ff" },
+	--			{ 1, "#ff0000" }
+	--		}
+	--	}
+	--}
+end)
+
+special_log_load_time("wallpaper")
+
 -- Create a wibox for each screen and add it
 -- HERE COMMENTED
 screen.connect_signal("request::desktop_decoration", function(s)
@@ -354,11 +392,11 @@ ruled.client.connect_signal("request::rules", function()
 			},
 			properties = { floating = true }
 		},
-		-- Titlebars
-		{
-			rule       = { maximized = true },
-			properties = { titlebars_enabled = false },
-		},
+		---- Titlebars
+		--{
+		--	rule       = { maximized = true },
+		--	properties = { titlebars_enabled = false },
+		--},
 		-- Dialogs.
 		{
 			rule_any   = { type = { "dialog", "normal" } },

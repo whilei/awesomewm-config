@@ -485,7 +485,7 @@ lib.global_bindings           = {
 		on_press   = global_fns.screen.invert_colors,
 	},
 	{
-		h          = { group = "screen", description = "toggle padding", name = "togglez padding" },
+		h          = { group = "screen", description = "toggle padding", name = "toggle padding" },
 		modalities = { m.SCREEN .. "P" },
 		on_press   = global_fns.screen.padding_toggle,
 	},
