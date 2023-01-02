@@ -21,13 +21,10 @@ local beautiful                   = require("beautiful")
 local special                     = require("special")
 local special_log_load_time       = require("special").log_load_time
 local special_log_load_time_reset = require("special").log_load_time_reset
-
 local dpi                         = beautiful.xresources.apply_dpi
-
 local markup                      = lain.util.markup
-
 local calendar_widget             = require("awesome-wm-widgets.calendar-widget.calendar")
-
+local battery_widget              = require("battery_widget")
 local os                          = {
 	getenv  = os.getenv,
 	tmpname = os.tmpname,
@@ -485,27 +482,28 @@ special_log_load_time("widget: fs")
 
 -- Battery
 local baticon = wibox.widget.imagebox(theme.widget_battery)
-local bat     = lain.widget.bat {
-	settings = function()
-		if bat_now.status ~= "N/A" then
-			if bat_now.ac_status == 1 then
-				widget:set_markup(markup.font(theme.font, " AC "))
-				baticon:set_image(theme.widget_ac)
-				return
-			elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
-				baticon:set_image(theme.widget_battery_empty)
-			elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
-				baticon:set_image(theme.widget_battery_low)
-			else
-				baticon:set_image(theme.widget_battery)
-			end
-			widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
-		else
-			widget:set_markup(markup.font(theme.font, " AC "))
-			baticon:set_image(theme.widget_ac)
-		end
-	end
-}
+--local bat     = lain.widget.bat {
+--	settings = function()
+--		if bat_now.status ~= "N/A" then
+--			if bat_now.ac_status == 1 then
+--				widget:set_markup(markup.font(theme.font, " AC "))
+--				baticon:set_image(theme.widget_ac)
+--				return
+--			elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
+--				baticon:set_image(theme.widget_battery_empty)
+--			elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
+--				baticon:set_image(theme.widget_battery_low)
+--			else
+--				baticon:set_image(theme.widget_battery)
+--			end
+--			widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
+--		else
+--			widget:set_markup(markup.font(theme.font, " AC "))
+--			baticon:set_image(theme.widget_ac)
+--		end
+--	end
+--}
+
 special_log_load_time("widget: bat")
 
 -- ALSA microphone
@@ -715,6 +713,16 @@ local spr = wibox.widget.textbox(" ")
 function theme.at_screen_connect(s)
 
 	--s.client_focused_props_widget = client_props_widget
+
+	local bat = battery_widget {
+		--screen             = s,
+		instant_update     = true, -- default=false
+		use_display_device = true,
+		widget_template    = wibox.widget.textbox,
+	}
+	bat:connect_signal("upower::update", function(widget, device)
+		widget.text = string.format('bat=%3d', device.percentage) .. '%'
+	end)
 
 	s.my_calendar_widget = acalendar
 	clock:connect_signal("button::press", function(_, _, _, button)
@@ -1457,7 +1465,7 @@ function theme.at_screen_connect(s)
 			-- Battery
 			spr,
 			baticon,
-			bat.widget,
+			bat,
 
 			-- Filesytem
 			spr,
