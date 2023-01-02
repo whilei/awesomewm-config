@@ -112,6 +112,7 @@ lib.global_bindings           = {
 		hotkeys    = { { _keys.MOD, "w" } },
 		on_press   = global_fns.awesome.show_main_menu,
 	},
+
 	-- AWESOME:BARS
 	{
 		h          = { group = "awesome", description = "wibar style switcher", name = "toggle wibar" },
@@ -125,6 +126,11 @@ lib.global_bindings           = {
 		modalities = { m.AWESOME_WIDGETS .. "m", m.AWESOME_WIDGETS .. "g" },
 		hotkeys    = { { _keys.MOD, "g" } },
 		on_press   = global_fns.awesome.widgets.world_times,
+	},
+	{
+		h          = { group = "awesome", description = "toggle dash", name = "dash" },
+		modalities = { m.AWESOME .. "d" },
+		on_press   = global_fns.awesome.dash,
 	},
 	-- AWESOME:WIDGETS
 	{

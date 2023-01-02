@@ -365,7 +365,7 @@ ruled.client.connect_signal("request::rules", function()
 				raise            = true,
 				--keys             = icky.keys.get_client_awful_keys(),
 				screen           = awful.screen.preferred, --.focused(),
-				placement        = awful.placement.no_offscreen + awful.placement.no_overlap,
+				placement        = awful.placement.no_offscreen + awful.placement.no_overlap + awful.placement.centered,
 				size_hints_honor = true
 			}
 		},
@@ -545,7 +545,7 @@ local mytitlebars = function(c, context, hints)
 
 	-- Default
 	-- buttons for the titlebar
-	local buttons    = g_table.join(
+	local buttons       = g_table.join(
 			awful.button({},
 						 1,
 						 function()
@@ -562,25 +562,28 @@ local mytitlebars = function(c, context, hints)
 						 end))
 
 	-- forced_height = 12, forced_width = 12
-	local ci         = awful.widget.clienticon(c);
-	ci.forced_width  = 12
-	ci.forced_height = 12
+	local ci            = awful.widget.clienticon(c);
+	ci.forced_width     = 12
+	ci.forced_height    = 12
 
-	local title      = awful.titlebar.widget.titlewidget(c)
-	local args       = {
+	local title_textbox = awful.titlebar.widget.titlewidget(c)
+	local args          = {
 		size     = 16,
 		--position = "left",
 		bg_focus = c.maximized and beautiful.color_green,
 		fg_focus = c.maximized and "#000000",
 	}
 	if c.maximized then
-		local text = title:get_text()
-		title:set_text("" .. text .. " *Z")
+		local text = title_textbox:get_text()
+		title_textbox:set_text("" .. text .. " *Z")
 	end
 
 	awful.titlebar(c, args):setup {
 		{
 			-- Left
+			wibox.widget.textbox(" "),
+			nil,
+			nil,
 			buttons = buttons,
 			spacing = 5,
 			layout  = wibox.layout.fixed.horizontal,
@@ -588,10 +591,13 @@ local mytitlebars = function(c, context, hints)
 		{
 			-- Middle
 			wibox.container.place { widget = ci, valign = "center" },
-			title,
+			--ci,
+			title_textbox,
+			nil,
 			buttons = buttons,
 			spacing = 5,
-			layout  = wibox.layout.fixed.horizontal
+			expand  = "none",
+			layout  = wibox.layout.align.horizontal
 		},
 		{
 			-- Right
@@ -604,7 +610,7 @@ local mytitlebars = function(c, context, hints)
 			spacing = 5, -- https://awesomewm.org/doc/api/classes/wibox.layout.fixed.html#wibox.layout.fixed.spacing
 			layout  = wibox.layout.fixed.horizontal
 		},
-		expand = "none",
+		expand = "inside",
 		layout = wibox.layout.align.horizontal
 	}
 end

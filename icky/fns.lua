@@ -69,6 +69,10 @@ local global_fns           = {
 				special.weather.show()
 			end,
 		},
+		dash         = function()
+			local d   = awful.screen.focused().dashbar
+			d.visible = not d.visible
+		end,
 	},
 	apps       = {
 		single_instance = function(app_by_name)
@@ -229,7 +233,7 @@ local global_fns           = {
 		mic_toggle = function()
 			os.execute("amixer -q set Capture toggle")
 			beautiful.mic.update()
-			naughty.notify { position = "bottom_middle", text = "Mic toggled" }
+			--naughty.notification { position = "bottom_middle", message = "Mic toggled" }
 		end,
 		volume     = {
 			up   = function()

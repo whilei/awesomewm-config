@@ -72,42 +72,26 @@ local function factory(args)
 				local desc      = wn["weather"][1]["description"]
 				local winddir   = to_direction(wn["deg"])
 				local windspeed = math.floor(wn["speed"])
-				return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s%d | 🌣 %s 🌜 %s | %s", day, tmin, tmax, winddir, windspeed, sunrise, sunset, desc)
-				--                                        local winddir = to_direction(wn["wind"]["deg"])
-				--                                      return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s | %s", day, tmin, tmax, winddir, desc)
-				--                                  local windspeed = math.floor(wn["wind"]["speed"])
-				--                                      return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s | %s", day, tmin, tmax, winddir, desc)
-				--                                      return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %d%s | %s", day, tmin, tmax, desc, windspeed, winddir)
+				return string.format("<b>%s</b>: Low: %d°C, High: %d°C, Wind: %s%d | 🌣 %s 🌜 %s | %s",
+									 day, tmin, tmax, winddir, windspeed, sunrise, sunset, desc)
 			end
 	local weather_na_markup     = args.weather_na_markup or " N/A "
 	local followtag             = args.followtag or false
-	local showpopup             = args.showpopup or "on"
+	local showpopup             = args.showpopup or "off"
 	local settings              = args.settings or function() end
 
 	weather.widget:set_markup(weather_na_markup)
-	weather.icon_path = icons_path .. "na.png"
-	weather.icon      = wibox.widget.imagebox(weather.icon_path)
+	weather.icon_path     = icons_path .. "na.png"
+	weather.icon          = wibox.widget.imagebox(weather.icon_path)
+	weather.dash_forecast = wibox.widget.textbox("weather forecast")
+	--weather.dash_forecast.forced_height = 400
 
 	local function error_display(resp_json)
-		--local err_resp = json.decode(resp_json)
 		naughty.notification {
 			title   = 'Weather Widget Error',
 			message = "Failed to get weather.",
 			preset  = naughty.config.presets.low,
 		}
-		--if err_resp.message then
-		--    naughty.notify{
-		--        title = 'Weather Widget Error',
-		--        text = err_resp.message,
-		--        preset = naughty.config.presets.critical,
-		--    }
-		--else
-		--    naughty.notify{
-		--        title = 'Weather Widget Error',
-		--        text = err_resp,
-		--        preset = naughty.config.presets.critical,
-		--    }
-		--end
 	end
 
 	function weather.show(seconds)
@@ -156,12 +140,15 @@ local function factory(args)
 			if not err and type(weather_now) == "table" and tonumber(weather_now["cod"]) == 200 then
 				weather.notification_text = ""
 				for i = 1, weather_now["cnt"] do
+
 					weather.notification_text = weather.notification_text ..
 							notification_text_fun(weather_now["list"][i])
+
 					if i < weather_now["cnt"] then
 						weather.notification_text = weather.notification_text .. "\n"
 					end
 				end
+				weather.dash_forecast:set_markup(weather.notification_text)
 			end
 		end)
 	end

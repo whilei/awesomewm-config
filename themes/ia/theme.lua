@@ -32,6 +32,7 @@ local os                          = {
 	remove  = os.remove,
 }
 local my_table                    = gears.table or awful.util.table -- 4.{0,1} compatibility
+local dash                        = require("dash")
 
 local theme                       = {}
 theme.dir                         = gears.filesystem.get_configuration_dir() .. "themes/ia"
@@ -509,90 +510,6 @@ theme.volume  = lain.widget.alsa {
 }
 special_log_load_time("widget: volume")
 
--- IP Locale
-local locale = wibox.widget.textbox()
-local line   = "unknown"
-local file   = io.open("/home/ia/ipinfo.io/locale", "r")
-line         = file:read()
-file:close()
-locale:set_markup(markup.font(theme.font, "" .. line .. ""))
-
--- Net
-
--- Credit: https://github.com/xtao/ntopng/blob/master/scripts/lua/modules/lua_utils.lua
-function round(num, idp)
-	return tonumber(string.format("%." .. (idp or 0) .. "f", num))
-end
--- Convert bits to human readable format
-local function bitsToSize(bits)
-	if type(bits) == "string" then
-		bits = tonumber(bits)
-	end
-	precision = 0
-	kilobit   = 1024;
-	megabit   = kilobit * 1024;
-	gigabit   = megabit * 1024;
-	terabit   = gigabit * 1024;
-
-	if ((bits >= kilobit) and (bits < megabit)) then
-		return round(bits / kilobit, precision), 'Kb/s';
-	elseif ((bits >= megabit) and (bits < gigabit)) then
-		precision = 2
-		return round(bits / megabit, precision), 'Mb/s';
-	elseif ((bits >= gigabit) and (bits < terabit)) then
-		precision = 2
-		return round(bits / gigabit, precision), 'Gb/s';
-	elseif (bits >= terabit) then
-		precision = 2
-		return round(bits / terabit, precision), 'Tb/s';
-	else
-		return round(bits, precision), 'b/s';
-	end
-end
-
-local neticon    = wibox.widget.imagebox(theme.widget_net)
-local net_widget = wibox.widget {
-	layout = wibox.layout.align.horizontal,
-	{
-		{
-			id     = 'up',
-			widget = wibox.widget.textbox,
-		},
-		widget = wibox.container.background,
-		--top    = 4,
-	},
-	wibox.widget.textbox(" ⇅ "),
-	{
-		{
-			id     = 'dn',
-			widget = wibox.widget.textbox,
-		},
-		widget = wibox.container.background,
-		--top    = 4,
-	},
-}
-local net        = lain.widget.net {
-	widget   = net_widget,
-	units    = 1, -- in bits
-	settings = function()
-		-- 🠉 🠋 ↥ ⇅
-
-		local n_bits, units_str = bitsToSize(net_now.sent)
-		widget:get_children_by_id("up")[1]:set_markup(markup.font(theme.font,
-																  markup("#fcc9ff",
-																		 "" .. tostring(n_bits) ..
-																				 "" ..
-																				 markup.font(theme.font_small, units_str))))
-
-		n_bits, units_str = bitsToSize(net_now.received)
-		widget:get_children_by_id("dn")[1]:set_markup(markup.font(theme.font,
-																  markup("#2ECCFA",
-																		 "" .. tostring(n_bits) ..
-																				 "" ..
-																				 markup.font(theme.font_small, units_str))))
-
-	end
-}
 special_log_load_time("widget: net")
 
 -- acalendar is going to hold a calendar widget shared between all screens.
@@ -659,6 +576,7 @@ local spr = wibox.widget.textbox(" ")
 --end)
 
 function theme.at_screen_connect(s)
+
 
 	--s.client_focused_props_widget = client_props_widget
 
@@ -1356,6 +1274,7 @@ function theme.at_screen_connect(s)
 	-- Add widgets to the wibox
 	s.mywibox:setup {
 		layout = wibox.layout.align.horizontal,
+		expand = "none",
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,
 
@@ -1371,15 +1290,17 @@ function theme.at_screen_connect(s)
 			spr,
 
 			spr,
-			s.mytasklist,
 
 		},
 
 		-- middle
-		{
-			layout = wibox.layout.flex.horizontal,
-			spr,
-		},
+		s.mytasklist,
+		--{
+		--	layout = wibox.layout.fixed.horizontal,
+		--expand = "outside",
+		--spr,
+		--spr,
+		--},
 
 		-- Right widgets
 		{
@@ -1438,6 +1359,9 @@ function theme.at_screen_connect(s)
 			temp.widget,
 		},
 	}
+
+	dash.init(s)
+	s.dashbar = dash.bar
 end
 
 return theme
