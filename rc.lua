@@ -323,7 +323,7 @@ ruled.client.connect_signal("request::rules", function()
 			properties = {
 				focus            = awful.client.focus.filter,
 				raise            = true,
-				keys             = icky.keys.get_client_awful_keys(),
+				--keys             = icky.keys.get_client_awful_keys(),
 				screen           = awful.screen.preferred, --.focused(),
 				placement        = awful.placement.no_offscreen + awful.placement.no_overlap,
 				size_hints_honor = true
@@ -528,22 +528,17 @@ local mytitlebars = function(c)
 	awful.titlebar(c, { size = 16 }):setup {
 		{
 			-- Left
+			buttons = buttons,
+			spacing = 5,
 			layout  = wibox.layout.fixed.horizontal,
-			wibox.widget.textbox(" "),
+		},
+		{
+			-- Middle
 			wibox.container.place { widget = ci, valign = "center" },
 			awful.titlebar.widget.titlewidget(c),
 			buttons = buttons,
 			spacing = 5,
-		},
-		{
-			--                -- Middle
-			--                {
-			--                    -- Title
-			--                    align = "center",
-			--                    widget = awful.titlebar.widget.titlewidget(c)
-			--                },
-			buttons = buttons,
-			layout  = wibox.layout.flex.horizontal
+			layout  = wibox.layout.fixed.horizontal
 		},
 		{
 			-- Right
@@ -556,6 +551,7 @@ local mytitlebars = function(c)
 			spacing = 5, -- https://awesomewm.org/doc/api/classes/wibox.layout.fixed.html#wibox.layout.fixed.spacing
 			layout  = wibox.layout.fixed.horizontal
 		},
+		expand = "none",
 		layout = wibox.layout.align.horizontal
 	}
 end

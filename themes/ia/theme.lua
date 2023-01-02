@@ -254,62 +254,10 @@ theme.titlebar_floating_button_normal_inactive  = theme.dir .. "/icons/mytitleba
 theme.taglist_buttons_hover                     = "#AD67CB"
 theme.taglist_button_nohover                    = "#00000000"
 
-theme.modalbind_font                            = "dejavu sans mono 12" -- font
-theme.modebox_bg                                = "#222222"
-theme.modebox_fg                                = "#FFFFFF"
-theme.modebox_border                            = beautiful.modebox_bg
-theme.modebox_border_width                      = 10       -- border width
-
 theme.modality_box_bg                           = "#222222"
 theme.modality_box_fg                           = "#ffffff"
 theme.modality_box_border                       = theme.modality_box_bg
 theme.modality_box_border_width                 = 10
-
-require('smart_borders') {
-	hot_corners_color  = "#0000ff",
-	hot_corners_width  = dpi(5),
-	hot_corners_height = dpi(5),
-	hot_corners        = {
-		--["top_right"] = {
-		--    enter = function()
-		--        require("naughty").notify({text = "enter"})
-		--        require("revelation")()
-		--    end,
-		--    leave = function()
-		--        require("naughty").notify({text = "leave"})
-		--    end
-		--},
-		--["top_left"] = {
-		--    enter = function()
-		--        require("naughty").notify({text = "enter"})
-		--    end,
-		--    leave = function()
-		--        require("naughty").notify({text = "leave"})
-		--    end
-		--},
-		--["bottom_right"] = {
-		--    enter = function()
-		--        require("naughty").notify({text = "enter"})
-		--    end,
-		--    leave = function()
-		--        require("naughty").notify({text = "leave"})
-		--    end
-		--},
-		--["bottom_left"] = {
-		--    enter = function()
-		--        require("naughty").notify({text = "enter"})
-		--    end,
-		--    leave = function()
-		--        require("naughty").notify({text = "leave"})
-		--    end
-		--},
-	},
-	--show_button_tooltips = true,
-	--color_normal = theme.border_normal,
-	--color_focus = theme.border_focus,
-	--layout = "fixed",
-	--button_size = dpi(40),
-}
 
 -- --https://wowwiki.fandom.com/wiki/USERAPI_RGBToHex
 -- local function RGBToHex(r, g, b)

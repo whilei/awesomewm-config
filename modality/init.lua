@@ -125,10 +125,11 @@ modality.search                     = function()
 	awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
 		local function error(title, text)
 			debug_print("[modality] rofi error", "title=", title, "text=", text)
+
 			naughty.notification {
 				preset  = naughty.config.presets.critical,
-				title   = message,
-				message = stderr,
+				title   = title,
+				message = text .. "\n\n" .. stderr,
 				timeout = 5,
 			}
 		end
@@ -153,7 +154,9 @@ modality.search                     = function()
 				return error("[modality] search", "no choice selected")
 			end
 		else
-			return error("[modality] search failed: " .. reason, stderr)
+			-- Commented because this exits 1 when use just pressed escape and leaves
+			-- rofi without choosing anything.
+			--return error("[modality] search failed: " .. reason, tostring(exit_code))
 		end
 	end)
 end
