@@ -73,7 +73,7 @@ theme.font_smaller                              = "monospace 7"
 theme.font_smallest                             = "monospace 6"
 
 theme.color_white                               = "#FFFFFF"
-theme.color_green                               = "#2EFE2E"
+theme.color_green                               = "#27CC27"
 theme.color_yellow                              = "#FFFF00"
 theme.color_orange                              = "#FF8000"
 theme.color_red                                 = "#DF0101"

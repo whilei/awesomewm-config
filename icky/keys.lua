@@ -458,6 +458,11 @@ lib.global_bindings           = {
 		modalities = { m.TAG_USELESS .. "j" },
 		on_press   = global_fns.tag.useless.decrease_little,
 	},
+	{
+		h          = { group = "tag/useless", description = "resize useless gaps to some", name = "toggle some gap" },
+		modalities = { m.TAG_USELESS .. "s" },
+		on_press   = global_fns.tag.useless.some,
+	},
 	-- }}} TAGS
 
 
@@ -478,6 +483,11 @@ lib.global_bindings           = {
 		hotkeys    = { { mods = { _keys.MOD }, code = "X" } },
 		modalities = { m.SCREEN .. "x" },
 		on_press   = global_fns.screen.invert_colors,
+	},
+	{
+		h          = { group = "screen", description = "toggle padding", name = "togglez padding" },
+		modalities = { m.SCREEN .. "P" },
+		on_press   = global_fns.screen.padding_toggle,
 	},
 	-- SCREEN:SCREENSHOT
 	{

@@ -46,8 +46,10 @@ local raise_focused_client = function()
 end
 
 local _layouts             = {
-	tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
-	swen  = layout_titlebars_conditional { layout = ia_layout_swen },
+	--tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
+	--swen  = layout_titlebars_conditional { layout = ia_layout_swen },
+	tiler = awful.layout.suit.tile,
+	swen  = ia_layout_swen,
 }
 
 ---------------------------------------------------------------------------
@@ -266,14 +268,33 @@ local global_fns           = {
 		-- it seems to me now, several months and as many uses of this keybinding later,
 		-- that it may be more useful to jump between SCREENS in this way.
 		-- Also, this feature is already implemented with MOD+Tab.
-		next          = function()
+		next           = function()
 			awful.screen.focus_relative(1)
 		end,
-		prev          = function()
+		prev           = function()
 			awful.screen.focus_relative(-1)
 		end,
-		invert_colors = function()
+		invert_colors  = function()
 			os.execute("xrandr-invert-colors")
+		end,
+		-- padding_toggle is intended to give me a way
+		-- to make working on the TV more comfortable for my neck.
+		-- More real estate is always better, but being able
+		-- to constrain its used limits is proving to be nice.
+		padding_toggle = function()
+			local scr = awful.screen.focused()
+			if scr.original_padding == nil then
+				scr.original_padding = scr.padding
+				scr.padding          = {
+					top    = scr.geometry.height / 5,
+					bottom = 5,
+					left   = scr.geometry.width / 4 / 2,
+					right  = scr.geometry.width / 4 / 2,
+				}
+			else
+				scr.padding          = scr.original_padding
+				scr.original_padding = nil
+			end
 		end
 	},
 	screenshot = {
@@ -458,6 +479,16 @@ local global_fns           = {
 			decrease_much   = function()
 				lain.util.useless_gaps_resize(-50)
 			end,
+			some            = function()
+				local scr           = awful.screen.focused()
+				--scr.selected_tag.gap = 0
+				local target_gap_on = 100
+				if scr.selected_tag.gap > 0 then
+					scr.selected_tag.gap = 0
+				else
+					lain.util.useless_gaps_resize(target_gap_on - scr.selected_tag.gap)
+				end
+			end
 		},
 	},
 	special    = {

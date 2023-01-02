@@ -127,8 +127,10 @@ awful.util.tagnames = { "1", "2", "3", "4", "5" }
 --awful.util.tagnames = { "▇", "▇", "▇", "▇", "▇" }
 
 local _layouts      = {
-	tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
-	swen  = layout_titlebars_conditional { layout = ia_layout_swen },
+	--tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
+	--swen  = layout_titlebars_conditional { layout = ia_layout_swen },
+	tiler = awful.layout.suit.tiles,
+	swen  = ia_layout_swen,
 }
 
 special_log_load_time_reset()
@@ -496,7 +498,7 @@ client.connect_signal("request::manage",
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 
-local mytitlebars = function(c)
+local mytitlebars = function(c, context, hints)
 	-- Custom
 	if beautiful.titlebar_fun then
 		beautiful.titlebar_fun(c)
@@ -525,7 +527,20 @@ local mytitlebars = function(c)
 	local ci         = awful.widget.clienticon(c);
 	ci.forced_width  = 12
 	ci.forced_height = 12
-	awful.titlebar(c, { size = 16 }):setup {
+
+	local title      = awful.titlebar.widget.titlewidget(c)
+	local args       = {
+		size     = 16,
+		--position = "left",
+		bg_focus = c.maximized and beautiful.color_green,
+		fg_focus = c.maximized and "#000000",
+	}
+	if c.maximized then
+		local text = title:get_text()
+		title:set_text("" .. text .. " *Z")
+	end
+
+	awful.titlebar(c, args):setup {
 		{
 			-- Left
 			buttons = buttons,
@@ -535,7 +550,7 @@ local mytitlebars = function(c)
 		{
 			-- Middle
 			wibox.container.place { widget = ci, valign = "center" },
-			awful.titlebar.widget.titlewidget(c),
+			title,
 			buttons = buttons,
 			spacing = 5,
 			layout  = wibox.layout.fixed.horizontal
@@ -726,6 +741,10 @@ then
 	--	--print("[cool] refresh")
 	--end)
 end
+
+client.connect_signal("property::maximized", function(c)
+	c:emit_signal("request::titlebars", "property::maximized", { raise = false })
+end)
 
 --
 --client.connect_signal("property::fullscreen", function(c)
