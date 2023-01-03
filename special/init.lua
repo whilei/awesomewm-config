@@ -320,6 +320,24 @@ local function deepcopy(orig, copies)
 	return copy
 end
 
+local function move_mouse_to_focused_client()
+	local c = client.focus
+	if not c then
+		naughty.notification { message = "No focused client" }
+		return
+	end
+	if mouse.object_under_pointer() == c then
+		naughty.notification { message = "Mouse already over focused client" }
+		return
+	end
+	local coords = c:geometry()
+	-- Move mouse to center of client
+	mouse.coords {
+		x = coords.x + coords.width / 2,
+		y = coords.y + coords.height / 2,
+	}
+end
+
 return {
 	popup_launcher               = require("special.popup-launcher"),
 	quake                        = require("special.widgets").quake,
@@ -337,4 +355,5 @@ return {
 	log_load_time_reset          = log_load_time_reset,
 	raise                        = raise,
 	deepcopy                     = deepcopy,
+	move_mouse_to_focused_client = move_mouse_to_focused_client,
 }

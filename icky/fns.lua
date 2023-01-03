@@ -39,13 +39,13 @@ revelation.init()
 ---------------------------------------------------------------------------
 -- HELPERS
 
-local raise_focused_client = function()
+local raise_focused_client          = function()
 	if client.focus then
 		client.focus:raise()
 	end
 end
 
-local _layouts             = {
+local _layouts                      = {
 	--tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
 	--swen  = layout_titlebars_conditional { layout = ia_layout_swen },
 	tiler = awful.layout.suit.tile,
@@ -54,7 +54,7 @@ local _layouts             = {
 
 ---------------------------------------------------------------------------
 
-local global_fns           = {
+local global_fns                    = {
 	awesome    = {
 		restart      = awesome.restart,
 		-- show_main_menu = (see below),
@@ -255,16 +255,16 @@ local global_fns           = {
 			os.execute(gears.filesystem.get_configuration_dir() .. "screenlock.sh")
 		end,
 		logout    = function()
-			awful.spawn.with_shell("sudo service lightdm restart")
+			os.execute("service lightdm restart")
 		end,
 		suspend   = function()
-			awful.spawn.with_shell("sudo systemctl suspend")
+			os.execute("systemctl suspend")
 		end,
 		reboot    = function()
-			os.execute("reboot")
+			os.execute("systemctl reboot")
 		end,
 		power_off = function()
-			os.execute("shutdown -P -h now")
+			os.execute("systemctl poweroff")
 		end
 	},
 	screen     = {
@@ -272,41 +272,22 @@ local global_fns           = {
 		-- it seems to me now, several months and as many uses of this keybinding later,
 		-- that it may be more useful to jump between SCREENS in this way.
 		-- Also, this feature is already implemented with MOD+Tab.
-		next           = function()
+		next          = function()
 			awful.screen.focus_relative(1)
 		end,
-		prev           = function()
+		prev          = function()
 			awful.screen.focus_relative(-1)
 		end,
-		invert_colors  = function()
+		invert_colors = function()
 			os.execute("xrandr-invert-colors")
 		end,
-		-- padding_toggle is intended to give me a way
-		-- to make working on the TV more comfortable for my neck.
-		-- More real estate is always better, but being able
-		-- to constrain its used limits is proving to be nice.
-		padding_toggle = function()
-			local scr = awful.screen.focused()
-			if scr.original_padding == nil then
-				scr.original_padding = scr.padding
-				scr.padding          = {
-					top    = scr.geometry.height / 5,
-					bottom = 5,
-					left   = scr.geometry.width / 4 / 2,
-					right  = scr.geometry.width / 4 / 2,
-				}
-			else
-				scr.padding          = scr.original_padding
-				scr.original_padding = nil
-			end
-		end
 	},
 	screenshot = {
 		selection = function()
 			special.saved_screenshot {
 				interactive     = true,
 				directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
-				prefix          = "screenshot",
+				prefix          = "screenshot_selection",
 				date_format     = "%Y-%m-%d-%H%M%S",
 				auto_save_delay = 0.1,
 				--exec            = screenshot_notifier { label = "selection" },
@@ -315,7 +296,7 @@ local global_fns           = {
 		window    = function()
 			special.saved_screenshot {
 				directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
-				prefix          = "screenshot",
+				prefix          = "screenshot_window",
 				date_format     = "%Y-%m-%d-%H%M%S",
 				auto_save_delay = 0.1,
 				--exec            = screenshot_notifier { label = "selection" },
@@ -324,7 +305,7 @@ local global_fns           = {
 		screen    = function()
 			special.saved_screenshot {
 				directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
-				prefix          = "screenshot",
+				prefix          = "screenshot_screen",
 				date_format     = "%Y-%m-%d-%H%M%S",
 				auto_save_delay = 0.1,
 				screen          = awful.screen.focused(),
@@ -334,7 +315,7 @@ local global_fns           = {
 		client    = function()
 			special.saved_screenshot {
 				directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
-				prefix          = "screenshot_" .. client.focus.class:gsub("%s+", "_"),
+				prefix          = "screenshot_client_" .. client.focus.class:gsub("%s+", "_"),
 				date_format     = "%Y-%m-%d-%H%M%S",
 				auto_save_delay = 0.1,
 				client          = client.focus,
@@ -345,7 +326,7 @@ local global_fns           = {
 			window = function()
 				special.saved_screenshot {
 					directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
-					prefix          = "screenshot",
+					prefix          = "screenshot_window",
 					date_format     = "%Y-%m-%d-%H%M%S",
 					auto_save_delay = 5,
 					--exec            = screenshot_notifier { label = "selection" },
@@ -354,7 +335,7 @@ local global_fns           = {
 			screen = function()
 				special.saved_screenshot {
 					directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
-					prefix          = "screenshot",
+					prefix          = "screenshot_screen",
 					date_format     = "%Y-%m-%d-%H%M%S",
 					auto_save_delay = 5,
 					screen          = awful.screen.focused(),
@@ -364,7 +345,7 @@ local global_fns           = {
 			client = function()
 				special.saved_screenshot {
 					directory       = os.getenv("HOME") .. "/Pictures/screenshots/",
-					prefix          = "screenshot_" .. client.focus.class:gsub("%s+", "_"),
+					prefix          = "screenshot_client_" .. client.focus.class:gsub("%s+", "_"),
 					date_format     = "%Y-%m-%d-%H%M%S",
 					auto_save_delay = 5,
 					client          = client.focus,
@@ -496,15 +477,58 @@ local global_fns           = {
 		},
 	},
 	special    = {
-		raise = special.raise,
-		klack = klack.start,
+		raise                        = special.raise,
+		klack                        = klack.start,
+		-- padding_toggle is intended to give me a way
+		-- to make working on the TV more comfortable for my neck.
+		-- More real estate is always better, but being able
+		-- to constrain its used limits is proving to be nice.
+		padding_toggle               = function()
+			local scr = awful.screen.focused()
+			if scr.original_padding == nil then
+				scr.original_padding = scr.padding
+				scr.padding          = {
+					top    = scr.geometry.height / 5,
+					bottom = 5,
+					left   = scr.geometry.width / 4 / 2,
+					right  = scr.geometry.width / 4 / 2,
+				}
+			else
+				scr.padding          = scr.original_padding
+				scr.original_padding = nil
+			end
+		end,
+		move_mouse_to_focused_client = special.move_mouse_to_focused_client,
 	}
 }
 
--- fns_c are client functions.
+global_fns.client.focus.back_greedy = function()
+	-- Change the client focus immediately "back",
+	-- and abort if there is no focused client.
+	global_fns.client.focus.back_local()
+	local new_c = client.focus
+	if not new_c then return end
+
+	-- If this client's tag only has one client, abort.
+	-- (This is expected to be a corner case).
+	local t = new_c.first_tag
+	if not t then return end
+	if #t:clients() == 1 then return end
+
+	local c_has_minority_width = new_c.width < (
+			t.screen.workarea.width
+					- (t.screen.padding.left or 0) - (t.screen.padding.right or 0)
+	) / 2
+
+	if c_has_minority_width then
+		t:set_master_width_factor(1 - t.master_width_factor)
+	end
+end
+
+-- fns_c are client functions.lt
 -- They are/should be registered with awful.keyboard.append_client_keybindings
 -- and will be passed the current focused client as the first arg.
-local client_fns           = {
+local client_fns                    = {
 	move       = {
 		new_tag = function(c)
 			local cc = c or client.focus

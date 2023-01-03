@@ -16,6 +16,70 @@ deleted tag
 think of the web
 think of the light on the coffee pot
 
+
+[ c 1 ] focus client at (tag) index 1
+
+battery as progress bar taking up width of screen
+like the newfangled loading bars some browsers and websites have
+
+haha same for sunlight times ?; progress between sunrise and sunset
+
+move meridian/world clock times to dashboards
+
+major mode
+for modality
+data-entry keybindings for clients i use a lot
+eg.
+jetbrains
+konsole
+firefox
+then map modality keypaths to those (hopefully default) hotkeys
+these bindings will not have functions;
+or, they will all have a single function: `awful.key:trigger` or whatever
+
+this would allow like
+`<leader> g n` where, in Clion, `<leader> g` enters the major mode, then `n` triggers
+open
+
+also todo
+checkout XCompose for keypaths and chords compositions, eg. ... = elipsis
+although these seem like kind of a sketchy idea
+because they are permanent and global, different contexts call for different punctuation
+ie `...` is good for ellipsis in markdown, but lua has variadic functions with args `...`
+
+
+modality
+what if had an always-on status bar
+showing you the state of things, like
+golden-ratio (== mwf inversion) mode
+focused screen
+screen padding
+currently focused client
+tag mwf
+tag number of masters
+
+modality
+should have history, or at least repeat last command
+
+client mousebinding
+double right click = XXX
+
+"tear off" handy/scratch pad client views
+`<hotkey/keypath>` causes unmoved (virgin?) client to appear/disappear
+if and when client is moved by the user, the client is no longer managed by handy/scratchpad
+  and now behaves like a normal client of whatever its class is
+define "moved by user"?
+  click-and-drag on titlebar
+  moved (repositioned) by mouse otherwise (eg. Super+Clickhold drag)
+  minimized (instead of hide/show toggled)
+  exempt: maximized
+  ---
+  or: don't define it, and instead create a function that tears it, assigning the new "tear off" function its own shortcutes
+    yes, shortcutes.
+anyways, it'd be nice to be able to divorce them from their progenitor because
+  sometimes they grow up and have like 20 tabs of their own and its time for them to get
+  their own screen and be normal grown up client
+
 ---
 
 20221231
@@ -34,6 +98,8 @@ events, events, hook, connections and emits.
 this is how to decouple defaults from specialties.
 
 
+a screenshot cron
+needs ui to show me that its on
 
 ---
 

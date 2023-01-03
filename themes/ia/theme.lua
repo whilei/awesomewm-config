@@ -10,7 +10,7 @@ local tonumber                    = tonumber
 local tostring                    = tostring
 local ipairs                      = ipairs
 
-local client                      = client
+local client, tag                 = client, tag
 
 local gears                       = require("gears")
 local lain                        = require("lain")
@@ -628,7 +628,8 @@ function theme.at_screen_connect(s)
 	local my_tags      = {
 		tags = {
 			{
-				names   = { "A1", "A2", "A3", "A4", "A5" },
+				-- "L" is for Laptop.
+				names   = { "L:1", "L:2", "L:3", "L:4", "L:5" },
 				layouts = {
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
@@ -638,7 +639,8 @@ function theme.at_screen_connect(s)
 				},
 			},
 			{
-				names   = { "B1", "B2", "B3", "B4", "B5" },
+				-- "TV" is for TV.
+				names   = { "TV:1", "TV:2", "TV:3", "TV:4", "TV:5" },
 				layouts = {
 					awful.layout.layouts[1],
 					awful.layout.layouts[1],
@@ -1208,9 +1210,18 @@ function theme.at_screen_connect(s)
 		},
 	}
 
+	-- This works but its overkill.
+	-- There are often several clients shifting focus on a sceen and/or tag,
+	-- so this is called redundantly.
+	-- I want to connect to signal for only when the focused screen (best) or tag (better) changes.
 	client.connect_signal("focus", function(c)
 		s.indicators:set_state(c.screen and c.screen == s)
 	end)
+	-- But these are ineffectual:
+	--tag.connect_signal("request::select", function(t)
+	--tag.connect_signal("property::selected", function(t)
+	--	s.indicators:set_state(t.screen and t.screen == s)
+	--end)
 
 	s.mywibox_slim = awful.popup {
 		widget       = {

@@ -137,7 +137,7 @@ awful.util.tagnames = { "1", "2", "3", "4", "5" }
 local _layouts      = {
 	--tiler = layout_titlebars_conditional { layout = awful.layout.suit.tile },
 	--swen  = layout_titlebars_conditional { layout = ia_layout_swen },
-	tiler = awful.layout.suit.tiles,
+	tiler = awful.layout.suit.tile,
 	swen  = ia_layout_swen,
 }
 
@@ -155,20 +155,29 @@ tag.connect_signal("request::default_layouts",
 special_log_load_time("tag.connect_signal request::default_layouts")
 
 awful.util.taglist_buttons = g_table.join(
+-- Left-click on a tag views it.
 		awful.button({}, 1, function(t)
 			t:view_only()
 		end),
+
+-- Super + left-click on a tag entry moves currently focused client to that tag.
 		awful.button({ modkey }, 1, function(t)
 			if client.focus then
 				client.focus:move_to_tag(t)
 			end
 		end),
+
+-- Right clicking on tag entry toggles tag view (can view multiple tags at once).
 		awful.button({}, 3, awful.tag.viewtoggle),
+		
+-- Super + right-click on a tag entry toggles the currently focused client's association with that tag.
 		awful.button({ modkey }, 3, function(t)
 			if client.focus then
 				client.focus:toggle_tag(t)
 			end
 		end),
+
+-- Scroll while hovering over the tag list cycles through viewing tags.
 		awful.button({}, 4, function(t)
 			awful.tag.viewnext(t.screen)
 		end),
@@ -261,33 +270,7 @@ special_log_load_time("modality.init")
 
 -- {{{ Screen
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry",
-					  function(s)
-						  -- Wallpaper
-						  if beautiful.wallpaper then
-							  local wallpaper = beautiful.wallpaper
-							  -- If wallpaper is a function, call it with the screen
-							  if type(wallpaper) == "function" then
-								  wallpaper = wallpaper(s)
-							  end
-							  awful.wallpaper {
-								  screen = s,
-								  widget = {
-									  {
-										  image  = wallpaper,
-										  resize = true,
-										  widget = wibox.widget.imagebox,
-									  },
-									  valign = "center",
-									  halign = "center",
-									  widget = wibox.container.place,
-								  },
-							  }
-						  end
-					  end)
-
-special_log_load_time("screen.connect_signal property::geometry")
-
+screen.connect_signal("property::geometry", function(s) s:emit_signal("request::wallpaper") end)
 screen.connect_signal("request::wallpaper", function(s)
 	awful.wallpaper {
 		screen = s,
@@ -651,13 +634,19 @@ client.connect_signal("mouse::enter",
 						  end
 					  end)
 
-local function move_mouse_onto_focused_client(c)
+-- move_mouse_onto_focused_client_on_focus_shift
+-- move the mouse to the (newly) focused client when the focus event is emitted.
+-- This function is similar to, but significantly different from,
+-- special.move_mouse_to_focused_client because the latter does
+-- not try to handle "intuitive" focus-shift expectations.
+local function move_mouse_onto_focused_client_on_focus_shift(c)
 	if c == nil then
 		return
 	end
-	if mouse.object_under_pointer() == nil then
-		return
-	end
+	local no_mouse_obj = not mouse.object_under_pointer()
+	--if mouse.object_under_pointer() == nil then
+	--	return
+	--end
 
 	-- The object (window, eg) under the mouse IS the client in question.
 	if mouse.object_under_pointer() == c then
@@ -680,7 +669,7 @@ local function move_mouse_onto_focused_client(c)
 	--end
 
 	-- Only reposition the mouse if the new client is on the other screen.
-	if mouse.object_under_pointer().screen == c.screen then
+	if (not no_mouse_obj) and mouse.object_under_pointer().screen == c.screen then
 		return
 	end
 
@@ -716,7 +705,7 @@ end)
 
 client.connect_signal("focus", function(c)
 	if not c then return end
-	move_mouse_onto_focused_client(c)
+	move_mouse_onto_focused_client_on_focus_shift(c)
 end)
 
 client.connect_signal("unfocus", function(c)

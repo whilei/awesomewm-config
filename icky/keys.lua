@@ -1,12 +1,16 @@
 ---------------------------------------------------------------------------
 -- Keys
 --
--- Icky key bindings and what to do with them.
+-- Mapping keybindings and keypaths to functions.
+-- All functions referenced here should be defined in fns.lua.
+-- These are the definitions of my hotkeys and modal key paths.
 --
--- All functions used by keybindings declared here should be defined in fns.lua.
+-- The substance of this file is the data of the lib.global_bindings and lib.client_bindings tables.
+-- Ideally (or metaphysically?), these would be stored in plain text (etc.) files,
+-- but storing them here in Lua is a close approximation of that.
 --
 -- @author whilei
--- @author Isaac &lt;isaac.ardis@gmail.com&gt;
+-- @author Isaac <isaac.ardis@gmail.com>
 -- @copyright 2022 Isaac
 -- @coreclassmod icky.keys
 ---------------------------------------------------------------------------
@@ -20,6 +24,7 @@ local global_fns              = require("icky.fns").global
 local client_fns              = require("icky.fns").client
 local modality                = require("modality")
 local modality_util           = require("modality.util")
+local naughty                 = require("naughty")
 
 --[[
 
@@ -69,6 +74,7 @@ local m                       = {
 	CLIENT_RESIZE     = "c:client,r~:resize,", -- stays
 	CLIENT_PLACEMENT  = "c:client,p~:placement,", -- stays
 
+	SPECIAL           = "e:special,",
 	HANDY             = "h:handy,",
 	FOCUS             = "f:focus,",
 	TAG_LAYOUT        = "l:layout,",
@@ -81,7 +87,7 @@ local m                       = {
 	SCREEN_SHOT       = "s:screen,t:screenshot,",
 	TAG               = "t:tag,",
 	TAG_USELESS       = "t:tag,u~:useless,", -- stays
-	--SPECIAL           = "z:special,",
+	VIEW              = "v:view,"
 }
 
 lib.global_bindings           = {
@@ -122,26 +128,16 @@ lib.global_bindings           = {
 
 	},
 	{
-		h          = { group = "awesome/widgets", description = "toggle meridian widget", name = "meridian" },
-		modalities = { m.AWESOME_WIDGETS .. "m", m.AWESOME_WIDGETS .. "g" },
-		hotkeys    = { { _keys.MOD, "g" } },
-		on_press   = global_fns.awesome.widgets.world_times,
-	},
-	{
 		h          = { group = "awesome", description = "toggle dash", name = "dash" },
 		modalities = { m.AWESOME .. "d" },
 		on_press   = global_fns.awesome.dash,
 	},
 	-- AWESOME:WIDGETS
 	{
-		h          = { group = "awesome/widgets", description = "toggle calendar widget", name = "calendar" },
-		modalities = { m.AWESOME_WIDGETS .. "d" },
-		on_press   = global_fns.awesome.widgets.calendar,
-	},
-	{
-		h          = { group = "awesome/widgets", description = "toggle weather widget", name = "weather" },
-		modalities = { m.AWESOME_WIDGETS .. "w" },
-		on_press   = global_fns.awesome.widgets.weather,
+		h          = { group = "awesome/widgets", description = "toggle meridian widget", name = "meridian" },
+		modalities = { m.AWESOME_WIDGETS .. "m", m.AWESOME_WIDGETS .. "g" },
+		hotkeys    = { { _keys.MOD, "g" } },
+		on_press   = global_fns.awesome.widgets.world_times,
 	},
 	-- AWESOME:APPS
 	{
@@ -190,7 +186,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "awesome/snazzy", description = "revelation", name = "revelation" },
-		modalities = { "e", m.AWESOME_APPS .. "e" },
+		modalities = { "`", m.AWESOME_APPS .. "e" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "e", }, },
 		on_press   = global_fns.apps.revelation,
 	},
@@ -247,7 +243,7 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "applications", description = "raise or run nvidia settings", name = "nvidia-settings", },
-		modalities = { m.APPLICATIONS .. "N" },
+		modalities = { m.APPLICATIONS .. "S" },
 		on_press   = global_fns.apps.single_instance("nvidia-settings"),
 	},
 	{
@@ -267,6 +263,11 @@ lib.global_bindings           = {
 	},
 	-- FOCUS:SPECIAL
 	{
+		h          = { group = "client/focus", description = "move mouse to center of focused client", name = "mouse -> focused" },
+		modalities = { m.FOCUS .. "m" },
+		on_press   = global_fns.special.move_mouse_to_focused_client,
+	},
+	{
 		h          = { group = "client/focus", description = "back (anywhere)", name = "back (global)" },
 		hotkeys    = { { mods = { _keys.MOD }, code = "Tab", }, },
 		modalities = { "Tab" },
@@ -274,8 +275,13 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "client/focus", description = "back (local)", name = "back (local)" },
-		modalities = { "n" },
+		modalities = { "n", m.FOCUS .. "n" },
 		on_press   = global_fns.client.focus.back_local,
+	},
+	{
+		h          = { group = "client/focus", description = "inverts tag mwf to give focus more width", name = "back (local) - greedy" },
+		modalities = { "N", m.FOCUS .. "N" },
+		on_press   = global_fns.client.focus.back_greedy,
 	},
 	{
 		h          = { group = "client/focus", description = "back (to prev tag)", name = "back (tag)" },
@@ -490,11 +496,6 @@ lib.global_bindings           = {
 		modalities = { m.SCREEN .. "x" },
 		on_press   = global_fns.screen.invert_colors,
 	},
-	{
-		h          = { group = "screen", description = "toggle padding", name = "padding farmed view" },
-		modalities = { m.SCREEN .. "v" },
-		on_press   = global_fns.screen.padding_toggle,
-	},
 	-- SCREEN:SCREENSHOT
 	{
 		h          = { group = "screen/shot", description = "take a screenshot of a screen", name = "screenshot screen" },
@@ -564,6 +565,31 @@ lib.global_bindings           = {
 		on_press   = global_fns.power_user.reboot,
 	},
 	-- }}}
+
+	-- {{{ VIEW
+	{
+		h          = { group = "special", description = "toggle screen's horseshoe-shaped padding", name = "padding-framed view" },
+		modalities = { m.VIEW .. "s:screen," .. "p" },
+		on_press   = global_fns.special.padding_toggle,
+	},
+	-- }}}
+
+	--- {{{ SPECIAL
+	{
+		h          = { group = "special", description = "raise Discord window", name = "raise Discord" },
+		modalities = { "D" },
+		on_press   = global_fns.special.raise({ name = "Discord" }),
+	},
+	{
+		h          = { group = "special", description = "turn Klack on", name = "klack" },
+		modalities = { m.AWESOME_APPS .. "k" },
+		on_press   = global_fns.special.klack,
+	},
+	{
+		h          = { group = "special", description = "toggle hood debugger/inspector", name = "hood (debug)" },
+		modalities = { "H" },
+		on_press   = hood.toggle,
+	},
 }
 
 lib.client_bindings           = {
@@ -651,32 +677,20 @@ lib.client_bindings           = {
 		on_press   = client_fns.kill,
 	},
 
-	-- specialty items
+	-- VIEW
 	{
-		h        = { group = "special.client", description = "reader view (tall)", name = "reader view (tall)" },
-		hotkeys  = { { mods = { _keys.MOD, _keys.CTRL, _keys.SHIFT, }, code = "space" } },
-		on_press = client_fns.special.reader_view_tall,
+		h          = { group = "special.client", description = "reader view (tall)", name = "client reader view (tall)" },
+		hotkeys    = { { mods = { _keys.MOD, _keys.CTRL, _keys.SHIFT, }, code = "space" } },
+		modalities = { m.VIEW .. "R" },
+		on_press   = client_fns.special.reader_view_tall,
 	},
 	{
-		h          = { group = "special.client", description = "toggle reader view", name = "reader view" },
-		modalities = { "!" },
+		h          = { group = "special.client", description = "toggle reader view", name = "client reader view" },
+		modalities = { m.VIEW .. "r" },
 		on_press   = client_fns.special.reader_view,
 	},
-	{
-		h          = { group = "special", description = "raise Discord window", name = "raise Discord" },
-		modalities = { "D" },
-		on_press   = global_fns.special.raise({ name = "Discord" }),
-	},
-	{
-		h          = { group = "special", description = "turn Klack on", name = "klack" },
-		modalities = { m.AWESOME_APPS .. "k" },
-		on_press   = global_fns.special.klack,
-	},
-	{
-		h          = { group = "special", description = "toggle hood debugger/inspector", name = "hood (debug)" },
-		modalities = { "H" },
-		on_press   = hood.toggle,
-	},
+
+	-- SPECIAL
 }
 
 -- TODO Have modality be able to handle keygroups (see awful.keygroups, awful.keygroup, awful.key).
