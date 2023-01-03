@@ -1,5 +1,23 @@
 
 
+
+lua eval in prompt
+awful.utils.eval
+
+awesome-client overhead loading script, eg requirements
+then repl and hands on with AWM
+
+
+notification presets
+for ui changes
+eg moved client tag
+added tag
+deleted tag
+think of the web
+think of the light on the coffee pot
+
+---
+
 20221231
 
 invert master_width_factor
