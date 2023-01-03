@@ -78,7 +78,7 @@ local m                       = {
 	HANDY             = "h:handy,",
 	FOCUS             = "f:focus,",
 	TAG_LAYOUT        = "l:layout,",
-	TAG_LAYOUT_ADJUST = "l:layout,a~:adjust,", -- stays
+	TAG_LAYOUT_ADJUST = "l:layout,a:adjust,", -- stays
 	MEDIA             = "m:media,",
 	MEDIA_VOLUME      = "m:media,v~:volume,", -- stays
 	SWAP              = "p~:swap,",
@@ -414,14 +414,19 @@ lib.global_bindings           = {
 	{
 		h          = { group = "tag/layout/adjust", description = "increase master width factor", name = "increment mwf" },
 		hotkeys    = { { mods = { _keys.ALT, _keys.SHIFT }, code = "l" } },
-		modalities = { m.TAG_LAYOUT_ADJUST .. "l" },
+		modalities = { m.TAG_LAYOUT_ADJUST .. "l~" },
 		on_press   = global_fns.tag.layout.master_width_factor.increase,
 	},
 	{
 		h          = { group = "tag/layout/adjust", description = "decrease master width factor", name = "decrement mwf" },
 		hotkeys    = { { mods = { _keys.ALT, _keys.SHIFT }, code = "h" } },
-		modalities = { m.TAG_LAYOUT_ADJUST .. "h" },
+		modalities = { m.TAG_LAYOUT_ADJUST .. "h~" },
 		on_press   = global_fns.tag.layout.master_width_factor.decrease,
+	},
+	{
+		h          = { group = "tag/layout/adjust", description = "invert master width factor", name = "invert mwf" },
+		modalities = { m.TAG_LAYOUT_ADJUST .. "i" },
+		on_press   = global_fns.tag.layout.master_width_factor.invert,
 	},
 	-- TAGS:LAYOUT:BY NAME
 	{

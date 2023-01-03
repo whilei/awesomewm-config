@@ -411,6 +411,11 @@ local global_fns                    = {
 					awful.tag.incmwfact(-0.05)
 					return true
 				end,
+				invert   = function()
+					local t = awful.screen.focused().selected_tag
+					if not t then return end
+					t:set_master_width_factor(1 - t.master_width_factor)
+				end
 			},
 			master_client_number = {
 				increase = function()
