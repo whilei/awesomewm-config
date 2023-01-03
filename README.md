@@ -39,7 +39,8 @@ or, they will all have a single function: `awful.key:trigger` or whatever
 
 this would allow like
 `<leader> g n` where, in Clion, `<leader> g` enters the major mode, then `n` triggers
-open
+"open file" or whatever CLion hotkey is defined to be `:triggered()`  by that keypath
+== client-aware keypaths trigger client-specific hotkeys
 
 also todo
 checkout XCompose for keypaths and chords compositions, eg. ... = elipsis

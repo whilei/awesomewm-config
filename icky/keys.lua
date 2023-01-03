@@ -58,9 +58,15 @@ lib.get_global_awful_keys     = function()
 	return lib.global_awful_keys
 end
 
+-- m defines a common set of keybindings trunk paths.
+-- You should prefer to not use 'stays' (~) on menus, rather isolate it to individual keys.
+-- This gives you two things:
+--  1. When you expect to have left the mode and (accidentally) tap an unassigned key, it'll exit as expected.
+--  2. When you tap an assigned key and expect the mode to stay, it'll stay.
+-- Only use 'stays' on menus that you REALLY want to stay on until you press an escaping key.
 local m                       = {
 	AWESOME           = "a:awesome,", -- trailing , allows for easy concatenation
-	AWESOME_WIDGETS   = "a:awesome,w~:widgets,", -- stays
+	AWESOME_WIDGETS   = "a:awesome,w:widgets,", -- stays
 	AWESOME_APPS      = "a:awesome,a:apps,",
 	APPLICATIONS      = ".:applications,",
 
@@ -135,7 +141,7 @@ lib.global_bindings           = {
 	-- AWESOME:WIDGETS
 	{
 		h          = { group = "awesome/widgets", description = "toggle meridian widget", name = "meridian" },
-		modalities = { m.AWESOME_WIDGETS .. "m", m.AWESOME_WIDGETS .. "g" },
+		modalities = { m.AWESOME_WIDGETS .. "m~", m.AWESOME_WIDGETS .. "g~" },
 		hotkeys    = { { _keys.MOD, "g" } },
 		on_press   = global_fns.awesome.widgets.world_times,
 	},
