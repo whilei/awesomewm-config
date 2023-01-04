@@ -26,8 +26,8 @@ haha same for sunlight times ?; progress between sunrise and sunset
 
 move meridian/world clock times to dashboards
 
+modality
 major mode
-for modality
 data-entry keybindings for clients i use a lot
 eg.
 jetbrains
@@ -36,18 +36,16 @@ firefox
 then map modality keypaths to those (hopefully default) hotkeys
 these bindings will not have functions;
 or, they will all have a single function: `awful.key:trigger` or whatever
-
 this would allow like
 `<leader> g n` where, in Clion, `<leader> g` enters the major mode, then `n` triggers
 "open file" or whatever CLion hotkey is defined to be `:triggered()`  by that keypath
 == client-aware keypaths trigger client-specific hotkeys
 
-also todo
-checkout XCompose for keypaths and chords compositions, eg. ... = elipsis
-although these seem like kind of a sketchy idea
-because they are permanent and global, different contexts call for different punctuation
-ie `...` is good for ellipsis in markdown, but lua has variadic functions with args `...`
-
+> also todo
+> checkout XCompose for keypaths and chords compositions, eg. ... = elipsis
+> although these seem like kind of a sketchy idea
+> because they are permanent and global, different contexts call for different punctuation
+> ie `...` is good for ellipsis in markdown, but lua has variadic functions with args `...`
 
 modality
 what if had an always-on status bar
@@ -61,6 +59,10 @@ tag number of masters
 
 modality
 should have history, or at least repeat last command
+
+modality
+it might be nice to (be able to) show breadcrumbs on the menu
+to answer the question: how did I get here?
 
 client mousebinding
 double right click = XXX
@@ -80,6 +82,7 @@ define "moved by user"?
 anyways, it'd be nice to be able to divorce them from their progenitor because
   sometimes they grow up and have like 20 tabs of their own and its time for them to get
   their own screen and be normal grown up client
+
 
 ---
 
