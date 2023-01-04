@@ -704,6 +704,7 @@ function theme.at_screen_connect(s)
 											fg_cursor = "#e019c9", --pink
 											--textbox = my_promptbox_textbox,
 										})
+	
 	special_log_load_time("widget: promptbox")
 
 	-- Create an imagebox widget which will contains an icon indicating which layout we're using.
@@ -1264,12 +1265,10 @@ function theme.at_screen_connect(s)
 			spr,
 			s.mylayoutbox,
 			spr,
-			s.mypromptbox,
-			spr,
 
 			s.mytaglist,
 			spr,
-
+			s.mypromptbox,
 			spr,
 
 		},

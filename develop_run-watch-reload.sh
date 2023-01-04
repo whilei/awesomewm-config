@@ -35,6 +35,8 @@ S_LOG_PREFIX=':: '
 # and not from the (this) script itself.
 AWESOME_LOG_PREFIX="${LIGHT_BLUE}|${NC} "
 
+DOCS_LOG_PREFIX='@  '
+
 # ------------------------------------------------------------------------------
 
 # When this script exits I want all child procs to exit too.

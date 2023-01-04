@@ -134,9 +134,9 @@ local calendar = calendar_widget {
 
 special_log_load_time("widget: calendar")
 
-m.init = function(s)
+m.init = function()
 	m.bar = awful.popup {
-		screen       = s,
+		--screen       = s,
 		placement    = awful.placement.centered,
 		--placement    = function(c)
 		--	return awful.placement.top_right(c, {
@@ -253,5 +253,23 @@ m.init = function(s)
 	}
 	return m
 end
+
+local function show(s)
+	if not m.bar then m.init() end
+	m.bar.screen  = s
+	m.bar.visible = true
+end
+
+local function hide()
+	m.bar.visible = false
+end
+
+screen.connect_signal("request::dash::toggle", function(s)
+	if m.bar and m.bar.visible then
+		hide()
+	else
+		show(s)
+	end
+end)
 
 return m

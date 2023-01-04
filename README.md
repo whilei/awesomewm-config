@@ -7,10 +7,7 @@ nvidia-setting fuck around with resolution can fix it (i toggle resolution setti
 
 mode for emitting signals
 any signals user desires
-
 lua.eval
-
-
 
 oh this other "reader view" idea
 where you enter the mode
@@ -19,6 +16,13 @@ so it wants to place wherever your mouse is in the client
   in the middle of the screen
 
 ps maybe the default hotkey for modality should be super+space
+pss now it is
+
+you can do
+client.property = value
+directly
+instead of set_xproperty and get_xproperty, i think
+should be patched up for handy at least
 
 ---
 

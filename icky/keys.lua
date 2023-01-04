@@ -124,6 +124,11 @@ lib.global_bindings           = {
 		hotkeys    = { { _keys.MOD, "w" } },
 		on_press   = global_fns.awesome.show_main_menu,
 	},
+	{
+		h          = { group = "awesome", description = "eval lua", name = "eval lua" },
+		modalities = { m.AWESOME .. "e" },
+		on_press   = global_fns.awesome.eval_lua,
+	},
 
 	-- AWESOME:BARS
 	{
@@ -580,7 +585,7 @@ lib.global_bindings           = {
 	-- {{{ VIEW
 	{
 		h          = { group = "special", description = "toggle screen's horseshoe-shaped padding", name = "padding-framed view" },
-		modalities = { m.VIEW .. "s:screen," .. "p" },
+		modalities = { m.VIEW .. "p" },
 		on_press   = global_fns.special.padding_toggle,
 	},
 	-- }}}

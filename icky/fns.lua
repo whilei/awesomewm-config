@@ -71,11 +71,16 @@ local global_fns                    = {
 		},
 		dash         = function()
 			local s = awful.screen.focused()
-			if not s.dash or (not s.dash.bar.visible) then
-				s.dash = require("dash").init(s)
-			end
-			s.dash.bar.visible = not s.dash.bar.visible
+			screen.emit_signal("request::dash::toggle", s)
 		end,
+		eval_lua     = function()
+			awful.prompt.run {
+				prompt       = "Run Lua code: ",
+				textbox      = awful.screen.focused().mypromptbox.widget,
+				exe_callback = awful.util.eval,
+				history_path = gears.filesystem.get_cache_dir() .. "/history_eval"
+			}
+		end
 	},
 	apps       = {
 		single_instance = function(app_by_name)
@@ -616,7 +621,8 @@ local client_fns                    = {
 			cc:raise()
 		end,
 		minimize          = function(c)
-			(c or client.focus).minimized = true
+			local cc     = c or client.focus
+			cc.minimized = true
 		end,
 		floating          = function(c)
 			local cc = c or client.focus

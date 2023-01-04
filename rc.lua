@@ -169,7 +169,7 @@ awful.util.taglist_buttons = g_table.join(
 
 -- Right clicking on tag entry toggles tag view (can view multiple tags at once).
 		awful.button({}, 3, awful.tag.viewtoggle),
-		
+
 -- Super + right-click on a tag entry toggles the currently focused client's association with that tag.
 		awful.button({ modkey }, 3, function(t)
 			if client.focus then
@@ -627,8 +627,10 @@ client.connect_signal("mouse::enter",
 							  return -- early
 						  end
 
-						  if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-								  and awful.client.focus.filter(c)
+						  local layout_is_not_magnifier = awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+						  local filter_ok               = awful.client.focus.filter(c)
+						  local is_not_minimized        = (not c.minimized) -- IDK but this fixes a bug where toggling minimization fails to minimize (just flicker).
+						  if layout_is_not_magnifier and filter_ok and is_not_minimized
 						  then
 							  c:activate { context = "mouse_enter", raise = false }
 						  end
