@@ -100,7 +100,7 @@ lib.global_bindings           = {
 	-- {{{ MODALITY
 	{
 		h        = { group = "awesome", description = "enter modality mode", name = "modality" },
-		hotkeys  = { { _keys.MOD, "," }, { _keys.MOD, "Escape" } },
+		hotkeys  = { { _keys.MOD, " " }, { _keys.MOD, "Escape" } },
 		on_press = function()
 			modality.enter(modality.path_tree)
 		end,
@@ -176,9 +176,9 @@ lib.global_bindings           = {
 	},
 	{
 		h          = { group = "awesome/snazzy", description = "rofi window", name = "rofi (window)", },
-		modalities = { "o", " ", m.AWESOME_APPS .. "w", m.FOCUS .. "f" },
+		modalities = { "o", m.AWESOME_APPS .. "w", m.FOCUS .. "f" },
 		hotkeys    = {
-			{ mods = { _keys.MOD, }, code = " ", },
+			{ mods = { _keys.MOD, _keys.SHIFT }, code = "W", },
 		},
 		on_press   = global_fns.apps.rofi("window"),
 	},

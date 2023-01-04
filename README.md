@@ -1,5 +1,27 @@
 
 
+fix when i turn the tv on after waking the laptop
+nvidia-setting fuck around with resolution can fix it (i toggle resolution setting, revert changes)
+`screen:emit_signal`?
+
+
+mode for emitting signals
+any signals user desires
+
+lua.eval
+
+
+
+oh this other "reader view" idea
+where you enter the mode
+then move your mouse to move the client
+so it wants to place wherever your mouse is in the client
+  in the middle of the screen
+
+ps maybe the default hotkey for modality should be super+space
+
+---
+
 
 lua eval in prompt
 awful.utils.eval
