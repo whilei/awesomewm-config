@@ -1331,9 +1331,6 @@ function theme.at_screen_connect(s)
 			temp.widget,
 		},
 	}
-
-	dash.init(s)
-	s.dashbar = dash.bar
 end
 
 return theme

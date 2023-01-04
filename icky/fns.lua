@@ -70,8 +70,11 @@ local global_fns                    = {
 			end,
 		},
 		dash         = function()
-			local d   = awful.screen.focused().dashbar
-			d.visible = not d.visible
+			local s = awful.screen.focused()
+			if not s.dash or (not s.dash.bar.visible) then
+				s.dash = require("dash").init(s)
+			end
+			s.dash.bar.visible = not s.dash.bar.visible
 		end,
 	},
 	apps       = {

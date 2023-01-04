@@ -251,6 +251,7 @@ m.init = function(s)
 		}
 
 	}
+	return m
 end
 
 return m
